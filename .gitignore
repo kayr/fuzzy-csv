@@ -1,0 +1,11 @@
+.classpath
+.project
+bin/
+target/
+.settings
+.DS_Store
+.groovy
+bin/
+.idea/
+**/*.iml
+*.iml
