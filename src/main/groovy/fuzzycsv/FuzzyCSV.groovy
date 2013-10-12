@@ -22,7 +22,8 @@ public class FuzzyCSV {
     }
 
     static int getColumnPositionUsingHeuristic(List<String[]> csvList, String name) {
-        List<String[]> headers = csvList[0] as List
+        List<String> headers = csvList[0] as List
+
         def ph = PhraseHelper.train(headers)
         def newName = ph.bestInternalHit(name, ACCURACY_THRESHOLD)
 
@@ -140,9 +141,7 @@ public class FuzzyCSV {
                 }
                 int relativeIndex = csv1ColumnCount + csv2CellColumnIdx - 1
                 newCombinedRecord[relativeIndex] = csv2Cell
-
             }
-
         }
 
         return combinedList
