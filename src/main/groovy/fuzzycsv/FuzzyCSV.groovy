@@ -72,10 +72,7 @@ public class FuzzyCSV {
     }
 
     static List getValuesForColumn(List csvList, int colIdx) {
-        csvList.collect {
-            //  println "getValuesForColumn() reading from row $it"
-            it[colIdx]
-        }
+        csvList.collect { it[colIdx] }
     }
 
     static List<String[]> deleteColumn(List<String[]> csvList, int idx) {
@@ -127,29 +124,25 @@ public class FuzzyCSV {
 
 
     static List<String[]> join(List<String[]> csv1, List<String[]> csv2, String[] joinColumns) {
-        return superJoin(csv1,csv2,joinColumns,false,false)
+        return superJoin(csv1, csv2, joinColumns, false, false)
     }
 
     static List<String[]> leftJoin(List<String[]> csv1, List<String[]> csv2, String[] joinColumns) {
-        return superJoin(csv1,csv2,joinColumns,true,false)
+        return superJoin(csv1, csv2, joinColumns, true, false)
     }
 
     static List<String[]> rightJoin(List<String[]> csv1, List<String[]> csv2, String[] joinColumns) {
-        return superJoin(csv1,csv2,joinColumns,false,true)
+        return superJoin(csv1, csv2, joinColumns, false, true)
     }
 
     static List<String[]> fullJoin(List<String[]> csv1, List<String[]> csv2, String[] joinColumns) {
-             return superJoin(csv1,csv2,joinColumns,true,true)
+        return superJoin(csv1, csv2, joinColumns, true, true)
     }
 
     private static List<String[]> superJoin(List<String[]> csv1, List<String[]> csv2, String[] joinColumns, boolean doLeftJoin, boolean doRightJoin) {
-        def csv1ColPositions = joinColumns.collect {
-            getColumnPosition(csv1, it)
-        }
+        def csv1ColPositions = joinColumns.collect { getColumnPosition(csv1, it) }
 
-        def csv2ColPositions = joinColumns.collect {
-            getColumnPosition(csv2, it)
-        }
+        def csv2ColPositions = joinColumns.collect { getColumnPosition(csv2, it) }
 
         //container to keep track the matchedCSV2 records
         def matchedCSV2Records = []
@@ -181,8 +174,7 @@ public class FuzzyCSV {
             }
         }
 
-        if (!doRightJoin || matchedCSV2Records.size() == csv2.size() )
-            return combinedList
+        if (!doRightJoin || matchedCSV2Records.size() == csv2.size()) return combinedList
 
         def csv1ColumnCount = csv1[0].length
 
