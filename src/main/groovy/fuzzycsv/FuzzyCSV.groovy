@@ -9,19 +9,19 @@ public class FuzzyCSV {
     public static float ACCURACY_THRESHOLD = 58
     static boolean trace = false
 
-    static List<String[]> parseCsv(String csv) {
+    static List<List> parseCsv(String csv) {
         CSVReader rd = new CSVReader(new StringReader(csv))
         return rd.readAll();
     }
 
-    static int getColumnPosition(List<String[]> csvList, String name) {
+    static int getColumnPosition(List<List> csvList, String name) {
         def headers = csvList[0]
         headers.findIndexOf { value ->
             value.toLowerCase().trim().equalsIgnoreCase(name.trim().toLowerCase())
         }
     }
 
-    static int getColumnPositionUsingHeuristic(List<String[]> csvList, String name) {
+    static int getColumnPositionUsingHeuristic(List<List> csvList, String name) {
         List<String> headers = csvList[0] as List
 
         def ph = PhraseHelper.train(headers)
@@ -39,7 +39,7 @@ public class FuzzyCSV {
         csvList.collect { it[colIdx] }
     }
 
-    static List<String[]> putInColumn(List<String[]> csvList, List column, int insertIdx) {
+    static List<List> putInColumn(List<List> csvList, List column, int insertIdx) {
 
         csvList.eachWithIndex { entry, lstIdx ->
             def entryList = entry
@@ -50,7 +50,7 @@ public class FuzzyCSV {
         return csvList
     }
 
-    static void writeToFile(List<String[]> csv, String file) {
+    static void writeToFile(List<List> csv, String file) {
         def sysFile = new File(file)
         if (sysFile.exists())
             sysFile.delete()
@@ -61,7 +61,7 @@ public class FuzzyCSV {
 
     }
 
-    static String csvToString(List<String[]> csv) {
+    static String csvToString(List<List> csv) {
         def stringWriter = new StringWriter();
         CSVWriter writer = new CSVWriter(stringWriter)
         writer.writeAll(csv)
@@ -70,23 +70,23 @@ public class FuzzyCSV {
 
 
 
-    static List<String[]> join(List<String[]> csv1, List<String[]> csv2, String[] joinColumns) {
+    static List<List> join(List<List> csv1, List<List> csv2, String[] joinColumns) {
         return superJoin(csv1, csv2, joinColumns, false, false)
     }
 
-    static List<String[]> leftJoin(List<String[]> csv1, List<String[]> csv2, String[] joinColumns) {
+    static List<List> leftJoin(List<List> csv1, List<List> csv2, String[] joinColumns) {
         return superJoin(csv1, csv2, joinColumns, true, false)
     }
 
-    static List<String[]> rightJoin(List<String[]> csv1, List<String[]> csv2, String[] joinColumns) {
+    static List<List> rightJoin(List<List> csv1, List<List> csv2, String[] joinColumns) {
         return superJoin(csv1, csv2, joinColumns, false, true)
     }
 
-    static List<String[]> fullJoin(List<String[]> csv1, List<String[]> csv2, String[] joinColumns) {
+    static List<List> fullJoin(List<List> csv1, List<List> csv2, String[] joinColumns) {
         return superJoin(csv1, csv2, joinColumns, true, true)
     }
 
-    private static List<String[]> superJoin(List<String[]> csv1, List<String[]> csv2, String[] joinColumns, boolean doLeftJoin, boolean doRightJoin) {
+    private static List<List> superJoin(List<List> csv1, List<List> csv2, String[] joinColumns, boolean doLeftJoin, boolean doRightJoin) {
         def csv1ColPositions = joinColumns.collect { getColumnPosition(csv1, it) }
 
         def csv2ColPositions = joinColumns.collect { getColumnPosition(csv2, it) }
@@ -108,14 +108,14 @@ public class FuzzyCSV {
 
 
                     println "merging $record1JoinColumns + $record2JoinColumns"
-                    def mergedRecord = ((record1 + (record2 - record2JoinColumns)) as String[])
+                    def mergedRecord = ((record1 + (record2 - record2JoinColumns)))
                     println "= $mergedRecord"
                     combinedList << mergedRecord
                 }
             }
             if (!record1Matched && doLeftJoin) {
                 def newRecord = addRecord(combinedList)
-                record1.eachWithIndex { String entry, int i ->
+                record1.eachWithIndex { entry, int i ->
                     newRecord[i] = entry
                 }
             }
@@ -123,9 +123,10 @@ public class FuzzyCSV {
 
         if (!doRightJoin || matchedCSV2Records.size() == csv2.size()) return combinedList
 
-        def csv1ColumnCount = csv1[0].length
+        //todo write a unit test for this
+        def csv1ColumnCount = csv1[0] instanceof List ? csv1[0].size():csv1[0].length
 
-        csv2.eachWithIndex { String[] csv2Record, int i ->
+        csv2.eachWithIndex {  csv2Record, int i ->
             if (matchedCSV2Records.contains(i))
                 return
 
@@ -135,7 +136,7 @@ public class FuzzyCSV {
                 newCombinedRecord[colPosition] = csv2Record[csv2ColPositions[idx]]
             }
 
-            csv2Record.eachWithIndex { String csv2Cell, int csv2CellColumnIdx ->
+            csv2Record.eachWithIndex {csv2Cell, int csv2CellColumnIdx ->
                 if (csv2ColPositions.contains(csv2CellColumnIdx)) {
                     return
                 }
@@ -147,11 +148,12 @@ public class FuzzyCSV {
         return combinedList
     }
 
-    static String[] addRecord(List<String[]> csv) {
+    static List addRecord(List<List> csv) {
         def record = csv[0]
-        def newRecord = new String[record.length]
-        csv.add(newRecord)
-        newRecord
+        def newRecord = new Object[record instanceof List ? record.size() : record.length]
+        def listRecord = newRecord as List
+        csv.add(listRecord)
+        listRecord
     }
 
     /**
@@ -161,10 +163,14 @@ public class FuzzyCSV {
      * @param csv2
      * @return
      */
-    static List<String[]> rearrangeColumns(String[] headers, List<String[]> csv2) {
-        List<String[]> newCsv = []
+    static List<List> rearrangeColumns(String[] headers, List<List> csv2){
+             rearrangeColumns(headers as List, csv2)
+    }
+
+    static List<List> rearrangeColumns(List headers, List<List> csv2) {
+        List<List> newCsv = []
         csv2.size().times {
-            newCsv.add(new String[headers.length])
+            newCsv.add(new ArrayList(headers.size()))
         }
         headers.eachWithIndex { header, idx ->
             int csv2colIdx = guessColumnPosition(header, csv2)
@@ -180,7 +186,7 @@ public class FuzzyCSV {
         return newCsv
     }
 
-    public static int guessColumnPosition(String header, List<String[]> csv2) {
+    public static int guessColumnPosition(String header, List<List> csv2) {
 
         def csv2colIdx = getColumnPosition(csv2, header)
         if (csv2colIdx == -1) {
@@ -195,7 +201,7 @@ public class FuzzyCSV {
      * @param csv2
      * @return
      */
-    static List<String[]> mergeByColumn(List<String[]> csv1, List<String[]> csv2) {
+    static List<List> mergeByColumn(List<List> csv1, List<List> csv2) {
         def header1 = mergeHeaders(csv1[0], csv2[0])
         csv1 = rearrangeColumns(header1, csv1)
         csv2 = rearrangeColumns(header1, csv2)
@@ -203,10 +209,14 @@ public class FuzzyCSV {
 
     }
 
-    static String[] mergeHeaders(String[] h1, String[] h2) {
+    static List mergeHeaders(String[] h1, String[] h2) {
+         mergeHeaders(h1 as List, h2 as List)
+    }
+
+    static List mergeHeaders(List h1, List h2) {
 
 
-        def phraseHelper = PhraseHelper.train(h1 as List)
+        def phraseHelper = PhraseHelper.train(h1)
         def newHeaders = []
 
 
@@ -214,7 +224,7 @@ public class FuzzyCSV {
 
 
         println '========'
-        h2.each { header ->
+        h2.each {String header ->
             def hit = phraseHelper.bestInternalHit(header, ACCURACY_THRESHOLD)
             def bestScore = phraseHelper.bestInternalScore(header)
             def bestWord = phraseHelper.bestInternalHit(header, 0)
@@ -230,13 +240,13 @@ public class FuzzyCSV {
         println "=======\n" +
                 "HEADER1 \t= $h1 \n HEADER2 \t= $h2 \nNEW_HEADER \t= $newHeaders\n" +
                 "======="
-        return newHeaders as String[]
+        return newHeaders
     }
 
     /**
      * Merges data from from CSV1 into CSV2
      */
-    static List<String[]> mergeByAppending(List<String[]> csv1, List<String[]> csv2) {
+    static List<List> mergeByAppending(List<List> csv1, List<List> csv2) {
         csv2.remove(0)
         def merged = csv1 + csv2
         return merged

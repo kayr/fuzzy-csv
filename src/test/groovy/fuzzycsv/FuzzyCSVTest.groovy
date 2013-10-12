@@ -66,6 +66,13 @@ class FuzzyCSVTest {
 
         def newHeader = FuzzyCSV.mergeHeaders(h1, h2)
         assertTrue newHeader.equals(['name', 'sex', 'secName'])
+
+        //test list versions
+         h1 = ['name', 'sex']
+         h2 = ['nam', 'secName', 'sex']
+
+        newHeader = FuzzyCSV.mergeHeaders(h1, h2)
+        assertTrue newHeader.equals(['name', 'sex', 'secName'])
     }
 
     @Test
@@ -173,6 +180,8 @@ class FuzzyCSVTest {
         def text = getClass().getResource(path).text
         return FuzzyCSV.parseCsv(text)
     }
+
+
 
 
 }
