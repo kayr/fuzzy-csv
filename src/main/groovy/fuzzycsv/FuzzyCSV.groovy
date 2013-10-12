@@ -14,43 +14,6 @@ public class FuzzyCSV {
         return rd.readAll();
     }
 
-    public List<String> deleteColumn(String name) {
-        def position = getColumnPosition(name)
-        def newList = deleteColumn(position)
-        println "postion of column $name = $position"
-        return newList
-
-    }
-
-    static List<String[]> moveColumn(List<String[]> csvList, String columnName, int newPosition) {
-        def position = getColumnPosition(csvList, columnName)
-        moveColumn(csvList, position, newPosition)
-    }
-
-    static List<String[]> moveColumn(List<String[]> csvList, int position, int newPosition) {
-
-        if (newPosition == position) {
-            println "new position is the same as position $position = $newPosition"
-            return csvList
-        }
-        def columnValues = getValuesForColumn(csvList, position)
-        def newCsv = insertColumn(csvList, columnValues, newPosition)
-
-        if (newPosition < position)
-            newCsv = deleteColumn(newCsv, position + 1)
-        else
-            newCsv = deleteColumn(newCsv, position)
-        return newCsv
-    }
-
-    static List<String[]> deleteColumn(List<String[]> csv, String name) {
-        println "deleting column $name"
-        def pos = getColumnPosition(csv, name)
-        deleteColumn(csv, pos)
-    }
-
-
-
     static int getColumnPosition(List<String[]> csvList, String name) {
         def headers = csvList[0]
         headers.findIndexOf { value ->
@@ -73,23 +36,6 @@ public class FuzzyCSV {
 
     static List getValuesForColumn(List csvList, int colIdx) {
         csvList.collect { it[colIdx] }
-    }
-
-    static List<String[]> deleteColumn(List<String[]> csvList, int idx) {
-        csvList.collect { entry ->
-            def dropped = (entry.take(idx) + entry.drop(idx + 1))
-            return dropped as String[]
-        }
-    }
-
-    static List<String[]> insertColumn(List<String[]> csvList, List column, int idx) {
-        def newList = []
-        csvList.eachWithIndex { entry, lstIdx ->
-            def entryList = entry as List
-            entryList.add(idx, column[lstIdx])
-            newList << (entryList as String[])
-        }
-        return newList
     }
 
     static List<String[]> putInColumn(List<String[]> csvList, List column, int insertIdx) {
@@ -210,7 +156,7 @@ public class FuzzyCSV {
     }
 
     /**
-     * Re-arranges colums using as specified by the headers using direct merge and if it fails
+     * Re-arranges colums as specified by the headers using direct merge and if it fails
      * it uses heuristics
      * @param headers
      * @param csv2
