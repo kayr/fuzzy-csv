@@ -131,7 +131,7 @@ public class FuzzyCSV {
                 return
 
             def newCombinedRecord = addRecord(combinedList)
-
+             //first add the columns shared btn csv1 and csv2
             csv1ColPositions.eachWithIndex { int colPosition, int idx ->
                 newCombinedRecord[colPosition] = csv2Record[csv2ColPositions[idx]]
             }
@@ -140,7 +140,7 @@ public class FuzzyCSV {
                 if (csv2ColPositions.contains(csv2CellColumnIdx)) {
                     return
                 }
-                int relativeIndex = csv1ColumnCount + csv2CellColumnIdx - 1
+                int relativeIndex = csv1ColumnCount + csv2CellColumnIdx - joinColumns.length
                 newCombinedRecord[relativeIndex] = csv2Cell
             }
         }

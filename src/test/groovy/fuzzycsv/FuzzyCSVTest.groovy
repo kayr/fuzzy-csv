@@ -68,8 +68,8 @@ class FuzzyCSVTest {
         assertTrue newHeader.equals(['name', 'sex', 'secName'])
 
         //test list versions
-         h1 = ['name', 'sex']
-         h2 = ['nam', 'secName', 'sex']
+        h1 = ['name', 'sex']
+        h2 = ['nam', 'secName', 'sex']
 
         newHeader = FuzzyCSV.mergeHeaders(h1, h2)
         assertTrue newHeader.equals(['name', 'sex', 'secName'])
@@ -176,12 +176,28 @@ class FuzzyCSVTest {
 
     }
 
+    @Test
+    public void testFullJoinMultiColumn() {
+
+        def csv_1 = getCSV('/csv1.csv')
+        def csv_2 = getCSV('/csv1_4.csv')
+
+        def join = FuzzyCSV.fullJoin(csv_1, csv_2, 'Name', 'Sex')
+
+        def expected = [
+                ['Name', 'Sex', 'Age', 'Location', 'Age2', 'Hobby'],
+                ['Ronald', 'Male', 3, 'Bweyos', 3, 'Dogs'],
+                ['Sara', 'Female', 4, 'Muyenga', 4, 'Cat'],
+                ['Ronald', 'Femal', null, null, 3, 'Monkey']
+        ]
+        assertEquals join.toString(), expected.toString()
+
+    }
+
     def getCSV(String path) {
         def text = getClass().getResource(path).text
         return FuzzyCSV.parseCsv(text)
     }
-
-
 
 
 }
