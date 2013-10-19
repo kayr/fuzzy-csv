@@ -107,9 +107,9 @@ public class FuzzyCSV {
                         matchedCSV2Records.add(index)
 
 
-                    println "merging $record1JoinColumns + $record2JoinColumns"
+//                    println "merging $record1JoinColumns + $record2JoinColumns"
                     def mergedRecord = ((record1 + (record2 - record2JoinColumns)))
-                    println "= $mergedRecord"
+//                    println "= $mergedRecord"
                     combinedList << mergedRecord
                 }
             }
