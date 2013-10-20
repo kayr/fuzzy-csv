@@ -6,7 +6,13 @@ import secondstring.PhraseHelper
 
 public class FuzzyCSV {
 
-    public static float ACCURACY_THRESHOLD = 58
+    public static ThreadLocal<Float> ACCURACY_THRESHOLD = new ThreadLocal<Float>() {
+        @Override
+        protected Float initialValue() {
+            return 95
+        }
+    }
+
     static boolean trace = false
 
     static List<List> parseCsv(String csv) {
@@ -25,7 +31,7 @@ public class FuzzyCSV {
         List<String> headers = csvList[0] as List
 
         def ph = PhraseHelper.train(headers)
-        def newName = ph.bestInternalHit(name, ACCURACY_THRESHOLD)
+        def newName = ph.bestInternalHit(name, ACCURACY_THRESHOLD.get())
 
         if (newName == null) {
             println "warning: no column match found:  [$name] = [$newName]"
@@ -37,6 +43,17 @@ public class FuzzyCSV {
 
     static List getValuesForColumn(List csvList, int colIdx) {
         csvList.collect { it[colIdx] }
+    }
+
+    static List<List> putInCellWithHeader(List<List> csv, String columnHeader, int rowIdx, Object value) {
+        def position = getColumnPosition(csv, columnHeader)
+        return putInCell(csv, position, rowIdx, value)
+
+    }
+
+    static List<List> putInCell(List<List> csv, int colIdx, int rowIdx, Object value) {
+        csv[rowIdx][colIdx] = value
+        return csv
     }
 
     static List<List> putInColumn(List<List> csvList, List column, int insertIdx) {
@@ -224,7 +241,7 @@ public class FuzzyCSV {
 
         println '========'
         h2.each { String header ->
-            def hit = phraseHelper.bestInternalHit(header, ACCURACY_THRESHOLD)
+            def hit = phraseHelper.bestInternalHit(header, ACCURACY_THRESHOLD.get())
             def bestScore = phraseHelper.bestInternalScore(header)
             def bestWord = phraseHelper.bestInternalHit(header, 0)
             if (hit != null) {

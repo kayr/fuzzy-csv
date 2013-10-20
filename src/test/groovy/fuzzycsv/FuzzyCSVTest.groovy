@@ -1,5 +1,6 @@
 package fuzzycsv
 
+import org.junit.Before
 import org.junit.Test
 
 import static org.junit.Assert.assertEquals
@@ -22,6 +23,11 @@ class FuzzyCSVTest {
             ['namel', 'age', 'sex'] as String[],
             ['alex', '21', 'male'] as String[]
     ]
+
+    @Before
+    void setUp(){
+           FuzzyCSV.ACCURACY_THRESHOLD.set(75)
+    }
 
     @Test
     public void testReArrangeColumns() {
@@ -209,9 +215,31 @@ class FuzzyCSVTest {
         ]
 
         assert expectCSV == actualCsv
-
-
     }
 
+    def csv33 = [
+            ['namel', 'age', 'sex'] as String[],
+            ['alex', '21', 'male'] as String[]
+    ]
+
+    @Test
+    public void testPutInCell() {
+
+        def actualCsv = FuzzyCSV.putInCell(csv3, 1, 1, '44')
+        def expectCSV = [
+                ['namel', 'age', 'sex'] as String[],
+                ['alex', '44', 'male'] as String[]
+        ]
+
+        assert expectCSV == actualCsv
+
+        actualCsv = FuzzyCSV.putInCellWithHeader(csv3, 'age', 1, '54')
+        expectCSV = [
+                ['namel', 'age', 'sex'] as String[],
+                ['alex', '54', 'male'] as String[]
+        ]
+
+        assert expectCSV == actualCsv
+    }
 
 }
