@@ -167,32 +167,32 @@ public class FuzzyCSV {
              rearrangeColumns(headers as List, csv2)
     }
 
-    static List<List> rearrangeColumns(List headers, List<List> csv2) {
+    static List<List> rearrangeColumns(List headers, List<List> csv) {
         List<List> newCsv = []
-        csv2.size().times {
+        csv.size().times {
             newCsv.add(new ArrayList(headers.size()))
         }
         headers.eachWithIndex { header, idx ->
-            int csv2colIdx = guessColumnPosition(header, csv2)
+            int oldCsvColIdx = guessColumnPosition(header, csv)
 
-            def csv2Column
-            if (csv2colIdx != -1)
-                csv2Column = getValuesForColumn(csv2, csv2colIdx)
+            def oldCsvColumn
+            if (oldCsvColIdx != -1)
+                oldCsvColumn = getValuesForColumn(csv, oldCsvColIdx)
             else
-                csv2Column = [header]
+                oldCsvColumn = [header]
 
-            newCsv = putInColumn(newCsv, csv2Column, idx)
+            newCsv = putInColumn(newCsv, oldCsvColumn, idx)
         }
         return newCsv
     }
 
-    public static int guessColumnPosition(String header, List<List> csv2) {
+    public static int guessColumnPosition(String header, List<List> csv) {
 
-        def csv2colIdx = getColumnPosition(csv2, header)
-        if (csv2colIdx == -1) {
-            csv2colIdx = getColumnPositionUsingHeuristic(csv2, header)
+        def csvColIdx = getColumnPosition(csv, header)
+        if (csvColIdx == -1) {
+            csvColIdx = getColumnPositionUsingHeuristic(csv, header)
         }
-        csv2colIdx
+        csvColIdx
     }
 
     /**
