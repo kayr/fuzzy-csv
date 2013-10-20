@@ -199,5 +199,19 @@ class FuzzyCSVTest {
         return FuzzyCSV.parseCsv(text)
     }
 
+    @Test
+    public void testInsertColumn() {
+        def newColumn = ['phone', '775']
+        def actualCsv = FuzzyCSV.insertColumn(csv3, newColumn, 1)
+        def expectCSV = [
+                ['namel', 'phone', 'age', 'sex'],
+                ['alex', '775', '21', 'male']
+        ]
+
+        assert expectCSV == actualCsv
+
+
+    }
+
 
 }

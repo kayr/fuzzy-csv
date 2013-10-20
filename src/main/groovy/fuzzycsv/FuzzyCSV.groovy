@@ -106,7 +106,6 @@ public class FuzzyCSV {
                     if (!matchedCSV2Records.contains(index))
                         matchedCSV2Records.add(index)
 
-
 //                    println "merging $record1JoinColumns + $record2JoinColumns"
                     def mergedRecord = ((record1 + (record2 - record2JoinColumns)))
 //                    println "= $mergedRecord"
@@ -124,19 +123,19 @@ public class FuzzyCSV {
         if (!doRightJoin || matchedCSV2Records.size() == csv2.size()) return combinedList
 
         //todo write a unit test for this
-        def csv1ColumnCount = csv1[0] instanceof List ? csv1[0].size():csv1[0].length
+        def csv1ColumnCount = csv1[0] instanceof List ? csv1[0].size() : csv1[0].length
 
-        csv2.eachWithIndex {  csv2Record, int i ->
+        csv2.eachWithIndex { csv2Record, int i ->
             if (matchedCSV2Records.contains(i))
                 return
 
             def newCombinedRecord = addRecord(combinedList)
-             //first add the columns shared btn csv1 and csv2
+            //first add the columns shared btn csv1 and csv2
             csv1ColPositions.eachWithIndex { int colPosition, int idx ->
                 newCombinedRecord[colPosition] = csv2Record[csv2ColPositions[idx]]
             }
 
-            csv2Record.eachWithIndex {csv2Cell, int csv2CellColumnIdx ->
+            csv2Record.eachWithIndex { csv2Cell, int csv2CellColumnIdx ->
                 if (csv2ColPositions.contains(csv2CellColumnIdx)) {
                     return
                 }
@@ -160,11 +159,11 @@ public class FuzzyCSV {
      * Re-arranges colums as specified by the headers using direct merge and if it fails
      * it uses heuristics
      * @param headers
-     * @param csv2
+     * @param csv
      * @return
      */
-    static List<List> rearrangeColumns(String[] headers, List<List> csv2){
-             rearrangeColumns(headers as List, csv2)
+    static List<List> rearrangeColumns(String[] headers, List<List> csv) {
+        rearrangeColumns(headers as List, csv)
     }
 
     static List<List> rearrangeColumns(List headers, List<List> csv) {
@@ -210,7 +209,7 @@ public class FuzzyCSV {
     }
 
     static List mergeHeaders(String[] h1, String[] h2) {
-         mergeHeaders(h1 as List, h2 as List)
+        mergeHeaders(h1 as List, h2 as List)
     }
 
     static List mergeHeaders(List h1, List h2) {
@@ -224,7 +223,7 @@ public class FuzzyCSV {
 
 
         println '========'
-        h2.each {String header ->
+        h2.each { String header ->
             def hit = phraseHelper.bestInternalHit(header, ACCURACY_THRESHOLD)
             def bestScore = phraseHelper.bestInternalScore(header)
             def bestWord = phraseHelper.bestInternalHit(header, 0)
@@ -241,6 +240,21 @@ public class FuzzyCSV {
                 "HEADER1 \t= $h1 \n HEADER2 \t= $h2 \nNEW_HEADER \t= $newHeaders\n" +
                 "======="
         return newHeaders
+    }
+
+    public static List<List> insertColumn(List<List> csv, List column, int colIdx) {
+
+        if (colIdx >= csv.size())
+            throw new IllegalArgumentException("Column index is greater than the column size")
+
+        def newCSV = new ArrayList(csv.size())
+        csv.eachWithIndex { record, lstIdx ->
+            def newRecord = record instanceof List ? record : record as List
+            def cellValue = lstIdx >= column.size() ? "" : column[lstIdx]
+            newRecord.add(colIdx, cellValue)
+            newCSV.add(newRecord)
+        }
+        return newCSV
     }
 
     /**
