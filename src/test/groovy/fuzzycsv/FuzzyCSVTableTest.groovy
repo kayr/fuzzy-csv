@@ -56,4 +56,25 @@ class FuzzyCSVTableTest {
         ]
         assert data.csv == expected
     }
+
+    static def csv23 = [
+            ['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
+            ['Hakibale', 18.1, null, null],
+            ['Kabonero', 1, null, null],
+            ['Kisomoro', null, 1, 10],
+            ['Bunyangabu', null, null, '1'],
+            ['Noon', null, null, 0]
+    ]
+
+    @Test
+    void testCount() {
+        def data = FuzzyCSVTable.get(Data.csv).aggregate(['sub_county'], new Sum(columns: ['ps_total_score', 'pipes_total_score'], columnName: 'sum'),
+                new Sum(columns: ['tap_total_score'], columnName: 'sum_taps'))
+        def expected = [
+                ['sub_county', 'sum', 'sum_taps'],
+                ['Hakibale', 20.1, 11]
+        ]
+        assert data.csv == expected
+    }
+
 }
