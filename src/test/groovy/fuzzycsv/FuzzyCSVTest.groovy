@@ -25,8 +25,8 @@ class FuzzyCSVTest {
     ]
 
     @Before
-    void setUp(){
-           FuzzyCSV.ACCURACY_THRESHOLD.set(75)
+    void setUp() {
+        FuzzyCSV.ACCURACY_THRESHOLD.set(75)
     }
 
     @Test
@@ -217,11 +217,6 @@ class FuzzyCSVTest {
         assert expectCSV == actualCsv
     }
 
-    def csv33 = [
-            ['namel', 'age', 'sex'] as String[],
-            ['alex', '21', 'male'] as String[]
-    ]
-
     @Test
     public void testPutInCell() {
 
@@ -242,4 +237,63 @@ class FuzzyCSVTest {
         assert expectCSV == actualCsv
     }
 
+    @Test
+    public void testRecordFX() {
+        def csv = getCSV('/csv1csv2.csv')
+
+        def recordFx = RecordFx.get('Age*Mark') {
+            FuzzyCSVUtils.coerceToNumber(it.Age) * FuzzyCSVUtils.coerceToNumber(it.Mark)
+        }
+        def newCSV = FuzzyCSV.rearrangeColumns(['Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark', recordFx], csv)
+
+        def expected = [
+                ['Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark', 'Age*Mark'],
+                ['Ronald', 'Male', '3', 'Bweyos', 'Math', '50', 150],
+                ['Sara', 'Female', '4', 'Muyenga', "", "", 0],
+                ['Betty', "", "", "", 'Biology', '80', 0]
+        ]
+
+        assert expected == newCSV
+
+
+    }
+
+    @Test
+    public void testRecordFXWithSource() {
+        def csv = getCSV('/csv1csv2.csv')
+
+        def recordFx = RecordFx.get('Age*Mark') {
+            FuzzyCSVUtils.coerceToNumber(it.'@Age') * FuzzyCSVUtils.coerceToNumber(it.'@Mark')
+        }
+        def newCSV = FuzzyCSV.rearrangeColumns(['Name', recordFx], csv)
+
+        def expected = [
+                ['Name', 'Age*Mark'],
+                ['Ronald', 150],
+                ['Sara', 0],
+                ['Betty', 0]
+        ]
+
+        assert expected == newCSV
+    }
+
+    @Test
+    public void testRecordFXWithSourceSouceFirstResoulution() {
+        def csv = getCSV('/csv1csv2.csv')
+
+        def recordFx = RecordFx.get('Age*Mark') {
+            FuzzyCSVUtils.coerceToNumber(it.'Age') * FuzzyCSVUtils.coerceToNumber(it.'Mark')
+        }
+        recordFx.resolutionStrategy = Record.ResolutionStrategy.SOURCE_FIRST
+        def newCSV = FuzzyCSV.rearrangeColumns(['Name', recordFx], csv)
+
+        def expected = [
+                ['Name', 'Age*Mark'],
+                ['Ronald', 150],
+                ['Sara', 0],
+                ['Betty', 0]
+        ]
+
+        assert expected == newCSV
+    }
 }

@@ -67,6 +67,27 @@ public class FuzzyCSV {
         return csvList
     }
 
+    static List<List> putInColumn(List<List> csvList, RecordFx column, int insertIdx, List<List> sourceCSV = null) {
+        def header = csvList[0]
+        csvList.eachWithIndex { entry, lstIdx ->
+            def cellValue
+            if (lstIdx == 0) {
+                cellValue = column.name
+            } else {
+                def record = Record.getRecord(header, entry)
+                if(sourceCSV){
+                    def oldCSVRecord = sourceCSV[lstIdx]
+                    def oldCSVHeader = sourceCSV[0]
+                    record.sourceRecord = oldCSVRecord
+                    record.sourceHeaders = oldCSVHeader
+                }
+                cellValue = column.getValue(record)
+            }
+            entry[insertIdx] = cellValue
+        }
+        return csvList
+    }
+
     static void writeToFile(List<List> csv, String file) {
         def sysFile = new File(file)
         if (sysFile.exists())
@@ -189,6 +210,12 @@ public class FuzzyCSV {
             newCsv.add(new ArrayList(headers.size()))
         }
         headers.eachWithIndex { header, idx ->
+
+            if(header instanceof RecordFx){
+                newCsv = putInColumn(newCsv,header,idx,csv)
+                return
+            }
+
             int oldCsvColIdx = guessColumnPosition(header, csv)
 
             def oldCsvColumn

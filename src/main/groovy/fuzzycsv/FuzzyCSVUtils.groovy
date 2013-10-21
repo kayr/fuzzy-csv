@@ -11,27 +11,31 @@ class FuzzyCSVUtils {
 
     static List<Number> toNumbers(List list) {
         def rt = list.collect { it ->
-            if (it == null)
-                return 0
-
-            if (it instanceof Number)
-                return it
-
-            def strValue = it.toString()
-
-            try {
-                return Integer.parseInt(strValue)
-            } catch (Exception x) {
-            }
-
-            try {
-                return Double.parseDouble(strValue)
-            } catch (Exception x) {
-            }
-            System.err.println("FuzzyCSVUtils:toNumbers() Could not convert [$strValue] to a Number")
-            return 0
+            return coerceToNumber(it)
         }
         return rt
+    }
+
+     static Number coerceToNumber(obj) {
+        if (obj == null)
+            return 0
+
+        if (obj instanceof Number)
+            return obj
+
+        def strValue = obj.toString()
+
+        try {
+            return Integer.parseInt(strValue)
+        } catch (Exception x) {
+        }
+
+        try {
+            return Double.parseDouble(strValue)
+        } catch (Exception x) {
+        }
+        System.err.println("FuzzyCSVUtils:toNumbers() Could not convert [$strValue] to a Number")
+        return 0
     }
 
 }
