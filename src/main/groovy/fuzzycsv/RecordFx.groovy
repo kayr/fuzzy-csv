@@ -10,7 +10,7 @@ package fuzzycsv
 class RecordFx {
     String name
     Closure c
-    Record.ResolutionStrategy resolutionStrategy
+    ResolutionStrategy resolutionStrategy
 
     RecordFx(String name, Closure c) {
         this.name = name

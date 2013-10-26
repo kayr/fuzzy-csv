@@ -93,7 +93,7 @@ public class FuzzyCSV {
         if (sysFile.exists())
             sysFile.delete()
         sysFile.withWriter { fileWriter ->
-            CSVWriter writer = new CSVWriter(fileWriter)
+            CSVWriter writer = new FuzzyCSVWriter(fileWriter)
             writer.writeAll(csv)
         }
 
@@ -101,7 +101,7 @@ public class FuzzyCSV {
 
     static String csvToString(List<List> csv) {
         def stringWriter = new StringWriter();
-        CSVWriter writer = new CSVWriter(stringWriter)
+        def writer = new FuzzyCSVWriter(stringWriter)
         writer.writeAll(csv)
         stringWriter.toString()
     }

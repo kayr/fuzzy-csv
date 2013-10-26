@@ -284,7 +284,7 @@ class FuzzyCSVTest {
         def recordFx = RecordFx.get('Age*Mark') {
             FuzzyCSVUtils.coerceToNumber(it.'Age') * FuzzyCSVUtils.coerceToNumber(it.'Mark')
         }
-        recordFx.resolutionStrategy = Record.ResolutionStrategy.SOURCE_FIRST
+        recordFx.resolutionStrategy = ResolutionStrategy.SOURCE_FIRST
         def newCSV = FuzzyCSV.rearrangeColumns(['Name', recordFx], csv)
 
         def expected = [

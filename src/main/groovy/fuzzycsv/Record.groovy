@@ -32,19 +32,21 @@ class Record {
             myRecord = sourceRecord
         }
 
-        if (name?.startsWith('@')) {
+        if (name?.startsWith('@') && resolutionStrategy == ResolutionStrategy.DERIVED_FIRST) {
             myHeader = sourceHeaders
             myRecord = sourceRecord
             name = name.replace('@', '')
-            if (resolutionStrategy == ResolutionStrategy.SOURCE_FIRST) {
-                myHeader = derivedHeaders
-                myRecord = derivedRecord
-            }
+        }
+
+        if (name?.startsWith('@') && resolutionStrategy == ResolutionStrategy.SOURCE_FIRST) {
+            myHeader = derivedHeaders
+            myRecord = derivedRecord
+            name = name.replace('@', '')
         }
 
         def propertyIndex = myHeader.indexOf(name)
         if (propertyIndex == -1)
-            throw new IllegalArgumentException("[$name] could not be found in the record")
+            throw new IllegalArgumentException("[$origName] could not be found in the record")
         return myRecord[propertyIndex]
     }
 
@@ -74,8 +76,6 @@ class Record {
     }
 
 
-    public static enum ResolutionStrategy {
-        DERIVED_FIRST, SOURCE_FIRST
-    }
+
 
 }
