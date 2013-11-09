@@ -50,7 +50,7 @@ class FuzzyCSVTable {
     }
 
     static FuzzyCSVTable get(List<List> csv) {
-        return new FuzzyCSVTable(csv: csv)
+        return new FuzzyCSVTable(csv)
     }
 
     String toString() {
