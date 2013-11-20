@@ -46,10 +46,16 @@ class FuzzyCSVTable {
             FuzzyCSV.putInCellWithHeader(newTable, entry.key, 1, entry.value)
         }
 
-        return get(newTable)
+        return tbl(newTable)
     }
 
+    @Deprecated
     static FuzzyCSVTable get(List<List> csv) {
+        return tbl(csv)
+    }
+
+
+    static FuzzyCSVTable tbl(List<List> csv) {
         return new FuzzyCSVTable(csv)
     }
 

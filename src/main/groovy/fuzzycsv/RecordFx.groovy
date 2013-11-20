@@ -12,18 +12,40 @@ class RecordFx {
     Closure c
     ResolutionStrategy resolutionStrategy
 
+    private RecordFx() {}
+
     RecordFx(String name, Closure c) {
         this.name = name
         this.c = c
     }
 
     def getValue(Record record) {
-        if(resolutionStrategy != null)
+        if (resolutionStrategy != null)
             record.resolutionStrategy = resolutionStrategy
-        return c.call(record)
+        use(FxExtensions) {
+            return c.call(record)
+        }
+    }
+    /**
+     * use @fx
+     */
+    @Deprecated
+    static RecordFx get(String name, Closure c) {
+        return fn(name, c)
     }
 
-    static RecordFx get(String name, Closure c) {
-        return new RecordFx(name, c)
+    static RecordFx fn(String name, Closure function) {
+        return new RecordFx(name, function)
     }
+
+    RecordFx withSourceFirst() {
+        resolutionStrategy = ResolutionStrategy.SOURCE_FIRST
+        return this
+    }
+
+    RecordFx withDerivedFirst() {
+        resolutionStrategy = ResolutionStrategy.DERIVED_FIRST
+        return this
+    }
+
 }

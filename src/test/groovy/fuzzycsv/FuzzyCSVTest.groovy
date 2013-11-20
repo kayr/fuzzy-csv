@@ -3,6 +3,8 @@ package fuzzycsv
 import org.junit.Before
 import org.junit.Test
 
+import static fuzzycsv.RecordFx.fn
+import static fuzzycsv.RecordFx.getFx
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
 
@@ -241,9 +243,7 @@ class FuzzyCSVTest {
     public void testRecordFX() {
         def csv = getCSV('/csv1csv2.csv')
 
-        def recordFx = RecordFx.get('Age*Mark') {
-            FuzzyCSVUtils.coerceToNumber(it.Age) * FuzzyCSVUtils.coerceToNumber(it.Mark)
-        }
+        def recordFx = fn('Age*Mark') { it.Age * it.Mark }
         def newCSV = FuzzyCSV.rearrangeColumns(['Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark', recordFx], csv)
 
         def expected = [
@@ -262,9 +262,8 @@ class FuzzyCSVTest {
     public void testRecordFXWithSource() {
         def csv = getCSV('/csv1csv2.csv')
 
-        def recordFx = RecordFx.get('Age*Mark') {
-            FuzzyCSVUtils.coerceToNumber(it.'@Age') * FuzzyCSVUtils.coerceToNumber(it.'@Mark')
-        }
+        def recordFx = fn('Age*Mark') { it.'@Age' * it.'@Mark' }
+
         def newCSV = FuzzyCSV.rearrangeColumns(['Name', recordFx], csv)
 
         def expected = [
@@ -281,10 +280,7 @@ class FuzzyCSVTest {
     public void testRecordFXWithSourceSouceFirstResoulution() {
         def csv = getCSV('/csv1csv2.csv')
 
-        def recordFx = RecordFx.get('Age*Mark') {
-            FuzzyCSVUtils.coerceToNumber(it.'Age') * FuzzyCSVUtils.coerceToNumber(it.'Mark')
-        }
-        recordFx.resolutionStrategy = ResolutionStrategy.SOURCE_FIRST
+        def recordFx = fn('Age*Mark') { it.'Age' * it.'Mark' }.withSourceFirst()
         def newCSV = FuzzyCSV.rearrangeColumns(['Name', recordFx], csv)
 
         def expected = [
@@ -293,6 +289,8 @@ class FuzzyCSVTest {
                 ['Sara', 0],
                 ['Betty', 0]
         ]
+
+
 
         assert expected == newCSV
     }
