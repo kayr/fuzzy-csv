@@ -125,9 +125,9 @@ public class FuzzyCSV {
     }
 
     private static List<List> superJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns, boolean doLeftJoin, boolean doRightJoin) {
-        def csv1ColPositions = joinColumns.collect { getColumnPosition(csv1, it) }
+        def csv1JoinColPositions = joinColumns.collect { getColumnPosition(csv1, it) }
 
-        def csv2ColPositions = joinColumns.collect { getColumnPosition(csv2, it) }
+        def csv2JoinColPositions = joinColumns.collect { getColumnPosition(csv2, it) }
 
         //container to keep track the matchedCSV2 records
         def matchedCSV2Records = []
@@ -135,8 +135,8 @@ public class FuzzyCSV {
         csv1.each { record1 ->
             def record1Matched = false
             csv2.eachWithIndex { record2, int index ->
-                def record1JoinColumns = record1[csv1ColPositions]
-                def record2JoinColumns = record2[csv2ColPositions]
+                def record1JoinColumns = record1[csv1JoinColPositions]
+                def record2JoinColumns = record2[csv2JoinColPositions]
 
                 if (record1JoinColumns == record2JoinColumns) {
 
@@ -169,12 +169,12 @@ public class FuzzyCSV {
 
             def newCombinedRecord = addRecord(combinedList)
             //first add the columns shared btn csv1 and csv2
-            csv1ColPositions.eachWithIndex { int colPosition, int idx ->
-                newCombinedRecord[colPosition] = csv2Record[csv2ColPositions[idx]]
+            csv1JoinColPositions.eachWithIndex { int colPosition, int idx ->
+                newCombinedRecord[colPosition] = csv2Record[csv2JoinColPositions[idx]]
             }
 
             csv2Record.eachWithIndex { csv2Cell, int csv2CellColumnIdx ->
-                if (csv2ColPositions.contains(csv2CellColumnIdx)) {
+                if (csv2JoinColPositions.contains(csv2CellColumnIdx)) {
                     return
                 }
                 int relativeIndex = csv1ColumnCount + csv2CellColumnIdx - joinColumns.length

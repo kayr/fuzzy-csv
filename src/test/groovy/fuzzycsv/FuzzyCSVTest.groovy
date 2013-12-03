@@ -4,7 +4,6 @@ import org.junit.Before
 import org.junit.Test
 
 import static fuzzycsv.RecordFx.fn
-import static fuzzycsv.RecordFx.getFx
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
 
