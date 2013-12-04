@@ -8,6 +8,7 @@ package fuzzycsv
  * To change this template use File | Settings | File Templates.
  */
 class RecordFx {
+
     String name
     Closure c
     ResolutionStrategy resolutionStrategy
@@ -36,6 +37,10 @@ class RecordFx {
 
     static RecordFx fn(String name, Closure function) {
         return new RecordFx(name, function)
+    }
+
+    static RecordFx fn(Closure function) {
+        return new RecordFx(RecordFx.class.getSimpleName(), function)
     }
 
     RecordFx withSourceFirst() {

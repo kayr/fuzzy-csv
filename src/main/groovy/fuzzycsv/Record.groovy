@@ -17,8 +17,24 @@ class Record {
     ResolutionStrategy resolutionStrategy = ResolutionStrategy.DERIVED_FIRST
 
     Record(List<String> headers, List record) {
-        this.derivedRecord = record
-        this.derivedHeaders = headers
+        setDerivedRecord(record)
+        setDerivedHeaders(headers)
+    }
+
+    void setDerivedHeaders(List<String> derivedHeaders) {
+        this.derivedHeaders = derivedHeaders ?: []
+    }
+
+    void setDerivedRecord(List derivedRecord) {
+        this.derivedRecord = derivedRecord ?: []
+    }
+
+    void setSourceHeaders(List<String> sourceHeaders) {
+        this.sourceHeaders = sourceHeaders ?: []
+    }
+
+    void setSourceRecord(List sourceRecord) {
+        this.sourceRecord = sourceRecord ?: []
     }
 
     def propertyMissing(String name) {
@@ -26,28 +42,35 @@ class Record {
         def origName = name
         def myHeader = derivedHeaders
         def myRecord = derivedRecord
+        def ourResolveStrategy = resolutionStrategy
 
-        if (resolutionStrategy == ResolutionStrategy.SOURCE_FIRST) {
+
+        if (name?.startsWith('@')) {
+            name = name.replace('@', '')
+            ourResolveStrategy = ResolutionStrategy.SOURCE_FIRST
+        }
+
+        //source first resolution
+        if (ourResolveStrategy == ResolutionStrategy.SOURCE_FIRST) {
             myHeader = sourceHeaders
             myRecord = sourceRecord
         }
 
-        if (name?.startsWith('@') && resolutionStrategy == ResolutionStrategy.DERIVED_FIRST) {
-            myHeader = sourceHeaders
-            myRecord = sourceRecord
-            name = name.replace('@', '')
+        //check with first strategy
+        def propertyIndex = myHeader?.indexOf(name)
+        //swap if we did not get any value
+        if (propertyIndex == -1 || propertyIndex == null) {
+            myHeader = myHeader.is(derivedHeaders) ? sourceHeaders : derivedHeaders
+            myRecord = myRecord.is(derivedRecord) ? sourceRecord : derivedRecord
+            //check again
+            propertyIndex = myHeader?.indexOf(name)
         }
 
-        if (name?.startsWith('@') && resolutionStrategy == ResolutionStrategy.SOURCE_FIRST) {
-            myHeader = derivedHeaders
-            myRecord = derivedRecord
-            name = name.replace('@', '')
-        }
-
-        def propertyIndex = myHeader.indexOf(name)
-        if (propertyIndex == -1)
+        if (propertyIndex == -1 || propertyIndex == null)
             throw new IllegalArgumentException("[$origName] could not be found in the record")
         return myRecord[propertyIndex]
+
+
     }
 
     def propertyMissing(String name, def arg) {
@@ -74,8 +97,6 @@ class Record {
     static Record getRecord(List header, List record) {
         return new Record(header, record)
     }
-
-
 
 
 }

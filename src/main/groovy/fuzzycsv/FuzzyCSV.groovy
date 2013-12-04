@@ -9,7 +9,7 @@ public class FuzzyCSV {
     public static ThreadLocal<Float> ACCURACY_THRESHOLD = new ThreadLocal<Float>() {
         @Override
         protected Float initialValue() {
-            return 95
+            return 100
         }
     }
 
@@ -109,83 +109,96 @@ public class FuzzyCSV {
 
 
     static List<List> join(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, joinColumns, false, false)
+        return superJoin(csv1, csv2,mergeHeader(csv1, csv2, joinColumns),getRecordFx(joinColumns), false, false)
     }
 
     static List<List> leftJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, joinColumns, true, false)
+        return superJoin(csv1, csv2,mergeHeader(csv1, csv2, joinColumns),getRecordFx(joinColumns), true, false)
     }
 
     static List<List> rightJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, joinColumns, false, true)
+        return superJoin(csv1, csv2,mergeHeader(csv1, csv2, joinColumns),getRecordFx(joinColumns), false, true)
     }
 
     static List<List> fullJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, joinColumns, true, true)
+        return superJoin(csv1, csv2,mergeHeader(csv1, csv2, joinColumns),getRecordFx(joinColumns), true, true)
     }
 
-    private static List<List> superJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns, boolean doLeftJoin, boolean doRightJoin) {
-        def csv1JoinColPositions = joinColumns.collect { getColumnPosition(csv1, it) }
-
-        def csv2JoinColPositions = joinColumns.collect { getColumnPosition(csv2, it) }
+    private static List<List> superJoin(List<? extends List> csv1, List<? extends List> csv2, List selectColumns, RecordFx onFunction, boolean doLeftJoin, boolean doRightJoin) {
 
         //container to keep track the matchedCSV2 records
         def matchedCSV2Records = []
         def combinedList = []
+
+        Record recObj = new Record(csv1[0] as List, null)
+        recObj.sourceHeaders = csv2[0]
+
         csv1.each { record1 ->
             def record1Matched = false
-            csv2.eachWithIndex { record2, int index ->
-                def record1JoinColumns = record1[csv1JoinColPositions]
-                def record2JoinColumns = record2[csv2JoinColPositions]
+            recObj.derivedRecord = record1
 
-                if (record1JoinColumns == record2JoinColumns) {
+            csv2.eachWithIndex { record2, int index ->
+
+                recObj.sourceRecord = record2
+
+                if (onFunction.getValue(recObj)) {
 
                     record1Matched = true
                     if (!matchedCSV2Records.contains(index))
                         matchedCSV2Records.add(index)
 
 //                    println "merging $record1JoinColumns + $record2JoinColumns"
-                    def mergedRecord = ((record1 + (record2 - record2JoinColumns)))
+                    List<Object> mergedRecord = buildCSVRecord(selectColumns, recObj)
 //                    println "= $mergedRecord"
                     combinedList << mergedRecord
                 }
+                recObj.sourceRecord = []
             }
             if (!record1Matched && doLeftJoin) {
-                def newRecord = addRecord(combinedList)
-                record1.eachWithIndex { entry, int i ->
-                    newRecord[i] = entry
-                }
+                def leftJoinRecord = buildCSVRecord(selectColumns, recObj)
+                combinedList << leftJoinRecord
             }
         }
 
         if (!doRightJoin || matchedCSV2Records.size() == csv2.size()) return combinedList
 
-        //todo write a unit test for this
-        def csv1ColumnCount = csv1[0] instanceof List ? csv1[0].size() : csv1[0].length
-
         csv2.eachWithIndex { csv2Record, int i ->
             if (matchedCSV2Records.contains(i))
                 return
 
-            def newCombinedRecord = addRecord(combinedList)
-            //first add the columns shared btn csv1 and csv2
-            csv1JoinColPositions.eachWithIndex { int colPosition, int idx ->
-                newCombinedRecord[colPosition] = csv2Record[csv2JoinColPositions[idx]]
-            }
+            recObj.resolutionStrategy = ResolutionStrategy.SOURCE_FIRST
+            recObj.derivedRecord = []
+            recObj.sourceRecord = csv2Record
 
-            csv2Record.eachWithIndex { csv2Cell, int csv2CellColumnIdx ->
-                if (csv2JoinColPositions.contains(csv2CellColumnIdx)) {
-                    return
-                }
-                int relativeIndex = csv1ColumnCount + csv2CellColumnIdx - joinColumns.length
-                newCombinedRecord[relativeIndex] = csv2Cell
-            }
+            def newCombinedRecord = buildCSVRecord(selectColumns, recObj)
+            combinedList << newCombinedRecord
         }
 
         return combinedList
     }
 
-    static List addRecord(List<? extends List> csv) {
+    private static List<Object> buildCSVRecord(List columns, Record recObj) {
+        def mergedRecord = columns.collect { columnFx ->
+            if (columnFx instanceof RecordFx)
+                return columnFx.getValue(recObj)
+            return recObj."$columnFx"
+        }
+        return mergedRecord
+    }
+
+    private static RecordFx getRecordFx(joinColumns) {
+        RecordFx fn = RecordFx.fn { record ->
+            joinColumns.every { record."$it" == record."@$it" }
+        }
+        return fn
+    }
+
+    private static List mergeHeader(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
+        List derivedHeader = csv1[0] + (csv2[0] - joinColumns)
+        return derivedHeader
+    }
+
+    static List appendEmptyRecord(List<? extends List> csv) {
         def record = csv[0]
         def newRecord = new Object[record instanceof List ? record.size() : record.length]
         def listRecord = newRecord as List
@@ -212,7 +225,7 @@ public class FuzzyCSV {
         headers.eachWithIndex { header, idx ->
 
             if (header instanceof RecordFx) {
-                newCsv = putInColumn(newCsv,header,idx,csv)
+                newCsv = putInColumn(newCsv, header, idx, csv)
                 return
             }
 
