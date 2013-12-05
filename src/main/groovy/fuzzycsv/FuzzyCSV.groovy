@@ -109,19 +109,19 @@ public class FuzzyCSV {
 
 
     static List<List> join(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, mergeHeader(csv1, csv2, joinColumns), getRecordFx(joinColumns), false, false)
+        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), getRecordFx(joinColumns), false, false)
     }
 
     static List<List> leftJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, mergeHeader(csv1, csv2, joinColumns), getRecordFx(joinColumns), true, false)
+        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), getRecordFx(joinColumns), true, false)
     }
 
     static List<List> rightJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, mergeHeader(csv1, csv2, joinColumns), getRecordFx(joinColumns), false, true)
+        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), getRecordFx(joinColumns), false, true)
     }
 
     static List<List> fullJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, mergeHeader(csv1, csv2, joinColumns), getRecordFx(joinColumns), true, true)
+        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), getRecordFx(joinColumns), true, true)
     }
 
     static List<List> join(List<? extends List> csv1, List<? extends List> csv2, RecordFx onExpression, String[] selectColumns) {
@@ -207,7 +207,7 @@ public class FuzzyCSV {
         return fn
     }
 
-    private static List mergeHeader(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
+    public static List selectAllHeaders(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
         List derivedHeader = csv1[0] + (csv2[0] - joinColumns)
         return derivedHeader
     }
