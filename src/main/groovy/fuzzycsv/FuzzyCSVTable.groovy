@@ -59,6 +59,38 @@ class FuzzyCSVTable {
         return new FuzzyCSVTable(csv)
     }
 
+    FuzzyCSVTable join(FuzzyCSVTable tbl, String[] joinColumns) {
+        return join(tbl.csv, joinColumns)
+    }
+
+    FuzzyCSVTable join(List<? extends List> csv2, String[] joinColumns) {
+        return tbl(FuzzyCSV.join(csv, csv2, joinColumns))
+    }
+
+    FuzzyCSVTable leftJoin(FuzzyCSVTable tbl, String[] joinColumns) {
+        return leftJoin(tbl.csv, joinColumns)
+    }
+
+    FuzzyCSVTable leftJoin(List<? extends List> csv2, String[] joinColumns) {
+        return tbl(FuzzyCSV.leftJoin(csv, csv2, joinColumns))
+    }
+
+    FuzzyCSVTable rightJoin(FuzzyCSVTable tbl, String[] joinColumns) {
+        return rightJoin(tbl.csv, joinColumns)
+    }
+
+    FuzzyCSVTable rightJoin(List<? extends List> csv2, String[] joinColumns) {
+        return tbl(FuzzyCSV.rightJoin(csv, csv2, joinColumns))
+    }
+
+    FuzzyCSVTable fullJoin(FuzzyCSVTable tbl, String[] joinColumns) {
+        return fullJoin(tbl.csv, joinColumns)
+    }
+
+    FuzzyCSVTable fullJoin(List<? extends List> csv2, String[] joinColumns) {
+        return tbl(FuzzyCSV.fullJoin(csv, csv2, joinColumns))
+    }
+
     String toString() {
         if (csv == null)
             return 'null'
