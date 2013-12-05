@@ -74,18 +74,7 @@ class Record {
     }
 
     def propertyMissing(String name, def arg) {
-        def myHeader = derivedHeaders
-        def myRecord = derivedRecord
-
-        if (name?.startsWith('@')) {
-            myHeader = sourceHeaders
-            myRecord = sourceRecord
-            name = name.replace('@', '')
-        }
-        def propertyIndex = myHeader.indexOf(name)
-        if (propertyIndex == -1)
-            throw new IllegalArgumentException("Header not found [$name]")
-        myRecord[propertyIndex] = arg
+        throw new UnsupportedOperationException("setting a property in a record is not supported")
     }
 
     static Record getRecord(List<List> csv, int i) {

@@ -29,5 +29,9 @@ class RecordTest extends GroovyTestCase {
         assert record.sex == 'male'
         assert record.'@sex' == 'male'
 
+        shouldFail (IllegalArgumentException){
+            record.blah
+        }
+
     }
 }
