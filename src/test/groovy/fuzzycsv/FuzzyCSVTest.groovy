@@ -123,6 +123,8 @@ class FuzzyCSVTest {
         ]
         assertEquals join.toString(), expected.toString()
 
+        join = FuzzyCSV.join(csv1,csv2,fn {it.Name == it.'@Name'},'Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
+        assertEquals join.toString(), expected.toString()
     }
 
     @Test
@@ -142,6 +144,8 @@ class FuzzyCSVTest {
         ]
         assertEquals join.toString(), expected.toString()
 
+        join = FuzzyCSV.leftJoin(csv_1,csv_2,fn {it.Name == it.'@Name'},'Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
+        assertEquals join.toString(), expected.toString()
     }
 
     @Test
@@ -159,6 +163,9 @@ class FuzzyCSVTest {
                 ['Ronald', 'Male', 3, 'Bweyos', 'English', 50],
                 ['Betty', null, null, null, 'Biology', 80]
         ]
+        assertEquals join.toString(), expected.toString()
+
+        join = FuzzyCSV.rightJoin(csv_1,csv_2,fn {it.Name == it.'@Name'},'Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
         assertEquals join.toString(), expected.toString()
 
     }
@@ -181,6 +188,9 @@ class FuzzyCSVTest {
         ]
         assertEquals join.toString(), expected.toString()
 
+        join = FuzzyCSV.fullJoin(csv_1,csv_2,fn {it.Name == it.'@Name'},'Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
+        assertEquals join.toString(), expected.toString()
+
     }
 
     @Test
@@ -197,6 +207,9 @@ class FuzzyCSVTest {
                 ['Sara', 'Female', 4, 'Muyenga', 4, 'Cat'],
                 ['Ronald', 'Femal', null, null, 3, 'Monkey']
         ]
+        assertEquals join.toString(), expected.toString()
+
+        join = FuzzyCSV.fullJoin(csv_1,csv_2,fn {it.Name == it.'@Name' && it.Sex == it.'@Sex'},'Name', 'Sex', 'Age', 'Location', 'Age2', 'Hobby')
         assertEquals join.toString(), expected.toString()
 
     }
