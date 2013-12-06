@@ -41,6 +41,8 @@ class FuzzyCSVTest {
                 ['sara', '', 'female'] as String[]
         ]
         assertTrue newCSV.equals(expected)
+        assertTrue tbl(csv1).select(['name', 'blah', 'sex'] as String[]).csv.equals(expected)
+        assertTrue tbl(csv1).select(['name', 'blah', 'sex']).csv.equals(expected)
     }
 
     @Test

@@ -2,6 +2,8 @@ package fuzzycsv
 
 import org.junit.Test
 
+import static fuzzycsv.FuzzyCSVTable.tbl
+
 /**
  * Created with IntelliJ IDEA.
  * User: kay
@@ -22,7 +24,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testAggregate() {
-        def data = FuzzyCSVTable.get(Data.csv).aggregate(['sub_county'], new Sum(columns: ['ps_total_score', 'pipes_total_score', 'tap_total_score'], columnName: 'sum'))
+        def data = tbl(Data.csv).aggregate(['sub_county'], new Sum(columns: ['ps_total_score', 'pipes_total_score', 'tap_total_score'], columnName: 'sum'))
         def expected = [
                 ['sub_county', 'sum'],
                 ['Hakibale', 31.1]
@@ -32,7 +34,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testAggregate2Columns() {
-        def data = FuzzyCSVTable.get(Data.csv).aggregate(['sub_county'], new Sum(columns: ['ps_total_score', 'pipes_total_score'], columnName: 'sum'),
+        def data = tbl(Data.csv).aggregate(['sub_county'], new Sum(columns: ['ps_total_score', 'pipes_total_score'], columnName: 'sum'),
                 new Sum(columns: ['tap_total_score'], columnName: 'sum_taps'))
         def expected = [
                 ['sub_county', 'sum', 'sum_taps'],
@@ -43,7 +45,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testAggregateAggregator() {
-        def data = FuzzyCSVTable.get(Data.csv).aggregate(['sub_county'],
+        def data = tbl(Data.csv).aggregate(['sub_county'],
                 CompositeAggregator.get('avg',
                         [
                                 new Sum(['ps_total_score', 'pipes_total_score'], 'sum'),
@@ -60,7 +62,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testCount() {
-        def data = FuzzyCSVTable.get(Data.csv).aggregate(
+        def data = tbl(Data.csv).aggregate(
                 ['sub_county'],
                 new Sum(columns: ['ps_total_score', 'pipes_total_score'], columnName: 'sum'),
                 CompositeAggregator.get('perc_taps',

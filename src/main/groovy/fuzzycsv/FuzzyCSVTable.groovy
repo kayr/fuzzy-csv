@@ -55,7 +55,7 @@ class FuzzyCSVTable {
     }
 
 
-    static FuzzyCSVTable tbl(List<List> csv) {
+    static FuzzyCSVTable tbl(List<? extends List> csv) {
         return new FuzzyCSVTable(csv)
     }
 
@@ -89,6 +89,14 @@ class FuzzyCSVTable {
 
     FuzzyCSVTable fullJoin(List<? extends List> csv2, String[] joinColumns) {
         return tbl(FuzzyCSV.fullJoin(csv, csv2, joinColumns))
+    }
+
+    FuzzyCSVTable select(Object[] columns) {
+        return select(columns as List)
+    }
+
+    FuzzyCSVTable select(List<?> columns) {
+        return tbl(FuzzyCSV.select(columns, csv))
     }
 
     String toString() {

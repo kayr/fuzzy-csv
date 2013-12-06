@@ -221,6 +221,19 @@ public class FuzzyCSV {
     }
 
     /**
+     * convenience methode
+     * @param headers
+     * @param csv
+     * @return
+     */
+    static List<List> select(List<?> headers, List<? extends List> csv) {
+        rearrangeColumns(headers, csv)
+    }
+
+    static List<List> select(String[] headers, List<? extends List> csv) {
+        rearrangeColumns(headers as List, csv)
+    }
+    /**
      * Re-arranges columns as specified by the headers using direct merge and if it fails
      * it uses heuristics
      * @param headers
