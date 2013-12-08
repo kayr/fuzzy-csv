@@ -205,6 +205,7 @@ class FuzzyCSVTest {
 
         def join = FuzzyCSV.fullJoin(csv_1, csv_2, 'Name')
 
+        println tbl(join)
 
         def expected = [
                 ['Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark'],
@@ -348,5 +349,23 @@ class FuzzyCSVTest {
 
 
         assert expected == newCSV
+    }
+
+    @Test
+    public void testFullJoinWithDifferentInstanceHeaders() {
+        def one = [
+                ['sub', 'perc', '43']
+        ]
+        def two = [
+                ['sub', 'perc2', 'ppp'],
+                ['toro', 100]
+        ]
+
+        def expected = [
+                ['sub', 'perc', '43', 'perc2', 'ppp'],
+                ['toro', null, null, 100, null]
+        ]
+
+        assertEquals expected, tbl(one).fullJoin(two, 'sub').csv
     }
 }

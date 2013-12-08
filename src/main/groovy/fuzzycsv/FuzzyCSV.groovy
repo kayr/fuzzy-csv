@@ -208,7 +208,7 @@ public class FuzzyCSV {
     }
 
     public static List selectAllHeaders(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        List derivedHeader = csv1[0] + (csv2[0] - joinColumns)
+        List derivedHeader = csv1[0] + (csv2[0].minus(joinColumns as List))
         return derivedHeader
     }
 
