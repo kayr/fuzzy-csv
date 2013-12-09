@@ -3,6 +3,7 @@ package fuzzycsv
 import org.junit.Test
 
 import static fuzzycsv.FuzzyCSVTable.tbl
+import static fuzzycsv.RecordFx.fn
 
 /**
  * Created with IntelliJ IDEA.
@@ -77,6 +78,16 @@ class FuzzyCSVTableTest {
                 ['Hakibale', 20.1, 61.4147910000]
         ]
         assert data.csv == expected
+    }
+
+    @Test
+    void testGrouping() {
+         Map<Object, FuzzyCSVTable> allData = tbl(Data.groupingData).groupBy(fn { it.sub_county })
+        assert allData.Hakibale.csv.size() == 4
+        assert allData.Kabonero.csv.size() == 4
+        assert allData.Kisomoro.csv.size() == 4
+        assert allData.Bunyangabu.csv.size() == 3
+        assert allData.Noon.csv.size() == 2
     }
 
 }

@@ -49,6 +49,36 @@ class FuzzyCSVTable {
         return tbl(newTable)
     }
 
+    Map<Object, FuzzyCSVTable> groupBy(RecordFx groupBy) {
+
+        def csvHeader = csv[0]
+        Map<Object, List<List>> groups = [:]
+        csv.eachWithIndex { List entry, int i ->
+            if (i == 0) return
+            Record record = Record.getRecord(csvHeader, entry)
+            def value = groupBy.getValue(record);
+            groupAnswer(groups, entry, value)
+        }
+
+        Map<Object, FuzzyCSVTable> entries = groups.collectEntries { key, value ->
+            def fullCsv = [csvHeader]
+            fullCsv.addAll(value)
+            return [key, tbl(fullCsv)]
+        } as Map<Object, FuzzyCSVTable>
+
+        return entries
+    }
+
+    static void groupAnswer(Map answer, def element, def value) {
+        if (answer.containsKey(value)) {
+            answer.get(value).add(element)
+        } else {
+            List groupedElements = new ArrayList()
+            groupedElements.add(element)
+            answer.put(value, groupedElements)
+        }
+    }
+
     @Deprecated
     static FuzzyCSVTable get(List<List> csv) {
         return tbl(csv)
@@ -103,12 +133,12 @@ class FuzzyCSVTable {
         tbl(FuzzyCSV.transposeToCSV(csv, header, columnForCell, primaryKeys))
     }
 
-    FuzzyCSVTable mergeByColumn(List<? extends List> otherCsv){
-          return tbl(FuzzyCSV.mergeByColumn(this.csv,otherCsv))
+    FuzzyCSVTable mergeByColumn(List<? extends List> otherCsv) {
+        return tbl(FuzzyCSV.mergeByColumn(this.csv, otherCsv))
     }
 
-    FuzzyCSVTable mergeByColumn(FuzzyCSVTable tbl){
-         return mergeByColumn(tbl.csv)
+    FuzzyCSVTable mergeByColumn(FuzzyCSVTable tbl) {
+        return mergeByColumn(tbl.csv)
     }
 
     String toString() {
