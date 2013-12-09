@@ -18,8 +18,9 @@ class CountTest {
         assert count.value == 5
 
 
+
         count = new Count(['ps_total_score', 'pipes_total_score'], Data.csv)
-        assert count.value == 4
+        assert count.value == 5
 
         count = new Count(null,Data.csv)
         assert count.value == 5

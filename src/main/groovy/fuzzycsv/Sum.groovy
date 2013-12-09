@@ -11,7 +11,7 @@ class Sum extends AbstractAggregator<Number> {
 
     List<String> columns
 
-    Sum(){}
+    Sum() {}
 
     Sum(List<String> columns, String columnName) {
         this.columnName = columnName
@@ -26,5 +26,13 @@ class Sum extends AbstractAggregator<Number> {
             return FuzzyCSVUtils.toNumbers(row).sum()
         }
         return value
+    }
+
+    static sum(String columnName, String[] aggregateColumns) {
+        return new Sum(aggregateColumns as List, columnName)
+    }
+
+    static sum(String[] aggregateColumns) {
+        sum("sum(${aggregateColumns.join(',')})", aggregateColumns)
     }
 }

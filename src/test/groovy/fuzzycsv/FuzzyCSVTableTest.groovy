@@ -4,6 +4,7 @@ import org.junit.Test
 
 import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.RecordFx.fn
+import static fuzzycsv.Sum.sum
 
 /**
  * Created with IntelliJ IDEA.
@@ -82,12 +83,32 @@ class FuzzyCSVTableTest {
 
     @Test
     void testGrouping() {
-         Map<Object, FuzzyCSVTable> allData = tbl(Data.groupingData).groupBy(fn { it.sub_county })
+        Map<Object, FuzzyCSVTable> allData = tbl(Data.groupingData).groupBy(fn { it.sub_county })
+        assert allData.size() == 5
         assert allData.Hakibale.csv.size() == 4
         assert allData.Kabonero.csv.size() == 4
         assert allData.Kisomoro.csv.size() == 4
         assert allData.Bunyangabu.csv.size() == 3
         assert allData.Noon.csv.size() == 2
+    }
+
+    @Test
+    void testAggregateGrouping() {
+        def results = tbl(Data.groupingData)
+                .aggregate(['sub_county'], fn { it.sub_county }, sum('sum', 'ps_total_score'), sum('tap_sum', 'tap_total_score'))
+
+        def expected = [
+                ['sub_county', 'sum', 'tap_sum'],
+                ['Hakibale', 39.1, 0],
+                ['Kabonero', 3, 0],
+                ['Kisomoro', 0, 30],
+                ['Bunyangabu', 0, 2],
+                ['Noon', 0, 0]
+        ]
+
+        assert expected == results.csv
+
+
     }
 
 }

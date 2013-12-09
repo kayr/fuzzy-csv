@@ -49,14 +49,28 @@ class FuzzyCSVTable {
         return tbl(newTable)
     }
 
-    Map<Object, FuzzyCSVTable> groupBy(RecordFx groupBy) {
+    FuzzyCSVTable aggregate(List<String> columns, RecordFx groupFx, Aggregator... aggregators) {
+        Map<Object, FuzzyCSVTable> groups = groupBy(groupFx)
+
+        def aggregatedTables = groups.collect { key, value ->
+            value.aggregate(columns, aggregators)
+        }
+
+        def mainTable = aggregatedTables.remove(0)
+        for (table in aggregatedTables) {
+           mainTable = mainTable.mergeByAppending(table)
+        }
+        return mainTable
+    }
+
+    Map<Object, FuzzyCSVTable> groupBy(RecordFx groupFx) {
 
         def csvHeader = csv[0]
         Map<Object, List<List>> groups = [:]
         csv.eachWithIndex { List entry, int i ->
             if (i == 0) return
             Record record = Record.getRecord(csvHeader, entry)
-            def value = groupBy.getValue(record);
+            def value = groupFx.getValue(record);
             groupAnswer(groups, entry, value)
         }
 
@@ -139,6 +153,14 @@ class FuzzyCSVTable {
 
     FuzzyCSVTable mergeByColumn(FuzzyCSVTable tbl) {
         return mergeByColumn(tbl.csv)
+    }
+
+    FuzzyCSVTable mergeByAppending(List<? extends List> otherCsv) {
+        return tbl(FuzzyCSV.mergeByAppending(this.csv, otherCsv))
+    }
+
+    FuzzyCSVTable mergeByAppending(FuzzyCSVTable tbl) {
+        return mergeByAppending(tbl.csv)
     }
 
     String toString() {
