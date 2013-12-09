@@ -99,6 +99,18 @@ class FuzzyCSVTable {
         return tbl(FuzzyCSV.select(columns, csv))
     }
 
+    FuzzyCSVTable transpose(String header, String columnForCell, String[] primaryKeys) {
+        tbl(FuzzyCSV.transposeToCSV(csv, header, columnForCell, primaryKeys))
+    }
+
+    FuzzyCSVTable mergeByColumn(List<? extends List> otherCsv){
+          return tbl(FuzzyCSV.mergeByColumn(this.csv,otherCsv))
+    }
+
+    FuzzyCSVTable mergeByColumn(FuzzyCSVTable tbl){
+         return mergeByColumn(tbl.csv)
+    }
+
     String toString() {
         if (csv == null)
             return 'null'

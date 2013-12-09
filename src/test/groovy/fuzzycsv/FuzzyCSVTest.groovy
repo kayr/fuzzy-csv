@@ -108,6 +108,9 @@ class FuzzyCSVTest {
                 ["alex", "male", "21"]
         ]
         assertTrue newCSV.equals(expected)
+
+        assert tbl(csv1).mergeByColumn(csv3).csv == expected
+        assert tbl(csv1).mergeByColumn(tbl(csv3)).csv == expected
     }
 
     @Test
@@ -367,5 +370,68 @@ class FuzzyCSVTest {
         ]
 
         assertEquals expected, tbl(one).fullJoin(two, 'sub').csv
+    }
+
+    @Test
+    public void testFullJoinWithDifferentInstanceHeaders2() {
+        def one = [
+                ['sub', 'perc', '43']
+        ]
+        def two = [
+                ['sub', 'perc', 'ppp'],
+                ['toro', 100]
+        ]
+
+        def expected = [
+                ['sub', 'perc', '43', 'perc', 'ppp'],
+                ['toro', 100, null, 100, null]   //todo this should be ['toro', null, null, 100, null]
+        ]
+
+        assertEquals expected, tbl(one).fullJoin(two, 'sub').csv
+    }
+
+    def map = [
+            ['name': 'p2', 'sex': 'male', 'number_passed': 2],
+            ['name': 'p3', 'sex': 'female', 'number_passed': 4],
+            ['name': 'p4', 'sex': 'male', 'number_passed': 1]
+    ]
+
+    @Test
+    void testToCSV() {
+        def actual = FuzzyCSV.toCSV(map, 'name', 'sex')
+        def expected = [
+                ['name', 'sex'],
+                ['p2', 'male'],
+                ['p3', 'female'],
+                ['p4', 'male']
+        ]
+        assert actual == expected
+    }
+
+    @Test
+    void testToCSVNoColumns() {
+        def actual = FuzzyCSV.toCSV(map)
+        def expected = [
+                ['name', 'sex', 'number_passed'],
+                ['p2', 'male', 2],
+                ['p3', 'female', 4],
+                ['p4', 'male', 1]
+        ]
+        assert actual == expected
+    }
+
+    @Test
+    void testTranspose() {
+        List<List> myCsv = FuzzyCSV.toCSV(map)
+        def actual = FuzzyCSV.transposeToCSV(myCsv, 'name', 'number_passed', 'sex')
+        def expectedMap = [
+                ['sex', 'p2', 'p3', 'p4'],
+                ['male', 2, null, 1],
+                ['female', null, 4, null]
+
+        ]
+        assert expectedMap == actual
+
+        assert tbl(myCsv).transpose('name', 'number_passed', 'sex').csv == expectedMap
     }
 }

@@ -46,7 +46,7 @@ class Record {
 
 
         if (name?.startsWith('@')) {
-            name = name.replace('@', '')
+            name = name.replaceFirst('@', '')
             ourResolveStrategy = ResolutionStrategy.SOURCE_FIRST
         }
 

@@ -207,7 +207,7 @@ public class FuzzyCSV {
         return fn
     }
 
-    public static List selectAllHeaders(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
+    static List selectAllHeaders(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
         List derivedHeader = csv1[0] + (csv2[0].minus(joinColumns as List))
         return derivedHeader
     }
@@ -350,5 +350,98 @@ public class FuzzyCSV {
         return merged
     }
 
+    /**
+     * if u have a table like this
+     * class,sex,number
+     * p1,m,3
+     * p2,f,4
+     * p5,m,6
+     *
+     * if( sex is unique)
+     *
+     * then #transpose(map,class,number,[sex])  will return
+     * sex, p1, p2, p5
+     * m,   3   ,   ,
+     * f,   ,   2   ,
+     * m    ,   ,   ,5
+     *
+     * @param list lise is usually from GroovySql.rows()
+     * @param columnToBeHeader the column u want to transform to Header
+     * @param columnNeeded the column whose values are needed in the table
+     * @param primaryKeys columns that uniquely identify a row
+     * @return Map contain [header -> [header list],
+     *                      data -> [map list]]
+     */
+    static Map transpose(List<? extends List> csv, String columnToBeHeader, String columnNeeded, String[] primaryKeys) {
 
+        Map<List, Map> mapTransposed = [:]
+
+        def origCsvHeader = csv[0]
+        def headers = primaryKeys.toList()
+
+        def operatingOnFirstRecord = true
+        for (record in csv) {
+            if (operatingOnFirstRecord) {
+                operatingOnFirstRecord = false
+                continue
+            }
+
+            def rowMap = Record.getRecord(origCsvHeader, record)
+            def key = primaryKeys.collect { rowMap."$it" }
+
+            //check if this row was already visited
+            if (!mapTransposed.containsKey(key))
+                mapTransposed[key] = [:]
+
+            //get the already mapped row
+            def newRow = mapTransposed[key]
+
+            //add the primary keys first
+            for (prKey in primaryKeys) {
+                newRow[prKey] = rowMap."$prKey"
+            }
+
+            //feed in the data
+            def headerColumn = rowMap."$columnToBeHeader"
+            newRow[headerColumn] = rowMap."$columnNeeded"
+
+            //collect the header
+            if (!headers.contains(headerColumn))
+                headers.add(headerColumn)
+        }
+        return [headers: headers, data: mapTransposed.values()]
+    }
+
+    static List<List> transposeToCSV(List<? extends List> list, String columnToBeHeader, String columnNeeded, String[] primaryKeys) {
+        Map map = transpose(list, columnToBeHeader, columnNeeded, primaryKeys)
+
+        List<String> headers = map.headers
+        Collection<Map> rows = map.data
+
+        List<List<String>> csv = [map.headers]
+        rows.each { Map values ->
+            def csvRow = []
+            headers.each { header ->
+                csvRow << values[header]
+            }
+            println "adding $csvRow"
+            csv.add(csvRow)
+        }
+        return csv
+    }
+
+    static List<List> toCSV(List<? extends Map> list, String[] cols) {
+        if (!cols && list)
+            cols = list[0].keySet() as String[]
+
+        List<List<String>> flattened = [cols.toList()]
+        for (mapRow in list) {
+            def row = []
+            for (columns in cols) {
+                row << mapRow[columns]
+            }
+            flattened << row
+        }
+        return flattened
+    }
 }
