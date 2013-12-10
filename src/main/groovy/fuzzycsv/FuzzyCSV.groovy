@@ -34,10 +34,10 @@ public class FuzzyCSV {
         def newName = ph.bestInternalHit(name, ACCURACY_THRESHOLD.get())
 
         if (newName == null) {
-            println "warning: no column match found:  [$name] = [$newName]"
+            println "getColumnPositionUsingHeuristic(): warning: no column match found:  [$name] = [$newName]"
             return -1
         }
-        println "${ph.compare(newName, name)} heuristic: [$name] = [$newName]"
+        println "getColumnPositionUsingHeuristic(): ${ph.compare(newName, name)} heuristic: [$name] = [$newName]"
         return getColumnPosition(csvList, newName)
     }
 
@@ -312,16 +312,16 @@ public class FuzzyCSV {
             def bestScore = phraseHelper.bestInternalScore(header)
             def bestWord = phraseHelper.bestInternalHit(header, 0)
             if (hit != null) {
-                println "[matchfound] :$bestScore% compare('$header', '$hit')"
+                println "mergeHeaders(): [matchfound] :$bestScore% compare('$header', '$hit')"
             } else {
                 newHeaders.add(header)
-                println "[no-match] :$bestScore% compare('$header',BestMatch['$bestWord'])"
+                println "mergeHeaders(): [no-match] :$bestScore% compare('$header',BestMatch['$bestWord'])"
 
             }
         }
 
         println "=======\n" +
-                "HEADER1 \t= $h1 \n HEADER2 \t= $h2 \nNEW_HEADER \t= $newHeaders\n" +
+                "mergeHeaders(): HEADER1 \t= $h1 \n HEADER2 \t= $h2 \nNEW_HEADER \t= $newHeaders\n" +
                 "======="
         return newHeaders
     }
@@ -424,7 +424,6 @@ public class FuzzyCSV {
             headers.each { header ->
                 csvRow << values[header]
             }
-            println "adding $csvRow"
             csv.add(csvRow)
         }
         return csv
