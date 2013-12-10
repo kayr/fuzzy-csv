@@ -434,4 +434,26 @@ class FuzzyCSVTest {
 
         assert tbl(myCsv).transpose('name', 'number_passed', 'sex').csv == expectedMap
     }
+
+    @Test
+    void testTranspose2() {
+        def orig = [
+                ['dis', 'qlt', 'qty', 'acss', 'rel'],
+                ['kava', 'male', 2, 4, 4],
+                ['lira', 'female', 44, 55, 66],
+                ['lira', 'male', 44, 55, 66]
+        ]
+
+        def expected = [
+                ['dis', 'kava', 'lira', 'lira'],
+                ['qlt', 'male', 'female', 'male'],
+                ['qty', 2, 44, 44],
+                ['acss', 4, 55, 55],
+                ['rel', 4, 66, 66]
+        ]
+
+        assert tbl(orig).transpose().csv == expected
+
+
+    }
 }

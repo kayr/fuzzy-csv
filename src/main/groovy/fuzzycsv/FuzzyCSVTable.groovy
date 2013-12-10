@@ -13,7 +13,7 @@ class FuzzyCSVTable {
 
     FuzzyCSVTable() {}
 
-    FuzzyCSVTable(List<List> csv) {
+    FuzzyCSVTable(List<? extends List> csv) {
         this.csv = csv
     }
 
@@ -145,6 +145,10 @@ class FuzzyCSVTable {
 
     FuzzyCSVTable transpose(String header, String columnForCell, String[] primaryKeys) {
         tbl(FuzzyCSV.transposeToCSV(csv, header, columnForCell, primaryKeys))
+    }
+
+    FuzzyCSVTable transpose() {
+        tbl(csv.transpose())
     }
 
     FuzzyCSVTable mergeByColumn(List<? extends List> otherCsv) {
