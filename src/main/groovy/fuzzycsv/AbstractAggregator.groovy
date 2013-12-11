@@ -27,7 +27,7 @@ abstract class AbstractAggregator<T> implements Aggregator<T> {
         if (columns == null || columns.isEmpty()) {
             requiredData = data
         } else {
-            requiredData = FuzzyCSV.rearrangeColumns(columns, data)
+            requiredData = FuzzyCSV.select(columns, data)
         }
         def newData = requiredData[1..-1]
         return newData
