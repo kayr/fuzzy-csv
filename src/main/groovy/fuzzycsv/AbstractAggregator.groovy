@@ -12,7 +12,7 @@ abstract class AbstractAggregator<T> implements Aggregator<T> {
     List<List> data
     String columnName
 
-    List<List> getData(List<String> columns) {
+    List<List> getData(List<?> columns) {
         def headers = data.get(0)
 
         def containsSome = false
