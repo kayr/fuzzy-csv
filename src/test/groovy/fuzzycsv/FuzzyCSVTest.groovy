@@ -384,7 +384,7 @@ class FuzzyCSVTest {
 
         def expected = [
                 ['sub', 'perc', '43', 'perc', 'ppp'],
-                ['toro', 100, null, 100, null]   //todo this should be ['toro', null, null, 100, null]
+                ['toro', 100, null, 100, null]   //todo *this should be ['toro', null, null, 100, null]
         ]
 
         assertEquals expected, tbl(one).fullJoin(two, 'sub').csv
