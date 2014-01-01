@@ -1,6 +1,7 @@
 package fuzzycsv
 
 import org.junit.Test
+import static fuzzycsv.Sum.sum
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,8 +14,17 @@ class SumTest {
 
     @Test
     void testGetValue() {
-        def sum = new Sum(columns: ['ps_total_score', 'pipes_total_score', 'tap_total_score'], columnName: 'sum', data: Data.csv)
-        assert sum.value == 31.1
-        assert sum.columnName == 'sum'
+        def sumFx = new Sum(columns: ['ps_total_score', 'pipes_total_score', 'tap_total_score'], columnName: 'sum', data: Data.csv)
+        assert sumFx.value == 31.1
+        assert sumFx.columnName == 'sum'
+
+        println FuzzyCSVTable.tbl(Data.csv)
+
+        sumFx = sum('sum','ps_total_score', 'pipes_total_score', 'tap_total_score')
+        sumFx.data = Data.csv
+
+        println FuzzyCSVTable.tbl(Data.csv)
+        assert sumFx.value == 31.1
+        assert sumFx.columnName == 'sum'
     }
 }

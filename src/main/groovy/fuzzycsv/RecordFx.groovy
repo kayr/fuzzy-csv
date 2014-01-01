@@ -13,7 +13,7 @@ class RecordFx {
     Closure c
     ResolutionStrategy resolutionStrategy
 
-    private RecordFx() {}
+    protected RecordFx() {}
 
     RecordFx(String name, Closure c) {
         this.name = name

@@ -30,7 +30,7 @@ class Count extends AbstractAggregator {
         return new Count(columnName: "count()")
     }
 
-    static Count count(String name) {
+    static Count plnCount(String name) {
         return new Count(columnName: name)
     }
 
@@ -42,7 +42,7 @@ class Count extends AbstractAggregator {
         return new Count(unique: true, columnName: "count()")
     }
 
-    static Count countUnique(String name) {
+    static Count plnCountUnique(String name) {
         return new Count(unique: true, columnName: name)
     }
 

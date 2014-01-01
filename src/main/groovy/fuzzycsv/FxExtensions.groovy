@@ -12,131 +12,129 @@ import static fuzzycsv.FuzzyCSVUtils.coerceToNumber
 class FxExtensions {
 
     //String
-    static Number plus(String first, Object second) {
+    static def plus(String first, Object second) {
         plusImpl(first, second)
     }
 
-    static Number minus(String first, Object second) {
+    static def minus(String first, Object second) {
         minusImpl(first, second)
     }
 
-    static Number div(String first, Object second) {
+    static def div(String first, Object second) {
         divImpl(first, second)
     }
 
-    static Number multiply(String first, Object second) {
+    static def multiply(String first, Object second) {
         multiplyImpl(first, second)
     }
 
-    static Number multiply(String first, Number second) {
+    static def multiply(String first, Number second) {
         multiplyImpl(first, second)
     }
 
     //integer
-    static Number plus(Integer first, String second) {
+    static def plus(Integer first, String second) {
         plusImpl(first, second)
     }
 
-    static Number minus(Integer first, String second) {
+    static def minus(Integer first, String second) {
         minusImpl(first, second)
 
     }
 
-    static Number div(Integer first, String second) {
+    static def div(Integer first, String second) {
         divImpl(first, second)
     }
 
-    static Number multiply(Integer first, String second) {
+    static def multiply(Integer first, String second) {
         multiplyImpl(first, second)
     }
 
-
-
     //BigInteger
-    static Number plus(BigInteger first, String second) {
+    static def plus(BigInteger first, String second) {
         plusImpl(first, second)
     }
 
-    static Number minus(BigInteger first, String second) {
+    static def minus(BigInteger first, String second) {
         minusImpl(first, second)
     }
 
-    static Number div(BigInteger first, String second) {
+    static def div(BigInteger first, String second) {
         divImpl(first, second)
     }
 
-    static Number multiply(BigInteger first, String second) {
+    static def multiply(BigInteger first, String second) {
         multiplyImpl(first, second)
     }
 
     //java.lang.Double
-    static Number plus(Double first, String second) {
+    static def plus(Double first, String second) {
         plusImpl(first, second)
     }
 
-    static Number minus(Double first, String second) {
+    static def minus(Double first, String second) {
         minusImpl(first, second)
     }
 
-    static Number div(Double first, String second) {
+    static def div(Double first, String second) {
         divImpl(first, second)
     }
 
-    static Number multiply(Double first, String second) {
+    static def multiply(Double first, String second) {
         multiplyImpl(first, second)
     }
 
     //java.lang.Float
-    static Number plus(Float first, String second) {
+    static def plus(Float first, String second) {
         plusImpl(first, second)
     }
 
-    static Number minus(Float first, String second) {
+    static def minus(Float first, String second) {
         minusImpl(first, second)
     }
 
-    static Number div(Float first, String second) {
+    static def div(Float first, String second) {
         divImpl(first, second)
     }
 
-    static Number multiply(Float first, String second) {
+    static def multiply(Float first, String second) {
         multiplyImpl(first, second)
     }
 
     //java.math.BigDecimal
-    static Number plus(BigDecimal first, String second) {
+    static def plus(BigDecimal first, String second) {
         plusImpl(first, second)
     }
 
-    static Number minus(BigDecimal first, String second) {
+    static def minus(BigDecimal first, String second) {
         minusImpl(first, second)
     }
 
-    static Number div(BigDecimal first, String second) {
+    static def div(BigDecimal first, String second) {
         divImpl(first, second)
     }
 
-    static Number multiply(BigDecimal first, String second) {
+    static def multiply(BigDecimal first, String second) {
         multiplyImpl(first, second)
     }
 
     //implementations
-    private static Number plusImpl(Object first, Object second) {
+    private static def plusImpl(Object first, Object second) {
         return coerceToNumber(first) + coerceToNumber(second)
     }
 
-    private static Number minusImpl(Object first, Object second) {
+    private static def minusImpl(Object first, Object second) {
         return coerceToNumber(first) - coerceToNumber(second)
-
     }
 
-    private static Number divImpl(Object first, Object second) {
+    private static def divImpl(Object first, Object second) {
         return coerceToNumber(first) / coerceToNumber(second)
     }
 
-    private static Number multiplyImpl(Object first, Object second) {
+    private static def multiplyImpl(Object first, Object second) {
         return coerceToNumber(first) * coerceToNumber(second)
     }
+
 
 
 }

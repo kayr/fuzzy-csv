@@ -28,11 +28,11 @@ class Sum extends AbstractAggregator<Number> {
         return value
     }
 
-    static sum(String columnName, String[] aggregateColumns) {
+    static Sum sum(String columnName, String[] aggregateColumns) {
         return new Sum(aggregateColumns as List, columnName)
     }
 
-    static sum(String[] aggregateColumns) {
+    static Sum plnSum(String[] aggregateColumns) {
         sum("sum(${aggregateColumns.join(',')})", aggregateColumns)
     }
 }
