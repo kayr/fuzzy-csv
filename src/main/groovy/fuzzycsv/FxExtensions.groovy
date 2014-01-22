@@ -1,5 +1,7 @@
 package fuzzycsv
 
+import org.codehaus.groovy.runtime.NullObject
+
 import static fuzzycsv.FuzzyCSVUtils.coerceToNumber
 
 /**
@@ -67,6 +69,23 @@ class FxExtensions {
         multiplyImpl(first, second)
     }
 
+    //Number
+    static def plus(Number first, def second) {
+        plusImpl(first, second)
+    }
+
+    static def minus(Number first, def second) {
+        minusImpl(first, second)
+    }
+
+    static def div(Number first, def second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(Number first, def second) {
+        multiplyImpl(first, second)
+    }
+
     //java.lang.Double
     static def plus(Double first, String second) {
         plusImpl(first, second)
@@ -118,6 +137,23 @@ class FxExtensions {
         multiplyImpl(first, second)
     }
 
+    //Null Object
+    static def plus(NullObject first, Object second) {
+        plusImpl(first, second)
+    }
+
+    static def minus(NullObject first, Object second) {
+        minusImpl(first, second)
+    }
+
+    static def div(NullObject first, Object second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(NullObject first, Object second) {
+        multiplyImpl(first, second)
+    }
+
     //implementations
     private static def plusImpl(Object first, Object second) {
         return coerceToNumber(first) + coerceToNumber(second)
@@ -134,7 +170,6 @@ class FxExtensions {
     private static def multiplyImpl(Object first, Object second) {
         return coerceToNumber(first) * coerceToNumber(second)
     }
-
 
 
 }

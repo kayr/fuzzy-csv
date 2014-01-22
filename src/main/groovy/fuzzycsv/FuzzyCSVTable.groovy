@@ -18,7 +18,6 @@ class FuzzyCSVTable {
     }
 
 
-
     FuzzyCSVTable aggregate(List<String> columns, Aggregator... aggregators) {
 
         def aggregatorValues = [:]
@@ -58,7 +57,7 @@ class FuzzyCSVTable {
 
         def mainTable = aggregatedTables.remove(0)
         for (table in aggregatedTables) {
-           mainTable = mainTable.mergeByAppending(table)
+            mainTable = mainTable.mergeByAppending(table)
         }
         return mainTable
     }
@@ -165,6 +164,10 @@ class FuzzyCSVTable {
 
     FuzzyCSVTable mergeByAppending(FuzzyCSVTable tbl) {
         return mergeByAppending(tbl.csv)
+    }
+
+    FuzzyCSVTable addColumn(RecordFx fn) {
+        return tbl(FuzzyCSV.putInColumn(csv, fn, csv[0].size()))
     }
 
     String toString() {
