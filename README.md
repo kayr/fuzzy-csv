@@ -1,5 +1,25 @@
 FuzzyCSV is a groovy library to help you merge/append/query/ or manipulate CSV files.
 
+#### Maven
+
+        <dependency>
+            <groupId>fuzzy-csv</groupId>
+            <artifactId>fuzzycsv</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+Repositories
+
+        <repository>
+            <id>kayr.repo.snapshots</id>
+            <url>https://dl.dropbox.com/u/3038882/p/m2/snapshots</url>
+        </repository>
+        <repository>
+            <id>kayr.repo.releases</id>
+            <url>https://dl.dropbox.com/u/3038882/p/m2/releases</url>
+        </repository>
+
+
 ### Features
  * Merging using Fuzzy Matching with the help of the SecondString project(useful when you have misspelled column names in the different CSV files)
  * Inner Join
