@@ -7,7 +7,7 @@ import static fuzzycsv.FuzzyCSVUtils.coerceToNumber
 
 /**
  * Created with IntelliJ IDEA.
- * User: kay
+ * User: kayr
  * Date: 11/20/13
  * Time: 12:22 AM
  * To change this template use File | Settings | File Templates.

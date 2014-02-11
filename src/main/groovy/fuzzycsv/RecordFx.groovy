@@ -2,7 +2,7 @@ package fuzzycsv
 
 /**
  * Created with IntelliJ IDEA.
- * User: kay
+ * User: kayr
  * Date: 10/21/13
  * Time: 12:41 PM
  * To change this template use File | Settings | File Templates.

@@ -4,6 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <contributors>
+        <contributor>
+            <name>Ronald Kayondo</name>
+            <email>noryak1234@gmail.com</email>
+            <organization>OmniTech</organization>
+        </contributor>
+    </contributors>
+
     <groupId>fuzzy-csv</groupId>
     <artifactId>fuzzycsv</artifactId>
     <version>1.0-SNAPSHOT</version>
