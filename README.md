@@ -33,8 +33,8 @@ def csv3 = [
      
 This will output(Notice how it merged *[first name]* and *[ferts nama]*)
      
-     ```[first name, sex, age]
-      [alex, male, ]
-      [alex, male, 21]```
+        [first name, sex, age]
+        [alex, male, ]
+        [alex, male, 21]
 
 
