@@ -20,7 +20,8 @@ Using the following as examples:
 def csv3 = [
         ['ferts nama ', 'age', 'sex'],
         ['alex', '21', 'male']
-]```
+]
+```
 
 ##### Merging with a fuzzy match
 1. Set the accuracy threshold to 75%
