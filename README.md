@@ -91,7 +91,7 @@ Output
         [alex, male, 21, male]
         [sara, male, null, male]
 
-Record functions:
+##### Record functions:
 
 These Help you write expression or functions for a record. E.g A function multiplying price by quantity
 
@@ -116,6 +116,9 @@ Output
 
 More example can be seen here
 https://github.com/kayr/fuzzy-csv/blob/master/src/test/groovy/fuzzycsv/FuzzyCSVTest.groovy
+
+and
+
 https://github.com/kayr/fuzzy-csv/blob/master/src/test/groovy/fuzzycsv/FuzzyCSVTableTest.groovy
 
 
