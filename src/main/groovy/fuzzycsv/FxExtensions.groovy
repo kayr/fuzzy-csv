@@ -1,6 +1,7 @@
 package fuzzycsv
 
 import org.codehaus.groovy.runtime.NullObject
+import org.codehaus.groovy.runtime.dgmimpl.NumberNumberDiv
 
 import static fuzzycsv.FuzzyCSVUtils.coerceToNumber
 
@@ -133,6 +134,16 @@ class FxExtensions {
         divImpl(first, second)
     }
 
+    static def div(BigDecimal first, Number second) {
+        if (second == null || second == 0) return null
+        return NumberNumberDiv.div(first,second)
+    }
+
+    static def div(BigDecimal first, BigDecimal second) {
+        if (second == null || second == 0) return null
+        return NumberNumberDiv.div(first,second)
+    }
+
     static def multiply(BigDecimal first, String second) {
         multiplyImpl(first, second)
     }
@@ -164,7 +175,9 @@ class FxExtensions {
     }
 
     private static def divImpl(Object first, Object second) {
-        return coerceToNumber(first) / coerceToNumber(second)
+        def divisor = coerceToNumber(second)
+        if (divisor == 0) return null
+        return coerceToNumber(first) / divisor
     }
 
     private static def multiplyImpl(Object first, Object second) {

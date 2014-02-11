@@ -92,6 +92,10 @@ class FuzzyCSVTable {
         }
     }
 
+    boolean isEmpty() {
+        return csv?.size() <= 1
+    }
+
     @Deprecated
     static FuzzyCSVTable get(List<List> csv) {
         return tbl(csv)
