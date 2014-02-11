@@ -336,7 +336,7 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testRecordFXWithSourceSouceFirstResoulution() {
+    public void testRecordFXWithSourceFirstResolution() {
         def csv = getCSV('/csv1csv2.csv')
 
         def recordFx = fn('Age*Mark') { it.'Age' * it.'Mark' }.withSourceFirst()
