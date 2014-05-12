@@ -476,4 +476,27 @@ class FuzzyCSVTest {
 
 
     }
+
+    @Test
+    void testTransform() {
+        def orig = [
+                ['dis', 'qlt', 'qty', 'acss', 'rel'],
+                ['kava', 'male', 2, 4, 4],
+                ['lira', 'female', 44, 55, 66],
+                ['lira', 'male', 44, 55, 66]
+        ]
+
+        def expected = [
+                ['dis', 'qlt', 'qty', 'acss', 'rel'],
+                ['SC kava', 'male', 2, 4, 4],
+                ['SC lira', 'female', 44, 55, 66],
+                ['SC lira', 'male', 44, 55, 66]
+        ]
+
+
+        def actual = tbl(orig).transform('dis', fn { "SC ${it.dis}" }).csv
+        assert actual == expected
+
+
+    }
 }

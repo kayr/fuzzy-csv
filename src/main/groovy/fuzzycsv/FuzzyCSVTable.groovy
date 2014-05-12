@@ -174,8 +174,17 @@ class FuzzyCSVTable {
         return tbl(FuzzyCSV.putInColumn(csv, fn, csv[0].size()))
     }
 
-    FuzzyCSVTable deleteColumns(String... columnNames) {
+    FuzzyCSVTable deleteColumns(String[] columnNames) {
         return tbl(FuzzyCSV.deleteColumn(csv, columnNames))
+    }
+
+    FuzzyCSVTable transform(String column, RecordFx fx) {
+
+        return tbl(FuzzyCSV.transform(csv, column, fx))
+    }
+
+    List<String> getHeader() {
+        return csv[0]
     }
 
     String toString() {

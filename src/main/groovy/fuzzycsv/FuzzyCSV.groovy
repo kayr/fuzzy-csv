@@ -234,9 +234,29 @@ public class FuzzyCSV {
         rearrangeColumns(headers as List, csv)
     }
 
-    static deleteColumn(List<? extends List> csv, String... columns) {
+    static deleteColumn(List<? extends List> csv, String[] columns) {
         def newHeaders = new ArrayList<>(csv[0])
         newHeaders.removeAll(columns)
+        rearrangeColumns(newHeaders, csv)
+    }
+
+    /**
+     * Transforms a table with a source.With the given transformer.
+     *
+     *  Note: One thing to note is that the fx is converted to sourceFirstResolution
+     *
+     */
+    static transform(List<? extends List> csv, String column, RecordFx fx) {
+        def newHeaders = new ArrayList<>(csv[0])
+        def columnPosition = getColumnPosition(csv, column)
+
+        if (columnPosition < 0)
+            throw new IllegalArgumentException("Column[$column] not found in csv")
+
+        fx.withSourceFirst()
+        fx.name = column
+        newHeaders.set(columnPosition, fx)
+
         rearrangeColumns(newHeaders, csv)
     }
     /**
