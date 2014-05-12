@@ -456,4 +456,24 @@ class FuzzyCSVTest {
 
 
     }
+
+    @Test
+    void testDeleteColumn() {
+        def orig = [
+                ['dis', 'qlt', 'qty', 'acss', 'rel'],
+                ['kava', 'male', 2, 4, 4],
+                ['lira', 'female', 44, 55, 66],
+                ['lira', 'male', 44, 55, 66]
+        ]
+
+        def expected = [
+                ['qty', 'acss', 'rel'],
+                [2, 4, 4],
+                [44, 55, 66],
+                [44, 55, 66]]
+
+        assert tbl(orig).deleteColumns('dis', 'qlt').csv == expected
+
+
+    }
 }

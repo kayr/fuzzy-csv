@@ -233,6 +233,12 @@ public class FuzzyCSV {
     static List<List> select(String[] headers, List<? extends List> csv) {
         rearrangeColumns(headers as List, csv)
     }
+
+    static deleteColumn(List<? extends List> csv, String... columns) {
+        def newHeaders = new ArrayList<>(csv[0])
+        newHeaders.removeAll(columns)
+        rearrangeColumns(newHeaders, csv)
+    }
     /**
      * Re-arranges columns as specified by the headers using direct merge and if it fails
      * it uses heuristics
@@ -286,8 +292,11 @@ public class FuzzyCSV {
      */
     static List<List> mergeByColumn(List<? extends List> csv1, List<? extends List> csv2) {
         def header1 = mergeHeaders(csv1[0], csv2[0])
+        println("======rearranging[cvs1-header]-ignore the logs=======")
         def newCsv1 = rearrangeColumns(header1, csv1)
+        println("======rearranging [cvs2-header]-ignore the logs======")
         def newCsv2 = rearrangeColumns(header1, csv2)
+        println("merging [csv1 + csv2]")
         return mergeByAppending(newCsv1, newCsv2)
 
     }
