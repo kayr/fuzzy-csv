@@ -199,4 +199,8 @@ class FuzzyCSVTable {
         return buffer.toString()
     }
 
+    String columnName(int index) {
+        return csv[0][index]
+    }
+
 }
