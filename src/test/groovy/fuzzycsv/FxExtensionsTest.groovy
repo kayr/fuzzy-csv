@@ -114,4 +114,26 @@ class FxExtensionsTest {
         }
 
     }
+
+    @Test
+    void testNullToZero() {
+        FxExtensions.treatNullAsZero()
+        use(FxExtensions) {
+            assert ('4' * null) == 0
+            assert (null * '2') == 0
+            assert (null * null) == 0
+        }
+
+    }
+
+    @Test
+    void testNullToNull() {
+        FxExtensions.treatNullAsNull()
+        use(FxExtensions) {
+            assert ('4' * null) == null
+            assert (null * '2') == null
+            assert (null * null) == null
+        }
+
+    }
 }

@@ -14,6 +14,21 @@ import static fuzzycsv.FuzzyCSVUtils.coerceToNumber
  */
 class FxExtensions {
 
+    static ThreadLocal<Boolean> convertNullToZero = new ThreadLocal<Boolean>() {
+        @Override
+        protected Boolean initialValue() {
+            return true
+        }
+    }
+
+    static treatNullAsZero() {
+        convertNullToZero.set(true)
+    }
+
+    static treatNullAsNull() {
+        convertNullToZero.set(false)
+    }
+
     //String
     static def plus(String first, Object second) {
         plusImpl(first, second)
@@ -167,21 +182,45 @@ class FxExtensions {
 
     //implementations
     private static def plusImpl(Object first, Object second) {
+        if (forNullReturning(first,second)) {
+            return null;
+        }
         return coerceToNumber(first) + coerceToNumber(second)
     }
 
     private static def minusImpl(Object first, Object second) {
+        if (forNullReturning(first,second)) {
+            return null;
+        }
         return coerceToNumber(first) - coerceToNumber(second)
     }
 
     private static def divImpl(Object first, Object second) {
+        if (forNullReturning(first,second)) {
+            return null;
+        }
         def divisor = coerceToNumber(second)
         if (divisor == 0) return null
         return coerceToNumber(first) / divisor
     }
 
     private static def multiplyImpl(Object first, Object second) {
+        if (forNullReturning(first,second)) {
+            return null;
+        }
         return coerceToNumber(first) * coerceToNumber(second)
+    }
+
+    private static boolean forNullReturning(Object[] objects){
+        def nullToZero = convertNullToZero.get()
+        if(!nullToZero && isAnyNull(objects))
+            return true
+        return false
+
+    }
+
+    private static boolean isAnyNull(Object[] objects) {
+        objects?.any { it == null || it instanceof NullObject}
     }
 
 
