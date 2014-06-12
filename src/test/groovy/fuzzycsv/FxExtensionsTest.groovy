@@ -126,6 +126,22 @@ class FxExtensionsTest {
 
     }
 
+
+    @Test
+    void testFloats() {
+        FxExtensions.treatNullAsZero()
+        use(FxExtensions) {
+            assert 4.3 * 2 == 8.6
+            assert (1 / 2) == 0.5
+            assert 3.2 / 1.6 == 2
+            assert (1.5 + 1.7) == 3.2
+            assert 1.5 - 0.2 == 1.3
+            assert  null * 3 == 0
+            assert  null * null == 0
+        }
+
+    }
+
     @Test
     void testNullToNull() {
         FxExtensions.treatNullAsNull()
