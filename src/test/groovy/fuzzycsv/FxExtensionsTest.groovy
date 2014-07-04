@@ -152,6 +152,15 @@ class FxExtensionsTest {
             assert  null/null == null
             assert (null)/null * 100.0 == null
         }
+    }
 
+    @Test
+    void testAvg() {
+        use(FxExtensions) {
+            assert [2, null, 4].avg() == 3
+            assert ['2', null, 4].avg() == 3
+            assert [null, null, null].avg() == null
+            assert [2, 3, 5, 0, 0].avg() == 2
+        }
     }
 }

@@ -958,5 +958,14 @@ class FxExtensions {
         objects?.any { it == null || it instanceof NullObject}
     }
 
-
+    /**
+     * Average which on
+     * @param collection
+     */
+    static avg(Collection collection) {
+        def count = collection.count { it != null }
+        if (!count) return null
+        def sum = collection.sum()
+        return sum / count
+    }
 }
