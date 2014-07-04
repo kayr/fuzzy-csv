@@ -74,7 +74,7 @@ public class FuzzyCSV {
             if (lstIdx == 0) {
                 cellValue = column.name
             } else {
-                def record = Record.getRecord(header, entry)
+                def record = Record.getRecord(header, entry,lstIdx)
                 if (sourceCSV) {
                     def oldCSVRecord = sourceCSV[lstIdx]
                     def oldCSVHeader = sourceCSV[0]

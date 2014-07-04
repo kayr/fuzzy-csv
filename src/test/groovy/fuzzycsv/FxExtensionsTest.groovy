@@ -149,6 +149,8 @@ class FxExtensionsTest {
             assert ('4' * null) == null
             assert (null * '2') == null
             assert (null * null) == null
+            assert  null/null == null
+            assert (null)/null * 100.0 == null
         }
 
     }

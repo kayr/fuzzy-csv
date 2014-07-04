@@ -14,6 +14,8 @@ class Record {
     List<String> sourceHeaders
     List sourceRecord
 
+    int recordIdx
+
     ResolutionStrategy resolutionStrategy = ResolutionStrategy.DERIVED_FIRST
 
     Record(List<String> headers, List record) {
@@ -77,14 +79,24 @@ class Record {
         throw new UnsupportedOperationException("setting a property in a record is not supported")
     }
 
+    int idx() {
+        return recordIdx
+    }
+
     static Record getRecord(List<List> csv, int i) {
         def header = csv[0]
         def record = csv[i]
-        return getRecord(header, record)
+        getRecord(header, record, i)
     }
 
     static Record getRecord(List header, List record) {
-        return new Record(header, record)
+        return getRecord(header, record, -1)
+    }
+
+    static Record getRecord(List header, List record, int idx) {
+        Record record1 = new Record(header, record)
+        record1.recordIdx = idx
+        return record1
     }
 
 
