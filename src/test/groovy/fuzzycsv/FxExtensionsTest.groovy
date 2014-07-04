@@ -161,6 +161,7 @@ class FxExtensionsTest {
             assert ['2', null, 4].avg() == 3
             assert [null, null, null].avg() == null
             assert [2, 3, 5, 0, 0].avg() == 2
+            assert [null,2, 3, 5, 0, 0].avg() == 2
         }
     }
 }

@@ -963,9 +963,8 @@ class FxExtensions {
      * @param collection
      */
     static avg(Collection collection) {
-        def count = collection.count { it != null }
-        if (!count) return null
-        def sum = collection.sum()
-        return sum / count
+        def notNulls = collection?.findAll { it != null }
+        if (!notNulls) return null
+        return notNulls.sum() / notNulls.size()
     }
 }
