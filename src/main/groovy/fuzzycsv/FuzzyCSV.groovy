@@ -107,7 +107,6 @@ public class FuzzyCSV {
     }
 
 
-
     static List<List> join(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
         return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), getRecordFx(joinColumns), false, false)
     }
@@ -456,6 +455,18 @@ public class FuzzyCSV {
             csv.add(csvRow)
         }
         return csv
+    }
+
+    //todo test
+    static List<Map> toMapList(List<? extends List> csv) {
+        def header = csv[0]
+        int i = 0
+        csv.collect {
+            if (i == 0) {
+                i++; return
+            }
+            Record.getRecord(header, it).toMap()
+        }
     }
 
     static List<List> toCSV(List<? extends Map> list, String[] cols) {

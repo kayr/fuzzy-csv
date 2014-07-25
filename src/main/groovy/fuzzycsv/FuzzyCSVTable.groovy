@@ -1,5 +1,7 @@
 package fuzzycsv
 
+import groovy.text.SimpleTemplateEngine
+
 /**
  * Created with IntelliJ IDEA.
  * User: kayr
@@ -201,6 +203,42 @@ class FuzzyCSVTable {
 
     String columnName(int index) {
         return csv[0][index]
+    }
+
+    //todo write unit tests
+    String toStringFormatted() {
+        TableTemplateFactory ttf = new TableTemplateFactory()
+
+        Map<String, Integer> hMap = header.collectEntries { [it, maxStringSize(it)] }
+
+        def avgSize = FxExtensions.avg(hMap.values()) as Integer
+
+        hMap.each { cName, maxSize ->
+            def fSize = maxSize < avgSize ? maxSize : avgSize
+            fSize = fSize < cName.size() ? cName.size() : fSize
+            ttf.addColumn(cName, fSize)
+        }
+
+
+        def rows = csv.collect { r ->
+            def map = [:]
+            header.eachWithIndex { String entry, int i ->
+                map[entry] = "${r[i]}"
+            }
+            return map
+        }
+        def wrappedNames = ttf.wrapRows(rows)
+        def binding = ['rows': wrappedNames]
+        return getTemplateOutput(binding, ttf)
+    }
+
+    private static String getTemplateOutput(Map<Object, List> binding, TableTemplateFactory ttf) {
+        return new SimpleTemplateEngine().createTemplate(ttf.template).make(binding).toString()
+    }
+
+    int maxStringSize(String columnName) {
+        def column = FuzzyCSV.getValuesForColumn(csv, FuzzyCSV.getColumnPosition(csv, columnName))
+        return "${column.max { "$it".size() }}".size()
     }
 
 }

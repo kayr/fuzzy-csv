@@ -75,6 +75,11 @@ class Record {
 
     }
 
+    Map toMap() {
+        def header = sourceHeaders?:derivedHeaders
+        header.collectEntries { [it, propertyMissing(it)] }
+    }
+
     def propertyMissing(String name, def arg) {
         throw new UnsupportedOperationException("setting a property in a record is not supported")
     }
