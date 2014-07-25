@@ -219,13 +219,17 @@ class FuzzyCSVTable {
             ttf.addColumn(cName, fSize)
         }
 
-
-        def rows = csv.collect { r ->
+        int ii = 0
+        def rows = []
+        csv.collect { r ->
+            if (ii == 0) {
+                ii++; return
+            }
             def map = [:]
             header.eachWithIndex { String entry, int i ->
                 map[entry] = "${r[i]}"
             }
-            return map
+            rows << map
         }
         def wrappedNames = ttf.wrapRows(rows)
         def binding = ['rows': wrappedNames]
