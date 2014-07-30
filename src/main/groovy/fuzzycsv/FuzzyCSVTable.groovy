@@ -208,6 +208,8 @@ class FuzzyCSVTable {
     //todo write unit tests
     String toStringFormatted() {
         TableTemplateFactory ttf = new TableTemplateFactory()
+        ttf.footer = '___________________\n' +
+                (csv.size() - 1) + ' records'
 
         Map<String, Integer> hMap = header.collectEntries { [it, maxStringSize(it)] }
 
