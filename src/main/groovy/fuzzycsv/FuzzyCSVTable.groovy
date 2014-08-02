@@ -172,8 +172,12 @@ class FuzzyCSVTable {
         return mergeByAppending(tbl.csv)
     }
 
-    FuzzyCSVTable addColumn(RecordFx fn) {
-        return tbl(FuzzyCSV.putInColumn(csv, fn, csv[0].size()))
+    FuzzyCSVTable addColumn(RecordFx... fnz) {
+        def thisCsv = csv
+        for (fn in fnz) {
+            thisCsv = FuzzyCSV.putInColumn(thisCsv, fn, csv[0].size())
+        }
+        return tbl(thisCsv)
     }
 
     FuzzyCSVTable deleteColumns(String[] columnNames) {
