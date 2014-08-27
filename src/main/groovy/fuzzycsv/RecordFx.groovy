@@ -7,11 +7,13 @@ package fuzzycsv
  * Time: 12:41 PM
  * To change this template use File | Settings | File Templates.
  */
-class RecordFx {
+class RecordFx<RT> {
 
     String name
     Closure c
     ResolutionStrategy resolutionStrategy
+    private boolean useFuzzy = false
+    public headerEnabled = false
 
     protected RecordFx() {}
 
@@ -20,12 +22,17 @@ class RecordFx {
         this.c = c
     }
 
-    def getValue(Record record) {
+    RT getValue(Record record) {
+        if (record.isHeader() && !headerEnabled)
+            return null
+
         if (resolutionStrategy != null)
             record.resolutionStrategy = resolutionStrategy
-        use(FxExtensions) {
+        def rt = use(FxExtensions) {
+            record.useFuzzy = useFuzzy
             return c.call(record)
         }
+        return (RT) rt
     }
     /**
      * use @fx
@@ -50,6 +57,16 @@ class RecordFx {
 
     RecordFx withDerivedFirst() {
         resolutionStrategy = ResolutionStrategy.DERIVED_FIRST
+        return this
+    }
+
+    RecordFx getFz() {
+        this.useFuzzy = true
+        return this
+    }
+
+    RecordFx getProcessHeader() {
+        this.headerEnabled = true
         return this
     }
 

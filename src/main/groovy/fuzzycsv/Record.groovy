@@ -1,5 +1,8 @@
 package fuzzycsv
 
+import static fuzzycsv.ResolutionStrategy.DERIVED_FIRST
+import static fuzzycsv.ResolutionStrategy.SOURCE_FIRST
+
 /**
  * Created with IntelliJ IDEA.
  * User: kayr
@@ -14,9 +17,11 @@ class Record {
     List<String> sourceHeaders
     List sourceRecord
 
-    int recordIdx
+    boolean useFuzzy = false
 
-    ResolutionStrategy resolutionStrategy = ResolutionStrategy.DERIVED_FIRST
+    int recordIdx = -1
+
+    ResolutionStrategy resolutionStrategy = DERIVED_FIRST
 
     Record(List<String> headers, List record) {
         setDerivedRecord(record)
@@ -49,11 +54,11 @@ class Record {
 
         if (name?.startsWith('@')) {
             name = name.replaceFirst('@', '')
-            ourResolveStrategy = ResolutionStrategy.SOURCE_FIRST
+            ourResolveStrategy = SOURCE_FIRST
         }
 
         //source first resolution
-        if (ourResolveStrategy == ResolutionStrategy.SOURCE_FIRST) {
+        if (ourResolveStrategy == SOURCE_FIRST) {
             myHeader = sourceHeaders
             myRecord = sourceRecord
         }
@@ -75,8 +80,17 @@ class Record {
 
     }
 
+
+    def getAt(int idx) {
+        if (resolutionStrategy == SOURCE_FIRST) return sourceRecord[idx]
+        if (resolutionStrategy == DERIVED_FIRST) return sourceRecord[idx]
+    }
+
+
+    boolean isHeader() { recordIdx == 0 }
+
     Map toMap() {
-        def header = sourceHeaders?:derivedHeaders
+        def header = sourceHeaders ?: derivedHeaders
         header.collectEntries { [it, propertyMissing(it)] }
     }
 

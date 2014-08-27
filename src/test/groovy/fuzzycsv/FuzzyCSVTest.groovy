@@ -37,8 +37,8 @@ class FuzzyCSVTest {
 
         def expected = [
                 ['name', 'blah', 'sex'] as String[],
-                ['kayondo', '', 'male'] as String[],
-                ['sara', '', 'female'] as String[]
+                ['kayondo', null, 'male'] as String[],
+                ['sara', null, 'female'] as String[]
         ]
         assertTrue newCSV.equals(expected)
         assertTrue tbl(csv1).select(['name', 'blah', 'sex'] as String[]).csv.equals(expected)
@@ -50,8 +50,8 @@ class FuzzyCSVTest {
         def newCSV = FuzzyCSV.rearrangeColumns(['nam', 'blah', 'sex'] as String[], csv1)
         def expected = [
                 ['name', 'blah', 'sex'] as String[],
-                ['kayondo', '', 'male'] as String[],
-                ['sara', '', 'female'] as String[]
+                ['kayondo', null, 'male'] as String[],
+                ['sara', null, 'female'] as String[]
         ]
         assertTrue newCSV.equals(expected)
     }
@@ -103,8 +103,8 @@ class FuzzyCSVTest {
 
         def expected = [
                 ["name", "sex", "age"],
-                ["kayondo", "male", ""],
-                ["sara", "female", ""],
+                ["kayondo", "male", null],
+                ["sara", "female", null],
                 ["alex", "male", "21"]
         ]
         assertTrue newCSV.equals(expected)
@@ -246,7 +246,7 @@ class FuzzyCSVTest {
                 ['Sara', 'Female', 4, 'Muyenga', 4, 'Cat'],
                 ['Ronald', 'Femal', null, null, 3, 'Monkey']
         ]
-        assertEquals join.toString(), expected.toString()
+        assertEquals tbl(join).toString(), tbl(expected).toString()
 
         join = FuzzyCSV.fullJoin(csv_1, csv_2, fn { it.Name == it.'@Name' && it.Sex == it.'@Sex' }, 'Name', 'Sex', 'Age', 'Location', 'Age2', 'Hobby')
         assertEquals join.toString(), expected.toString()

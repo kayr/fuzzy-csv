@@ -4,6 +4,8 @@ import au.com.bytecode.opencsv.CSVReader
 import au.com.bytecode.opencsv.CSVWriter
 import secondstring.PhraseHelper
 
+import static fuzzycsv.RecordFx.fn
+
 public class FuzzyCSV {
 
     public static ThreadLocal<Float> ACCURACY_THRESHOLD = new ThreadLocal<Float>() {
@@ -36,14 +38,38 @@ public class FuzzyCSV {
     }
 
     static List<List> putInColumn(List<? extends List> csvList, List column, int insertIdx) {
-
         csvList.eachWithIndex { entry, lstIdx ->
             def entryList = entry
-            def cellValue = lstIdx >= column.size() ? "" : column[lstIdx]
+            def cellValue = lstIdx >= column.size() ? null : column[lstIdx]
             entryList[insertIdx] = cellValue
-
         }
         return csvList
+    }
+
+    static List<List> map(List<? extends List> csvList, RecordFx<List> fx) {
+        def header = csvList[0]
+        def newCsv = []
+        if (!fx.headerEnabled) newCsv << header
+        csvList.eachWithIndex { entry, idx ->
+            if (idx == 0 && !fx.headerEnabled) {
+                return
+            }
+            def rec = Record.getRecord(header, entry, idx)
+            def value = fx.getValue(rec)
+            newCsv << value
+        }
+        return newCsv
+    }
+
+    static List<List> filter(List<? extends List> csvList, RecordFx fx) {
+        def header = csvList[0]
+        def newCsv = []
+        csvList.eachWithIndex { entry, idx ->
+            def rec = Record.getRecord(header, entry, idx)
+            def value = fx.getValue(rec)
+            if (value) newCsv << rec
+        }
+        return newCsv
     }
 
     static List<List> putInColumn(List<? extends List> csvList, RecordFx column, int insertIdx, List<? extends List> sourceCSV = null) {
@@ -125,7 +151,7 @@ public class FuzzyCSV {
         def matchedCSV2Records = []
         def combinedList = []
 
-        Record recObj = new Record(csv1[0] as List, null)
+        Record recObj = Record.getRecord(csv1[0] as List, csv1[1] as List, -1)
         recObj.sourceHeaders = csv2[0]
 
         csv1.each { record1 ->
@@ -180,7 +206,7 @@ public class FuzzyCSV {
     }
 
     private static RecordFx getRecordFx(joinColumns) {
-        RecordFx fn = RecordFx.fn { record ->
+        RecordFx fn = fn { record ->
             joinColumns.every { record."$it" == record."@$it" }
         }
         return fn
