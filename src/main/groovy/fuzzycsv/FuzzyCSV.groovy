@@ -20,33 +20,12 @@ public class FuzzyCSV {
         return rd.readAll();
     }
 
-    static int getColumnPosition(List<? extends List> csvList, String name) {
-        def headers = csvList[0]
-        headers.findIndexOf { value ->
-            value.toLowerCase().trim().equalsIgnoreCase(name.trim().toLowerCase())
-        }
-    }
-
-    static int getColumnPositionUsingHeuristic(List<? extends List> csvList, String name) {
-        List<String> headers = csvList[0] as List
-
-        def ph = PhraseHelper.train(headers)
-        def newName = ph.bestInternalHit(name, ACCURACY_THRESHOLD.get())
-
-        if (newName == null) {
-            println "getColumnPositionUsingHeuristic(): warning: no column match found:  [$name] = [$newName]"
-            return -1
-        }
-        println "getColumnPositionUsingHeuristic(): ${ph.compare(newName, name)} heuristic: [$name] = [$newName]"
-        return getColumnPosition(csvList, newName)
-    }
-
     static List getValuesForColumn(List<? extends List> csvList, int colIdx) {
         csvList.collect { it[colIdx] }
     }
 
     static List<List> putInCellWithHeader(List<? extends List> csv, String columnHeader, int rowIdx, Object value) {
-        def position = getColumnPosition(csv, columnHeader)
+        def position = Fuzzy.findPosition(csv[0], columnHeader)
         return putInCell(csv, position, rowIdx, value)
 
     }
@@ -74,7 +53,7 @@ public class FuzzyCSV {
             if (lstIdx == 0) {
                 cellValue = column.name
             } else {
-                def record = Record.getRecord(header, entry,lstIdx)
+                def record = Record.getRecord(header, entry, lstIdx)
                 if (sourceCSV) {
                     def oldCSVRecord = sourceCSV[lstIdx]
                     def oldCSVHeader = sourceCSV[0]
@@ -139,7 +118,8 @@ public class FuzzyCSV {
         return superJoin(csv1, csv2, selectColumns as List, onExpression, true, true)
     }
 
-    private static List<List> superJoin(List<? extends List> csv1, List<? extends List> csv2, List selectColumns, RecordFx onFunction, boolean doLeftJoin, boolean doRightJoin) {
+    private
+    static List<List> superJoin(List<? extends List> csv1, List<? extends List> csv2, List selectColumns, RecordFx onFunction, boolean doLeftJoin, boolean doRightJoin) {
 
         //container to keep track the matchedCSV2 records
         def matchedCSV2Records = []
@@ -247,7 +227,7 @@ public class FuzzyCSV {
      */
     static transform(List<? extends List> csv, String column, RecordFx fx) {
         def newHeaders = new ArrayList<>(csv[0])
-        def columnPosition = getColumnPosition(csv, column)
+        def columnPosition = Fuzzy.findPosition(csv[0], column)
 
         if (columnPosition < 0)
             throw new IllegalArgumentException("Column[$column] not found in csv")
@@ -281,7 +261,7 @@ public class FuzzyCSV {
                 return
             }
 
-            int oldCsvColIdx = guessColumnPosition(header, csv)
+            int oldCsvColIdx = Fuzzy.findBestPosition(csv[0], header, ACCURACY_THRESHOLD.get())
 
             def oldCsvColumn
             if (oldCsvColIdx != -1)
@@ -292,15 +272,6 @@ public class FuzzyCSV {
             newCsv = putInColumn(newCsv, oldCsvColumn, idx)
         }
         return newCsv
-    }
-
-    public static int guessColumnPosition(String header, List<? extends List> csv) {
-
-        def csvColIdx = getColumnPosition(csv, header)
-        if (csvColIdx == -1) {
-            csvColIdx = getColumnPositionUsingHeuristic(csv, header)
-        }
-        csvColIdx
     }
 
     /**
