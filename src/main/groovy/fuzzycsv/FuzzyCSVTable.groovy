@@ -247,7 +247,7 @@ class FuzzyCSVTable {
     }
 
     int maxStringSize(String columnName) {
-        def column = FuzzyCSV.getValuesForColumn(csv, Fuzzy.findPosition(csv, columnName))
+        def column = FuzzyCSV.getValuesForColumn(csv, Fuzzy.findPosition(header, columnName))
         return "${column.max { "$it".size() }}".size()
     }
 
