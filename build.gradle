@@ -1,0 +1,48 @@
+
+group = 'fuzzy-csv'
+version = '1.0-SNAPSHOT'
+
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'groovy'
+
+
+// Using a setter method
+project.buildDir = 'target'
+
+description = """"""
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+
+
+
+repositories {
+    // First check local cache before accessing central repository
+    // mavenRepo name:'Local', urls: "file://" + System.properties['user.home'] + "/.m2/repository"
+    mavenLocal()
+    mavenCentral()
+
+    maven { url "https://dl.dropbox.com/u/3038882/p/m2/snapshots" }
+    maven { url "https://dl.dropbox.com/u/3038882/p/m2/releases" }
+    maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.0.4'
+    compile group: 'secondstring', name: 'secondstring', version: '1.0-SNAPSHOT'
+    compile group: 'net.sf.opencsv', name: 'opencsv', version: '2.1'
+    compile group: 'log4j', name: 'log4j', version: '1.2.16'
+    testCompile group: 'junit', name: 'junit', version: '4.7'
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            String repo = version.endsWith('SNAPSHOT') ? 'file:///C:/m2/snapshots' : 'file:///C:/m2/releases'
+            repository(url: repo)
+        }
+    }
+}
