@@ -226,7 +226,7 @@ public class FuzzyCSV {
     }
 
     /**
-     * convenience methode
+     * convenience method
      * @param headers
      * @param csv
      * @return
@@ -479,5 +479,37 @@ public class FuzzyCSV {
             flattened << row
         }
         return flattened
+    }
+
+    static List<List> cleanUpRepeats(List<? extends List> strings, String... columns) {
+
+        def headers = strings[0]
+
+
+        strings.eachWithIndex { List row, int rowIdx ->
+            row.eachWithIndex { def cellValue, int cellIdx ->
+                if (columns && !columns.contains(headers[cellIdx])) {
+                    return
+                }
+                def cellAbove = firstCellAbove(strings, rowIdx, cellIdx)
+                if (cellAbove == cellValue) {
+                    strings[rowIdx][cellIdx] = null
+                }
+            }
+        }
+        return strings
+    }
+
+    private static def firstCellAbove(List<? extends List> strings, int fromRecord, int column) {
+        if (fromRecord <= 1) {
+            return null
+        }
+        for (int index = fromRecord - 1; index > 0; index--) {
+            def cellValue = strings[index][column]
+            if (cellValue != null) {
+                return cellValue
+            }
+        }
+        return null
     }
 }

@@ -129,7 +129,9 @@ class FuzzyCSVTest {
         ]
         assertEquals join.toString(), expected.toString()
 
-        join = FuzzyCSV.join(csv1, csv2, fn { it.Name == it.'@Name' }, 'Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
+        join = FuzzyCSV.join(csv1, csv2, fn {
+            it.Name == it.'@Name'
+        }, 'Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
         assertEquals join.toString(), expected.toString()
 
         //fuzzy csv table
@@ -158,7 +160,9 @@ class FuzzyCSVTest {
         ]
         assertEquals join.toString(), expected.toString()
 
-        join = FuzzyCSV.leftJoin(csv_1, csv_2, fn { it.Name == it.'@Name' }, 'Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
+        join = FuzzyCSV.leftJoin(csv_1, csv_2, fn {
+            it.Name == it.'@Name'
+        }, 'Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
         assertEquals join.toString(), expected.toString()
 
         //fuzzy csv table
@@ -187,7 +191,9 @@ class FuzzyCSVTest {
         ]
         assertEquals join.toString(), expected.toString()
 
-        join = FuzzyCSV.rightJoin(csv_1, csv_2, fn { it.Name == it.'@Name' }, 'Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
+        join = FuzzyCSV.rightJoin(csv_1, csv_2, fn {
+            it.Name == it.'@Name'
+        }, 'Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
         assertEquals join.toString(), expected.toString()
 
         //fuzzy csv table
@@ -219,7 +225,9 @@ class FuzzyCSVTest {
         ]
         assertEquals join.toString(), expected.toString()
 
-        join = FuzzyCSV.fullJoin(csv_1, csv_2, fn { it.Name == it.'@Name' }, 'Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
+        join = FuzzyCSV.fullJoin(csv_1, csv_2, fn {
+            it.Name == it.'@Name'
+        }, 'Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
         assertEquals join.toString(), expected.toString()
 
         //fuzzy csv table
@@ -248,7 +256,9 @@ class FuzzyCSVTest {
         ]
         assertEquals tbl(join).toString(), tbl(expected).toString()
 
-        join = FuzzyCSV.fullJoin(csv_1, csv_2, fn { it.Name == it.'@Name' && it.Sex == it.'@Sex' }, 'Name', 'Sex', 'Age', 'Location', 'Age2', 'Hobby')
+        join = FuzzyCSV.fullJoin(csv_1, csv_2, fn {
+            it.Name == it.'@Name' && it.Sex == it.'@Sex'
+        }, 'Name', 'Sex', 'Age', 'Location', 'Age2', 'Hobby')
         assertEquals join.toString(), expected.toString()
 
         //fuzzy csv table
@@ -498,5 +508,52 @@ class FuzzyCSVTest {
         assert actual == expected
 
 
+    }
+
+
+    @Test
+    void testCleanup() {
+        def csv = [
+                ['sex', 'p2', 'p3', 'p4'],
+                ['male', 2, null, 1],
+                ['male', 2, null, 5],
+                ['male', 2, null, 5],
+                ['female', null, 4, null],
+                ['female', null, 5, null],
+                ['female', null, 4, null]
+
+        ]
+
+        assert [
+                ['sex', 'p2', 'p3', 'p4'],
+                ['male', 2, null, 1],
+                [null, null, null, 5],
+                [null, null, null, null],
+                ['female', null, 4, null],
+                [null, null, 5, null],
+                [null, null, 4, null]] == FuzzyCSV.cleanUpRepeats(csv)
+    }
+
+    @Test
+    void testCleanup2() {
+        def csv = [
+                ['sex', 'p2', 'p3', 'p4'],
+                ['male', 2, null, 1],
+                ['male', 2, null, 5],
+                ['male', 2, null, 5],
+                ['female', null, 4, null],
+                ['female', null, 5, null],
+                ['female', null, 4, null]
+
+        ]
+
+        assert [
+                ['sex', 'p2', 'p3', 'p4'],
+                ['male', 2, null, 1],
+                [null, 2, null, 5],
+                [null, 2, null, null],
+                ['female', null, 4, null],
+                [null, null, 5, null],
+                [null, null, 4, null]] == FuzzyCSV.cleanUpRepeats(csv,'sex','p4')
     }
 }
