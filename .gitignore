@@ -5,8 +5,8 @@ target/
 .settings
 .DS_Store
 .groovy
-bin/
 .idea/
 **/*.iml
 *.iml
 .gradle/
+build

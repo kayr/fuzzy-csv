@@ -1,4 +1,10 @@
 
+
+plugins {
+    id 'net.researchgate.release' version '2.0.2'
+}
+
+
 group = 'fuzzy-csv'
 version = '1.0-SNAPSHOT'
 
@@ -17,7 +23,9 @@ sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
 
-
+release {
+    failOnUnversionedFiles = false
+}
 
 repositories {
     // First check local cache before accessing central repository
