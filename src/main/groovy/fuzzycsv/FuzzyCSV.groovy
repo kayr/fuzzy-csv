@@ -2,11 +2,14 @@ package fuzzycsv
 
 import au.com.bytecode.opencsv.CSVReader
 import au.com.bytecode.opencsv.CSVWriter
+import groovy.util.logging.Log4j
 import secondstring.PhraseHelper
 
 import static fuzzycsv.RecordFx.fn
 
+@Log4j
 public class FuzzyCSV {
+
 
     public static ThreadLocal<Float> ACCURACY_THRESHOLD = new ThreadLocal<Float>() {
         @Override
@@ -308,11 +311,11 @@ public class FuzzyCSV {
      */
     static List<List> mergeByColumn(List<? extends List> csv1, List<? extends List> csv2) {
         def header1 = mergeHeaders(csv1[0], csv2[0])
-        println("======rearranging[cvs1-header]-ignore the logs=======")
+        log.debug("======rearranging[cvs1-header]-ignore the logs=======")
         def newCsv1 = rearrangeColumns(header1, csv1)
-        println("======rearranging [cvs2-header]-ignore the logs======")
+        log.debug("======rearranging [cvs2-header]-ignore the logs======")
         def newCsv2 = rearrangeColumns(header1, csv2)
-        println("merging [csv1 + csv2]")
+        log.debug("merging [csv1 + csv2]")
         return mergeByAppending(newCsv1, newCsv2)
 
     }
@@ -331,21 +334,21 @@ public class FuzzyCSV {
         newHeaders.addAll(h1)
 
 
-        println '========'
+        log.debug '========'
         h2.each { String header ->
             def hit = phraseHelper.bestInternalHit(header, ACCURACY_THRESHOLD.get())
             def bestScore = phraseHelper.bestInternalScore(header)
             def bestWord = phraseHelper.bestInternalHit(header, 0)
             if (hit != null) {
-                println "mergeHeaders(): [matchfound] :$bestScore% compare('$header', '$hit')"
+                log.debug "mergeHeaders(): [matchfound] :$bestScore% compare('$header', '$hit')"
             } else {
                 newHeaders.add(header)
-                println "mergeHeaders(): [no-match] :$bestScore% compare('$header',BestMatch['$bestWord'])"
+                log.debug "mergeHeaders(): [no-match] :$bestScore% compare('$header',BestMatch['$bestWord'])"
 
             }
         }
 
-        println "=======\n" +
+        log.debug "=======\n" +
                 "mergeHeaders(): HEADER1 \t= $h1 \n HEADER2 \t= $h2 \nNEW_HEADER \t= $newHeaders\n" +
                 "======="
         return newHeaders

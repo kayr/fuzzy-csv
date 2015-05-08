@@ -1,5 +1,7 @@
 package fuzzycsv
 
+import groovy.util.logging.Log4j
+
 /**
  * Created with IntelliJ IDEA.
  * User: kayr
@@ -7,6 +9,7 @@ package fuzzycsv
  * Time: 6:21 PM
  * To change this template use File | Settings | File Templates.
  */
+@Log4j
 class FuzzyCSVUtils {
 
     static List<Number> toNumbers(List list) {
@@ -46,7 +49,7 @@ class FuzzyCSVUtils {
             if (strict)
                 throw new NumberFormatException(msg)
             else
-                System.err.println(msg)
+                log.error(msg)
         }
 
         return 0

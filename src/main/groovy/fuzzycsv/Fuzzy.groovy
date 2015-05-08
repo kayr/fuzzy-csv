@@ -1,10 +1,12 @@
 package fuzzycsv
 
+import groovy.util.logging.Log4j
 import secondstring.PhraseHelper
 
 /**
  * Created by kay on 8/27/14.
  */
+@Log4j
 class Fuzzy {
 
     static int findBestPosition(def phrases, String header, float minScore) {
@@ -22,10 +24,10 @@ class Fuzzy {
         def newName = ph.bestInternalHit(phrase, minScore)
 
         if (newName == null) {
-            println "getColumnPositionUsingHeuristic(): warning: no column match found:  [$phrase] = [$newName]"
+            log.debug "getColumnPositionUsingHeuristic(): warning: no column match found:  [$phrase] = [$newName]"
             return -1
         }
-        println "getColumnPositionUsingHeuristic(): ${ph.compare(newName, phrase)} heuristic: [$phrase] = [$newName]"
+        log.debug "getColumnPositionUsingHeuristic(): ${ph.compare(newName, phrase)} heuristic: [$phrase] = [$newName]"
         return findPosition(phrases, newName)
     }
 
