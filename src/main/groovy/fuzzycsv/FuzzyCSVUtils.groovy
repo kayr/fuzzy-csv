@@ -1,5 +1,6 @@
 package fuzzycsv
 
+import groovy.transform.CompileStatic
 import groovy.util.logging.Log4j
 
 /**
@@ -10,39 +11,38 @@ import groovy.util.logging.Log4j
  * To change this template use File | Settings | File Templates.
  */
 @Log4j
+@CompileStatic
 class FuzzyCSVUtils {
 
     static List<Number> toNumbers(List list) {
-        def rt = list.collect { it ->
-            return coerceToNumber(it)
-        }
+        def rt = list.collect { Object it -> coerceToNumber(it) }
         return rt
     }
 
-     static Number coerceToNumber(obj) {
-         toNumber(obj, false)
-     }
-
-    static Number coerceToNumberStrict(obj) {
-        return toNumber(obj)
+    static Number coerceToNumber(obj, Class preferredType = Integer) {
+        toNumber(obj, false, preferredType)
     }
 
-    private static Number toNumber(obj, boolean strict = true) {
+    static Number coerceToNumberStrict(obj, Class preferredType = Integer) {
+        return toNumber(obj, true, preferredType)
+    }
+
+    private static Number toNumber(obj, boolean strict = true, Class<? extends Number> preferredType = Integer) {
         if (obj == null)
-            return 0
+            return preferredType == Integer || preferredType == BigInteger ? 0 : 0.0
 
         if (obj instanceof Number)
-            return obj
+            return obj as Number
 
         def strValue = obj.toString()
 
         try {
-            return Integer.parseInt(strValue)
+            return Integer.parseInt(strValue) as Number
         } catch (Exception x) {
         }
 
         try {
-            return Double.parseDouble(strValue)
+            return Double.parseDouble(strValue) as Number
         } catch (Exception x) {
             def msg = "FuzzyCSVUtils:toNumbers() Could not convert [$strValue] to a Number ($x)"
 
@@ -52,7 +52,7 @@ class FuzzyCSVUtils {
                 log.error(msg)
         }
 
-        return 0
+        return preferredType == Integer || preferredType == BigInteger ? 0 : 0.0
     }
 
 }

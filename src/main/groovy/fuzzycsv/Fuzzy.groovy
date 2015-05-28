@@ -24,10 +24,12 @@ class Fuzzy {
         def newName = ph.bestInternalHit(phrase, minScore)
 
         if (newName == null) {
-            log.debug "getColumnPositionUsingHeuristic(): warning: no column match found:  [$phrase] = [$newName]"
+            if (log.isDebugEnabled())
+                log.debug "getColumnPositionUsingHeuristic(): warning: no column match found:  [$phrase] = [$newName]"
             return -1
         }
-        log.debug "getColumnPositionUsingHeuristic(): ${ph.compare(newName, phrase)} heuristic: [$phrase] = [$newName]"
+        if (log.isDebugEnabled())
+            log.debug "getColumnPositionUsingHeuristic(): ${ph.compare(newName, phrase)} heuristic: [$phrase] = [$newName]"
         return findPosition(phrases, newName)
     }
 

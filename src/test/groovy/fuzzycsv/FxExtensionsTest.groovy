@@ -136,8 +136,30 @@ class FxExtensionsTest {
             assert 3.2 / 1.6 == 2
             assert (1.5 + 1.7) == 3.2
             assert 1.5 - 0.2 == 1.3
-            assert  null * 3 == 0
-            assert  null * null == 0
+            assert null * 3 == 0
+            assert null * null == 0
+
+            //test the data types
+            assert (2.0 * null) instanceof BigDecimal
+            assert (2 * null) instanceof Integer
+            assert (null * 2.0) instanceof BigDecimal
+            assert (null * 2) instanceof BigInteger
+
+            assert (2.0 + null) instanceof BigDecimal
+            assert (2 + null) instanceof Integer
+            assert (null + 2.0) instanceof BigDecimal
+            assert (null + 2) instanceof BigInteger
+
+            assert (2.0 - null) instanceof BigDecimal
+            assert (2 - null) instanceof Integer
+            assert (null - 2.0) instanceof BigDecimal
+            assert (null - 2) instanceof BigInteger
+
+            assert (2.0 / null) == null
+            assert (2 / null) == null
+            assert (null / 2.0) instanceof BigDecimal
+            //divisions always return Decimal values
+            assert (null / 2) instanceof BigDecimal
         }
 
     }
@@ -149,8 +171,8 @@ class FxExtensionsTest {
             assert ('4' * null) == null
             assert (null * '2') == null
             assert (null * null) == null
-            assert  null/null == null
-            assert (null)/null * 100.0 == null
+            assert null / null == null
+            assert (null) / null * 100.0 == null
         }
     }
 
@@ -161,7 +183,7 @@ class FxExtensionsTest {
             assert ['2', null, 4].avg() == 3
             assert [null, null, null].avg() == null
             assert [2, 3, 5, 0, 0].avg() == 2
-            assert [null,2, 3, 5, 0, 0].avg() == 2
+            assert [null, 2, 3, 5, 0, 0].avg() == 2
         }
     }
 }

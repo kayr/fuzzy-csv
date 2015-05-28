@@ -919,23 +919,23 @@ class FxExtensions {
         if (forNullReturning(first,second)) {
             return null;
         }
-        NumberMath.add(coerceToNumber(first), coerceToNumber(second))
+        NumberMath.add(coerceToNumber(first,second?.getClass()), coerceToNumber(second,first?.getClass()))
     }
 
     private static def minusImpl(Object first, Object second) {
         if (forNullReturning(first,second)) {
             return null;
         }
-        NumberMath.subtract(coerceToNumber(first), coerceToNumber(second))
+        NumberMath.subtract(coerceToNumber(first,second?.getClass()), coerceToNumber(second,first?.getClass()))
     }
 
     private static def divImpl(Object first, Object second) {
         if (forNullReturning(first,second)) {
             return null;
         }
-        def divisor = coerceToNumber(second)
+        def divisor = coerceToNumber(second,first?.getClass())
         if (divisor == 0) return null
-        NumberMath.divide(coerceToNumber(first), coerceToNumber(second))
+        NumberMath.divide(coerceToNumber(first,second?.getClass()), divisor)
     }
 
     private static def multiplyImpl(Object first, Object second) {
@@ -943,7 +943,7 @@ class FxExtensions {
             return null;
         }
         //Todo check if the integer are both BigNumbers and execute those
-        NumberMath.multiply(coerceToNumber(first), coerceToNumber(second))
+        NumberMath.multiply(coerceToNumber(first,second?.getClass()), coerceToNumber(second,first?.getClass()))
     }
 
     private static boolean forNullReturning(Object[] objects){
