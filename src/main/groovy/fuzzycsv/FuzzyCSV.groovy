@@ -461,9 +461,9 @@ public class FuzzyCSV {
     static List<Map> toMapList(List<? extends List> csv) {
         def header = csv[0]
         int i = 0
-        csv.collect {
+        csv.findResults {
             if (i == 0) {
-                i++; return
+                i++; return null
             }
             Record.getRecord(header, it).toMap()
         }

@@ -56,7 +56,7 @@ class FuzzyCSVTable {
         def aggregatedTables = groups.collect { key, value ->
             value.aggregate(columns, aggregators)
         }
-
+            //todo do not modify internal data
         def mainTable = aggregatedTables.remove(0)
         for (table in aggregatedTables) {
             mainTable = mainTable.mergeByAppending(table)
