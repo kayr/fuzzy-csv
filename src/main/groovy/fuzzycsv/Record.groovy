@@ -119,4 +119,16 @@ class Record {
     }
 
 
+    def value(String name, boolean required = true, def defaultValue = null) {
+
+        assert derivedHeaders.contains(name) || sourceHeaders.contains(name), "Record ${idx()} should have a [$name]"
+
+        def value = propertyMissing(name)?.toString()?.trim()
+        if (required && !value) {
+            if (defaultValue) return defaultValue
+            throw new IllegalStateException("Record [${idx()}] has an Empty Cell[$name] that is Required")
+        }
+        return value
+    }
+
 }

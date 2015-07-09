@@ -29,9 +29,22 @@ class RecordTest extends GroovyTestCase {
         assert record.sex == 'male'
         assert record.'@sex' == 'male'
 
-        shouldFail (IllegalArgumentException){
+        shouldFail(IllegalArgumentException) {
             record.blah
         }
 
+    }
+
+    @Test
+    void testValue() {
+        Record record = new Record(derivedHeader, ['ron', null])
+        record.sourceHeaders = sourceHeader
+        record.sourceRecord = sourceRecord
+
+        shouldFail(AssertionError) { record.value('blah') }
+        assert record.value('name') == 'ron'
+        assert record.value('age', false) == null
+        shouldFail(IllegalStateException) { record.value('age') == null }
+        assert record.value('age', true, 10) == 10
     }
 }
