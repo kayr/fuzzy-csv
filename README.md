@@ -10,14 +10,16 @@ FuzzyCSV is a groovy library to help you merge/append/query/ or manipulate CSV f
 
 Repositories
 
+    <repositories>
         <repository>
             <id>kayr.repo.snapshots</id>
-            <url>https://dl.dropbox.com/u/3038882/p/m2/snapshots</url>
+            <url>https://dl.dropboxusercontent.com/u/3038882/p/m2/snapshots</url>
         </repository>
         <repository>
             <id>kayr.repo.releases</id>
-            <url>https://dl.dropbox.com/u/3038882/p/m2/releases</url>
+            <url>https://dl.dropboxusercontent.com/u/3038882/p/m2/releases</url>
         </repository>
+    </repositories>
 
 
 ### Features
