@@ -6,13 +6,7 @@ import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.RecordFx.fn
 import static fuzzycsv.Sum.sum
 
-/**
- * Created with IntelliJ IDEA.
- * User: kay
- * Date: 10/20/13
- * Time: 6:36 PM
- * To change this template use File | Settings | File Templates.
- */
+
 class FuzzyCSVTableTest {
 
     static def csv2 = [
@@ -95,7 +89,10 @@ class FuzzyCSVTableTest {
     @Test
     void testAggregateGrouping() {
         def results = tbl(Data.groupingData)
-                .aggregate(['sub_county'], fn { it.sub_county }, sum('sum', 'ps_total_score'), sum('tap_sum', 'tap_total_score'))
+                .aggregate(['sub_county'],
+                fn { it.sub_county },
+                sum('sum', 'ps_total_score'),
+                sum('tap_sum', 'tap_total_score'))
 
         def expected = [
                 ['sub_county', 'sum', 'tap_sum'],

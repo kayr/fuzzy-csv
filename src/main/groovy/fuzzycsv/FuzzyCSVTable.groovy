@@ -2,13 +2,7 @@ package fuzzycsv
 
 import groovy.text.SimpleTemplateEngine
 
-/**
- * Created with IntelliJ IDEA.
- * User: kayr
- * Date: 10/19/13
- * Time: 11:36 AM
- * To change this template use File | Settings | File Templates.
- */
+
 class FuzzyCSVTable {
 
     List<List> csv
@@ -56,7 +50,7 @@ class FuzzyCSVTable {
         def aggregatedTables = groups.collect { key, value ->
             value.aggregate(columns, aggregators)
         }
-            //todo do not modify internal data
+        //todo do not modify internal data
         def mainTable = aggregatedTables.remove(0)
         for (table in aggregatedTables) {
             mainTable = mainTable.mergeByAppending(table)

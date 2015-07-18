@@ -1,12 +1,6 @@
 package fuzzycsv
 
-/**
- * Created with IntelliJ IDEA.
- * User: kayr
- * Date: 10/21/13
- * Time: 8:22 AM
- * To change this template use File | Settings | File Templates.
- */
+
 class Count extends AbstractAggregator {
 
     List<String> columns

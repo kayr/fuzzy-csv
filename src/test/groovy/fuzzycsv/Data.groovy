@@ -1,12 +1,6 @@
 package fuzzycsv
 
-/**
- * Created with IntelliJ IDEA.
- * User: kay
- * Date: 10/20/13
- * Time: 6:47 PM
- * To change this template use File | Settings | File Templates.
- */
+
 class Data {
 
     static def csv = [

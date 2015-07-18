@@ -2,13 +2,6 @@ package fuzzycsv
 
 import org.junit.Test
 
-/**
- * Created with IntelliJ IDEA.
- * User: kay
- * Date: 12/4/13
- * Time: 3:59 PM
- * To change this template use File | Settings | File Templates.
- */
 class RecordTest extends GroovyTestCase {
 
     def sourceHeader = ['name', 'sex']

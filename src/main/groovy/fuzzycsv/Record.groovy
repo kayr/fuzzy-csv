@@ -3,13 +3,7 @@ package fuzzycsv
 import static fuzzycsv.ResolutionStrategy.DERIVED_FIRST
 import static fuzzycsv.ResolutionStrategy.SOURCE_FIRST
 
-/**
- * Created with IntelliJ IDEA.
- * User: kayr
- * Date: 10/21/13
- * Time: 12:28 PM
- * To change this template use File | Settings | File Templates.
- */
+
 class Record {
     List<String> derivedHeaders
     List derivedRecord

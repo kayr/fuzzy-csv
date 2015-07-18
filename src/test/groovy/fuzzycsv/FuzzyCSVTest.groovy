@@ -554,6 +554,6 @@ class FuzzyCSVTest {
                 [null, 2, null, null],
                 ['female', null, 4, null],
                 [null, null, 5, null],
-                [null, null, 4, null]] == FuzzyCSV.cleanUpRepeats(csv,'sex','p4')
+                [null, null, 4, null]] == FuzzyCSV.cleanUpRepeats(csv, 'sex', 'p4')
     }
 }

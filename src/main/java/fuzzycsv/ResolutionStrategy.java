@@ -1,5 +1,5 @@
 package fuzzycsv;
 
-public  enum ResolutionStrategy {
+public enum ResolutionStrategy {
     DERIVED_FIRST, SOURCE_FIRST
 }

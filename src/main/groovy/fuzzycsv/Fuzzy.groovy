@@ -3,9 +3,6 @@ package fuzzycsv
 import groovy.util.logging.Log4j
 import secondstring.PhraseHelper
 
-/**
- * Created by kay on 8/27/14.
- */
 @Log4j
 class Fuzzy {
 

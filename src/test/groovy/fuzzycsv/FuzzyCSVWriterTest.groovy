@@ -2,13 +2,7 @@ package fuzzycsv
 
 import org.junit.Test
 
-/**
- * Created with IntelliJ IDEA.
- * User: kay
- * Date: 10/26/13
- * Time: 4:51 PM
- * To change this template use File | Settings | File Templates.
- */
+
 class FuzzyCSVWriterTest {
 
     def csv = [

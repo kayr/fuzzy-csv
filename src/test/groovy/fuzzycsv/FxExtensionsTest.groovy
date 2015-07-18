@@ -2,13 +2,7 @@ package fuzzycsv
 
 import org.junit.Test
 
-/**
- * Created with IntelliJ IDEA.
- * User: kay
- * Date: 11/20/13
- * Time: 3:08 PM
- * To change this template use File | Settings | File Templates.
- */
+
 class FxExtensionsTest {
 
     @Test
