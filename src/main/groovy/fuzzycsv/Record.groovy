@@ -121,7 +121,7 @@ class Record {
 
     def value(String name, boolean required = true, def defaultValue = null) {
 
-        assert derivedHeaders.contains(name) || sourceHeaders.contains(name), "Record ${idx()} should have a [$name]"
+        assert derivedHeaders?.contains(name) || sourceHeaders?.contains(name), "Record ${idx()} should have a [$name]"
 
         def value = propertyMissing(name)?.toString()?.trim()
         if (required && !value) {
