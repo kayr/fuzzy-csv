@@ -28,7 +28,9 @@ class CompositeAggregator<T> implements Aggregator<T> {
 
     @Override
     T getValue() {
-        cl.call(aggregatorMap)
+        use(FxExtensions) {
+           cl.call(aggregatorMap)
+        }
     }
 
 

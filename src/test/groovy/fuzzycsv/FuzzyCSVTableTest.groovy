@@ -47,7 +47,7 @@ class FuzzyCSVTableTest {
                                 new Sum(['ps_total_score', 'pipes_total_score'], 'sum'),
                                 new Sum(['tap_total_score'], 'sum_taps')
                         ]
-                        , { it.sum_taps.value + it.sum.value }))
+                        , { it.sum_taps + it.sum }))
         def expected = [
                 ['sub_county', 'avg'],
                 ['Hakibale', 31.1]
@@ -65,7 +65,7 @@ class FuzzyCSVTableTest {
                         [
                                 new Sum(['ps_total_score', 'pipes_total_score', 'tap_total_score'], 'total'),
                                 new Sum(['ps_total_score'], 'total_taps'),
-                        ]) { it['total_taps'].value / it['total'].value * 100 }
+                        ]) { it['total_taps'] / it['total'] * 100 }
         )
 
         def expected = [

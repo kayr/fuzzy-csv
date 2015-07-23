@@ -151,6 +151,22 @@ class FxExtensions {
     static def plus(String first, NullObject second) {
         plusImpl(first, second)
     }
+    //**For STRING and AGGREGATOR**//
+    static def div(String first, Aggregator second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(String first, Aggregator second) {
+        multiplyImpl(first, second)
+    }
+
+    static def minus(String first, Aggregator second) {
+        minusImpl(first, second)
+    }
+
+    static def plus(String first, Aggregator second) {
+        plusImpl(first, second)
+    }
     //*******For OBJECT*********//
     //**For OBJECT and STRING**//
     static def div(Object first, String second) {
@@ -278,6 +294,22 @@ class FxExtensions {
     }
 
     static def plus(Object first, NullObject second) {
+        plusImpl(first, second)
+    }
+    //**For OBJECT and AGGREGATOR**//
+    static def div(Object first, Aggregator second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(Object first, Aggregator second) {
+        multiplyImpl(first, second)
+    }
+
+    static def minus(Object first, Aggregator second) {
+        minusImpl(first, second)
+    }
+
+    static def plus(Object first, Aggregator second) {
         plusImpl(first, second)
     }
     //*******For NUMBER*********//
@@ -409,6 +441,22 @@ class FxExtensions {
     static def plus(Number first, NullObject second) {
         plusImpl(first, second)
     }
+    //**For NUMBER and AGGREGATOR**//
+    static def div(Number first, Aggregator second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(Number first, Aggregator second) {
+        multiplyImpl(first, second)
+    }
+
+    static def minus(Number first, Aggregator second) {
+        minusImpl(first, second)
+    }
+
+    static def plus(Number first, Aggregator second) {
+        plusImpl(first, second)
+    }
     //*******For BIGINTEGER*********//
     //**For BIGINTEGER and STRING**//
     static def div(BigInteger first, String second) {
@@ -536,6 +584,22 @@ class FxExtensions {
     }
 
     static def plus(BigInteger first, NullObject second) {
+        plusImpl(first, second)
+    }
+    //**For BIGINTEGER and AGGREGATOR**//
+    static def div(BigInteger first, Aggregator second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(BigInteger first, Aggregator second) {
+        multiplyImpl(first, second)
+    }
+
+    static def minus(BigInteger first, Aggregator second) {
+        minusImpl(first, second)
+    }
+
+    static def plus(BigInteger first, Aggregator second) {
         plusImpl(first, second)
     }
     //*******For DOUBLE*********//
@@ -667,6 +731,22 @@ class FxExtensions {
     static def plus(Double first, NullObject second) {
         plusImpl(first, second)
     }
+    //**For DOUBLE and AGGREGATOR**//
+    static def div(Double first, Aggregator second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(Double first, Aggregator second) {
+        multiplyImpl(first, second)
+    }
+
+    static def minus(Double first, Aggregator second) {
+        minusImpl(first, second)
+    }
+
+    static def plus(Double first, Aggregator second) {
+        plusImpl(first, second)
+    }
     //*******For FLOAT*********//
     //**For FLOAT and STRING**//
     static def div(Float first, String second) {
@@ -794,6 +874,22 @@ class FxExtensions {
     }
 
     static def plus(Float first, NullObject second) {
+        plusImpl(first, second)
+    }
+    //**For FLOAT and AGGREGATOR**//
+    static def div(Float first, Aggregator second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(Float first, Aggregator second) {
+        multiplyImpl(first, second)
+    }
+
+    static def minus(Float first, Aggregator second) {
+        minusImpl(first, second)
+    }
+
+    static def plus(Float first, Aggregator second) {
         plusImpl(first, second)
     }
     //*******For BIGDECIMAL*********//
@@ -925,6 +1021,22 @@ class FxExtensions {
     static def plus(BigDecimal first, NullObject second) {
         plusImpl(first, second)
     }
+    //**For BIGDECIMAL and AGGREGATOR**//
+    static def div(BigDecimal first, Aggregator second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(BigDecimal first, Aggregator second) {
+        multiplyImpl(first, second)
+    }
+
+    static def minus(BigDecimal first, Aggregator second) {
+        minusImpl(first, second)
+    }
+
+    static def plus(BigDecimal first, Aggregator second) {
+        plusImpl(first, second)
+    }
     //*******For NULLOBJECT*********//
     //**For NULLOBJECT and STRING**//
     static def div(NullObject first, String second) {
@@ -1052,6 +1164,167 @@ class FxExtensions {
     }
 
     static def plus(NullObject first, NullObject second) {
+        plusImpl(first, second)
+    }
+    //**For NULLOBJECT and AGGREGATOR**//
+    static def div(NullObject first, Aggregator second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(NullObject first, Aggregator second) {
+        multiplyImpl(first, second)
+    }
+
+    static def minus(NullObject first, Aggregator second) {
+        minusImpl(first, second)
+    }
+
+    static def plus(NullObject first, Aggregator second) {
+        plusImpl(first, second)
+    }
+    //*******For AGGREGATOR*********//
+    //**For AGGREGATOR and STRING**//
+    static def div(Aggregator first, String second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(Aggregator first, String second) {
+        multiplyImpl(first, second)
+    }
+
+    static def minus(Aggregator first, String second) {
+        minusImpl(first, second)
+    }
+
+    static def plus(Aggregator first, String second) {
+        plusImpl(first, second)
+    }
+    //**For AGGREGATOR and OBJECT**//
+    static def div(Aggregator first, Object second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(Aggregator first, Object second) {
+        multiplyImpl(first, second)
+    }
+
+    static def minus(Aggregator first, Object second) {
+        minusImpl(first, second)
+    }
+
+    static def plus(Aggregator first, Object second) {
+        plusImpl(first, second)
+    }
+    //**For AGGREGATOR and NUMBER**//
+    static def div(Aggregator first, Number second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(Aggregator first, Number second) {
+        multiplyImpl(first, second)
+    }
+
+    static def minus(Aggregator first, Number second) {
+        minusImpl(first, second)
+    }
+
+    static def plus(Aggregator first, Number second) {
+        plusImpl(first, second)
+    }
+    //**For AGGREGATOR and BIGINTEGER**//
+    static def div(Aggregator first, BigInteger second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(Aggregator first, BigInteger second) {
+        multiplyImpl(first, second)
+    }
+
+    static def minus(Aggregator first, BigInteger second) {
+        minusImpl(first, second)
+    }
+
+    static def plus(Aggregator first, BigInteger second) {
+        plusImpl(first, second)
+    }
+    //**For AGGREGATOR and DOUBLE**//
+    static def div(Aggregator first, Double second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(Aggregator first, Double second) {
+        multiplyImpl(first, second)
+    }
+
+    static def minus(Aggregator first, Double second) {
+        minusImpl(first, second)
+    }
+
+    static def plus(Aggregator first, Double second) {
+        plusImpl(first, second)
+    }
+    //**For AGGREGATOR and FLOAT**//
+    static def div(Aggregator first, Float second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(Aggregator first, Float second) {
+        multiplyImpl(first, second)
+    }
+
+    static def minus(Aggregator first, Float second) {
+        minusImpl(first, second)
+    }
+
+    static def plus(Aggregator first, Float second) {
+        plusImpl(first, second)
+    }
+    //**For AGGREGATOR and BIGDECIMAL**//
+    static def div(Aggregator first, BigDecimal second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(Aggregator first, BigDecimal second) {
+        multiplyImpl(first, second)
+    }
+
+    static def minus(Aggregator first, BigDecimal second) {
+        minusImpl(first, second)
+    }
+
+    static def plus(Aggregator first, BigDecimal second) {
+        plusImpl(first, second)
+    }
+    //**For AGGREGATOR and NULLOBJECT**//
+    static def div(Aggregator first, NullObject second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(Aggregator first, NullObject second) {
+        multiplyImpl(first, second)
+    }
+
+    static def minus(Aggregator first, NullObject second) {
+        minusImpl(first, second)
+    }
+
+    static def plus(Aggregator first, NullObject second) {
+        plusImpl(first, second)
+    }
+    //**For AGGREGATOR and AGGREGATOR**//
+    static def div(Aggregator first, Aggregator second) {
+        divImpl(first, second)
+    }
+
+    static def multiply(Aggregator first, Aggregator second) {
+        multiplyImpl(first, second)
+    }
+
+    static def minus(Aggregator first, Aggregator second) {
+        minusImpl(first, second)
+    }
+
+    static def plus(Aggregator first, Aggregator second) {
         plusImpl(first, second)
     }
 

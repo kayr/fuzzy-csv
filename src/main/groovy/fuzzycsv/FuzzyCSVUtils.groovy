@@ -24,6 +24,9 @@ class FuzzyCSVUtils {
         if (obj == null)
             return preferredType == Integer || preferredType == BigInteger ? 0 : 0.0
 
+        if (obj instanceof Aggregator)
+            obj = obj.getValue()
+
         if (obj instanceof Number)
             return obj as Number
 
