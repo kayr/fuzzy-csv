@@ -7,6 +7,11 @@ class Sum extends AbstractAggregator<Number> {
 
     Sum() {}
 
+
+    Sum(List<String> columns) {
+        this.columns = columns
+    }
+
     Sum(List<String> columns, String columnName) {
         this.columnName = columnName
         this.columns = columns
@@ -22,8 +27,9 @@ class Sum extends AbstractAggregator<Number> {
         return value
     }
 
-    static Sum sum(String columnName, String[] aggregateColumns) {
-        return new Sum(aggregateColumns as List, columnName)
+
+    static Sum sum(String[] aggregateColumns) {
+        return new Sum(aggregateColumns as List)
     }
 
     static Sum plnSum(String[] aggregateColumns) {

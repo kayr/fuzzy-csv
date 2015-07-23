@@ -70,4 +70,15 @@ class RecordFx<RT> {
         return this
     }
 
+    RecordFx headersOn() {
+        this.headerEnabled = true
+        return this
+    }
+
+    RecordFx headersOff() {
+        this.headerEnabled = false
+        return this
+    }
+
+
 }

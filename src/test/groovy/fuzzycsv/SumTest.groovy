@@ -14,7 +14,7 @@ class SumTest {
 
         println FuzzyCSVTable.tbl(Data.csv)
 
-        sumFx = sum('sum', 'ps_total_score', 'pipes_total_score', 'tap_total_score')
+        sumFx = sum('ps_total_score', 'pipes_total_score', 'tap_total_score').az('sum')
         sumFx.data = Data.csv
 
         println FuzzyCSVTable.tbl(Data.csv)

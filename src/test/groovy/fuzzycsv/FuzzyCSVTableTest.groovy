@@ -20,7 +20,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testAggregate() {
-        def data = tbl(Data.csv).aggregate(['sub_county'], new Sum(columns: ['ps_total_score', 'pipes_total_score', 'tap_total_score'], columnName: 'sum'))
+        def data = tbl(Data.csv).aggregate(['sub_county', new Sum(columns: ['ps_total_score', 'pipes_total_score', 'tap_total_score'], columnName: 'sum')])
         def expected = [
                 ['sub_county', 'sum'],
                 ['Hakibale', 31.1]
@@ -30,8 +30,8 @@ class FuzzyCSVTableTest {
 
     @Test
     void testAggregate2Columns() {
-        def data = tbl(Data.csv).aggregate(['sub_county'], new Sum(columns: ['ps_total_score', 'pipes_total_score'], columnName: 'sum'),
-                new Sum(columns: ['tap_total_score'], columnName: 'sum_taps'))
+        def data = tbl(Data.csv).aggregate(['sub_county', new Sum(columns: ['ps_total_score', 'pipes_total_score'], columnName: 'sum'),
+                                            new Sum(columns: ['tap_total_score'], columnName: 'sum_taps')])
         def expected = [
                 ['sub_county', 'sum', 'sum_taps'],
                 ['Hakibale', 20.1, 11]
@@ -41,13 +41,13 @@ class FuzzyCSVTableTest {
 
     @Test
     void testAggregateAggregator() {
-        def data = tbl(Data.csv).aggregate(['sub_county'],
-                CompositeAggregator.get('avg',
-                        [
-                                new Sum(['ps_total_score', 'pipes_total_score'], 'sum'),
-                                new Sum(['tap_total_score'], 'sum_taps')
-                        ]
-                        , { it.sum_taps + it.sum }))
+        def data = tbl(Data.csv).aggregate(['sub_county',
+                                            CompositeAggregator.get('avg',
+                                                    [
+                                                            new Sum(['ps_total_score', 'pipes_total_score'], 'sum'),
+                                                            new Sum(['tap_total_score'], 'sum_taps')
+                                                    ]
+                                                    , { it.sum_taps + it.sum })])
         def expected = [
                 ['sub_county', 'avg'],
                 ['Hakibale', 31.1]
@@ -59,13 +59,32 @@ class FuzzyCSVTableTest {
     @Test
     void testCount() {
         def data = tbl(Data.csv).aggregate(
-                ['sub_county'],
-                new Sum(columns: ['ps_total_score', 'pipes_total_score'], columnName: 'sum'),
-                CompositeAggregator.get('perc_taps',
-                        [
-                                new Sum(['ps_total_score', 'pipes_total_score', 'tap_total_score'], 'total'),
-                                new Sum(['ps_total_score'], 'total_taps'),
-                        ]) { it['total_taps'] / it['total'] * 100 }
+                ['sub_county',
+                 new Sum(columns: ['ps_total_score', 'pipes_total_score'], columnName: 'sum'),
+                 CompositeAggregator.get('perc_taps',
+                         [
+                                 new Sum(['ps_total_score', 'pipes_total_score', 'tap_total_score'], 'total'),
+                                 new Sum(['ps_total_score'], 'total_taps'),
+                         ]) { it['total_taps'] / it['total'] * 100 }]
+        )
+
+        def expected = [
+                ['sub_county', 'sum', 'perc_taps'],
+                ['Hakibale', 20.1, 61.4147910000]
+        ]
+        assert data.csv == expected
+    }
+
+    @Test
+    void testCountFluent() {
+        def data = tbl(Data.csv).aggregate(
+                ['sub_county',
+                 new Sum(columns: ['ps_total_score', 'pipes_total_score'], columnName: 'sum'),
+                 CompositeAggregator.get('perc_taps',
+                         [
+                                 new Sum(['ps_total_score', 'pipes_total_score', 'tap_total_score'], 'total'),
+                                 new Sum(['ps_total_score'], 'total_taps'),
+                         ]) { it['total_taps'] / it['total'] * 100 }]
         )
 
         def expected = [
@@ -89,10 +108,11 @@ class FuzzyCSVTableTest {
     @Test
     void testAggregateGrouping() {
         def results = tbl(Data.groupingData)
-                .aggregate(['sub_county'],
-                fn { it.sub_county },
-                sum('sum', 'ps_total_score'),
-                sum('tap_sum', 'tap_total_score'))
+                .aggregate(['sub_county',
+                            sum('ps_total_score').az('sum'),
+                            sum('tap_total_score').az('tap_sum')],
+                fn { it.sub_county }
+        )
 
         def expected = [
                 ['sub_county', 'sum', 'tap_sum'],

@@ -29,12 +29,27 @@ class CompositeAggregator<T> implements Aggregator<T> {
     @Override
     T getValue() {
         use(FxExtensions) {
-           cl.call(aggregatorMap)
+            cl.call(aggregatorMap)
         }
     }
 
+    @Override
+    Aggregator az(String name) {
+        this.columnName = name; this
+    }
+
+    CompositeAggregator<T> grp(Aggregator... aggregators) {
+        aggregators.each {
+            aggregatorMap[it.columnName] = it
+        }
+        this
+    }
 
     static <T> CompositeAggregator<T> get(String columnName, List<Aggregator> aggregators, Closure cl) {
         return new CompositeAggregator<T>(columnName, aggregators, cl)
+    }
+
+    static <T> CompositeAggregator cAggr() {
+        new CompositeAggregator<T>()
     }
 }

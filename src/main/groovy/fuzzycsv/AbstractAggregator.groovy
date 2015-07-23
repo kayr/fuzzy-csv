@@ -31,4 +31,10 @@ abstract class AbstractAggregator<T> implements Aggregator<T> {
         this.data = new ArrayList(data)
     }
 
+    @Override
+    Aggregator az(String name) {
+        columnName = name; this
+    }
+
+
 }

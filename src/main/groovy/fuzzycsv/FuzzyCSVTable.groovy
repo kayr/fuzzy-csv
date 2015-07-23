@@ -14,41 +14,27 @@ class FuzzyCSVTable {
     }
 
 
-    FuzzyCSVTable aggregate(List<String> columns, Aggregator... aggregators) {
-
-        def aggregatorValues = [:]
+    FuzzyCSVTable aggregate(List columns) {
+        def aggregators = columns.findAll {it instanceof Aggregator}
 
         //get the values of all aggregators
         aggregators.each {
             it.data = csv
-            aggregatorValues[it.columnName] = it.value
         }
 
-        //get new column headers including aggregators
-        def newColumnHeaders = new ArrayList(columns)
-        aggregators.each {
-            newColumnHeaders << it.columnName
-        }
-
-        //trim down table since we will return only one record
         def newTable = csv[0..1]
 
         //format the table as using the new column organisation
-        newTable = FuzzyCSV.rearrangeColumns(newColumnHeaders, newTable)
-
-        //now add the new aggregated values
-        aggregatorValues.eachWithIndex { Map.Entry<String, Object> entry, int i ->
-            FuzzyCSV.putInCellWithHeader(newTable, entry.key, 1, entry.value)
-        }
+        newTable = FuzzyCSV.select(columns, newTable)
 
         return tbl(newTable)
     }
 
-    FuzzyCSVTable aggregate(List<String> columns, RecordFx groupFx, Aggregator... aggregators) {
+    FuzzyCSVTable aggregate(List columns, RecordFx groupFx) {
         Map<Object, FuzzyCSVTable> groups = groupBy(groupFx)
 
         def aggregatedTables = groups.collect { key, value ->
-            value.aggregate(columns, aggregators)
+            value.aggregate(columns)
         }
         //todo do not modify internal data
         def mainTable = aggregatedTables.remove(0)

@@ -10,4 +10,7 @@ interface Aggregator<T> {
     String getColumnName()
 
     void setColumnName(String name)
+
+    Aggregator az(String name)
+
 }

@@ -290,6 +290,11 @@ public class FuzzyCSV {
                 return
             }
 
+            if(header instanceof Aggregator){
+                newCsv = putInColumn(newCsv,fn(header.columnName){header.value},idx,csv)
+                return
+            }
+
             int oldCsvColIdx = Fuzzy.findBestPosition(csv[0], header, ACCURACY_THRESHOLD.get())
 
             def oldCsvColumn
