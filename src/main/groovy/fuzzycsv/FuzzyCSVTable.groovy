@@ -14,6 +14,10 @@ class FuzzyCSVTable {
     }
 
 
+    FuzzyCSVTable aggregate(Object... columns) {
+        aggregate(columns as List)
+    }
+
     FuzzyCSVTable aggregate(List columns) {
         def aggregators = columns.findAll {it instanceof Aggregator}
 

@@ -234,18 +234,18 @@ public class FuzzyCSV {
      * @param csv
      * @return
      */
-    static List<List> select(List<?> headers, List<? extends List> csv) {
-        rearrangeColumns(headers, csv)
+    static List<List> select(List<?> headers, List<? extends List> csv, Mode mode = Mode.RELAXED) {
+        rearrangeColumns(headers, csv, mode)
     }
 
-    static List<List> select(String[] headers, List<? extends List> csv) {
-        rearrangeColumns(headers as List, csv)
+    static List<List> select(String[] headers, List<? extends List> csv, Mode mode = Mode.RELAXED) {
+        rearrangeColumns(headers as List, csv, mode)
     }
 
-    static deleteColumn(List<? extends List> csv, String[] columns) {
+    static deleteColumn(List<? extends List> csv, String[] columns, Mode mode = Mode.RELAXED) {
         def newHeaders = new ArrayList<>(csv[0])
         newHeaders.removeAll(columns)
-        rearrangeColumns(newHeaders, csv)
+        rearrangeColumns(newHeaders, csv, mode)
     }
 
     /**
@@ -274,11 +274,15 @@ public class FuzzyCSV {
      * @param csv
      * @return
      */
-    static List<List> rearrangeColumns(String[] headers, List<? extends List> csv) {
-        rearrangeColumns(headers as List, csv)
+    static List<List> rearrangeColumns(String[] headers, List<? extends List> csv, Mode mode = Mode.RELAXED) {
+        rearrangeColumns(headers as List, csv, mode)
     }
 
-    static List<List> rearrangeColumns(List<?> headers, List<? extends List> csv) {
+    static List<List> rearrangeColumns(List<?> headers, List<? extends List> csv, Mode mode = Mode.RELAXED) {
+        if (mode.isStrict()) {
+            assertValidSelectHeaders(headers, csv)
+        }
+
         List<List> newCsv = []
         csv.size().times {
             newCsv.add(new ArrayList(headers.size()))
@@ -290,8 +294,8 @@ public class FuzzyCSV {
                 return
             }
 
-            if(header instanceof Aggregator){
-                newCsv = putInColumn(newCsv,fn(header.columnName){header.value},idx,csv)
+            if (header instanceof Aggregator) {
+                newCsv = putInColumn(newCsv, fn(header.columnName) { header.value }, idx, csv)
                 return
             }
 
@@ -306,6 +310,29 @@ public class FuzzyCSV {
             newCsv = putInColumn(newCsv, oldCsvColumn, idx)
         }
         return newCsv
+    }
+
+    static void assertValidSelectHeaders(List<?> headers, List<? extends List> csv) {
+        //confirm all headers exist
+        headers.each {
+            if (it instanceof String) {
+                def columnPosition = Fuzzy.findBestPosition(csv[0], it, ACCURACY_THRESHOLD.get())
+                if (columnPosition == -1) throw new IllegalArgumentException("Header[$it] Should Exist In The CSV Header ${csv[0]}")
+            }
+        }
+    }
+
+    static List<List> toUnModifiableCSV(List<?> csv) {
+        def necCSv = csv.collect { Collections.unmodifiableList(it) }
+        return Collections.unmodifiableList(necCSv)
+    }
+
+    static List<List> toListOfLists(Collection<?> csv) {
+        return csv.collect { it as List }
+    }
+
+    static List<List> clone(Collection<?> csv) {
+        return csv.collect { new ArrayList<>(it) }
     }
 
     /**

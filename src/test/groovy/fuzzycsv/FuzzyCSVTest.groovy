@@ -273,7 +273,9 @@ class FuzzyCSVTest {
 
     def getCSV(String path) {
         def text = getClass().getResource(path).text
-        return FuzzyCSV.parseCsv(text)
+        return FuzzyCSV.toUnModifiableCSV(
+                FuzzyCSV.toListOfLists(
+                        FuzzyCSV.parseCsv(text)))
     }
 
     @Test
@@ -447,12 +449,12 @@ class FuzzyCSVTest {
 
     @Test
     void testTranspose2() {
-        def orig = [
+        def orig = FuzzyCSV.toUnModifiableCSV([
                 ['dis', 'qlt', 'qty', 'acss', 'rel'],
                 ['kava', 'male', 2, 4, 4],
                 ['lira', 'female', 44, 55, 66],
                 ['lira', 'male', 44, 55, 66]
-        ]
+        ])
 
         def expected = [
                 ['dis', 'kava', 'lira', 'lira'],
@@ -469,12 +471,12 @@ class FuzzyCSVTest {
 
     @Test
     void testDeleteColumn() {
-        def orig = [
+        def orig = FuzzyCSV.toUnModifiableCSV([
                 ['dis', 'qlt', 'qty', 'acss', 'rel'],
                 ['kava', 'male', 2, 4, 4],
                 ['lira', 'female', 44, 55, 66],
                 ['lira', 'male', 44, 55, 66]
-        ]
+        ])
 
         def expected = [
                 ['qty', 'acss', 'rel'],
@@ -489,12 +491,12 @@ class FuzzyCSVTest {
 
     @Test
     void testTransform() {
-        def orig = [
+        def orig = FuzzyCSV.toUnModifiableCSV([
                 ['dis', 'qlt', 'qty', 'acss', 'rel'],
                 ['kava', 'male', 2, 4, 4],
                 ['lira', 'female', 44, 55, 66],
                 ['lira', 'male', 44, 55, 66]
-        ]
+        ])
 
         def expected = [
                 ['dis', 'qlt', 'qty', 'acss', 'rel'],

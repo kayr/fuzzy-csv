@@ -9,14 +9,14 @@ import static fuzzycsv.Sum.sum
 
 class FuzzyCSVTableTest {
 
-    static def csv2 = [
+    static def csv2 = FuzzyCSV.toUnModifiableCSV([
             ['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
             ['Hakibale', 18.1, null, null],
             ['Kabonero', 1, null, null],
             ['Kisomoro', null, 1, 10],
             ['Bunyangabu', null, null, '1'],
             ['Noon', null, null, 0]
-    ]
+    ])
 
     @Test
     void testAggregate() {
@@ -78,14 +78,12 @@ class FuzzyCSVTableTest {
     @Test
     void testCountFluent() {
         def data = tbl(Data.csv).aggregate(
-                ['sub_county',
-                 new Sum(columns: ['ps_total_score', 'pipes_total_score'], columnName: 'sum'),
-                 CompositeAggregator.get('perc_taps',
-                         [
-                                 new Sum(['ps_total_score', 'pipes_total_score', 'tap_total_score'], 'total'),
-                                 new Sum(['ps_total_score'], 'total_taps'),
-                         ]) { it['total_taps'] / it['total'] * 100 }]
-        )
+                'sub_county',
+                sum('ps_total_score', 'pipes_total_score').az('sum'),
+                sum('ps_total_score').az('total_taps'),
+                sum('ps_total_score', 'pipes_total_score', 'tap_total_score').az('total'),
+                fn('perc_taps') { it.total_taps / it.total * 100 }
+        ).select('sub_county', 'sum', 'perc_taps')
 
         def expected = [
                 ['sub_county', 'sum', 'perc_taps'],
@@ -130,7 +128,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testAddColumn() {
-        def actual = tbl(csv2).addColumn(fn('Bla') { it.ps_total_score + 1 })
+        def actual = tbl(FuzzyCSV.clone(csv2)).addColumn(fn('Bla') { it.ps_total_score + 1 })
 
         def expected = [
                 ['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score', 'Bla'],

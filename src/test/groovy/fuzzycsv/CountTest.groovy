@@ -3,7 +3,7 @@ package fuzzycsv
 import org.junit.Test
 
 
-class CountTest {
+class CountTest extends GroovyTestCase {
 
     @Test
     void testGetValue() {
@@ -19,8 +19,10 @@ class CountTest {
         count = new Count(null, Data.csv)
         assert count.value == 5
 
-        count = new Count(['dsd'], Data.csv)
-        assert count.value == 0
+        shouldFail(IllegalArgumentException){
+             new Count(['dsd'], Data.csv).value
+        }
+
 
     }
 }

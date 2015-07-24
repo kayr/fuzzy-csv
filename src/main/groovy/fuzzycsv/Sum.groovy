@@ -3,16 +3,19 @@ package fuzzycsv
 
 class Sum extends AbstractAggregator<Number> {
 
-    List<String> columns
+    /**
+     * A list of either Record functions or Column Names
+     */
+    List columns
 
     Sum() {}
 
 
-    Sum(List<String> columns) {
+    Sum(List columns) {
         this.columns = columns
     }
 
-    Sum(List<String> columns, String columnName) {
+    Sum(List columns, String columnName) {
         this.columnName = columnName
         this.columns = columns
     }
@@ -21,18 +24,17 @@ class Sum extends AbstractAggregator<Number> {
     Number getValue() {
         List<List> data = getData(columns)
         def value = data.sum { row ->
-
             return FuzzyCSVUtils.toNumbers(row).sum()
         }
         return value
     }
 
 
-    static Sum sum(String[] aggregateColumns) {
+    static Sum sum(Object[] aggregateColumns) {
         return new Sum(aggregateColumns as List)
     }
 
-    static Sum plnSum(String[] aggregateColumns) {
+    static Sum plnSum(Object[] aggregateColumns) {
         sum("sum(${aggregateColumns.join(',')})", aggregateColumns)
     }
 }
