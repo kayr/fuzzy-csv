@@ -33,8 +33,8 @@ repositories {
     mavenLocal()
     mavenCentral()
 
-    maven { url "https://dl.dropbox.com/u/3038882/p/m2/snapshots" }
-    maven { url "https://dl.dropbox.com/u/3038882/p/m2/releases" }
+    maven { url "https://dl.dropboxusercontent.com/u/3038882/p/m2/snapshots" }
+    maven { url "https://dl.dropboxusercontent.com/u/3038882/p/m2/releases" }
     maven { url "http://repo.maven.apache.org/maven2" }
 }
 dependencies {
