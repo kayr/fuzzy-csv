@@ -152,16 +152,19 @@ public class FuzzyCSV {
 
         //container to keep track the matchedCSV2 records
         def matchedCSV2Records = []
-        def combinedList = []
+        def combinedList = [selectColumns]
 
         Record recObj = Record.getRecord(csv1[0] as List, csv1[1] as List, -1)
         recObj.sourceHeaders = csv2[0]
 
-        csv1.each { record1 ->
+        csv1.eachWithIndex { record1, int idx ->
+            if(idx == 0) return
             def record1Matched = false
             recObj.derivedRecord = record1
 
             csv2.eachWithIndex { record2, int index ->
+
+                if(index == 0) return
 
                 recObj.sourceRecord = record2
 
@@ -185,6 +188,7 @@ public class FuzzyCSV {
         if (!doRightJoin || matchedCSV2Records.size() == csv2.size()) return combinedList
 
         csv2.eachWithIndex { csv2Record, int i ->
+            if(i == 0 ) return
             if (matchedCSV2Records.contains(i))
                 return
 
@@ -203,7 +207,8 @@ public class FuzzyCSV {
         def mergedRecord = columns.collect { columnFx ->
             if (columnFx instanceof RecordFx)
                 return columnFx.getValue(recObj)
-            return recObj."$columnFx"
+            def finalValue = recObj[columnFx]
+            return finalValue
         }
         return mergedRecord
     }

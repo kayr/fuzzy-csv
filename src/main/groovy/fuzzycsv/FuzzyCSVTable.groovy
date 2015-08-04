@@ -211,7 +211,7 @@ class FuzzyCSVTable {
 
         int ii = 0
         def rows = []
-        csv.collect { r ->
+        csv.each { r ->
             if (ii == 0) {
                 ii++; return
             }

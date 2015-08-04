@@ -158,7 +158,7 @@ class FuzzyCSVTest {
                 ['Ronald', 'Male', 3, 'Bweyos', 'English', 50],
                 ['Sara', 'Female', 4, 'Muyenga', null, null]
         ]
-        assertEquals join.toString(), expected.toString()
+        assertEquals tbl(expected).toString(), tbl(join).toString()
 
         join = FuzzyCSV.leftJoin(csv_1, csv_2, fn {
             it.Name == it.'@Name'
@@ -254,7 +254,7 @@ class FuzzyCSVTest {
                 ['Sara', 'Female', 4, 'Muyenga', 4, 'Cat'],
                 ['Ronald', 'Femal', null, null, 3, 'Monkey']
         ]
-        assertEquals tbl(join).toString(), tbl(expected).toString()
+        assertEquals tbl(expected).toString(), tbl(join).toString()
 
         join = FuzzyCSV.fullJoin(csv_1, csv_2, fn {
             it.Name == it.'@Name' && it.Sex == it.'@Sex'

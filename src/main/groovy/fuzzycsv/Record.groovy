@@ -80,6 +80,9 @@ class Record {
         if (resolutionStrategy == DERIVED_FIRST) return sourceRecord[idx]
     }
 
+    def getAt(CharSequence name) { propertyMissing(name as String) }
+
+    def getAt(def name) {  throw new UnsupportedOperationException("object column names not supported. $name")  }
 
     boolean isHeader() { recordIdx == 0 }
 
@@ -118,7 +121,7 @@ class Record {
         assert derivedHeaders?.contains(name) || sourceHeaders?.contains(name), "Record ${idx()} should have a [$name]"
 
         def value = propertyMissing(name)?.toString()?.trim()
-        if (required && !value) {
+        if (required && value == null) {
             if (defaultValue) return defaultValue
             throw new IllegalStateException("Record [${idx()}] has an Empty Cell[$name] that is Required")
         }
