@@ -128,4 +128,6 @@ class Record {
         return value
     }
 
+    def val(def col){propertyMissing(col as String)}
+
 }

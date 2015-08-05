@@ -207,7 +207,7 @@ public class FuzzyCSV {
         def mergedRecord = columns.collect { columnFx ->
             if (columnFx instanceof RecordFx)
                 return columnFx.getValue(recObj)
-            def finalValue = recObj[columnFx]
+            def finalValue = recObj.val(columnFx)
             return finalValue
         }
         return mergedRecord
