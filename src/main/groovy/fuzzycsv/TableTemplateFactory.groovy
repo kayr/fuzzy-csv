@@ -2,7 +2,7 @@ package fuzzycsv;
 
 class TableTemplateFactory {
     def columns = [];     // contains columns names and their length
-    def columnLen = [:];  // contains lengthes of the columns
+    def columnLen = [:];  // contains lengths of the columns
     def header1 = '';     // contains columns names
     def header2 = '';     // contains underscores
     def body = '';        // the rows of the table
