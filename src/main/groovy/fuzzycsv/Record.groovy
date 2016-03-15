@@ -4,7 +4,7 @@ import groovy.transform.CompileStatic
 
 import static fuzzycsv.ResolutionStrategy.*
 
-//@CompileStatic
+@CompileStatic
 class Record {
     List<String> finalHeaders
     List finalRecord
@@ -36,12 +36,12 @@ class Record {
 
     @Deprecated
     void setDerivedRecord(List derivedRecord) {
-        this.finalRecord = derivedRecord ?:  []
+        this.finalRecord = derivedRecord ?: []
     }
 
     @Deprecated
     void setSourceHeaders(List<String> sourceHeaders) {
-        this.leftHeaders = sourceHeaders ?:  [] as List<String>
+        this.leftHeaders = sourceHeaders ?: [] as List<String>
     }
 
     @Deprecated
@@ -112,9 +112,7 @@ class Record {
         def finalIdx = toNegOne finalHeaders?.indexOf(name)
         def rIdx = toNegOne rightHeaders?.indexOf(name)
 
-        if ((lIdx != null && lIdx == -1) &&
-                (finalIdx != null && finalIdx == -1) &&
-                (rIdx != null && rIdx == -1)) {
+        if (lIdx == -1 && finalIdx == -1 && rIdx == -1) {
             throwColumnNotFound(origName)
         }
 
