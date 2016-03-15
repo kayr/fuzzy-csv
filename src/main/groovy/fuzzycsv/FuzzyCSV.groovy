@@ -86,8 +86,8 @@ public class FuzzyCSV {
                 if (sourceCSV) {
                     def oldCSVRecord = sourceCSV[lstIdx]
                     def oldCSVHeader = sourceCSV[0]
-                    record.sourceRecord = oldCSVRecord
-                    record.sourceHeaders = oldCSVHeader
+                    record.leftRecord = oldCSVRecord
+                    record.leftHeaders = oldCSVHeader
                 }
                 cellValue = column.getValue(record)
             }
@@ -154,19 +154,18 @@ public class FuzzyCSV {
         def matchedCSV2Records = []
         def combinedList = [selectColumns]
 
-        Record recObj = Record.getRecord(csv1[0] as List, csv1[1] as List, -1)
-        recObj.sourceHeaders = csv2[0]
+        Record recObj = new Record(leftHeaders: csv1[0], rightHeaders: csv2[0], recordIdx: -1)
 
         csv1.eachWithIndex { record1, int idx ->
-            if(idx == 0) return
+            if (idx == 0) return
             def record1Matched = false
-            recObj.derivedRecord = record1
+            recObj.leftRecord = record1
 
             csv2.eachWithIndex { record2, int index ->
 
-                if(index == 0) return
+                if (index == 0) return
 
-                recObj.sourceRecord = record2
+                recObj.rightRecord = record2
 
                 if (onFunction.getValue(recObj)) {
 
@@ -177,8 +176,9 @@ public class FuzzyCSV {
                     List<Object> mergedRecord = buildCSVRecord(selectColumns, recObj)
                     combinedList << mergedRecord
                 }
-                recObj.sourceRecord = []
             }
+            //clear the right record
+            recObj.rightRecord = []
             if (!record1Matched && doLeftJoin) {
                 def leftJoinRecord = buildCSVRecord(selectColumns, recObj)
                 combinedList << leftJoinRecord
@@ -187,14 +187,15 @@ public class FuzzyCSV {
 
         if (!doRightJoin || matchedCSV2Records.size() == csv2.size()) return combinedList
 
+        //doing the right join here
         csv2.eachWithIndex { csv2Record, int i ->
-            if(i == 0 ) return
+            if (i == 0) return
             if (matchedCSV2Records.contains(i))
                 return
 
-            recObj.resolutionStrategy = ResolutionStrategy.SOURCE_FIRST
-            recObj.derivedRecord = []
-            recObj.sourceRecord = csv2Record
+            recObj.resolutionStrategy = ResolutionStrategy.RIGHT_FIRST
+            recObj.leftRecord = []
+            recObj.rightRecord = csv2Record
 
             def newCombinedRecord = buildCSVRecord(selectColumns, recObj)
             combinedList << newCombinedRecord

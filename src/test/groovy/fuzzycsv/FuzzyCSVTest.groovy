@@ -558,4 +558,31 @@ class FuzzyCSVTest {
                 [null, null, 5, null],
                 [null, null, 4, null]] == FuzzyCSV.cleanUpRepeats(csv, 'sex', 'p4')
     }
+
+    @Test
+    void testJoiningWithEmptyTable() {
+        def csv1 = [
+                ['name', 'sex'],
+                ['2', '3']
+        ]
+
+        def empty = [
+                ['name', 'age']
+        ]
+
+        assert tbl(csv1).leftJoin(empty, 'name').csv == [
+                ['name', 'sex', 'age'],
+                ['2', '3', null]
+        ]
+
+        assert tbl(csv1).rightJoin(empty, 'name').csv == [
+                ['name', 'sex', 'age']
+        ]
+
+        assert tbl(csv1).fullJoin(empty, 'name').csv == [
+                ['name', 'sex', 'age'],
+                ['2', '3', null]
+        ]
+
+    }
 }
