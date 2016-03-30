@@ -1,15 +1,17 @@
 package fuzzycsv
 
+import groovy.transform.CompileStatic
 import groovy.util.logging.Log4j
 import secondstring.PhraseHelper
 
 @Log4j
+@CompileStatic
 class Fuzzy {
 
     static int findBestPosition(def phrases, String header, float minScore) {
         phrases = phrases as List
         def csvColIdx = findPosition(phrases, header)
-        if (csvColIdx == -1) {
+        if (csvColIdx == -1 && FuzzyCSV.ACCURACY_THRESHOLD.get() <= 100) {
             csvColIdx = findClosestPosition(phrases, header, minScore)
         }
         csvColIdx
@@ -17,7 +19,7 @@ class Fuzzy {
 
     static int findClosestPosition(def phrases, String phrase, float minScore) {
         phrases = phrases as List
-        def ph = PhraseHelper.train(phrases)
+        def ph = PhraseHelper.train(phrases as List)
         def newName = ph.bestInternalHit(phrase, minScore)
 
         if (newName == null) {
@@ -31,6 +33,6 @@ class Fuzzy {
     }
 
     static int findPosition(def phrases, String name) {
-        phrases.findIndexOf { value -> value.toLowerCase().trim().equalsIgnoreCase(name.trim().toLowerCase()) }
+        phrases.findIndexOf { value -> value.toString().toLowerCase().trim().equalsIgnoreCase(name.trim().toLowerCase()) }
     }
 }

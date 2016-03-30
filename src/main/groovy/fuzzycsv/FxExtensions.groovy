@@ -1,14 +1,16 @@
 package fuzzycsv
 
+import groovy.transform.CompileStatic
 import org.codehaus.groovy.runtime.NullObject
 import org.codehaus.groovy.runtime.typehandling.NumberMath
 
 import static fuzzycsv.FuzzyCSVUtils.coerceToNumber
 
 
+@CompileStatic
 class FxExtensions {
 
-    static ThreadLocal<Boolean> convertNullToZero = new ThreadLocal<Boolean>() {
+    static ThreadLocal<Boolean> convertNullToZero = new ThreadLocal() {
         @Override
         protected Boolean initialValue() {
             return true
@@ -1379,6 +1381,6 @@ class FxExtensions {
     static avg(Collection collection) {
         def notNulls = collection?.findAll { it != null }
         if (!notNulls) return null
-        return notNulls.sum() / notNulls.size()
+        return divImpl(notNulls.sum(), notNulls.size())
     }
 }
