@@ -18,6 +18,13 @@ public class FuzzyCSV {
         }
     }
 
+    public static ThreadLocal<Boolean> THROW_EXCEPTION_ON_ABSENT_COLUMN = new ThreadLocal<Boolean>() {
+        @Override
+        protected Boolean initialValue() {
+            return true
+        }
+    }
+
     static boolean trace = false
 
     static List<List> parseCsv(String csv) {

@@ -16,6 +16,8 @@ class Record {
     List rightRecord
 
     boolean useFuzzy = false
+    boolean throwExceptionOnNullColumn = true
+    private boolean useDefaultSilentMode = true
 
     int recordIdx = -1
 
@@ -95,6 +97,11 @@ class Record {
     }
 
 
+    @SuppressWarnings("GrMethodMayBeStatic")
+    private def toNegOne(d) {
+        d == null ? -1 : d
+    }
+
     def propertyMissing(String name) {
 
         def origName = name
@@ -105,15 +112,15 @@ class Record {
         }
 
 
-
-        def toNegOne = { d -> d == null ? -1 : d }
-
         def lIdx = toNegOne leftHeaders?.indexOf(name)
         def finalIdx = toNegOne finalHeaders?.indexOf(name)
         def rIdx = toNegOne rightHeaders?.indexOf(name)
 
         if (lIdx == -1 && finalIdx == -1 && rIdx == -1) {
-            throwColumnNotFound(origName)
+            if (shouldThrowException())
+                throwColumnNotFound(origName)
+            else
+                return null
         }
 
         def value
@@ -132,6 +139,32 @@ class Record {
         return value
     }
 
+    private boolean shouldThrowException() {
+        if (useDefaultSilentMode) {
+            return FuzzyCSV.THROW_EXCEPTION_ON_ABSENT_COLUMN.get()
+        } else {
+            return throwExceptionOnNullColumn
+        }
+    }
+
+    Record silentModeOn() {
+        throwExceptionOnNullColumn = false
+        useDefaultSilentMode = false
+        return this
+    }
+
+    Record silentModeOff() {
+        throwExceptionOnNullColumn = true
+        useDefaultSilentMode = false
+        return this
+    }
+
+    Record silentModeDefault() {
+        useDefaultSilentMode = true
+        return this
+    }
+
+
     private def tryRight(String name) { resolveValue(rightHeaders, rightRecord, name, false) }
 
     private def tryLeft(String name) { resolveValue(leftHeaders, leftRecord, name, false) }
@@ -141,7 +174,7 @@ class Record {
 
     @SuppressWarnings("GrMethodMayBeStatic")
     private def throwColumnNotFound(String name) {
-        throw new IllegalArgumentException("[$name] could not be found in the record")
+        throw new IllegalArgumentException("Record ${idx()} should have a column[$name]")
 
     }
 
@@ -189,7 +222,7 @@ class Record {
 
     def value(String name, boolean required = true, def defaultValue = null) {
 
-        assert finalHeaders?.contains(name) || leftHeaders?.contains(name), "Record ${idx()} should have a [$name]"
+        assertHeaderNameExists(name)
 
         def value = propertyMissing(name)?.toString()?.trim()
         if (required && value == null) {
@@ -199,7 +232,27 @@ class Record {
         return value
     }
 
+    private void assertHeaderNameExists(String name) {
+        def nameInHeader = finalHeaders?.contains(name) || leftHeaders?.contains(name)
+        if (!nameInHeader) throwColumnNotFound("Record ${idx()} should have a [$name]")
+    }
+
 
     def val(def col) { propertyMissing(col as String) }
+
+    def withSilentMode(Closure c) {
+        silentModeOn()
+        c.delegate = this
+        def value = c.call()
+        silentModeDefault()
+        return value
+    }
+
+    def silentVal(def c) {
+        silentModeOn()
+        def value = val(c)
+        silentModeDefault()
+        return value
+    }
 
 }

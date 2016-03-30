@@ -1,5 +1,7 @@
 package fuzzycsv
 
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 
 class RecordTest extends GroovyTestCase {
@@ -9,6 +11,11 @@ class RecordTest extends GroovyTestCase {
 
     def derivedHeader = ['name', 'age']
     def derivedRecord = ['ron', 12]
+
+    @Before
+    void tearDown() {
+        FuzzyCSV.THROW_EXCEPTION_ON_ABSENT_COLUMN.set(true)
+    }
 
     @Test
     void testPropertyMissing() {
@@ -34,10 +41,36 @@ class RecordTest extends GroovyTestCase {
         record.sourceHeaders = sourceHeader
         record.sourceRecord = sourceRecord
 
-        shouldFail(AssertionError) { record.value('blah') }
+        shouldFail(IllegalArgumentException) { record.value('blah') }
         assert record.value('name') == 'ron'
         assert record.value('age', false) == null
         shouldFail(IllegalStateException) { record.value('age') == null }
         assert record.value('age', true, 10) == 10
     }
+
+    @Test
+    void testAbsentColumn() {
+        Record record = new Record(derivedHeader, ['ron', null])
+
+        shouldFail(IllegalArgumentException) { record.value('blah') }
+
+        //SILENT MODE ON RECORD
+        assert record.withSilentMode { val("blah") } == null
+        assert record.silentVal('blah') == null
+
+        //GENERAL SILENT MODE
+        FuzzyCSV.THROW_EXCEPTION_ON_ABSENT_COLUMN.set(false)
+        record.silentModeDefault()
+        assert record.val('blah') == null
+        assert record.silentVal('blah') == null
+
+        //OVERRIDING SILENT MODE
+        shouldFail(IllegalArgumentException) {
+            record.silentModeOff()
+            record.val('blah') == null
+        }
+
+    }
+
+
 }
