@@ -240,6 +240,7 @@ class Record {
 
     def val(def col) { propertyMissing(col as String) }
 
+    //todo add a try finally block
     def withSilentMode(Closure c) {
         silentModeOn()
         c.delegate = this
