@@ -127,16 +127,23 @@ class Record {
         switch (ourResolveStrategy) {
             case SOURCE_FIRST:
             case LEFT_FIRST:
-                value = tryLeft(name) ?: tryFinal(name) ?: tryRight(name)
+                value = findNonNull({ tryLeft(name) }, { tryFinal(name) }, { tryRight(name) })
                 break
             case RIGHT_FIRST:
-                value = tryRight(name) ?: tryLeft(name) ?: tryFinal(name)
+                value = findNonNull({ tryRight(name) }, { tryLeft(name) }, { tryFinal(name) })
                 break
             default:
-                value = tryFinal(name) ?: tryRight(name) ?: tryLeft(name)
+                value = findNonNull({ tryFinal(name) }, { tryRight(name) }, { tryLeft(name) })
         }
 
         return value
+    }
+
+    private def static findNonNull(Closure... fns) {
+        return fns.findResult { Closure c ->
+            def data = c.call()
+            return data == null ? null : data
+        }
     }
 
     private boolean shouldThrowException() {

@@ -1,6 +1,5 @@
 package fuzzycsv
 
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -70,6 +69,15 @@ class RecordTest extends GroovyTestCase {
             record.val('blah') == null
         }
 
+    }
+
+    @Test
+    void test_aZeroShouldNotBeResolvedToFalse() {
+        Record r = new Record(['a', 'b'], [1, 2])
+        r.rightHeaders = ['d', 'e']
+        r.rightRecord = [0, 0]
+
+        assert r.d == 0
     }
 
 
