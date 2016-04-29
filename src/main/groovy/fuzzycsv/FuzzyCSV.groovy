@@ -2,6 +2,7 @@ package fuzzycsv
 
 import au.com.bytecode.opencsv.CSVReader
 import au.com.bytecode.opencsv.CSVWriter
+import groovy.transform.CompileStatic
 import groovy.util.logging.Log4j
 import secondstring.PhraseHelper
 
@@ -123,19 +124,19 @@ public class FuzzyCSV {
 
 
     static List<List> join(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), getRecordFx(joinColumns), false, false)
+        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), getDefaultRecordMatcher(joinColumns), false, false, hpRightRecordFinder(joinColumns))
     }
 
     static List<List> leftJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), getRecordFx(joinColumns), true, false)
+        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), getDefaultRecordMatcher(joinColumns), true, false, hpRightRecordFinder(joinColumns))
     }
 
     static List<List> rightJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), getRecordFx(joinColumns), false, true)
+        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), getDefaultRecordMatcher(joinColumns), false, true, hpRightRecordFinder(joinColumns))
     }
 
     static List<List> fullJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), getRecordFx(joinColumns), true, true)
+        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), getDefaultRecordMatcher(joinColumns), true, true, hpRightRecordFinder(joinColumns))
     }
 
     static List<List> join(List<? extends List> csv1, List<? extends List> csv2, RecordFx onExpression, String[] selectColumns) {
@@ -154,76 +155,163 @@ public class FuzzyCSV {
         return superJoin(csv1, csv2, selectColumns as List, onExpression, true, true)
     }
 
-    private
-    static List<List> superJoin(List<? extends List> csv1, List<? extends List> csv2, List selectColumns, RecordFx onFunction, boolean doLeftJoin, boolean doRightJoin) {
+    /*
+    * Returns a function that matches a left record to a right record with the help of an index cache.
+    * This is an attempt to improve performance while doing joins
+    */
 
-        //container to keep track the matchedCSV2 records
-        def matchedCSV2Records = []
-        def combinedList = [selectColumns]
+    @CompileStatic
+    private static Closure<List<Record>> hpRightRecordFinder(String[] joinColumns) {
 
-        Record recObj = new Record(leftHeaders: csv1[0], rightHeaders: csv2[0], recordIdx: -1)
+        //A map to store all left record indexes.
+        Map<String, List<Record>> rightIdx = [:]
+        Closure<List<Record>> c = { Record leftRecord, RecordFx mOnFunction, List<? extends List> mRCsv ->
 
-        csv1.eachWithIndex { record1, int idx ->
-            if (idx == 0) return
-            def record1Matched = false
-            recObj.leftRecord = record1
+            def header = mRCsv[0]
 
-            csv2.eachWithIndex { record2, int index ->
+            if (rightIdx.isEmpty()) {
+                //build the right index
+                def csvSize = mRCsv.size()
+                for (int i = 0; i < csvSize; i++) {
+                    def rRecord = mRCsv[i]
+                    def rRecObj = Record.getRecord(header, rRecord, i)
 
-                if (index == 0) return
+                    def rightString = joinColumns.collect { String colName -> rRecObj.val(colName) }.join('-')
 
-                recObj.rightRecord = record2
-
-                if (onFunction.getValue(recObj)) {
-
-                    record1Matched = true
-                    if (!matchedCSV2Records.contains(index))
-                        matchedCSV2Records.add(index)
-
-                    List<Object> mergedRecord = buildCSVRecord(selectColumns, recObj)
-                    combinedList << mergedRecord
+                    if (!rightIdx[rightString]) {
+                        rightIdx[rightString] = []
+                    }
+                    rightIdx[rightString] << rRecObj
                 }
             }
-            //clear the right record
-            recObj.rightRecord = []
-            if (!record1Matched && doLeftJoin) {
-                def leftJoinRecord = buildCSVRecord(selectColumns, recObj)
-                combinedList << leftJoinRecord
-            }
+
+            def leftString = joinColumns.collect { String colName -> leftRecord.val(colName) }.join('-')
+            return rightIdx[leftString]
+
         }
 
-        if (!doRightJoin || matchedCSV2Records.size() == csv2.size()) return combinedList
+        return c
+
+    }
+
+    @CompileStatic
+    private static Closure<List> getDefaultRightRecordFinder() {
+        def c = { Record r, RecordFx mOnFunction, List<? extends List> mRCsv ->
+
+            def rSize = mRCsv.size()
+            List<Record> finalValues = []
+            for (int rIdx = 0; rIdx < rSize; rIdx++) {
+
+                List rightRecord = mRCsv[rIdx]
+                if (rIdx == 0) continue
+
+                r.rightRecord = rightRecord
+                if (mOnFunction.getValue(r)) {
+                    def rec = Record.getRecord(mRCsv[0], rightRecord, rIdx)
+                    finalValues << rec
+                }
+            }
+            finalValues
+        }
+        return c
+    }
+
+    @CompileStatic
+    private static List<List> superJoin(List<? extends List> leftCsv,
+                                        List<? extends List> rightCsv,
+                                        List selectColumns,
+                                        RecordFx onFunction,
+                                        boolean doLeftJoin,
+                                        boolean doRightJoin,
+                                        Closure<List> findRightRecord = null) {
+
+        //container to keep track the matchedCSV2 records
+        def matchedRightRecordIndices = new HashSet()
+        def finalCSV = [selectColumns]
+
+        Record recObj = new Record(leftHeaders: leftCsv[0], rightHeaders: rightCsv[0], recordIdx: -1)
+
+        if (!findRightRecord) {
+            findRightRecord = getDefaultRightRecordFinder()
+        }
+
+
+        def lSize = leftCsv.size()
+        for (int lIdx = 0; lIdx < lSize; lIdx++) {
+
+            List leftRecord = leftCsv[lIdx]
+
+            if (lIdx == 0) continue
+
+            recObj.rightRecord = Collections.EMPTY_LIST
+            recObj.leftRecord = leftRecord
+
+            def rightRecords = findRightRecord.call(recObj, onFunction, rightCsv) as List<Record>
+
+            if (!rightRecords) {
+
+                if (doLeftJoin) {
+                    recObj.rightRecord = Collections.EMPTY_LIST
+                    List<Object> mergedRecord = buildCSVRecord(selectColumns, recObj)
+                    finalCSV << mergedRecord
+                }
+
+                continue
+            }
+
+
+            rightRecords.each { Record rightRecord ->
+                if (!matchedRightRecordIndices.contains(rightRecord.idx()))
+                    matchedRightRecordIndices.add(rightRecord.idx())
+
+                recObj.rightRecord = rightRecord.finalRecord
+
+                List<Object> mergedRecord = buildCSVRecord(selectColumns, recObj)
+                finalCSV << mergedRecord
+            }
+
+        }
+
+        //stop if we are not doing a right join or if all leftItems were matched
+        if (!doRightJoin || matchedRightRecordIndices.size() == rightCsv.size()) return finalCSV
 
         //doing the right join here
-        csv2.eachWithIndex { csv2Record, int i ->
-            if (i == 0) return
-            if (matchedCSV2Records.contains(i))
-                return
+        def rSize = rightCsv.size()
+        for (int rIdx = 0; rIdx < rSize; rIdx++) {
+
+            List rightRecord = rightCsv[rIdx]
+            if (rIdx == 0) continue
+            if (matchedRightRecordIndices.contains(rIdx)) continue
 
             recObj.resolutionStrategy = ResolutionStrategy.RIGHT_FIRST
             recObj.leftRecord = []
-            recObj.rightRecord = csv2Record
+            recObj.rightRecord = rightRecord
 
             def newCombinedRecord = buildCSVRecord(selectColumns, recObj)
-            combinedList << newCombinedRecord
+            finalCSV << newCombinedRecord
         }
 
-        return combinedList
+        return finalCSV
     }
 
+    @CompileStatic
     private static List<Object> buildCSVRecord(List columns, Record recObj) {
-        def mergedRecord = columns.collect { columnFx ->
+        List mergedRecord = columns.collect { columnFx ->
             if (columnFx instanceof RecordFx)
-                return columnFx.getValue(recObj)
-            def finalValue = recObj.val(columnFx)
-            return finalValue
+                columnFx.getValue(recObj)
+            else
+                recObj.val(columnFx)
         }
         return mergedRecord
     }
 
-    private static RecordFx getRecordFx(joinColumns) {
-        RecordFx fn = fn { record ->
-            joinColumns.every { record."$it" == record."@$it" }
+    @CompileStatic
+    private static RecordFx getDefaultRecordMatcher(String[] joinColumns) {
+
+        RecordFx fn = fn { Record record ->
+            joinColumns.every { String r ->
+                record.left(r) == record.right(r)
+            }
         }
         return fn
     }

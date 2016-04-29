@@ -127,7 +127,7 @@ class FuzzyCSVTest {
                 ['Ronald', 'Male', 3, 'Bweyos', 'Math', 50],
                 ['Ronald', 'Male', 3, 'Bweyos', 'English', 50]
         ]
-        assertEquals join.toString(), expected.toString()
+        assertEquals tbl(join).toStringFormatted(), tbl(expected).toStringFormatted()
 
         join = FuzzyCSV.join(csv1, csv2, fn {
             it.Name == it.'@Name'
