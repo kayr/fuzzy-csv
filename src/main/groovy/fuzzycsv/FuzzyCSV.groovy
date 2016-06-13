@@ -78,9 +78,9 @@ public class FuzzyCSV {
         csvList.eachWithIndex { entry, idx ->
             def rec = Record.getRecord(header, entry, idx)
             def value = fx.getValue(rec)
-            if (value) newCsv << rec
+            if (value == true) newCsv << entry
         }
-        return newCsv
+        return ([header] + newCsv)
     }
 
     static List<List> putInColumn(List<? extends List> csvList, RecordFx column, int insertIdx, List<? extends List> sourceCSV = null) {
