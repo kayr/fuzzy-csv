@@ -2,9 +2,14 @@ package fuzzycsv
 
 import au.com.bytecode.opencsv.CSVReader
 import au.com.bytecode.opencsv.CSVWriter
+import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log4j
 import secondstring.PhraseHelper
+
+import java.sql.ResultSet
+import java.sql.ResultSetMetaData
+import java.sql.SQLException
 
 import static fuzzycsv.RecordFx.fn
 
@@ -81,6 +86,42 @@ public class FuzzyCSV {
             if (value == true) newCsv << entry
         }
         return ([header] + newCsv)
+    }
+
+    @CompileStatic
+    static List<List<?>> toCSV(ResultSet resultSet) {
+        def metaData = resultSet.getMetaData()
+        def columnCount = metaData.columnCount
+        def columns = getColumns(metaData)
+        def csv = [columns]
+        while (resultSet.next()) {
+            List record = new ArrayList(columnCount)
+            for (int i = 0; i < columnCount; i++) {
+                record.add(resultSet.getObject(i + 1))
+            }
+            csv << record
+        }
+        return csv
+    }
+
+    @SuppressWarnings("GroovyVariableNotAssigned")
+    @CompileStatic
+    static List<List<?>> toCSV(Sql sql, String query) {
+        List<List<?>> csv
+        sql.query(query) { ResultSet rs ->
+            csv = toCSV(rs)
+        }
+        return csv
+    }
+
+    @CompileStatic
+    static List<String> getColumns(ResultSetMetaData metadata) throws SQLException {
+        int columnCount = metadata.getColumnCount();
+        List<String> nextLine = new ArrayList(columnCount)
+        for (int i = 0; i < columnCount; i++) {
+            nextLine[i] = metadata.getColumnName(i + 1);
+        }
+        return nextLine
     }
 
     static List<List> putInColumn(List<? extends List> csvList, RecordFx column, int insertIdx, List<? extends List> sourceCSV = null) {

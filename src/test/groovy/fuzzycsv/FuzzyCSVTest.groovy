@@ -1,5 +1,6 @@
 package fuzzycsv
 
+import groovy.sql.Sql
 import org.junit.Before
 import org.junit.Test
 
@@ -584,5 +585,21 @@ class FuzzyCSVTest {
                 ['2', '3', null]
         ]
 
+    }
+
+    @Test
+    void testSqlToCsv() {
+        def table = "CREATE TABLE PERSON (ID INT PRIMARY KEY, FIRSTNAME VARCHAR(64), LASTNAME VARCHAR(64));"
+        def insert = "insert into PERSON values (1,'kay','r')"
+
+        def sql = Sql.newInstance('jdbc:h2:mem:test')
+        sql.execute(table)
+
+        assert [['ID', 'FIRSTNAME', 'LASTNAME']] == FuzzyCSV.toCSV(sql, 'select * from PERSON')
+
+        sql.execute(insert)
+
+        assert [['ID', 'FIRSTNAME', 'LASTNAME'],
+                [1, 'kay', 'r']] == FuzzyCSV.toCSV(sql, 'select * from PERSON')
     }
 }
