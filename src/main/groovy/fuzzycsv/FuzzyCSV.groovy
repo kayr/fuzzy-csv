@@ -77,6 +77,7 @@ public class FuzzyCSV {
         return newCsv
     }
 
+    //todo test and make faster if possible
     static List<List> filter(List<? extends List> csvList, RecordFx fx) {
         def header = csvList[0]
         def newCsv = []

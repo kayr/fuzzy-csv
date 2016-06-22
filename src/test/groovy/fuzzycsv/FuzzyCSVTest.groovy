@@ -602,4 +602,20 @@ class FuzzyCSVTest {
         assert [['ID', 'FIRSTNAME', 'LASTNAME'],
                 [1, 'kay', 'r']] == FuzzyCSV.toCSV(sql, 'select * from PERSON')
     }
+
+    @Test
+    void testFiltering() {
+        def table = [
+                ['name', 'sex'],
+                ['v', 'm'],
+                ['k', 'm'],
+                ['r', 'f'],
+        ]
+
+
+        assert [['name', 'sex'], ['v', 'm']] == FuzzyCSV.filter(table, fn { it.name == 'v' })
+        assert [['name', 'sex'], ['v', 'm'], ['k', 'm']] == FuzzyCSV.filter(table, fn { it.sex == 'm' })
+        assert [['name', 'sex']] == FuzzyCSV.filter([['name', 'sex']], fn { it.name = '' })
+
+    }
 }
