@@ -19,7 +19,7 @@ class FuzzyCSVTable {
     }
 
     FuzzyCSVTable aggregate(List columns) {
-        def aggregators = columns.findAll {it instanceof Aggregator}
+        def aggregators = columns.findAll { it instanceof Aggregator }
 
         //get the values of all aggregators
         aggregators.each {
@@ -169,12 +169,62 @@ class FuzzyCSVTable {
     }
 
     FuzzyCSVTable transform(String column, RecordFx fx) {
-
         return tbl(FuzzyCSV.transform(csv, column, fx))
     }
 
+
     List<String> getHeader() {
         return csv[0]
+    }
+
+    FuzzyCSVTable clone() {
+        tbl(FuzzyCSV.clone(csv))
+    }
+
+    FuzzyCSVTable filter(RecordFx fx) {
+        tbl(FuzzyCSV.filter(csv, fx))
+    }
+
+    FuzzyCSVTable map(RecordFx fx) {
+        tbl(FuzzyCSV.map(csv, fx))
+    }
+
+    FuzzyCSVTable putInCell(String header, int rowIdx, Object value) {
+        tbl(FuzzyCSV.putInCellWithHeader(csv, header, rowIdx, value))
+    }
+
+    FuzzyCSVTable putInCell(int row, int col, Object value) {
+        tbl(FuzzyCSV.putInCell(csv, row, col, value))
+    }
+
+    FuzzyCSVTable insertColumn(List<?> column, int colIdx) {
+        tbl(FuzzyCSV.insertColumn(csv, column, colIdx))
+    }
+
+
+    FuzzyCSVTable putInColumn(List colValues, int colIdx) {
+        tbl(FuzzyCSV.putInColumn(csv, colValues, colIdx))
+    }
+
+    FuzzyCSVTable putInColumn(RecordFx value, int colId, FuzzyCSVTable sourceTable = null) {
+        tbl(FuzzyCSV.putInColumn(csv, value, colId, sourceTable?.csv))
+    }
+
+
+    FuzzyCSVTable cleanUpRepeats(String[] columns) {
+        tbl(FuzzyCSV.cleanUpRepeats(csv, columns))
+    }
+
+    static FuzzyCSVTable parseCsv(String csvString) {
+        tbl(FuzzyCSV.parseCsv(csvString))
+    }
+
+    static FuzzyCSVTable toCSV(List<? extends Map> listOfMaps, String[] cols) {
+        tbl(FuzzyCSV.toCSV(listOfMaps, cols))
+    }
+
+    static FuzzyCSVTable toListOfLists(Collection<?> Collection0) {
+        tbl(FuzzyCSV.toListOfLists(Collection0))
     }
 
     String toString() {
