@@ -601,6 +601,10 @@ class FuzzyCSVTest {
 
         assert [['ID', 'FIRSTNAME', 'LASTNAME'],
                 [1, 'kay', 'r']] == FuzzyCSV.toCSV(sql, 'select * from PERSON')
+
+        //test aliases on columns
+        assert [['Identifier', 'Another ID'], [1, 1]] == FuzzyCSV.toCSV(sql, 'select id as "Identifier",id as "Another ID" from PERSON')
+
     }
 
     @Test

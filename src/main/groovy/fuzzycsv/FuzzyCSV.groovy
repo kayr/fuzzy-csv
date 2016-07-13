@@ -120,7 +120,7 @@ public class FuzzyCSV {
         int columnCount = metadata.getColumnCount();
         List<String> nextLine = new ArrayList(columnCount)
         for (int i = 0; i < columnCount; i++) {
-            nextLine[i] = metadata.getColumnName(i + 1);
+            nextLine[i] = metadata.getColumnLabel(i + 1);
         }
         return nextLine
     }
