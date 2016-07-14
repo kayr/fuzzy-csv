@@ -142,4 +142,10 @@ class FuzzyCSVTableTest {
         assert expected.toString() == actual.csv.toString()
     }
 
+    @Test
+    void testGetCellValue(){
+        assert tbl(csv2)['sub_county'][1] == 'Hakibale'
+        assert tbl(csv2)[0][1] == 'Hakibale'
+    }
+
 }

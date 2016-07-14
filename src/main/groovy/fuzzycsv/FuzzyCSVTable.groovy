@@ -1,7 +1,7 @@
 package fuzzycsv
 
 import groovy.text.SimpleTemplateEngine
-
+import groovy.transform.CompileStatic
 
 class FuzzyCSVTable {
 
@@ -88,6 +88,17 @@ class FuzzyCSVTable {
     }
 
 
+    @CompileStatic
+    List getAt(String columnName) {
+        getAt(Fuzzy.findPosition(header, columnName))
+    }
+
+
+    @CompileStatic
+    List getAt(Integer colIdx) {
+        FuzzyCSV.getValuesForColumn(csv, colIdx)
+    }
+
     static FuzzyCSVTable tbl(List<? extends List> csv) {
         return new FuzzyCSVTable(csv)
     }
@@ -124,6 +135,38 @@ class FuzzyCSVTable {
         return tbl(FuzzyCSV.fullJoin(csv, csv2, joinColumns))
     }
 
+    FuzzyCSVTable join(FuzzyCSVTable tbl, RecordFx fx) {
+        return join(tbl.csv, fx)
+    }
+
+    FuzzyCSVTable join(List<? extends List> csv2, RecordFx joinColumns) {
+        return tbl(FuzzyCSV.join(csv, csv2, joinColumns, FuzzyCSV.selectAllHeaders(csv, csv2) as String[]))
+    }
+
+    FuzzyCSVTable leftJoin(FuzzyCSVTable tbl, RecordFx fx) {
+        return leftJoin(tbl.csv, fx)
+    }
+
+    FuzzyCSVTable leftJoin(List<? extends List> csv2, RecordFx fx) {
+        return tbl(FuzzyCSV.leftJoin(csv, csv2, fx, FuzzyCSV.selectAllHeaders(csv, csv2) as String[]))
+    }
+
+    FuzzyCSVTable rightJoin(FuzzyCSVTable tbl, RecordFx fx) {
+        return rightJoin(tbl.csv, fx)
+    }
+
+    FuzzyCSVTable rightJoin(List<? extends List> csv2, RecordFx fx) {
+        return tbl(FuzzyCSV.rightJoin(csv, csv2, fx, FuzzyCSV.selectAllHeaders(csv, csv2) as String[]))
+    }
+
+    FuzzyCSVTable fullJoin(FuzzyCSVTable tbl, RecordFx fx) {
+        return fullJoin(tbl.csv, fx)
+    }
+
+    FuzzyCSVTable fullJoin(List<? extends List> csv2, RecordFx fx) {
+        return tbl(FuzzyCSV.fullJoin(csv, csv2, fx, FuzzyCSV.selectAllHeaders(csv, csv2) as String[]))
+    }
+
     FuzzyCSVTable select(Object[] columns) {
         return select(columns as List)
     }
@@ -132,8 +175,8 @@ class FuzzyCSVTable {
         return tbl(FuzzyCSV.select(columns, csv))
     }
 
-    FuzzyCSVTable transpose(String header, String columnForCell, String[] primaryKeys) {
-        tbl(FuzzyCSV.transposeToCSV(csv, header, columnForCell, primaryKeys))
+    FuzzyCSVTable transpose(String columToBeHeader, String columnForCell, String[] primaryKeys) {
+        tbl(FuzzyCSV.transposeToCSV(csv, columToBeHeader, columnForCell, primaryKeys))
     }
 
     FuzzyCSVTable transpose() {
@@ -168,6 +211,10 @@ class FuzzyCSVTable {
         return tbl(FuzzyCSV.deleteColumn(csv, columnNames))
     }
 
+    FuzzyCSVTable delete(String[] columnNames) {
+        return deleteColumns(columnNames)
+    }
+
     FuzzyCSVTable transform(String column, RecordFx fx) {
         return tbl(FuzzyCSV.transform(csv, column, fx))
     }
@@ -193,7 +240,7 @@ class FuzzyCSVTable {
         tbl(FuzzyCSV.putInCellWithHeader(csv, header, rowIdx, value))
     }
 
-    FuzzyCSVTable putInCell(int col,int row,  Object value) {
+    FuzzyCSVTable putInCell(int col, int row, Object value) {
         tbl(FuzzyCSV.putInCell(csv, col, row, value))
     }
 
@@ -215,8 +262,12 @@ class FuzzyCSVTable {
         tbl(FuzzyCSV.cleanUpRepeats(csv, columns))
     }
 
-    String toCsvString(){
+    String toCsvString() {
         return FuzzyCSV.csvToString(csv)
+    }
+
+    List<Map<String, Object>> toMapList() {
+        return FuzzyCSV.toMapList(csv)
     }
 
     static FuzzyCSVTable parseCsv(String csvString) {
@@ -258,7 +309,7 @@ class FuzzyCSVTable {
         def avgSize = FxExtensions.avg(hMap.values()) as Integer
 
         hMap.each { cName, maxSize ->
-            def fSize = maxSize < avgSize ? maxSize : avgSize
+            def fSize = maxSize < 10 ? (maxSize) : (maxSize < avgSize ? maxSize : avgSize)
             fSize = fSize < cName.size() ? cName.size() : fSize
             ttf.addColumn(cName, fSize)
         }
