@@ -1,7 +1,7 @@
 package fuzzycsv
 
-import au.com.bytecode.opencsv.CSVReader
-import au.com.bytecode.opencsv.CSVWriter
+import com.opencsv.CSVReader
+import com.opencsv.CSVWriter
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log4j
@@ -33,8 +33,9 @@ public class FuzzyCSV {
 
     static boolean trace = false
 
-    static List<List> parseCsv(String csv) {
-        CSVReader rd = new CSVReader(new StringReader(csv))
+    @CompileStatic
+    static List<String[]> parseCsv(String csv) {
+        def rd = new CSVReader(new StringReader(csv))
         return rd.readAll();
     }
 
@@ -62,6 +63,7 @@ public class FuzzyCSV {
         return csvList
     }
 
+    //todo not tested or complete
     static List<List> map(List<? extends List> csvList, RecordFx<List> fx) {
         def header = csvList[0]
         def newCsv = []
@@ -77,16 +79,17 @@ public class FuzzyCSV {
         return newCsv
     }
 
-    //todo test and make faster if possible
+    @CompileStatic
     static List<List> filter(List<? extends List> csvList, RecordFx fx) {
         def header = csvList[0]
-        def newCsv = []
-        csvList.eachWithIndex { entry, idx ->
+        def newCsv = [header]
+        csvList.eachWithIndex { List entry, Integer idx ->
+            if (idx == 0) return
             def rec = Record.getRecord(header, entry, idx)
             def value = fx.getValue(rec)
-            if (value == true) newCsv << entry
+            if (value == true) newCsv.add entry
         }
-        return ([header] + newCsv)
+        return newCsv
     }
 
     @CompileStatic
@@ -155,6 +158,14 @@ public class FuzzyCSV {
             writer.writeAll(csv)
         }
 
+    }
+
+    @CompileStatic
+    static String toCSVString(List<? extends List> csv) {
+        StringWriter w = new StringWriter()
+        def fw = new FuzzyCSVWriter(w)
+        fw.writeAll(csv)
+        return w.toString()
     }
 
     static String csvToString(List<? extends List> csv) {
@@ -470,11 +481,12 @@ public class FuzzyCSV {
         return Collections.unmodifiableList(necCSv)
     }
 
+    @CompileStatic
     static List<List> toListOfLists(Collection<?> csv) {
         return csv.collect { it as List }
     }
 
-    static List<List> clone(Collection<?> csv) {
+    static List<List> copy(Collection<?> csv) {
         return csv.collect { new ArrayList<>(it) }
     }
 

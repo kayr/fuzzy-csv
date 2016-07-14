@@ -1,6 +1,6 @@
 package fuzzycsv
 
-import au.com.bytecode.opencsv.CSVWriter
+import com.opencsv.CSVWriter
 
 
 /**

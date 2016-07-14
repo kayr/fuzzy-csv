@@ -128,7 +128,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testAddColumn() {
-        def actual = tbl(FuzzyCSV.clone(csv2)).addColumn(fn('Bla') { it.ps_total_score + 1 })
+        def actual = tbl(csv2).copy().addColumn(fn('Bla') { it.ps_total_score + 1 })
 
         def expected = [
                 ['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score', 'Bla'],

@@ -275,14 +275,14 @@ class FuzzyCSVTest {
     def getCSV(String path) {
         def text = getClass().getResource(path).text
         return FuzzyCSV.toUnModifiableCSV(
-                FuzzyCSV.toListOfLists(
-                        FuzzyCSV.parseCsv(text)))
+                FuzzyCSVTable.toListOfLists(
+                        FuzzyCSV.parseCsv(text)).csv)
     }
 
     @Test
     public void testInsertColumn() {
         def newColumn = ['phone', '775']
-        def actualCsv = FuzzyCSV.insertColumn(csv3, newColumn, 1)
+        def actualCsv = tbl(csv3).insertColumn( newColumn, 1).csv
         def expectCSV = [
                 ['namel', 'phone', 'age', 'sex'],
                 ['alex', '775', '21', 'male']
@@ -294,7 +294,7 @@ class FuzzyCSVTest {
     @Test
     public void testPutInCell() {
 
-        def actualCsv = FuzzyCSV.putInCell(csv3, 1, 1, '44')
+        def actualCsv = tbl(csv3).putInCell( 1, 1, '44').csv
         def expectCSV = [
                 ['namel', 'age', 'sex'] as String[],
                 ['alex', '44', 'male'] as String[]
@@ -302,7 +302,7 @@ class FuzzyCSVTest {
 
         assert expectCSV == actualCsv
 
-        actualCsv = FuzzyCSV.putInCellWithHeader(csv3, 'age', 1, '54')
+        actualCsv = tbl(csv3).putInCell('age', 1, '54').csv
         expectCSV = [
                 ['namel', 'age', 'sex'] as String[],
                 ['alex', '54', 'male'] as String[]
@@ -423,7 +423,7 @@ class FuzzyCSVTest {
 
     @Test
     void testToCSVNoColumns() {
-        def actual = FuzzyCSV.toCSV(map)
+        def actual = FuzzyCSVTable.toCSV(map).csv
         def expected = [
                 ['name', 'sex', 'number_passed'],
                 ['p2', 'male', 2],
@@ -534,7 +534,7 @@ class FuzzyCSVTest {
                 [null, null, null, null],
                 ['female', null, 4, null],
                 [null, null, 5, null],
-                [null, null, 4, null]] == FuzzyCSV.cleanUpRepeats(csv)
+                [null, null, 4, null]] == tbl(csv).cleanUpRepeats().csv
     }
 
     @Test
@@ -617,9 +617,19 @@ class FuzzyCSVTest {
         ]
 
 
-        assert [['name', 'sex'], ['v', 'm']] == FuzzyCSV.filter(table, fn { it.name == 'v' })
-        assert [['name', 'sex'], ['v', 'm'], ['k', 'm']] == FuzzyCSV.filter(table, fn { it.sex == 'm' })
+        assert [['name', 'sex'], ['v', 'm']] == tbl(table).filter( fn { it.name == 'v' }).csv
+        assert [['name', 'sex'], ['v', 'm'], ['k', 'm']] ==tbl(table).filter(fn { it.sex == 'm' }).csv
         assert [['name', 'sex']] == FuzzyCSV.filter([['name', 'sex']], fn { it.name = '' })
+
+    }
+
+    @Test
+    void testCsvToString() {
+        def table = [
+                ['name', 'sex'],
+                ['v', 'm']
+        ]
+        assert tbl(table).toCsvString() == '"name","sex"\n"v","m"\n'
 
     }
 }

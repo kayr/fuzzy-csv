@@ -177,8 +177,8 @@ class FuzzyCSVTable {
         return csv[0]
     }
 
-    FuzzyCSVTable clone() {
-        tbl(FuzzyCSV.clone(csv))
+    FuzzyCSVTable copy() {
+        tbl(FuzzyCSV.copy(csv))
     }
 
     FuzzyCSVTable filter(RecordFx fx) {
@@ -193,8 +193,8 @@ class FuzzyCSVTable {
         tbl(FuzzyCSV.putInCellWithHeader(csv, header, rowIdx, value))
     }
 
-    FuzzyCSVTable putInCell(int row, int col, Object value) {
-        tbl(FuzzyCSV.putInCell(csv, row, col, value))
+    FuzzyCSVTable putInCell(int col,int row,  Object value) {
+        tbl(FuzzyCSV.putInCell(csv, col, row, value))
     }
 
     FuzzyCSVTable insertColumn(List<?> column, int colIdx) {
@@ -215,8 +215,12 @@ class FuzzyCSVTable {
         tbl(FuzzyCSV.cleanUpRepeats(csv, columns))
     }
 
+    String toCsvString(){
+        return FuzzyCSV.csvToString(csv)
+    }
+
     static FuzzyCSVTable parseCsv(String csvString) {
-        tbl(FuzzyCSV.parseCsv(csvString))
+        toListOfLists(FuzzyCSV.parseCsv(csvString))
     }
 
     static FuzzyCSVTable toCSV(List<? extends Map> listOfMaps, String[] cols) {
