@@ -36,11 +36,11 @@ Repositories
  * Sum and Count Aggregate functions
  * Lenient arithmetic operations i.e strings are coerced to numbers
 
-##### Illustrations:
+#### Illustrations:
 
 Using the following as examples:
 
-##### Merging with a fuzzy match
+#### Merging with a fuzzy match
 1. Set the accuracy threshold to 75%
 2. Merge using code below
 ```groovy
@@ -70,7 +70,7 @@ This will output (Notice how it merged ***[first name]*** and ***[ferts nama]***
 [alex, male, 21]
 ```
 
-##### Joins
+#### Joins
 
 For now joins do not use fuzzy matching simply because in my use case it was not necessary
 
@@ -140,7 +140,7 @@ println csv
 
 
 
-##### Record functions:
+#### Record functions:
 
 These Help you write expression or functions for a record. E.g A function multiplying price by quantity
 ```groovy
@@ -172,13 +172,13 @@ def csv2 = [
 ]
 ```
 
-##### Get Cell Value
+#### Get Cell Value
 ```groovy
 println tbl(csv2)['name'][2]
 //output
 peter
 ```
-##### Delete Column
+#### Delete Column
 ```groovy
 println tbl(csv2).delete('name','age')
 //output
@@ -187,7 +187,7 @@ println tbl(csv2).delete('name','age')
 //[swimming]
 ```
 
-##### CSV To MapList
+#### CSV To MapList
 ```groovy
 println tbl(csv2).toMapList()
 /*output
@@ -195,12 +195,12 @@ println tbl(csv2).toMapList()
 */
 ```
 
-##### Sql To CSV
+#### Sql To CSV
 ```groovy
 tbl(FuzzyCSV.toCSV(sql, 'select * from PERSON'))
 ```
 
-##### Add Column
+#### Add Column
 ```groovy
 println tbl(csv2).addColumn(fn('Double Age') {it.age * 2})
 //output
@@ -208,7 +208,7 @@ println tbl(csv2).addColumn(fn('Double Age') {it.age * 2})
 //[alex, 21, biking, 42]
 //[peter, 21, swimming, 42]
 ```
-##### Filter Records
+#### Filter Records
 ```groovy
 println tbl(csv2).filter(fn {it.name == 'alex'})
 //output
@@ -246,7 +246,7 @@ println tbl(csv2).transpose('name','age','id','hobby')
 */
 ```
 
-##### Simplistic Aggregations
+#### Simplistic Aggregations
 
 In the example below we find the average age in each hobby by making use of sum count and group by functions
 
@@ -261,11 +261,20 @@ def csv2 = [
 
 
 println tbl(csv2)
-        .aggregate(['Hobby',
-                    sum('age').az('TT.Age'),
-                    count('name').az('TT.Count'),
-                    fn('Avg') { it['TT.Age'] / it['TT.Count'] }],
-        fn { it.hobby }).toStringFormatted()
+        .aggregate(
+        [
+            'Hobby',
+
+            sum('age').az('TT.Age'),
+
+            count('name').az('TT.Count'),
+
+            fn('Avg') { it['TT.Age'] / it['TT.Count'] }
+        ],
+
+        fn { it.hobby }
+
+        ).toStringFormatted()
 /*output
 hobby    TT.Age  TT.Count  Avg
 ________  ______  ________  ____
