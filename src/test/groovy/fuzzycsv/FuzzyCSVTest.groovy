@@ -295,7 +295,7 @@ class FuzzyCSVTest {
         def text = getClass().getResource(path).text
         return FuzzyCSV.toUnModifiableCSV(
                 FuzzyCSVTable.toListOfLists(
-                        FuzzyCSV.parseCsv(text)).csv)
+                        FuzzyCSVTable.parseCsv(text).csv).csv)
     }
 
     @Test
@@ -614,7 +614,7 @@ class FuzzyCSVTest {
         def sql = Sql.newInstance('jdbc:h2:mem:test')
         sql.execute(table)
 
-        assert [['ID', 'FIRSTNAME', 'LASTNAME']] == tbl(FuzzyCSV.toCSV(sql, 'select * from PERSON')).csv
+        assert [['ID', 'FIRSTNAME', 'LASTNAME']] == FuzzyCSVTable.toCSV(sql, 'select * from PERSON').csv
 
         sql.execute(insert)
 
