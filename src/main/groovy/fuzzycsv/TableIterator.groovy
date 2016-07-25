@@ -13,7 +13,7 @@ class TableIterator implements Iterator<Record> {
     private Iterator<List> csvIterator
     private int counter = 1
 
-    TableIterator() {}
+    private TableIterator() {}
 
     TableIterator(FuzzyCSVTable tbl) {
         csv = tbl.csv
