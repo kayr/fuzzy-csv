@@ -209,7 +209,7 @@ def csv2 = [
 ]
 ```
 
-#### Iterating over value
+#### Iterating over records/tables
 ```groovy
 tbl(csv).each{println(r.name)}
 /*output
