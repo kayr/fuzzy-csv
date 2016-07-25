@@ -1,33 +1,32 @@
 # FuzzyCSV is a groovy library to help you merge/append/query/ or manipulate CSV files.
 
+**Table of Contents**
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [FuzzyCSV is a groovy library to help you merge/append/query/ or manipulate CSV files.](#fuzzycsv-is-a-groovy-library-to-help-you-mergeappendquery-or-manipulate-csv-files)
-  - [Maven Dependency](#maven-dependency)
-  - [Features](#features)
-    - [Illustrations:](#illustrations)
-      - [Merging with a fuzzy match](#merging-with-a-fuzzy-match)
-      - [Joins](#joins)
-      - [Inner join](#inner-join)
-      - [Left join](#left-join)
-      - [Right join](#right-join)
-      - [Full join](#full-join)
-      - [Join with custom functions](#join-with-custom-functions)
-    - [Other Utilities](#other-utilities)
-      - [Record functions:](#record-functions)
-    - [More Examples](#more-examples)
-      - [Iterating over value](#iterating-over-value)
-      - [Get Cell Value](#get-cell-value)
-      - [Delete Column](#delete-column)
-      - [CSV To MapList](#csv-to-maplist)
-      - [Sql To CSV](#sql-to-csv)
-      - [Add Column](#add-column)
-      - [Filter Records](#filter-records)
-      - [Transposing](#transposing)
-      - [Simplistic Aggregations](#simplistic-aggregations)
-  - [Note:](#note)
+- [Maven Dependency](#maven-dependency)
+- [Features](#features)
+  - [Illustrations:](#illustrations)
+    - [Merging with a fuzzy match](#merging-with-a-fuzzy-match)
+    - [Joins](#joins)
+    - [Inner join](#inner-join)
+    - [Left join](#left-join)
+    - [Right join](#right-join)
+    - [Full join](#full-join)
+    - [Join with custom functions](#join-with-custom-functions)
+  - [Other Utilities](#other-utilities)
+    - [Record functions:](#record-functions)
+  - [More Examples](#more-examples)
+    - [Iterating over value](#iterating-over-value)
+    - [Get Cell Value](#get-cell-value)
+    - [Delete Column](#delete-column)
+    - [CSV To MapList](#csv-to-maplist)
+    - [Sql To CSV](#sql-to-csv)
+    - [Add Column](#add-column)
+    - [Filter Records](#filter-records)
+    - [Transposing](#transposing)
+    - [Simplistic Aggregations](#simplistic-aggregations)
+- [Note:](#note)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
