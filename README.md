@@ -1,6 +1,38 @@
-FuzzyCSV is a groovy library to help you merge/append/query/ or manipulate CSV files.
+# FuzzyCSV is a groovy library to help you merge/append/query/ or manipulate CSV files.
 
-#### Maven
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [FuzzyCSV is a groovy library to help you merge/append/query/ or manipulate CSV files.](#fuzzycsv-is-a-groovy-library-to-help-you-mergeappendquery-or-manipulate-csv-files)
+  - [Maven Dependency](#maven-dependency)
+  - [Features](#features)
+    - [Illustrations:](#illustrations)
+      - [Merging with a fuzzy match](#merging-with-a-fuzzy-match)
+      - [Joins](#joins)
+      - [Inner join](#inner-join)
+      - [Left join](#left-join)
+      - [Right join](#right-join)
+      - [Full join](#full-join)
+      - [Join with custom functions](#join-with-custom-functions)
+    - [Other Utilities](#other-utilities)
+      - [Record functions:](#record-functions)
+    - [More Examples](#more-examples)
+      - [Iterating over value](#iterating-over-value)
+      - [Get Cell Value](#get-cell-value)
+      - [Delete Column](#delete-column)
+      - [CSV To MapList](#csv-to-maplist)
+      - [Sql To CSV](#sql-to-csv)
+      - [Add Column](#add-column)
+      - [Filter Records](#filter-records)
+      - [Transposing](#transposing)
+      - [Simplistic Aggregations](#simplistic-aggregations)
+  - [Note:](#note)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+
+## Maven Dependency
 
 ```xml
  <dependency>
@@ -24,7 +56,7 @@ Repositories
 ```
 
 
-### Features
+## Features
  * Merging using Fuzzy Matching with the help of the SecondString project(useful when you have misspelled column names in the different CSV files)
  * Inner Join
  * Right Join
@@ -36,7 +68,7 @@ Repositories
  * Sum and Count Aggregate functions
  * Lenient arithmetic operations i.e strings are coerced to numbers
 
-#### Illustrations:
+### Illustrations:
 
 Using the following as examples:
 
@@ -144,6 +176,7 @@ println csv
 ```
 
 
+### Other Utilities
 
 #### Record functions:
 
@@ -166,7 +199,7 @@ println csv
 //[3, 20, 60]
 ```
 
-#### Other Utilities
+### More Examples
 
 Consider we have the following csv
 ```groovy
@@ -298,7 +331,7 @@ ___________________
 */
 ```
 
-#### Note:
+## Note:
 This library has not been tested with very large CSV files. So performance might be a concern
 
 More example can be seen here
@@ -308,17 +341,3 @@ https://github.com/kayr/fuzzy-csv/blob/master/src/test/groovy/fuzzycsv/FuzzyCSVT
 and
 
 https://github.com/kayr/fuzzy-csv/blob/master/src/test/groovy/fuzzycsv/FuzzyCSVTableTest.groovy
-
-
-
-
-
-
-
-
-
-
-
-
-
-
