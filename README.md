@@ -4,6 +4,8 @@
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
 - [Maven Dependency](#maven-dependency)
 - [Features](#features)
   - [Illustrations:](#illustrations)
@@ -17,7 +19,7 @@
   - [Other Utilities](#other-utilities)
     - [Record functions:](#record-functions)
   - [More Examples](#more-examples)
-    - [Iterating over value](#iterating-over-value)
+    - [Iterating over records/tables](#iterating-over-recordstables)
     - [Get Cell Value](#get-cell-value)
     - [Delete Column](#delete-column)
     - [CSV To MapList](#csv-to-maplist)
