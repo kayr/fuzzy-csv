@@ -91,31 +91,38 @@ def csv2 = [
         ['alex', '21','biking'],
         ['peter', '21','swimming']
 ]
-
-//inner join
+```
+#### Inner join
+```groovy
 def csv = tbl(csv1).join(csv2, 'name')
 println csv
 /*output
 [name, sex, age, hobby]
 [alex, male, 21, biking]*/
+```
 
-//left join
+#### Left join
+```groovy
 csv = tbl(csv1).leftJoin(csv2, 'name')
 println csv
 /*output
 [name, sex, age, hobby]
 [alex, male, 21, biking]
 [sara, female, null, null]*/
+```
 
-//right join
+#### Right join
+```groovy
 csv = tbl(csv1).rightJoin(csv2, 'name')
 println csv
 /*output
 [name, sex, age, hobby]
 [alex, male, 21, biking]
 [peter, null, 21, swimming]*/
+```
 
-//full join
+#### Full join
+```groovy
 csv = tbl(csv1).fullJoin(csv2, 'name')
 println csv
 /*output
@@ -123,11 +130,10 @@ println csv
 [alex, male, 21, biking]
 [sara, female, null, null]
 [peter, null, 21, swimming]*/
+```
 
-
-//***********************************
-//Join with custom functions
-//**********************************
+#### Join with custom functions
+```groovy
 csv = tbl(csv1).fullJoin(csv2,fn{it.left('name') == it.right('name')})
 println csv
 /*output
@@ -135,7 +141,6 @@ println csv
 [alex, male, alex, 21, biking]
 [sara, female, sara, null, null]
 [peter, null, peter, 21, swimming]*/
-
 ```
 
 
@@ -161,7 +166,7 @@ println csv
 //[3, 20, 60]
 ```
 
-#### Other Utilites
+#### Other Utilities
 
 Consider we have the following csv
 ```groovy
@@ -170,6 +175,14 @@ def csv2 = [
         ['alex', '21','biking'],
         ['peter', '21','swimming']
 ]
+```
+
+#### Iterating over value
+```groovy
+tbl(csv).each{println(r.name)}
+/*output
+alex
+peter*/
 ```
 
 #### Get Cell Value
@@ -289,9 +302,13 @@ ___________________
 This library has not been tested with very large CSV files. So performance might be a concern
 
 More example can be seen here
+
 https://github.com/kayr/fuzzy-csv/blob/master/src/test/groovy/fuzzycsv/FuzzyCSVTest.groovy
+
 and
+
 https://github.com/kayr/fuzzy-csv/blob/master/src/test/groovy/fuzzycsv/FuzzyCSVTableTest.groovy
+
 
 
 
