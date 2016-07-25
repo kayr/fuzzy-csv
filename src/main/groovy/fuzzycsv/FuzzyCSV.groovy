@@ -656,19 +656,40 @@ public class FuzzyCSV {
         }
     }
 
+    @CompileStatic
     static List<List> toCSV(List<? extends Map> list, String[] cols) {
         if (!cols && list)
             cols = list[0].keySet() as String[]
 
-        List<List<String>> flattened = [cols.toList()]
+        def columnSize = cols.size()
+        List<List<String>> csv = new ArrayList(list.size())
+        csv.add(cols.toList())
         for (mapRow in list) {
-            def row = []
+            def row = new ArrayList(columnSize)
             for (columns in cols) {
                 row << mapRow[columns]
             }
-            flattened << row
+            csv << row
         }
-        return flattened
+        return csv
+    }
+
+    @CompileStatic
+    static List<List> recordListToCSV(List<Record> list) {
+        def cols = list[0].finalHeaders
+        def columnSize = cols.size()
+
+        List<List<String>> csv = new ArrayList(list.size())
+        csv.add(cols.toList())
+
+        for (record in list) {
+            def row = new ArrayList(columnSize)
+            for (columns in cols) {
+                row << record[columns]
+            }
+            csv << row
+        }
+        return csv
     }
 
     static List<List> cleanUpRepeats(List<? extends List> strings, String... columns) {

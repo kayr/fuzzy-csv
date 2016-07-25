@@ -2,6 +2,7 @@ package fuzzycsv
 
 import org.junit.Test
 
+import static fuzzycsv.FuzzyCSVTable.recordListToCSV
 import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.RecordFx.fn
 import static fuzzycsv.Sum.sum
@@ -143,9 +144,30 @@ class FuzzyCSVTableTest {
     }
 
     @Test
-    void testGetCellValue(){
+    void testGetCellValue() {
         assert tbl(csv2)['sub_county'][1] == 'Hakibale'
         assert tbl(csv2)[0][1] == 'Hakibale'
+    }
+
+    @Test
+    void testTableIterator() {
+        def subCountiesAndIdx = []
+        assert tbl(csv2).each { Record r ->
+            subCountiesAndIdx << [r['sub_county'], r.idx(), r['tap_total_score']]
+        }
+        assert [['Hakibale', 1, null],
+                ['Kabonero', 2, null],
+                ['Kisomoro', 3, 10],
+                ['Bunyangabu', 4, '1'],
+                ['Noon', 5, 0]] == subCountiesAndIdx
+
+
+
+    }
+
+    @Test
+    void testRecordListToCSV() {
+        assert recordListToCSV(tbl(csv2).collect()).csv == csv2
     }
 
 }

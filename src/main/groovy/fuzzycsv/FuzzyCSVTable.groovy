@@ -1,9 +1,12 @@
 package fuzzycsv
 
+import groovy.sql.Sql
 import groovy.text.SimpleTemplateEngine
 import groovy.transform.CompileStatic
 
-class FuzzyCSVTable {
+import java.sql.ResultSet
+
+class FuzzyCSVTable implements Iterable<Record> {
 
     List<List> csv
 
@@ -278,8 +281,20 @@ class FuzzyCSVTable {
         tbl(FuzzyCSV.toCSV(listOfMaps, cols))
     }
 
+    static FuzzyCSVTable toCSV(Sql sql, String query) {
+        tbl(FuzzyCSV.toCSV(sql, query))
+    }
+
+    static FuzzyCSVTable toCSV(ResultSet resultSet) {
+        tbl(FuzzyCSV.toCSV(resultSet))
+    }
+
     static FuzzyCSVTable toListOfLists(Collection<?> Collection0) {
         tbl(FuzzyCSV.toListOfLists(Collection0))
+    }
+
+    static FuzzyCSVTable recordListToCSV(Collection<Record> Collection0) {
+        tbl(FuzzyCSV.recordListToCSV(Collection0))
     }
 
     String toString() {
@@ -340,4 +355,8 @@ class FuzzyCSVTable {
         return "${column.max { "$it".size() }}".size()
     }
 
+    @Override
+    Iterator<Record> iterator() {
+        return new TableIterator(this)
+    }
 }
