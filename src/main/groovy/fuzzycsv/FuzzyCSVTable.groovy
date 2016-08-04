@@ -314,7 +314,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     //todo write unit tests
-    String toStringFormatted() {
+    String toStringFormatted(boolean wrap = false) {
         TableTemplateFactory ttf = new TableTemplateFactory()
         ttf.footer = '___________________\n' +
                 (csv.size() - 1) + ' records'
@@ -324,9 +324,13 @@ class FuzzyCSVTable implements Iterable<Record> {
         def avgSize = FxExtensions.avg(hMap.values()) as Integer
 
         hMap.each { cName, maxSize ->
-            def fSize = maxSize < 10 ? (maxSize) : (maxSize < avgSize ? maxSize : avgSize)
-            fSize = fSize < cName.size() ? cName.size() : fSize
-            ttf.addColumn(cName, fSize)
+            if (wrap) {
+                def fSize = maxSize < 10 ? (maxSize) : (maxSize < avgSize ? maxSize : avgSize)
+                fSize = fSize < cName.size() ? cName.size() : fSize
+                ttf.addColumn(cName, fSize)
+            } else {
+                ttf.addColumn(cName, maxSize)
+            }
         }
 
         int ii = 0
