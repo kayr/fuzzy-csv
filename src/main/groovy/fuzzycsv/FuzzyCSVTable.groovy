@@ -21,6 +21,19 @@ class FuzzyCSVTable implements Iterable<Record> {
         aggregate(columns as List)
     }
 
+    FuzzyCSVTable autoAggregate(Object... columns) {
+        def groupByColumns = columns.findAll{!(it instanceof Aggregator)}
+        def fn = RecordFx.fn(){ Record r ->
+            def answer = groupByColumns.collect { c ->
+                if(c instanceof RecordFx) return c.getValue(r)
+                else return r.final(c as String)
+            }
+            answer
+        }
+
+        aggregate(columns as List,fn)
+    }
+
     FuzzyCSVTable aggregate(List columns) {
         def aggregators = columns.findAll { it instanceof Aggregator }
 
@@ -57,7 +70,9 @@ class FuzzyCSVTable implements Iterable<Record> {
         Map<Object, List<List>> groups = [:]
         csv.eachWithIndex { List entry, int i ->
             if (i == 0) return
-            Record record = Record.getRecord(csvHeader, entry)
+            Record record = Record.getRecord(csvHeader, entry,i)
+            record.leftHeaders = csvHeader
+            record.leftRecord = entry
             def value = groupFx.getValue(record);
             groupAnswer(groups, entry, value)
         }
@@ -293,8 +308,8 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(FuzzyCSV.toListOfLists(Collection0))
     }
 
-    static FuzzyCSVTable recordListToCSV(Collection<Record> Collection0) {
-        tbl(FuzzyCSV.recordListToCSV(Collection0))
+    static FuzzyCSVTable toCSVFromRecordList(Collection<Record> Collection0) {
+        tbl(FuzzyCSV.toCSVFromRecordList(Collection0))
     }
 
     String toString() {

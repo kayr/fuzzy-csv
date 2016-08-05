@@ -74,5 +74,10 @@ class RecordFx<RT> {
         return this
     }
 
+    RecordFx az(String name){
+        this.name = name
+        return this
+    }
+
 
 }

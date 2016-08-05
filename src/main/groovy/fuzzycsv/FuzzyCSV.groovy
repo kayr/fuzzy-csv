@@ -54,8 +54,9 @@ public class FuzzyCSV {
         return csv
     }
 
+    @CompileStatic
     static List<List> putInColumn(List<? extends List> csvList, List column, int insertIdx) {
-        csvList.eachWithIndex { entry, lstIdx ->
+        csvList.eachWithIndex { List entry, int lstIdx ->
             def entryList = entry
             def cellValue = lstIdx >= column.size() ? null : column[lstIdx]
             entryList[insertIdx] = cellValue
@@ -128,15 +129,17 @@ public class FuzzyCSV {
         return nextLine
     }
 
+    @CompileStatic
     static List<List> putInColumn(List<? extends List> csvList, RecordFx column, int insertIdx, List<? extends List> sourceCSV = null) {
         def header = csvList[0]
-        csvList.eachWithIndex { entry, lstIdx ->
+        csvList.eachWithIndex { List entry, int lstIdx ->
             def cellValue
             if (lstIdx == 0) {
                 cellValue = column.name
             } else {
                 def record = Record.getRecord(header, entry, lstIdx)
                 if (sourceCSV) {
+//                    record.resolutionStrategy = ResolutionStrategy.LEFT_FIRST
                     def oldCSVRecord = sourceCSV[lstIdx]
                     def oldCSVHeader = sourceCSV[0]
                     record.leftRecord = oldCSVRecord
@@ -675,7 +678,7 @@ public class FuzzyCSV {
     }
 
     @CompileStatic
-    static List<List> recordListToCSV(List<Record> list) {
+    static List<List> toCSVFromRecordList(List<Record> list) {
         def cols = list[0].finalHeaders
         def columnSize = cols.size()
 
@@ -685,7 +688,7 @@ public class FuzzyCSV {
         for (record in list) {
             def row = new ArrayList(columnSize)
             for (columns in cols) {
-                row << record[columns]
+                row << record.final(columns)
             }
             csv << row
         }

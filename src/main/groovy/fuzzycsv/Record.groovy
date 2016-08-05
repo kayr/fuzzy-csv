@@ -80,6 +80,26 @@ class Record {
         return resolveValue(rightHeaders, rightRecord, name)
     }
 
+    def 'final'(String name) {
+        return resolveValue(finalHeaders, finalRecord, name)
+    }
+
+    //convenience method for left
+    def l(String name) {
+        return resolveValue(leftHeaders, leftRecord, name)
+    }
+
+    //convenience method for right
+    def r(String name) {
+        return resolveValue(rightHeaders, rightRecord, name)
+    }
+
+    //convenience method for final
+    def f(String name) {
+        return resolveValue(finalHeaders, finalRecord, name)
+    }
+
+
     private def resolveValue(List headers, List values, String name, boolean throwException = true) {
         Integer nameIndex = headers?.indexOf(name)
 
@@ -127,17 +147,48 @@ class Record {
         switch (ourResolveStrategy) {
             case SOURCE_FIRST:
             case LEFT_FIRST:
-                value = findNonNull({ tryLeft(name) }, { tryFinal(name) }, { tryRight(name) })
+                value = tryLeftFinalRight(name)
                 break
             case RIGHT_FIRST:
-                value = findNonNull({ tryRight(name) }, { tryLeft(name) }, { tryFinal(name) })
+                value = tryRightLeftFinal(name)
                 break
             default:
-                value = findNonNull({ tryFinal(name) }, { tryRight(name) }, { tryLeft(name) })
+                value = tryFinalRightLeft(name)
         }
 
         return value
     }
+
+    def tryLeftFinalRight(String name) {
+        def value = tryLeft(name)
+        if (value != null) return value
+
+        value = tryFinal(name)
+        if (value != null) return value
+
+        return tryRight(name)
+    }
+
+    def tryFinalRightLeft(String name) {
+        def value = tryFinal(name)
+        if (value != null) return value
+
+        value = tryRight(name)
+        if (value != null) return value
+
+        return tryLeft(name)
+    }
+
+    def tryRightLeftFinal(String name) {
+        def value = tryRight(name)
+        if (value != null) return value
+
+        value = tryLeft(name)
+        if (value != null) return value
+
+        return tryFinal(name)
+    }
+
 
     private def static findNonNull(Closure... fns) {
         return fns.findResult { Closure c ->

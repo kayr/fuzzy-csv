@@ -2,7 +2,7 @@ package fuzzycsv
 
 import org.junit.Test
 
-import static fuzzycsv.FuzzyCSVTable.recordListToCSV
+import static fuzzycsv.FuzzyCSVTable.toCSVFromRecordList
 import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.RecordFx.fn
 import static fuzzycsv.Sum.sum
@@ -128,6 +128,27 @@ class FuzzyCSVTableTest {
     }
 
     @Test
+    void testAutoAggregateGrouping() {
+        def results = tbl(Data.groupingData)
+                .autoAggregate('sub_county',
+                            sum('ps_total_score').az('sum'),
+                            sum('tap_total_score').az('tap_sum'))
+
+        def expected = [
+                ['sub_county', 'sum', 'tap_sum'],
+                ['Hakibale', 39.1, 0],
+                ['Kabonero', 3, 0],
+                ['Kisomoro', 0, 30],
+                ['Bunyangabu', 0, 2],
+                ['Noon', 0, 0]
+        ]
+
+        assert expected == results.csv
+
+
+    }
+
+    @Test
     void testAddColumn() {
         def actual = tbl(csv2).copy().addColumn(fn('Bla') { it.ps_total_score + 1 })
 
@@ -167,7 +188,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testRecordListToCSV() {
-        assert recordListToCSV(tbl(csv2).collect()).csv == csv2
+        assert toCSVFromRecordList(tbl(csv2).collect()).csv == csv2
     }
 
 }

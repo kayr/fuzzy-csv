@@ -1,5 +1,6 @@
 package fuzzycsv
 
+import groovy.time.TimeCategory
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log4j
 
@@ -49,6 +50,17 @@ class FuzzyCSVUtils {
         }
 
         return preferredType == Integer || preferredType == BigInteger ? 0 : 0.0
+    }
+
+    def static time(String name = "", Closure worker) {
+        println "BenchmarkStart: $name"
+        def start = System.currentTimeMillis()
+        def rt = worker.call()
+        def stop = System.currentTimeMillis()
+        def time = stop - start
+        def readableTime = TimeCategory.minus(new Date(stop), new Date(start))
+        println "Completed in ${readableTime}"
+        return [value: rt, time: time]
     }
 
 }
