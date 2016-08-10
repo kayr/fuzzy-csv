@@ -6,6 +6,8 @@ import groovy.transform.CompileStatic
 
 import java.sql.ResultSet
 
+import static fuzzycsv.RecordFx.fn
+
 class FuzzyCSVTable implements Iterable<Record> {
 
     List<List> csv
@@ -22,16 +24,16 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable autoAggregate(Object... columns) {
-        def groupByColumns = columns.findAll{!(it instanceof Aggregator)}
-        def fn = RecordFx.fn(){ Record r ->
+        def groupByColumns = columns.findAll { !(it instanceof Aggregator) }
+        def fn = fn() { Record r ->
             def answer = groupByColumns.collect { c ->
-                if(c instanceof RecordFx) return c.getValue(r)
+                if (c instanceof RecordFx) return c.getValue(r)
                 else return r.final(c as String)
             }
             answer
         }
 
-        aggregate(columns as List,fn)
+        aggregate(columns as List, fn)
     }
 
     FuzzyCSVTable aggregate(List columns) {
@@ -50,6 +52,10 @@ class FuzzyCSVTable implements Iterable<Record> {
         return tbl(newTable)
     }
 
+    FuzzyCSVTable aggregate(List columns, Closure groupFx) {
+        return aggregate(columns, fn(groupFx))
+    }
+
     FuzzyCSVTable aggregate(List columns, RecordFx groupFx) {
         Map<Object, FuzzyCSVTable> groups = groupBy(groupFx)
 
@@ -64,13 +70,17 @@ class FuzzyCSVTable implements Iterable<Record> {
         return mainTable
     }
 
+    Map<Object, FuzzyCSVTable> groupBy(Closure groupFx) {
+        return groupFx(fn(groupFx))
+    }
+
     Map<Object, FuzzyCSVTable> groupBy(RecordFx groupFx) {
 
         def csvHeader = csv[0]
         Map<Object, List<List>> groups = [:]
         csv.eachWithIndex { List entry, int i ->
             if (i == 0) return
-            Record record = Record.getRecord(csvHeader, entry,i)
+            Record record = Record.getRecord(csvHeader, entry, i)
             record.leftHeaders = csvHeader
             record.leftRecord = entry
             def value = groupFx.getValue(record);
@@ -153,32 +163,64 @@ class FuzzyCSVTable implements Iterable<Record> {
         return tbl(FuzzyCSV.fullJoin(csv, csv2, joinColumns))
     }
 
+    FuzzyCSVTable join(FuzzyCSVTable tbl, Closure fx) {
+       return join(tbl, fn(fx))
+    }
+
     FuzzyCSVTable join(FuzzyCSVTable tbl, RecordFx fx) {
         return join(tbl.csv, fx)
+    }
+
+    FuzzyCSVTable join(List<? extends List> csv2, Closure joinColumns) {
+        return join(csv2, fn(joinColumns))
     }
 
     FuzzyCSVTable join(List<? extends List> csv2, RecordFx joinColumns) {
         return tbl(FuzzyCSV.join(csv, csv2, joinColumns, FuzzyCSV.selectAllHeaders(csv, csv2) as String[]))
     }
 
+    FuzzyCSVTable leftJoin(FuzzyCSVTable tbl, Closure fx) {
+       return leftJoin(tbl, fn(fx))
+    }
+
     FuzzyCSVTable leftJoin(FuzzyCSVTable tbl, RecordFx fx) {
         return leftJoin(tbl.csv, fx)
+    }
+
+    FuzzyCSVTable leftJoin(List<? extends List> csv2, Closure fx) {
+        return leftJoin(csv2, fn(fx))
     }
 
     FuzzyCSVTable leftJoin(List<? extends List> csv2, RecordFx fx) {
         return tbl(FuzzyCSV.leftJoin(csv, csv2, fx, FuzzyCSV.selectAllHeaders(csv, csv2) as String[]))
     }
 
+    FuzzyCSVTable rightJoin(FuzzyCSVTable tbl, Closure fx) {
+        return rightJoin(tbl,fn(fx))
+    }
+
     FuzzyCSVTable rightJoin(FuzzyCSVTable tbl, RecordFx fx) {
         return rightJoin(tbl.csv, fx)
+    }
+
+    FuzzyCSVTable rightJoin(List<? extends List> csv2, Closure fx) {
+        return rightJoin(csv2,fn(fx))
     }
 
     FuzzyCSVTable rightJoin(List<? extends List> csv2, RecordFx fx) {
         return tbl(FuzzyCSV.rightJoin(csv, csv2, fx, FuzzyCSV.selectAllHeaders(csv, csv2) as String[]))
     }
 
+    FuzzyCSVTable fullJoin(FuzzyCSVTable tbl, Closure fx) {
+        return fullJoin(tbl,fn(fx))
+    }
+
     FuzzyCSVTable fullJoin(FuzzyCSVTable tbl, RecordFx fx) {
         return fullJoin(tbl.csv, fx)
+    }
+
+    FuzzyCSVTable fullJoin(List<? extends List> csv2, Closure fx) {
+        return fullJoin(csv2,fn(fx))
     }
 
     FuzzyCSVTable fullJoin(List<? extends List> csv2, RecordFx fx) {
@@ -233,6 +275,10 @@ class FuzzyCSVTable implements Iterable<Record> {
         return deleteColumns(columnNames)
     }
 
+    FuzzyCSVTable transform(String column, Closure fx) {
+        transform(column,fn(fx))
+    }
+
     FuzzyCSVTable transform(String column, RecordFx fx) {
         return tbl(FuzzyCSV.transform(csv, column, fx))
     }
@@ -246,8 +292,16 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(FuzzyCSV.copy(csv))
     }
 
+    FuzzyCSVTable filter(Closure fx) {
+        filter(fn(fx))
+    }
+
     FuzzyCSVTable filter(RecordFx fx) {
         tbl(FuzzyCSV.filter(csv, fx))
+    }
+
+    FuzzyCSVTable map(Closure fx) {
+        map(fn(fx))
     }
 
     FuzzyCSVTable map(RecordFx fx) {
@@ -271,7 +325,11 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(FuzzyCSV.putInColumn(csv, colValues, colIdx))
     }
 
-    FuzzyCSVTable putInColumn(RecordFx value, int colId, FuzzyCSVTable sourceTable = null) {
+    FuzzyCSVTable putInColumn(int colId, Closure fx, FuzzyCSVTable sourceTable = null) {
+        putInColumn(colId,fn(fx))
+    }
+
+    FuzzyCSVTable putInColumn(int colId, RecordFx value, FuzzyCSVTable sourceTable = null) {
         tbl(FuzzyCSV.putInColumn(csv, value, colId, sourceTable?.csv))
     }
 
