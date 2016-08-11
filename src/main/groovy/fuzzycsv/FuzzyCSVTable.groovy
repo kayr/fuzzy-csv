@@ -405,10 +405,10 @@ class FuzzyCSVTable implements Iterable<Record> {
         t.addRow(header as Object[]);
 
         //add header underline
-        t.addRow(header.collect{"-".multiply("$it".size())} as Object[])
+        t.addRow(header.collect { "-".multiply("$it".size()) } as Object[])
 
         //add body
-        (1..csv.size() - 1).each { t.addRow(csv[it] as Object[]) }
+        (1..csv.size() - 1).each { t.addRow(csv[it].collect { it ?: '-' } as Object[]) }
 
         //render
         r.render(t).toStrBuilder().append("_________${System.lineSeparator()}${csv.size()} Rows")
