@@ -20,9 +20,9 @@ class FuzzyCSVTable implements Iterable<Record> {
         this.csv = csv
     }
 
-    FuzzyCSVTable normalizeHeaders() {
+    FuzzyCSVTable normalizeHeaders(String prefix = 'COL_') {
         header.eachWithIndex { h, int i ->
-            if (!h?.trim()) header.set(i, "COL_$i")
+            if (!h?.trim()) header.set(i, "$prefix$i")
         }
         return this
     }
@@ -402,14 +402,16 @@ class FuzzyCSVTable implements Iterable<Record> {
         def t = new V2_AsciiTable()
 
         // add header
-        t.addRule(); t.addRow(header as Object[]); t.addRule()
+        t.addRow(header as Object[]);
+
+        //add header underline
+        t.addRow(header.collect{"-".multiply("$it".size())} as Object[])
 
         //add body
         (1..csv.size() - 1).each { t.addRow(csv[it] as Object[]) }
-        t.addRule()
 
         //render
-        r.render(t).toStrBuilder().append("${csv.size()} Rows")
+        r.render(t).toStrBuilder().append("_________${System.lineSeparator()}${csv.size()} Rows")
     }
 
     private V2_AsciiTableRenderer getRenderer(wrap, int minCol) {
