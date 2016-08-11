@@ -1,7 +1,11 @@
 package fuzzycsv
 
+import de.vandermeer.asciitable.v2.V2_AsciiTable
+import de.vandermeer.asciitable.v2.render.V2_AsciiTableRenderer
+import de.vandermeer.asciitable.v2.render.WidthLongestLine
+import de.vandermeer.asciitable.v2.render.WidthLongestWordMinCol
+import de.vandermeer.asciitable.v2.themes.V2_E_TableThemes
 import groovy.sql.Sql
-import groovy.text.SimpleTemplateEngine
 import groovy.transform.CompileStatic
 
 import java.sql.ResultSet
@@ -10,14 +14,18 @@ import static fuzzycsv.RecordFx.fn
 
 class FuzzyCSVTable implements Iterable<Record> {
 
-    List<List> csv
-
-    FuzzyCSVTable() {}
+    final List<List> csv
 
     FuzzyCSVTable(List<? extends List> csv) {
         this.csv = csv
     }
 
+    FuzzyCSVTable normalizeHeaders() {
+        header.eachWithIndex { h, int i ->
+            if (!h?.trim()) header.set(i, "COL_$i")
+        }
+        return this
+    }
 
     FuzzyCSVTable aggregate(Object... columns) {
         aggregate(columns as List)
@@ -164,7 +172,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable join(FuzzyCSVTable tbl, Closure fx) {
-       return join(tbl, fn(fx))
+        return join(tbl, fn(fx))
     }
 
     FuzzyCSVTable join(FuzzyCSVTable tbl, RecordFx fx) {
@@ -180,7 +188,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable leftJoin(FuzzyCSVTable tbl, Closure fx) {
-       return leftJoin(tbl, fn(fx))
+        return leftJoin(tbl, fn(fx))
     }
 
     FuzzyCSVTable leftJoin(FuzzyCSVTable tbl, RecordFx fx) {
@@ -196,7 +204,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable rightJoin(FuzzyCSVTable tbl, Closure fx) {
-        return rightJoin(tbl,fn(fx))
+        return rightJoin(tbl, fn(fx))
     }
 
     FuzzyCSVTable rightJoin(FuzzyCSVTable tbl, RecordFx fx) {
@@ -204,7 +212,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable rightJoin(List<? extends List> csv2, Closure fx) {
-        return rightJoin(csv2,fn(fx))
+        return rightJoin(csv2, fn(fx))
     }
 
     FuzzyCSVTable rightJoin(List<? extends List> csv2, RecordFx fx) {
@@ -212,7 +220,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable fullJoin(FuzzyCSVTable tbl, Closure fx) {
-        return fullJoin(tbl,fn(fx))
+        return fullJoin(tbl, fn(fx))
     }
 
     FuzzyCSVTable fullJoin(FuzzyCSVTable tbl, RecordFx fx) {
@@ -220,7 +228,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable fullJoin(List<? extends List> csv2, Closure fx) {
-        return fullJoin(csv2,fn(fx))
+        return fullJoin(csv2, fn(fx))
     }
 
     FuzzyCSVTable fullJoin(List<? extends List> csv2, RecordFx fx) {
@@ -276,7 +284,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable transform(String column, Closure fx) {
-        transform(column,fn(fx))
+        transform(column, fn(fx))
     }
 
     FuzzyCSVTable transform(String column, RecordFx fx) {
@@ -326,7 +334,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable putInColumn(int colId, Closure fx, FuzzyCSVTable sourceTable = null) {
-        putInColumn(colId,fn(fx))
+        putInColumn(colId, fn(fx))
     }
 
     FuzzyCSVTable putInColumn(int colId, RecordFx value, FuzzyCSVTable sourceTable = null) {
@@ -387,49 +395,28 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     //todo write unit tests
-    String toStringFormatted(boolean wrap = false) {
-        TableTemplateFactory ttf = new TableTemplateFactory()
-        ttf.footer = '___________________\n' +
-                (csv.size() - 1) + ' records'
+    String toStringFormatted(def wrap = false, int minCol = 10) {
 
-        Map<String, Integer> hMap = header.collectEntries { [it, maxStringSize(it)] }
+        def r = getRenderer(wrap, minCol)
 
-        def avgSize = FxExtensions.avg(hMap.values()) as Integer
+        def t = new V2_AsciiTable()
 
-        hMap.each { cName, maxSize ->
-            if (wrap) {
-                def fSize = maxSize < 10 ? (maxSize) : (maxSize < avgSize ? maxSize : avgSize)
-                fSize = fSize < cName.size() ? cName.size() : fSize
-                ttf.addColumn(cName, fSize)
-            } else {
-                ttf.addColumn(cName, maxSize)
-            }
-        }
+        // add header
+        t.addRule(); t.addRow(header as Object[]); t.addRule()
 
-        int ii = 0
-        def rows = []
-        csv.each { r ->
-            if (ii == 0) {
-                ii++; return
-            }
-            def map = [:]
-            header.eachWithIndex { String entry, int i ->
-                map[entry] = "${r[i]}"
-            }
-            rows << map
-        }
-        def wrappedNames = ttf.wrapRows(rows)
-        def binding = ['rows': wrappedNames]
-        return getTemplateOutput(binding, ttf)
+        //add body
+        (1..csv.size() - 1).each { t.addRow(csv[it] as Object[]) }
+        t.addRule()
+
+        //render
+        r.render(t).toStrBuilder().append("${csv.size()} Rows")
     }
 
-    private static String getTemplateOutput(Map<Object, List> binding, TableTemplateFactory ttf) {
-        return new SimpleTemplateEngine().createTemplate(ttf.template).make(binding).toString()
-    }
-
-    int maxStringSize(String columnName) {
-        def column = FuzzyCSV.getValuesForColumn(csv, Fuzzy.findPosition(header, columnName))
-        return "${column.max { "$it".size() }}".size()
+    private V2_AsciiTableRenderer getRenderer(wrap, int minCol) {
+        def rend = new V2_AsciiTableRenderer()
+                .setTheme(V2_E_TableThemes.ASC7_LATEX_STYLE_STRONG.get())
+                .setWidth(wrap ? new WidthLongestWordMinCol(minCol) : new WidthLongestLine());
+        return rend
     }
 
     @Override
