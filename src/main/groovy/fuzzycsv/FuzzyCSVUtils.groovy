@@ -31,6 +31,9 @@ class FuzzyCSVUtils {
         if (obj instanceof Number)
             return obj as Number
 
+        if (obj instanceof Boolean)
+            return obj == true ? 1.toBigInteger() : 0.toBigDecimal()
+
         def strValue = obj.toString()
 
         try {
