@@ -3,12 +3,12 @@ package fuzzycsv
 
 class Count extends AbstractAggregator {
 
-    List<String> columns
+    List columns
     boolean unique = false
 
     Count() {}
 
-    Count(List<String> columns, List<List> data) {
+    Count(List columns, List<List> data) {
         this.data = data
         this.columns = columns
     }
@@ -28,7 +28,7 @@ class Count extends AbstractAggregator {
         return new Count(columnName: name)
     }
 
-    static Count count(String name, String... columnsForCounting) {
+    static Count count(String name, Object... columnsForCounting) {
         return new Count(columnName: name, columns: columnsForCounting as List)
     }
 
@@ -40,7 +40,7 @@ class Count extends AbstractAggregator {
         return new Count(unique: true, columnName: name)
     }
 
-    static Count countUnique(String name, String... columnsForCounting) {
+    static Count countUnique(String name, Object... columnsForCounting) {
         return new Count(unique: true, columnName: name, columns: columnsForCounting as List)
     }
 
