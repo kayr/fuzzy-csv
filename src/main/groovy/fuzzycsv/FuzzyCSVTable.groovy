@@ -411,7 +411,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         (1..csv.size() - 1).each { t.addRow(csv[it].collect { it == null || it == '' ? '-' : it } as Object[]) }
 
         //render
-        r.render(t).toStrBuilder().append("_________${System.lineSeparator()}${csv.size()} Rows")
+        r.render(t).toStrBuilder().append("_________${System.lineSeparator()}${csv.size() - 1} Rows")
     }
 
     private V2_AsciiTableRenderer getRenderer(wrap, int minCol) {

@@ -167,13 +167,17 @@ println csv
 
 #### Join with custom functions
 ```groovy
-csv = tbl(csv1).fullJoin(csv2,fn{it.left('name') == it.right('name')})
-println csv
+def csv = tbl(csv1).fullJoin(csv2){it.left('name') == it.right('name')}
+println csv.toStringFormatted()
 /*output
-[name, sex, name, age, hobby]
-[alex, male, alex, 21, biking]
-[sara, female, sara, null, null]
-[peter, null, peter, 21, swimming]*/
+  name    sex      name    age   hobby
+  ----    ---      ----    ---   -----
+  alex    male     alex    21    biking
+  sara    female   sara    -     -
+  peter   -        peter   21    swimming
+_________
+3 Rows
+*/
 ```
 
 
@@ -257,10 +261,14 @@ println tbl(csv2).addColumn(fn('Double Age') {it.age * 2})
 ```
 #### Filter Records
 ```groovy
-println tbl(csv2).filter(fn {it.name == 'alex'})
-//output
-//[name, age, hobby]
-//[alex, 21, biking]
+println tbl(csv2).filter { it.name == 'alex' }.toStringFormatted()
+/*output
+  name   age   hobby
+  ----   ---   -----
+  alex   21    biking
+_________
+1 Rows
+*/
 ```
 
 #### Transposing
@@ -299,7 +307,7 @@ In the example below we find the average age in each hobby by making use of sum 
 
 ```groovy
 def csv2 = [
-        ['name', 'age', 'hobby'],
+        ['name', 'age', 'Hobby'],
         ['alex', '21', 'biking'],
         ['peter', '21', 'swimming'],
         ['davie', '15', 'swimming'],
@@ -308,27 +316,22 @@ def csv2 = [
 
 
 println tbl(csv2)
-        .aggregate(
-        [
-            'Hobby',
+        .autoAggregate(
 
-            sum('age').az('TT.Age'),
+        'Hobby',
 
-            count('name').az('TT.Count'),
+        sum('age').az('TT.Age'),
 
-            fn('Avg') { it['TT.Age'] / it['TT.Count'] }
-        ],
+        count('name').az('TT.Count'),
 
-        fn { it.hobby }
-
-        ).toStringFormatted()
+).toStringFormatted()
 /*output
-hobby    TT.Age  TT.Count  Avg
-________  ______  ________  ____
-biking    37      2         18.5
-swimming  36      2         18
-___________________
-2 records
+  Hobby      TT.Age   TT.Count
+  -----      ------   --------
+  biking     37       2
+  swimming   36       2
+_________
+2 Rows
 */
 ```
 
