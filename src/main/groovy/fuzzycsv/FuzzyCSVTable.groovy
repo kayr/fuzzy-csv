@@ -135,6 +135,10 @@ class FuzzyCSVTable implements Iterable<Record> {
         FuzzyCSV.getValuesForColumn(csv, colIdx)
     }
 
+    def firstCell() {
+        return csv[1][0]
+    }
+
     static FuzzyCSVTable tbl(List<? extends List> csv) {
         return new FuzzyCSVTable(csv)
     }
@@ -259,12 +263,28 @@ class FuzzyCSVTable implements Iterable<Record> {
         return mergeByColumn(tbl.csv)
     }
 
+    /**
+     * Deprecated use #union
+     */
+    @Deprecated
     FuzzyCSVTable mergeByAppending(List<? extends List> otherCsv) {
         return tbl(FuzzyCSV.mergeByAppending(this.csv, otherCsv))
     }
 
+    /**
+     * Deprecated use #union
+     */
+    @Deprecated
     FuzzyCSVTable mergeByAppending(FuzzyCSVTable tbl) {
-        return mergeByAppending(tbl.csv)
+        return union(tbl.csv)
+    }
+
+    FuzzyCSVTable union(List<? extends List> otherCsv) {
+        return tbl(FuzzyCSV.mergeByAppending(this.csv, otherCsv))
+    }
+
+    FuzzyCSVTable union(FuzzyCSVTable tbl) {
+        return union(tbl.csv)
     }
 
     FuzzyCSVTable addColumn(RecordFx... fnz) {
@@ -395,7 +415,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     //todo write unit tests
-    String toStringFormatted(def wrap = false, int minCol = 10) {
+    String toStringFormatted(boolean wrap = false, int minCol = 10) {
 
         def r = getRenderer(wrap, minCol)
 
@@ -414,7 +434,13 @@ class FuzzyCSVTable implements Iterable<Record> {
         r.render(t).toStrBuilder().append("_________${System.lineSeparator()}${csv.size() - 1} Rows")
     }
 
-    private V2_AsciiTableRenderer getRenderer(wrap, int minCol) {
+    FuzzyCSVTable printTable(PrintStream out = System.out, boolean wrap = false, int minCol = 10) {
+        out.println(toStringFormatted(wrap, minCol))
+        return this
+    }
+
+    @SuppressWarnings("GrMethodMayBeStatic")
+    protected V2_AsciiTableRenderer getRenderer(boolean wrap, int minCol) {
         def rend = new V2_AsciiTableRenderer()
                 .setTheme(V2_E_TableThemes.ASC7_LATEX_STYLE_STRONG.get())
                 .setWidth(wrap ? new WidthLongestWordMinCol(minCol) : new WidthLongestLine());

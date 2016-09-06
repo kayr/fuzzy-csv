@@ -168,6 +168,7 @@ class FuzzyCSVTableTest {
     void testGetCellValue() {
         assert tbl(csv2)['sub_county'][1] == 'Hakibale'
         assert tbl(csv2)[0][1] == 'Hakibale'
+        assert tbl(csv2).firstCell() == 'Hakibale'
     }
 
     @Test
@@ -190,5 +191,7 @@ class FuzzyCSVTableTest {
     void testRecordListToCSV() {
         assert toCSVFromRecordList(tbl(csv2).collect()).csv == csv2
     }
+
+
 
 }
