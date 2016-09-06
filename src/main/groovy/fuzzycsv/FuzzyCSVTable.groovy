@@ -22,7 +22,9 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     FuzzyCSVTable normalizeHeaders(String prefix = 'COL_') {
         header.eachWithIndex { h, int i ->
-            if (!h?.trim()) header.set(i, "$prefix$i")
+            h = h?.trim()
+            if (!h) h = "$prefix$i"
+            header.set(i, h)
         }
         return this
     }
@@ -287,6 +289,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         return union(tbl.csv)
     }
 
+
     FuzzyCSVTable addColumn(RecordFx... fnz) {
         def thisCsv = csv
         for (fn in fnz) {
@@ -311,6 +314,14 @@ class FuzzyCSVTable implements Iterable<Record> {
         return tbl(FuzzyCSV.transform(csv, column, fx))
     }
 
+    /**
+     * Transform every cell
+     * @param fx
+     * @return
+     */
+    FuzzyCSVTable transform(Closure fx) {
+        return tbl(FuzzyCSV.transform(csv, fx))
+    }
 
     List<String> getHeader() {
         return csv[0]

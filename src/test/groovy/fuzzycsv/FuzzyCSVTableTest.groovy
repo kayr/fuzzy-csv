@@ -2,11 +2,10 @@ package fuzzycsv
 
 import org.junit.Test
 
-import static fuzzycsv.FuzzyCSVTable.toCSVFromRecordList
 import static fuzzycsv.FuzzyCSVTable.tbl
+import static fuzzycsv.FuzzyCSVTable.toCSVFromRecordList
 import static fuzzycsv.RecordFx.fn
 import static fuzzycsv.Sum.sum
-
 
 class FuzzyCSVTableTest {
 
@@ -131,8 +130,8 @@ class FuzzyCSVTableTest {
     void testAutoAggregateGrouping() {
         def results = tbl(Data.groupingData)
                 .autoAggregate('sub_county',
-                            sum('ps_total_score').az('sum'),
-                            sum('tap_total_score').az('tap_sum'))
+                sum('ps_total_score').az('sum'),
+                sum('tap_total_score').az('tap_sum'))
 
         def expected = [
                 ['sub_county', 'sum', 'tap_sum'],
@@ -182,16 +181,49 @@ class FuzzyCSVTableTest {
                 ['Kisomoro', 3, 10],
                 ['Bunyangabu', 4, '1'],
                 ['Noon', 5, 0]] == subCountiesAndIdx
+    }
 
+    @Test
+    void testTransformCell() {
+        def subCountiesAndIdx = []
+        def copy = tbl(csv2).copy().transform { v -> "$v".padRight(10, '-') }
+        assert [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
+                ['Hakibale--', '18.1------', 'null------', 'null------'],
+                ['Kabonero--', '1---------', 'null------', 'null------'],
+                ['Kisomoro--', 'null------', '1---------', '10--------'],
+                ['Bunyangabu', 'null------', 'null------', '1---------'],
+                ['Noon------', 'null------', 'null------', '0---------']] == copy.csv
+    }
 
+    @Test
+    void testTransformCellWithRecord() {
+        def copy = tbl(csv2).copy().transform { r, v -> "${r['sub_county']}-$v".toString() }
+        assert [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
+                ['Hakibale-Hakibale', 'Hakibale-Hakibale-18.1', 'Hakibale-Hakibale-null', 'Hakibale-Hakibale-null'],
+                ['Kabonero-Kabonero', 'Kabonero-Kabonero-1', 'Kabonero-Kabonero-null', 'Kabonero-Kabonero-null'],
+                ['Kisomoro-Kisomoro', 'Kisomoro-Kisomoro-null', 'Kisomoro-Kisomoro-1', 'Kisomoro-Kisomoro-10'],
+                ['Bunyangabu-Bunyangabu', 'Bunyangabu-Bunyangabu-null', 'Bunyangabu-Bunyangabu-null', 'Bunyangabu-Bunyangabu-1'],
+                ['Noon-Noon', 'Noon-Noon-null', 'Noon-Noon-null', 'Noon-Noon-0']] == copy.csv
+    }
 
+    @Test
+    void testTransformCellWith3Params() {
+        def copy = tbl(csv2).copy().transform { r, v, i ->
+            if (i == 0) v else "${r['sub_county']}-$v".toString()
+        }
+
+        assert [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
+                ['Hakibale', 'Hakibale-18.1', 'Hakibale-null', 'Hakibale-null'],
+                ['Kabonero', 'Kabonero-1', 'Kabonero-null', 'Kabonero-null'],
+                ['Kisomoro', 'Kisomoro-null', 'Kisomoro-1', 'Kisomoro-10'],
+                ['Bunyangabu', 'Bunyangabu-null', 'Bunyangabu-null', 'Bunyangabu-1'],
+                ['Noon', 'Noon-null', 'Noon-null', 'Noon-0']] == copy.csv
     }
 
     @Test
     void testRecordListToCSV() {
         assert toCSVFromRecordList(tbl(csv2).collect()).csv == csv2
     }
-
 
 
 }

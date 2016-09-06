@@ -726,4 +726,28 @@ public class FuzzyCSV {
         }
         return null
     }
+
+    @CompileStatic
+    static List<List> transform(List<List> csv, Closure<Object> transform) {
+
+        def maxParams = transform.getMaximumNumberOfParameters()
+        def header = csv[0]
+        csv.eachWithIndex { List<Object> record, int rIdx ->
+            if (rIdx == 0) return
+            def recordObj = maxParams > 1 ? Record.getRecord(header, record, rIdx) : null
+            record.eachWithIndex { Object entry, int cIdx ->
+
+                def value
+                if (maxParams == 3) {
+                    value = transform.call(recordObj, entry, cIdx)
+                } else if (maxParams == 2) {
+                    value = transform.call(recordObj, entry)
+                } else {
+                    value = transform.call(entry)
+                }
+                record[cIdx] = value
+            }
+        }
+        return csv
+    }
 }
