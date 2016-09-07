@@ -385,6 +385,12 @@ class FuzzyCSVTable implements Iterable<Record> {
         return FuzzyCSV.toMapList(csv)
     }
 
+    FuzzyCSVTable sort(Closure c) {
+        tbl(FuzzyCSV.sort(csv, c))
+    }
+
+
+
     static FuzzyCSVTable parseCsv(String csvString) {
         toListOfLists(FuzzyCSV.parseCsv(csvString))
     }

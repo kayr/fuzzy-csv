@@ -732,6 +732,7 @@ public class FuzzyCSV {
 
         def maxParams = transform.getMaximumNumberOfParameters()
         def header = csv[0]
+
         csv.eachWithIndex { List<Object> record, int rIdx ->
             if (rIdx == 0) return
             def recordObj = maxParams > 1 ? Record.getRecord(header, record, rIdx) : null
@@ -748,6 +749,32 @@ public class FuzzyCSV {
                 record[cIdx] = value
             }
         }
+        return csv
+    }
+
+    static List<List> sort(List<List> csv, Closure fx) {
+        csv = copy(csv)
+        def header = csv.remove(0)
+        def parameters = fx.maximumNumberOfParameters
+        if (parameters == 1) {
+            use(FxExtensions) {
+                csv = csv.sort(false) { List a ->
+                    def r = Record.getRecord(header, a)
+                    fx.call(r)
+                }
+
+            }
+        } else {
+            use(FxExtensions) {
+                csv = csv.sort(false) { List a, List b ->
+                    def r = Record.getRecord(header, a)
+                    def l = Record.getRecord(header, b)
+
+                    fx.call(r, l)
+                }
+            }
+        }
+        csv.add(0, header)
         return csv
     }
 }
