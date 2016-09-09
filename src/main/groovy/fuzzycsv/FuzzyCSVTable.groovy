@@ -138,7 +138,9 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     @CompileStatic
     List getAt(Integer colIdx) {
-        FuzzyCSV.getValuesForColumn(csv, colIdx)
+        def column = FuzzyCSV.getValuesForColumn(csv, colIdx)
+        column.remove(0)
+        return column
     }
 
     def firstCell() {

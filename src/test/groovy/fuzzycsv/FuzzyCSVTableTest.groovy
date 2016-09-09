@@ -5,6 +5,7 @@ import org.junit.Test
 import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.FuzzyCSVTable.toCSVFromRecordList
 import static fuzzycsv.RecordFx.fn
+import static fuzzycsv.Reducer.reduce
 import static fuzzycsv.Sum.sum
 
 class FuzzyCSVTableTest {
@@ -74,6 +75,38 @@ class FuzzyCSVTableTest {
         ]
         assert data.csv == expected
     }
+
+    @Test
+    void testCountReducer() {
+        def fn2ndLetter = { it['sub_county'][1] }
+        def csv = tbl(csv2).aggregate([
+                fn('Letter', fn2ndLetter),
+                'sub_county',
+                reduce('Count') { FuzzyCSVTable t -> t['ps_total_score'].count { it } }
+        ], fn2ndLetter)//group by second later
+
+        assert csv.csv == [['Letter', 'sub_county', 'Count'],
+                           ['a', 'Hakibale', 2],
+                           ['i', 'Kisomoro', 0],
+                           ['u', 'Bunyangabu', 0],
+                           ['o', 'Noon', 0]]
+    }
+
+    @Test
+    void testCountReducerWithRecord() {
+        def fn2ndLetter = { it['sub_county'][1] }
+        def csv = tbl(csv2).aggregate([
+                fn('Letter', fn2ndLetter),
+                'sub_county',
+                reduce('Count') { t, r -> "${r['Letter']}  ${t['ps_total_score'].count { it }}".toString() }
+        ], fn2ndLetter)//group by second later
+
+        assert csv.csv == [['Letter', 'sub_county', 'Count'],
+                           ['a', 'Hakibale', 'a  2'],
+                           ['i', 'Kisomoro', 'i  0'],
+                           ['u', 'Bunyangabu', 'u  0'], ['o', 'Noon', 'o  0']]
+    }
+
 
     @Test
     void testCountFluent() {
@@ -165,8 +198,8 @@ class FuzzyCSVTableTest {
 
     @Test
     void testGetCellValue() {
-        assert tbl(csv2)['sub_county'][1] == 'Hakibale'
-        assert tbl(csv2)[0][1] == 'Hakibale'
+        assert tbl(csv2)['sub_county'][0] == 'Hakibale'
+        assert tbl(csv2)[0][0] == 'Hakibale'
         assert tbl(csv2).firstCell() == 'Hakibale'
     }
 

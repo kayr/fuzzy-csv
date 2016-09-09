@@ -1,26 +1,30 @@
 package fuzzycsv
 
+import static fuzzycsv.FuzzyCSVTable.tbl
+
 
 abstract class AbstractAggregator<T> implements Aggregator<T> {
 
-    List<List> data
+    FuzzyCSVTable data
     String columnName
+
 
     List<List> getData(List<?> columns) {
 
         def requiredData
         if (columns == null || columns.isEmpty()) {
-            requiredData = data
+            requiredData = data.csv
         } else {
-            requiredData = FuzzyCSV.select(columns, data,Mode.STRICT)
+            requiredData = FuzzyCSV.select(columns, data.csv, Mode.STRICT)
         }
         def newData = requiredData[1..-1]
         return newData
     }
 
     void setData(List<List> data) {
-        this.data = new ArrayList(data)
+        this.data = tbl(data)
     }
+
 
     @Override
     Aggregator az(String name) {

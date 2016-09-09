@@ -452,7 +452,15 @@ public class FuzzyCSV {
             }
 
             if (header instanceof Aggregator) {
-                newCsv = putInColumn(newCsv, fn(header.columnName) { header.value }, idx, csv)
+                def fnAddColumn = {
+                    if (header instanceof Reducer) {
+                        header.getValue(it)
+                    } else {
+                        header.value
+                    }
+
+                }
+                newCsv = putInColumn(newCsv, fn(header.columnName, fnAddColumn), idx, csv)
                 return
             }
 
