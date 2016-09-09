@@ -20,10 +20,14 @@ class FuzzyCSVTable implements Iterable<Record> {
         this.csv = csv
     }
 
-    FuzzyCSVTable normalizeHeaders(String prefix = 'COL_') {
+    FuzzyCSVTable normalizeHeaders(String prefix = 'C_') {
+        def visited = new HashSet()
         header.eachWithIndex { h, int i ->
+            def origH = h
             h = h?.trim()
-            if (!h) h = "$prefix$i"
+            if (!h) h = "$prefix$i".toString()
+            else if (visited.contains(h)) h = "$prefix$i$h".toString()
+            visited << origH
             header.set(i, h)
         }
         return this
@@ -310,6 +314,10 @@ class FuzzyCSVTable implements Iterable<Record> {
         transform(column, fn(fx))
     }
 
+    FuzzyCSVTable transform(RecordFx... fns) {
+        return fns.inject(this) { FuzzyCSVTable acc, RecordFx val -> acc.transform(val.name, val) }
+    }
+
     FuzzyCSVTable transform(String column, RecordFx fx) {
         return tbl(FuzzyCSV.transform(csv, column, fx))
     }
@@ -390,7 +398,6 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-
     static FuzzyCSVTable parseCsv(String csvString) {
         toListOfLists(FuzzyCSV.parseCsv(csvString))
     }
@@ -431,6 +438,14 @@ class FuzzyCSVTable implements Iterable<Record> {
         return csv[0][index]
     }
 
+    Long size() {
+        def size = csv?.size() ?: 0
+        if (size) {
+            return size - 1
+        }
+        return size
+    }
+
     //todo write unit tests
     String toStringFormatted(boolean wrap = false, int minCol = 10) {
 
@@ -445,10 +460,14 @@ class FuzzyCSVTable implements Iterable<Record> {
         t.addRow(header.collect { "-".multiply("$it".size()) } as Object[])
 
         //add body
-        (1..csv.size() - 1).each { t.addRow(csv[it].collect { it == null || it == '' ? '-' : it } as Object[]) }
+        if (isEmpty()) {
+            t.addRow(header.collect { '-' } as Object[])
+        } else {
+            (1..csv.size() - 1).each { t.addRow(csv[it].collect { it == null || it == '' ? '-' : it } as Object[]) }
+        }
 
         //render
-        r.render(t).toStrBuilder().append("_________${System.lineSeparator()}${csv.size() - 1} Rows")
+        r.render(t).toStrBuilder().append("_________${System.lineSeparator()}${size()} Rows")
     }
 
     FuzzyCSVTable printTable(PrintStream out = System.out, boolean wrap = false, int minCol = 10) {

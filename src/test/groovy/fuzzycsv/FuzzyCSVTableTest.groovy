@@ -234,7 +234,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testSorting2Params() {
-        def copy = tbl(csv2).sort { r,b -> r['sub_county'] <=> b['sub_county']}
+        def copy = tbl(csv2).sort { r, b -> r['sub_county'] <=> b['sub_county'] }
 
         assert [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
                 ['Bunyangabu', null, null, '1'],
@@ -247,6 +247,19 @@ class FuzzyCSVTableTest {
     @Test
     void testRecordListToCSV() {
         assert toCSVFromRecordList(tbl(csv2).collect()).csv == csv2
+    }
+
+    @Test
+    void testNormalizeHeaders() {
+        def data = [['name', '', null, 'sex']]
+        def csv = tbl(data).normalizeHeaders()
+
+        assert csv.csv == [['name', 'C_1', 'C_2', 'sex']]
+
+        data = [['name', '', null, 'sex', 'name', 'sex']]
+        csv = tbl(data).normalizeHeaders()
+        assert csv.csv == [['name', 'C_1', 'C_2', 'sex', 'C_4name', 'C_5sex']]
+
     }
 
 
