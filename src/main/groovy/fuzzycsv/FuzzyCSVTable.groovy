@@ -79,7 +79,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         //todo do not modify internal data
         def mainTable = aggregatedTables.remove(0)
         for (table in aggregatedTables) {
-            mainTable = mainTable.mergeByAppending(table)
+            mainTable = mainTable.union(table)
         }
         return mainTable
     }
