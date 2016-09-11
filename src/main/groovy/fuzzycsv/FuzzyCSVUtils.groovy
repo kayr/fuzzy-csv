@@ -32,7 +32,7 @@ class FuzzyCSVUtils {
             return obj as Number
 
         if (obj instanceof Boolean)
-            return obj == true ? 1.toBigInteger() : 0.toBigDecimal()
+            return obj ? 1.toBigInteger() : 0.toBigDecimal()
 
         def strValue = obj.toString()
 
@@ -49,7 +49,7 @@ class FuzzyCSVUtils {
             if (strict)
                 throw new NumberFormatException(msg)
             else
-                log.error(msg)
+                log.trace(msg)
         }
 
         return preferredType == Integer || preferredType == BigInteger ? 0 : 0.0

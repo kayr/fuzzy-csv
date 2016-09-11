@@ -56,7 +56,7 @@ class RecordFx<RT> {
      */
     @CompileStatic
     static RecordFx fx(Closure function) {
-        fn(RecordFx.class.getSimpleName(), function)
+        fx(RecordFx.class.getSimpleName(), function)
     }
 
     @CompileStatic
@@ -71,7 +71,7 @@ class RecordFx<RT> {
      */
     @CompileStatic
     static RecordFx fn(Closure function) {
-        fx(RecordFx.class.getSimpleName(), function)
+        fn(RecordFx.class.getSimpleName(), function)
     }
 
     @CompileStatic
