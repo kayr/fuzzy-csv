@@ -1,5 +1,6 @@
 package fuzzycsv
 
+import groovy.transform.CompileStatic
 
 class RecordFx<RT> {
 
@@ -8,6 +9,7 @@ class RecordFx<RT> {
     ResolutionStrategy resolutionStrategy
     private boolean useFuzzy = false
     public headerEnabled = false
+    boolean useCoercion = true
 
     protected RecordFx() {}
 
@@ -16,17 +18,28 @@ class RecordFx<RT> {
         this.c = c
     }
 
+    @CompileStatic
     RT getValue(Record record) {
         if (record.isHeader() && !headerEnabled)
             return null
 
         if (resolutionStrategy != null)
             record.resolutionStrategy = resolutionStrategy
-        def rt = use(FxExtensions) {
-            record.useFuzzy = useFuzzy
-            return c.call(record)
+
+        record.useFuzzy = useFuzzy
+        def rt
+        if (useCoercion) {
+            rt = getValueWithCoercion(record)
+        } else {
+            rt = c.call(record)
         }
+
         return (RT) rt
+    }
+
+
+    private def getValueWithCoercion(Record record) {
+        return use(FxExtensions) { c.call(record) }
     }
     /**
      * use @fx
@@ -36,45 +49,46 @@ class RecordFx<RT> {
         return fn(name, c)
     }
 
-    static RecordFx fn(String name, Closure function) {
+    /**
+     Record function with coercion off this -> FASTER
+     * @param function
+     * @return
+     */
+    @CompileStatic
+    static RecordFx fx(Closure function) {
+        fn(RecordFx.class.getSimpleName(), function)
+    }
+
+    @CompileStatic
+    static RecordFx fx(String name, Closure function) {
         return new RecordFx(name, function)
     }
 
+    /**
+     * Record function with coercion on -> SLOWER
+     * @param function
+     * @return
+     */
+    @CompileStatic
     static RecordFx fn(Closure function) {
-        return new RecordFx(RecordFx.class.getSimpleName(), function)
+        fx(RecordFx.class.getSimpleName(), function)
     }
 
+    @CompileStatic
+    static RecordFx fn(String name, Closure function) {
+        def r = new RecordFx(name, function)
+        r.useCoercion = false
+        return r
+    }
+
+    @CompileStatic
     RecordFx withSourceFirst() {
         resolutionStrategy = ResolutionStrategy.SOURCE_FIRST
         return this
     }
 
-    RecordFx withDerivedFirst() {
-        resolutionStrategy = ResolutionStrategy.DERIVED_FIRST
-        return this
-    }
-
-    RecordFx getFz() {
-        this.useFuzzy = true
-        return this
-    }
-
-    RecordFx getProcessHeader() {
-        this.headerEnabled = true
-        return this
-    }
-
-    RecordFx headersOn() {
-        this.headerEnabled = true
-        return this
-    }
-
-    RecordFx headersOff() {
-        this.headerEnabled = false
-        return this
-    }
-
-    RecordFx az(String name){
+    @CompileStatic
+    RecordFx az(String name) {
         this.name = name
         return this
     }

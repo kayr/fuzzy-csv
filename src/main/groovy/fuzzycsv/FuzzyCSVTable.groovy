@@ -7,11 +7,14 @@ import de.vandermeer.asciitable.v2.render.WidthLongestWordMinCol
 import de.vandermeer.asciitable.v2.themes.V2_E_TableThemes
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
+import groovy.util.logging.Log4j
 
 import java.sql.ResultSet
 
 import static fuzzycsv.RecordFx.fn
+import static fuzzycsv.RecordFx.fx
 
+@Log4j
 class FuzzyCSVTable implements Iterable<Record> {
 
     final List<List> csv
@@ -39,7 +42,7 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     FuzzyCSVTable autoAggregate(Object... columns) {
         def groupByColumns = columns.findAll { !(it instanceof Aggregator) }
-        def fn = fn() { Record r ->
+        def fn = fx { Record r ->
             def answer = groupByColumns.collect { c ->
                 if (c instanceof RecordFx) return c.getValue(r)
                 else return r.final(c as String)
@@ -71,12 +74,16 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable aggregate(List columns, RecordFx groupFx) {
+
+        log.debug("Grouping tables")
         Map<Object, FuzzyCSVTable> groups = groupBy(groupFx)
 
+        log.debug("Aggreagating groups [${groups.size()}]")
         def aggregatedTables = groups.collect { key, value ->
             value.aggregate(columns)
         }
         //todo do not modify internal data
+        log.debug("Merging groups")
         def mainTable = aggregatedTables.remove(0)
         for (table in aggregatedTables) {
             mainTable = mainTable.union(table)

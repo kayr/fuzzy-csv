@@ -12,6 +12,7 @@ import java.sql.ResultSetMetaData
 import java.sql.SQLException
 
 import static fuzzycsv.RecordFx.fn
+import static fuzzycsv.RecordFx.fx
 
 @Log4j
 public class FuzzyCSV {
@@ -460,7 +461,7 @@ public class FuzzyCSV {
                     }
 
                 }
-                newCsv = putInColumn(newCsv, fn(header.columnName, fnAddColumn), idx, csv)
+                newCsv = putInColumn(newCsv, fx(header.columnName, fnAddColumn), idx, csv)
                 return
             }
 

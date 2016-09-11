@@ -6,6 +6,7 @@ import org.junit.Test
 
 import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.RecordFx.fn
+import static fuzzycsv.RecordFx.fx
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
 
@@ -334,7 +335,7 @@ class FuzzyCSVTest {
     public void testRecordFX() {
         def csv = getCSV('/csv1csv2.csv')
 
-        def recordFx = fn('Age*Mark') { it.Age * it.Mark }
+        def recordFx = fx('Age*Mark') { it.Age * it.Mark }
         def newCSV = FuzzyCSV.rearrangeColumns(['Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark', recordFx], csv)
 
         def expected = [
@@ -353,7 +354,7 @@ class FuzzyCSVTest {
     public void testRecordFXWithSource() {
         def csv = getCSV('/csv1csv2.csv')
 
-        def recordFx = fn('Age*Mark') { it.'@Age' * it.'@Mark' }
+        def recordFx = fx('Age*Mark') { it.'@Age' * it.'@Mark' }
 
         def newCSV = FuzzyCSV.rearrangeColumns(['Name', recordFx], csv)
 
@@ -371,7 +372,7 @@ class FuzzyCSVTest {
     public void testRecordFXWithSourceFirstResolution() {
         def csv = getCSV('/csv1csv2.csv')
 
-        def recordFx = fn('Age*Mark') { it.'Age' * it.'Mark' }.withSourceFirst()
+        def recordFx = fx('Age*Mark') { it.'Age' * it.'Mark' }.withSourceFirst()
         def newCSV = FuzzyCSV.rearrangeColumns(['Name', recordFx], csv)
 
         def expected = [
