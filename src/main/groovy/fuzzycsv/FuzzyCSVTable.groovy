@@ -11,8 +11,8 @@ import groovy.util.logging.Log4j
 
 import java.sql.ResultSet
 
-import static fuzzycsv.RecordFx.fn
 import static fuzzycsv.RecordFx.fx
+import static fuzzycsv.RecordFx.fn
 
 @Log4j
 class FuzzyCSVTable implements Iterable<Record> {
@@ -42,7 +42,7 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     FuzzyCSVTable autoAggregate(Object... columns) {
         def groupByColumns = columns.findAll { !(it instanceof Aggregator) }
-        def fn = fx { Record r ->
+        def fn = fn { Record r ->
             def answer = groupByColumns.collect { c ->
                 if (c instanceof RecordFx) return c.getValue(r)
                 else return r.final(c as String)
@@ -70,7 +70,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable aggregate(List columns, Closure groupFx) {
-        return aggregate(columns, fn(groupFx))
+        return aggregate(columns, fx(groupFx))
     }
 
     FuzzyCSVTable aggregate(List columns, RecordFx groupFx) {
@@ -92,7 +92,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     Map<Object, FuzzyCSVTable> groupBy(Closure groupFx) {
-        return groupFx(fn(groupFx))
+        return groupFx(fx(groupFx))
     }
 
     Map<Object, FuzzyCSVTable> groupBy(RecordFx groupFx) {
@@ -191,7 +191,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable join(FuzzyCSVTable tbl, Closure fx) {
-        return join(tbl, fn(fx))
+        return join(tbl, fx(fx))
     }
 
     FuzzyCSVTable join(FuzzyCSVTable tbl, RecordFx fx) {
@@ -199,7 +199,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable join(List<? extends List> csv2, Closure joinColumns) {
-        return join(csv2, fn(joinColumns))
+        return join(csv2, fx(joinColumns))
     }
 
     FuzzyCSVTable join(List<? extends List> csv2, RecordFx joinColumns) {
@@ -207,7 +207,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable leftJoin(FuzzyCSVTable tbl, Closure fx) {
-        return leftJoin(tbl, fn(fx))
+        return leftJoin(tbl, fx(fx))
     }
 
     FuzzyCSVTable leftJoin(FuzzyCSVTable tbl, RecordFx fx) {
@@ -215,7 +215,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable leftJoin(List<? extends List> csv2, Closure fx) {
-        return leftJoin(csv2, fn(fx))
+        return leftJoin(csv2, fx(fx))
     }
 
     FuzzyCSVTable leftJoin(List<? extends List> csv2, RecordFx fx) {
@@ -223,7 +223,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable rightJoin(FuzzyCSVTable tbl, Closure fx) {
-        return rightJoin(tbl, fn(fx))
+        return rightJoin(tbl, fx(fx))
     }
 
     FuzzyCSVTable rightJoin(FuzzyCSVTable tbl, RecordFx fx) {
@@ -231,7 +231,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable rightJoin(List<? extends List> csv2, Closure fx) {
-        return rightJoin(csv2, fn(fx))
+        return rightJoin(csv2, fx(fx))
     }
 
     FuzzyCSVTable rightJoin(List<? extends List> csv2, RecordFx fx) {
@@ -239,7 +239,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable fullJoin(FuzzyCSVTable tbl, Closure fx) {
-        return fullJoin(tbl, fn(fx))
+        return fullJoin(tbl, fx(fx))
     }
 
     FuzzyCSVTable fullJoin(FuzzyCSVTable tbl, RecordFx fx) {
@@ -247,7 +247,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable fullJoin(List<? extends List> csv2, Closure fx) {
-        return fullJoin(csv2, fn(fx))
+        return fullJoin(csv2, fx(fx))
     }
 
     FuzzyCSVTable fullJoin(List<? extends List> csv2, RecordFx fx) {
@@ -320,7 +320,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable transform(String column, Closure fx) {
-        transform(column, fn(fx))
+        transform(column, fx(fx))
     }
 
     FuzzyCSVTable transform(RecordFx... fns) {
@@ -349,7 +349,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable filter(Closure fx) {
-        filter(fn(fx))
+        filter(fx(fx))
     }
 
     FuzzyCSVTable filter(RecordFx fx) {
@@ -357,7 +357,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable map(Closure fx) {
-        map(fn(fx))
+        map(fx(fx))
     }
 
     FuzzyCSVTable map(RecordFx fx) {
@@ -382,7 +382,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable putInColumn(int colId, Closure fx, FuzzyCSVTable sourceTable = null) {
-        putInColumn(colId, fn(fx))
+        putInColumn(colId, fx(fx))
     }
 
     FuzzyCSVTable putInColumn(int colId, RecordFx value, FuzzyCSVTable sourceTable = null) {

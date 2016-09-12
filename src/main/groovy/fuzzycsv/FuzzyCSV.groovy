@@ -11,8 +11,8 @@ import java.sql.ResultSet
 import java.sql.ResultSetMetaData
 import java.sql.SQLException
 
-import static fuzzycsv.RecordFx.fn
 import static fuzzycsv.RecordFx.fx
+import static fuzzycsv.RecordFx.fn
 
 @Log4j
 public class FuzzyCSV {
@@ -365,7 +365,7 @@ public class FuzzyCSV {
     @CompileStatic
     private static RecordFx getDefaultRecordMatcher(String[] joinColumns) {
 
-        RecordFx fn = fn { Record record ->
+        RecordFx fn = fx { Record record ->
             joinColumns.every { String r ->
                 record.left(r) == record.right(r)
             }
@@ -409,7 +409,7 @@ public class FuzzyCSV {
     /**
      * Transforms a table with a source.With the given transformer.
      *
-     *  Note: One thing to note is that the fx is converted to sourceFirstResolution
+     *  Note: One thing to note is that the fn is converted to sourceFirstResolution
      *
      */
     static transform(List<? extends List> csv, String column, RecordFx fx) {
@@ -461,7 +461,7 @@ public class FuzzyCSV {
                     }
 
                 }
-                newCsv = putInColumn(newCsv, fx(header.columnName, fnAddColumn), idx, csv)
+                newCsv = putInColumn(newCsv, fn(header.columnName, fnAddColumn), idx, csv)
                 return
             }
 

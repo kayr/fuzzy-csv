@@ -23,7 +23,7 @@ class SumTest {
     @Test
     void testSumFunctionsColumns() {
         FxExtensions.treatNullAsZero()
-        def sumFx = new Sum(columns: [RecordFx.fx  {
+        def sumFx = new Sum(columns: [RecordFx.fn  {
             it.'ps_total_score' + it.'pipes_total_score' + it.'tap_total_score'
         }], columnName: 'sum', data:  Data.csv)
         assert sumFx.value == 31.1

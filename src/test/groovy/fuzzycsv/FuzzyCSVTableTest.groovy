@@ -4,8 +4,8 @@ import org.junit.Test
 
 import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.FuzzyCSVTable.toCSVFromRecordList
-import static fuzzycsv.RecordFx.fn
 import static fuzzycsv.RecordFx.fx
+import static fuzzycsv.RecordFx.fn
 import static fuzzycsv.Reducer.reduce
 import static fuzzycsv.Sum.sum
 
@@ -81,7 +81,7 @@ class FuzzyCSVTableTest {
     void testCountReducer() {
         def fn2ndLetter = { it['sub_county'][1] }
         def csv = tbl(csv2).aggregate([
-                fn('Letter', fn2ndLetter),
+                fx('Letter', fn2ndLetter),
                 'sub_county',
                 reduce('Count') { FuzzyCSVTable t -> t['ps_total_score'].count { it } }
         ], fn2ndLetter)//group by second later
@@ -97,7 +97,7 @@ class FuzzyCSVTableTest {
     void testCountReducerWithRecord() {
         def fn2ndLetter = { it['sub_county'][1] }
         def csv = tbl(csv2).aggregate([
-                fn('Letter', fn2ndLetter),
+                fx('Letter', fn2ndLetter),
                 'sub_county',
                 reduce('Count') { t, r -> "${r['Letter']}  ${t['ps_total_score'].count { it }}".toString() }
         ], fn2ndLetter)//group by second later
@@ -116,7 +116,7 @@ class FuzzyCSVTableTest {
                 sum('ps_total_score', 'pipes_total_score').az('sum'),
                 sum('ps_total_score').az('total_taps'),
                 sum('ps_total_score', 'pipes_total_score', 'tap_total_score').az('total'),
-                fn('perc_taps') { it.total_taps / it.total * 100 }
+                fx('perc_taps') { it.total_taps / it.total * 100 }
         ).select('sub_county', 'sum', 'perc_taps')
 
         def expected = [
@@ -128,7 +128,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testGrouping() {
-        Map<Object, FuzzyCSVTable> allData = tbl(Data.groupingData).groupBy(fn { it.sub_county })
+        Map<Object, FuzzyCSVTable> allData = tbl(Data.groupingData).groupBy(fx { it.sub_county })
         assert allData.size() == 5
         assert allData.Hakibale.csv.size() == 4
         assert allData.Kabonero.csv.size() == 4
@@ -143,7 +143,7 @@ class FuzzyCSVTableTest {
                 .aggregate(['sub_county',
                             sum('ps_total_score').az('sum'),
                             sum('tap_total_score').az('tap_sum')],
-                fn { it.sub_county }
+                fx { it.sub_county }
         )
 
         def expected = [
@@ -183,7 +183,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testAddColumn() {
-        def actual = tbl(csv2).copy().addColumn(fx('Bla') { it.ps_total_score + 1 })
+        def actual = tbl(csv2).copy().addColumn(fn('Bla') { it.ps_total_score + 1 })
 
         def expected = [
                 ['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score', 'Bla'],

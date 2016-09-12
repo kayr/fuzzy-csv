@@ -42,30 +42,15 @@ class RecordFx<RT> {
         return use(FxExtensions) { c.call(record) }
     }
     /**
-     * use @fx
+     * use @fn
      */
     @Deprecated
     static RecordFx get(String name, Closure c) {
-        return fn(name, c)
+        return fx(name, c)
     }
 
     /**
      Record function with coercion off this -> FASTER
-     * @param function
-     * @return
-     */
-    @CompileStatic
-    static RecordFx fx(Closure function) {
-        fx(RecordFx.class.getSimpleName(), function)
-    }
-
-    @CompileStatic
-    static RecordFx fx(String name, Closure function) {
-        return new RecordFx(name, function)
-    }
-
-    /**
-     * Record function with coercion on -> SLOWER
      * @param function
      * @return
      */
@@ -76,6 +61,21 @@ class RecordFx<RT> {
 
     @CompileStatic
     static RecordFx fn(String name, Closure function) {
+        return new RecordFx(name, function)
+    }
+
+    /**
+     * Record function with coercion on -> SLOWER
+     * @param function
+     * @return
+     */
+    @CompileStatic
+    static RecordFx fx(Closure function) {
+        fx(RecordFx.class.getSimpleName(), function)
+    }
+
+    @CompileStatic
+    static RecordFx fx(String name, Closure function) {
         def r = new RecordFx(name, function)
         r.useCoercion = false
         return r
