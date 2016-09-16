@@ -4,8 +4,8 @@ import org.junit.Test
 
 import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.FuzzyCSVTable.toCSVFromRecordList
-import static fuzzycsv.RecordFx.fx
 import static fuzzycsv.RecordFx.fn
+import static fuzzycsv.RecordFx.fx
 import static fuzzycsv.Reducer.reduce
 import static fuzzycsv.Sum.sum
 
@@ -276,6 +276,18 @@ class FuzzyCSVTableTest {
                 ['Kabonero', 1, null, null],
                 ['Kisomoro', null, 1, 10],
                 ['Noon', null, null, 0]] == copy.csv
+    }
+
+    @Test
+    void testReverse() {
+        def copy = tbl(csv2).sort { r, b -> r['sub_county'] <=> b['sub_county'] }.reverse()
+
+        assert [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
+                ['Noon', null, null, 0],
+                ['Kisomoro', null, 1, 10],
+                ['Kabonero', 1, null, null],
+                ['Hakibale', 18.1, null, null],
+                ['Bunyangabu', null, null, '1']] == copy.csv
     }
 
     @Test

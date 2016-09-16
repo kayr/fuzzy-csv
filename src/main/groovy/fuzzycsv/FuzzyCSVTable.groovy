@@ -11,8 +11,8 @@ import groovy.util.logging.Log4j
 
 import java.sql.ResultSet
 
-import static fuzzycsv.RecordFx.fx
 import static fuzzycsv.RecordFx.fn
+import static fuzzycsv.RecordFx.fx
 
 @Log4j
 class FuzzyCSVTable implements Iterable<Record> {
@@ -404,6 +404,10 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     FuzzyCSVTable sort(Closure c) {
         tbl(FuzzyCSV.sort(csv, c))
+    }
+
+    FuzzyCSVTable reverse() {
+        tbl(FuzzyCSV.reverse(csv))
     }
 
 
