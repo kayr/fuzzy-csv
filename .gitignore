@@ -10,5 +10,6 @@ target/
 *.iml
 .gradle/
 build
+scratches/
 src/main/groovy/fuzzycsv/JJ.groovy
 src/test/resources/dsl
