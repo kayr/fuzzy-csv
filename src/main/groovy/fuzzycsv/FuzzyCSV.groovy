@@ -11,8 +11,8 @@ import java.sql.ResultSet
 import java.sql.ResultSetMetaData
 import java.sql.SQLException
 
-import static fuzzycsv.RecordFx.fx
 import static fuzzycsv.RecordFx.fn
+import static fuzzycsv.RecordFx.fx
 
 @Log4j
 public class FuzzyCSV {
@@ -785,5 +785,12 @@ public class FuzzyCSV {
         }
         csv.add(0, header)
         return csv
+    }
+
+    static List<List> reverse(List<List> csv) {
+        def newCsv = new ArrayList(csv.size())
+        newCsv.add(csv[0])
+        newCsv.addAll(csv[-1..1])
+        return newCsv
     }
 }
