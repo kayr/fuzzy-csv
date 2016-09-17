@@ -56,13 +56,13 @@ class FuzzyCSVUtils {
     }
 
     def static time(String name = "", Closure worker) {
-        println "BenchmarkStart: $name"
+        println "_______Started: ${name}______"
         def start = System.currentTimeMillis()
         def rt = worker.call()
         def stop = System.currentTimeMillis()
         def time = stop - start
         def readableTime = TimeCategory.minus(new Date(stop), new Date(start))
-        println "Completed in ${readableTime}"
+        println "=>Completed in ${readableTime}"
         return [value: rt, time: time]
     }
 
