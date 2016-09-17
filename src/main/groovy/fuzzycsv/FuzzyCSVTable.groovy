@@ -190,8 +190,8 @@ class FuzzyCSVTable implements Iterable<Record> {
         return tbl(FuzzyCSV.fullJoin(csv, csv2, joinColumns))
     }
 
-    FuzzyCSVTable join(FuzzyCSVTable tbl, Closure fx) {
-        return join(tbl, fx(fx))
+    FuzzyCSVTable join(FuzzyCSVTable tbl, Closure func) {
+        return join(tbl, fx(func))
     }
 
     FuzzyCSVTable join(FuzzyCSVTable tbl, RecordFx fx) {
@@ -206,48 +206,48 @@ class FuzzyCSVTable implements Iterable<Record> {
         return tbl(FuzzyCSV.join(csv, csv2, joinColumns, FuzzyCSV.selectAllHeaders(csv, csv2) as String[]))
     }
 
-    FuzzyCSVTable leftJoin(FuzzyCSVTable tbl, Closure fx) {
-        return leftJoin(tbl, fx(fx))
+    FuzzyCSVTable leftJoin(FuzzyCSVTable tbl, Closure func) {
+        return leftJoin(tbl, fx(func))
     }
 
     FuzzyCSVTable leftJoin(FuzzyCSVTable tbl, RecordFx fx) {
         return leftJoin(tbl.csv, fx)
     }
 
-    FuzzyCSVTable leftJoin(List<? extends List> csv2, Closure fx) {
-        return leftJoin(csv2, fx(fx))
+    FuzzyCSVTable leftJoin(List<? extends List> csv2, Closure func) {
+        return leftJoin(csv2, fx(func))
     }
 
     FuzzyCSVTable leftJoin(List<? extends List> csv2, RecordFx fx) {
         return tbl(FuzzyCSV.leftJoin(csv, csv2, fx, FuzzyCSV.selectAllHeaders(csv, csv2) as String[]))
     }
 
-    FuzzyCSVTable rightJoin(FuzzyCSVTable tbl, Closure fx) {
-        return rightJoin(tbl, fx(fx))
+    FuzzyCSVTable rightJoin(FuzzyCSVTable tbl, Closure func) {
+        return rightJoin(tbl, fx(func))
     }
 
     FuzzyCSVTable rightJoin(FuzzyCSVTable tbl, RecordFx fx) {
         return rightJoin(tbl.csv, fx)
     }
 
-    FuzzyCSVTable rightJoin(List<? extends List> csv2, Closure fx) {
-        return rightJoin(csv2, fx(fx))
+    FuzzyCSVTable rightJoin(List<? extends List> csv2, Closure func) {
+        return rightJoin(csv2, fx(func))
     }
 
     FuzzyCSVTable rightJoin(List<? extends List> csv2, RecordFx fx) {
         return tbl(FuzzyCSV.rightJoin(csv, csv2, fx, FuzzyCSV.selectAllHeaders(csv, csv2) as String[]))
     }
 
-    FuzzyCSVTable fullJoin(FuzzyCSVTable tbl, Closure fx) {
-        return fullJoin(tbl, fx(fx))
+    FuzzyCSVTable fullJoin(FuzzyCSVTable tbl, Closure func) {
+        return fullJoin(tbl, fx(func))
     }
 
     FuzzyCSVTable fullJoin(FuzzyCSVTable tbl, RecordFx fx) {
         return fullJoin(tbl.csv, fx)
     }
 
-    FuzzyCSVTable fullJoin(List<? extends List> csv2, Closure fx) {
-        return fullJoin(csv2, fx(fx))
+    FuzzyCSVTable fullJoin(List<? extends List> csv2, Closure func) {
+        return fullJoin(csv2, fx(func))
     }
 
     FuzzyCSVTable fullJoin(List<? extends List> csv2, RecordFx fx) {
@@ -303,6 +303,14 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
+    FuzzyCSVTable plus(FuzzyCSVTable tbl) {
+        return union(tbl)
+    }
+
+    FuzzyCSVTable plus(List<? extends List> csv) {
+        return union(csv)
+    }
+
     FuzzyCSVTable addColumn(RecordFx... fnz) {
         def thisCsv = csv
         for (fn in fnz) {
@@ -319,8 +327,8 @@ class FuzzyCSVTable implements Iterable<Record> {
         return deleteColumns(columnNames)
     }
 
-    FuzzyCSVTable transform(String column, Closure fx) {
-        transform(column, fx(fx))
+    FuzzyCSVTable transform(String column, Closure func) {
+        transform(column, fx(func))
     }
 
     FuzzyCSVTable transform(RecordFx... fns) {
@@ -348,16 +356,16 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(FuzzyCSV.copy(csv))
     }
 
-    FuzzyCSVTable filter(Closure fx) {
-        filter(fx(fx))
+    FuzzyCSVTable filter(Closure func) {
+        filter(fx(func))
     }
 
     FuzzyCSVTable filter(RecordFx fx) {
         tbl(FuzzyCSV.filter(csv, fx))
     }
 
-    FuzzyCSVTable map(Closure fx) {
-        map(fx(fx))
+    FuzzyCSVTable map(Closure func) {
+        map(fx(func))
     }
 
     FuzzyCSVTable map(RecordFx fx) {
@@ -381,8 +389,8 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(FuzzyCSV.putInColumn(csv, colValues, colIdx))
     }
 
-    FuzzyCSVTable putInColumn(int colId, Closure fx, FuzzyCSVTable sourceTable = null) {
-        putInColumn(colId, fx(fx))
+    FuzzyCSVTable putInColumn(int colId, Closure func, FuzzyCSVTable sourceTable = null) {
+        putInColumn(colId, fx(func))
     }
 
     FuzzyCSVTable putInColumn(int colId, RecordFx value, FuzzyCSVTable sourceTable = null) {
