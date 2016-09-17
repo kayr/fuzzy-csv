@@ -11,7 +11,6 @@ import groovy.util.logging.Log4j
 
 import java.sql.ResultSet
 
-import static fuzzycsv.RecordFx.fn
 import static fuzzycsv.RecordFx.fx
 
 @Log4j
@@ -42,10 +41,10 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     FuzzyCSVTable autoAggregate(Object... columns) {
         def groupByColumns = columns.findAll { !(it instanceof Aggregator) }
-        def fn = fn { Record r ->
+        def fn = fx { Record r ->
             def answer = groupByColumns.collect { c ->
-                if (c instanceof RecordFx) return c.getValue(r)
-                else return r.final(c as String)
+                if (c instanceof RecordFx) c.getValue(r)
+                else r.final(c?.toString())
             }
             answer
         }
@@ -95,6 +94,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         return groupFx(fx(groupFx))
     }
 
+    @CompileStatic
     Map<Object, FuzzyCSVTable> groupBy(RecordFx groupFx) {
 
         def csvHeader = csv[0]
@@ -108,7 +108,7 @@ class FuzzyCSVTable implements Iterable<Record> {
             groupAnswer(groups, entry, value)
         }
 
-        Map<Object, FuzzyCSVTable> entries = groups.collectEntries { key, value ->
+        Map<Object, FuzzyCSVTable> entries = groups.collectEntries { def key, List value ->
             def fullCsv = [csvHeader]
             fullCsv.addAll(value)
             return [key, tbl(fullCsv)]
@@ -117,7 +117,8 @@ class FuzzyCSVTable implements Iterable<Record> {
         return entries
     }
 
-    static void groupAnswer(Map answer, def element, def value) {
+    @CompileStatic
+    static void groupAnswer(Map<Object, List> answer, def element, def value) {
         if (answer.containsKey(value)) {
             answer.get(value).add(element)
         } else {
