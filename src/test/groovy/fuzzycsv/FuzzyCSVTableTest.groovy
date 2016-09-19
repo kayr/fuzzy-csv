@@ -279,6 +279,47 @@ class FuzzyCSVTableTest {
     }
 
     @Test
+    void testSortingMultipleParamUsingOrderBy() {
+        def copy = tbl(csv2).sort('sub_county')
+
+        assert [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
+                ['Bunyangabu', null, null, '1'],
+                ['Hakibale', 18.1, null, null],
+                ['Kabonero', 1, null, null],
+                ['Kisomoro', null, 1, 10],
+                ['Noon', null, null, 0]] == copy.csv
+    }
+
+    @Test
+    void testSortingMultipleParamUsingOrderBy2() {
+
+        def lists = [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
+                     ['sc2', 3, null, '1'],
+                     ['sc2', 18.1, null, null],
+                     ['sc2', 1, null, null],
+                     ['sc2', 2, 1, 10],
+                     ['Noon', 2, null, 0],
+                     ['Noon', 3, null, 0],
+        ]
+
+
+
+        def expected = [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
+                        ['Noon', 2, null, 0],
+                        ['Noon', 3, null, 0],
+                        ['sc2', 1, null, null],
+                        ['sc2', 2, 1, 10],
+                        ['sc2', 3, null, '1'],
+                        ['sc2', 18.1, null, null]]
+
+
+
+        assert expected == tbl(lists).sort('sub_county', { it['ps_total_score'] }).csv
+        assert expected == tbl(lists).sort('sub_county', fx { it['ps_total_score'] }).csv
+        assert expected == tbl(lists).sort('sub_county', 'ps_total_score').csv
+    }
+
+    @Test
     void testReverse() {
         def copy = tbl(csv2).sort { r, b -> r['sub_county'] <=> b['sub_county'] }.reverse()
 

@@ -1,15 +1,17 @@
 package fuzzycsv
 
+import groovy.transform.CompileStatic
 
+@CompileStatic
 class Count extends AbstractAggregator {
 
-    List columns
+    List<List> columns
     boolean unique = false
 
     Count() {}
 
     Count(List columns, List<List> data) {
-        this.data = data
+        this.setData(data)
         this.columns = columns
     }
 
@@ -17,6 +19,8 @@ class Count extends AbstractAggregator {
     Object getValue() {
         def data = getData(columns)
         def unique = unique ? data.unique() : data
+        if (columns)
+            return unique.count { List r -> r.any { c -> c != null } }
         return unique.size()
     }
 
@@ -29,7 +33,7 @@ class Count extends AbstractAggregator {
     }
 
     static Count count(String name, Object... columnsForCounting) {
-        return new Count(columnName: name, columns: columnsForCounting as List)
+        return new Count(columnName: name, columns: columnsForCounting as List<List>)
     }
 
     static Count countUnique() {
@@ -41,7 +45,7 @@ class Count extends AbstractAggregator {
     }
 
     static Count countUnique(String name, Object... columnsForCounting) {
-        return new Count(unique: true, columnName: name, columns: columnsForCounting as List)
+        return new Count(unique: true, columnName: name, columns: columnsForCounting as List<List>)
     }
 
 

@@ -415,6 +415,10 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(FuzzyCSV.sort(csv, c))
     }
 
+    FuzzyCSVTable sort(Object... c) {
+        tbl(FuzzyCSV.sort(csv, c))
+    }
+
     FuzzyCSVTable reverse() {
         tbl(FuzzyCSV.reverse(csv))
     }

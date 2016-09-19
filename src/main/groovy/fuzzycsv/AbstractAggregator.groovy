@@ -1,8 +1,11 @@
 package fuzzycsv
 
+import groovy.transform.CompileStatic
+
 import static fuzzycsv.FuzzyCSVTable.tbl
 
 
+@CompileStatic
 abstract class AbstractAggregator<T> implements Aggregator<T> {
 
     FuzzyCSVTable data

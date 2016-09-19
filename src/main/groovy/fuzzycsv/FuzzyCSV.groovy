@@ -761,6 +761,36 @@ public class FuzzyCSV {
         return csv
     }
 
+
+    static List<List> sort(List<List> csv, Object... sortBy) {
+        csv = copy(csv)
+        def header = csv.remove(0)
+        def orderClauses = sortBy.collect { s ->
+            if (s instanceof Closure) {
+                return { List r ->
+                    s.asType(Closure).call(Record.getRecord(header, r))
+                }
+            }
+
+            if (s instanceof RecordFx) {
+                return { List r ->
+                    s.asType(RecordFx).getValue(Record.getRecord(header, r))
+                }
+            }
+
+            return { List r ->
+                Record.getRecord(header, r).getAt(s)
+            }
+        }
+
+        def orderBy = new OrderBy(orderClauses)
+
+
+        csv.sort(orderBy)
+        csv.add(0, header)
+        return csv
+    }
+
     static List<List> sort(List<List> csv, Closure fx) {
         csv = copy(csv)
         def header = csv.remove(0)
