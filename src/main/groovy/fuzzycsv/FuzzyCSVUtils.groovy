@@ -55,15 +55,47 @@ class FuzzyCSVUtils {
         return preferredType == Integer || preferredType == BigInteger ? 0 : 0.0
     }
 
-    def static time(String name = "", Closure worker) {
-        println "_______Started: ${name}______"
+
+
+
+    static def <T> T time(String name, Closure<T> worker) {
+        def padding = '    '.multiply(IndentHelper.get())
+        IndentHelper.increment()
+        println "$padding ### BenchmarkStart: {$name}"
         def start = System.currentTimeMillis()
-        def rt = worker.call()
-        def stop = System.currentTimeMillis()
-        def time = stop - start
-        def readableTime = TimeCategory.minus(new Date(stop), new Date(start))
-        println "=>Completed in ${readableTime}"
-        return [value: rt, time: time]
+        try {
+            def rt = worker.call()
+            def stop = System.currentTimeMillis()
+
+            def time = TimeCategory.minus(new Date(stop), new Date(start))
+            println "$padding -----> Completed in {$name} in ${time}".toString()
+
+            return rt
+        } finally {
+            IndentHelper.decrement()
+        }
+
     }
 
+}
+
+class IndentHelper {
+    private static ThreadLocal indent = new ThreadLocal() {
+        @Override
+        protected Integer initialValue() {
+            return 0
+        }
+    }
+
+    static increment() {
+        indent.set(++indent.get())
+    }
+
+    static decrement() {
+        indent.set(--indent.get())
+    }
+
+    static Integer get() {
+        indent.get()
+    }
 }
