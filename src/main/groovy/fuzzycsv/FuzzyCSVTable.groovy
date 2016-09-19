@@ -77,17 +77,20 @@ class FuzzyCSVTable implements Iterable<Record> {
         log.debug("Grouping tables")
         Map<Object, FuzzyCSVTable> groups = groupBy(groupFx)
 
+
         log.debug("Aggreagating groups [${groups.size()}]")
         def aggregatedTables = groups.collect { key, value ->
             value.aggregate(columns)
         }
+
+        def mainTable = aggregatedTables.remove(0)
         //todo do not modify internal data
         log.debug("Merging groups")
-        def mainTable = aggregatedTables.remove(0)
         for (table in aggregatedTables) {
             mainTable = mainTable.union(table)
         }
         return mainTable
+
     }
 
     Map<Object, FuzzyCSVTable> groupBy(Closure groupFx) {
@@ -95,9 +98,10 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     @CompileStatic
-    Map<Object, FuzzyCSVTable> groupBy(RecordFx groupFx) {
+    Map<Object, Object> groupBy(RecordFx groupFx) {
 
         def csvHeader = csv[0]
+
         Map<Object, List<List>> groups = [:]
         csv.eachWithIndex { List entry, int i ->
             if (i == 0) return
@@ -108,10 +112,11 @@ class FuzzyCSVTable implements Iterable<Record> {
             groupAnswer(groups, entry, value)
         }
 
-        Map<Object, FuzzyCSVTable> entries = groups.collectEntries { def key, List value ->
-            def fullCsv = [csvHeader]
-            fullCsv.addAll(value)
-            return [key, tbl(fullCsv)]
+        Map<Object, FuzzyCSVTable> entries = [:]
+
+        groups.each { def key, List value ->
+            value.add(0, header)
+            entries[key] = tbl(value)
         } as Map<Object, FuzzyCSVTable>
 
         return entries
