@@ -61,7 +61,7 @@ class FuzzyCSVUtils {
     static def <T> T time(String name, Closure<T> worker) {
         def padding = '    '.multiply(IndentHelper.get())
         IndentHelper.increment()
-        println "$padding ### BenchmarkStart: {$name}"
+        println "$padding ### Task: {$name}..."
         def start = System.currentTimeMillis()
         try {
             def rt = worker.call()
