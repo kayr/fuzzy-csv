@@ -765,22 +765,20 @@ public class FuzzyCSV {
     static List<List> sort(List<List> csv, Object... sortBy) {
         csv = copy(csv)
         def header = csv.remove(0)
-        def orderClauses = sortBy.collect { s ->
-            if (s instanceof Closure) {
-                return { List r ->
-                    s.asType(Closure).call(Record.getRecord(header, r))
-                }
-            }
+        List<? extends Object> orderClauses = sortBy.collect { s ->
+            Closure rt
+            switch (s) {
+                case Closure:
+                    rt = { List r -> s.asType(Closure).call(Record.getRecord(header, r)) }
+                    break
+                case RecordFx:
+                    rt = { List r -> s.asType(RecordFx).getValue(Record.getRecord(header, r)) }
 
-            if (s instanceof RecordFx) {
-                return { List r ->
-                    s.asType(RecordFx).getValue(Record.getRecord(header, r))
-                }
+                    break
+                default:
+                    rt = { List r -> Record.getRecord(header, r).getAt(s) }
             }
-
-            return { List r ->
-                Record.getRecord(header, r).getAt(s)
-            }
+           return rt
         }
 
         def orderBy = new OrderBy(orderClauses)
