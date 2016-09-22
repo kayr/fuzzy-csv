@@ -317,7 +317,7 @@ public class FuzzyCSV {
             }
 
 
-            rightRecords.each { Record rightRecord ->
+            for (Record rightRecord in rightRecords) {
                 if (!matchedRightRecordIndices.contains(rightRecord.idx()))
                     matchedRightRecordIndices.add(rightRecord.idx())
 
@@ -778,7 +778,7 @@ public class FuzzyCSV {
                 default:
                     rt = { List r -> Record.getRecord(header, r).getAt(s) }
             }
-           return rt
+            return rt
         }
 
         def orderBy = new OrderBy(orderClauses)
