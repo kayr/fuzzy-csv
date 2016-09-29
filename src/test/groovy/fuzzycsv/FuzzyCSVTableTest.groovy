@@ -2,6 +2,7 @@ package fuzzycsv
 
 import org.junit.Test
 
+import static fuzzycsv.FuzzyCSVTable.parseCsv
 import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.FuzzyCSVTable.toCSVFromRecordList
 import static fuzzycsv.RecordFx.fn
@@ -347,6 +348,32 @@ class FuzzyCSVTableTest {
         csv = tbl(data).normalizeHeaders()
         assert csv.csv == [['name', 'C_1', 'C_2', 'sex', 'C_4name', 'C_5sex']]
 
+    }
+
+    /*
+    NOTE:
+        This is a temporary hack to speed up removal of duplicates
+        In future we should look into avoiding this inefficient aggregation
+    */
+
+    @Test
+    void testDeDuping() {
+        def csvText = '''id,name,sex
+                        |23,kayr,m
+                        |23,kayr,m
+                        |23,kayr,m
+                        |5d,ron,f
+                        |5d,ron,f
+                        |45,pin,m'''.stripMargin()
+
+        def csv = parseCsv(csvText)
+
+
+        def deDuped = csv.aggregate(csv.header, { it.id })
+        assert deDuped.csv == [['id', 'name', 'sex'],
+                               ['23', 'kayr', 'm'],
+                               ['5d', 'ron', 'f'],
+                               ['45', 'pin', 'm']]
     }
 
 

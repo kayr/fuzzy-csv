@@ -44,6 +44,15 @@ public class FuzzyCSV {
         csvList.collect { it[colIdx] }
     }
 
+    static List getAt(List<? extends List> csv, IntRange range) {
+        def header = csv[0]
+        def tail = csv[(range.fromInt + 1)..range.toInt]
+        def newCsv = [header]; newCsv.addAll(tail)
+        return newCsv
+
+    }
+
+
     static List<List> putInCellWithHeader(List<? extends List> csv, String columnHeader, int rowIdx, Object value) {
         def position = Fuzzy.findPosition(csv[0], columnHeader)
         return putInCell(csv, position, rowIdx, value)

@@ -60,7 +60,8 @@ class FuzzyCSVTable implements Iterable<Record> {
             it.data = csv
         }
 
-        def newTable = csv[0..1]
+
+        def newTable = csv.size() < 2 ? [csv[0]] : csv[0..1]
 
         //format the table as using the new column organisation
         newTable = FuzzyCSV.select(columns, newTable)
@@ -74,23 +75,36 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     FuzzyCSVTable aggregate(List columns, RecordFx groupFx) {
 
+
         log.debug("Grouping tables")
         Map<Object, FuzzyCSVTable> groups = groupBy(groupFx)
 
 
         log.debug("Aggreagating groups [${groups.size()}]")
-        def aggregatedTables = groups.collect { key, value ->
-            value.aggregate(columns)
-        }
 
-        def mainTable = aggregatedTables.remove(0)
-        //todo do not modify internal data
-        log.debug("Merging groups")
-        for (table in aggregatedTables) {
-            mainTable = mainTable.union(table)
+        /*
+        NOTE:
+            This is a temporary hack to speed up removal of duplicates
+            In future we should look into avoiding this inefficient aggregation
+         */
+        def hasAnyFunctions = columns.any { it instanceof RecordFx || it instanceof Aggregator }
+        if (hasAnyFunctions) {
+            List<FuzzyCSVTable> aggregatedTables = groups.collect { key, table ->
+                table.aggregate(columns)
+            }
+            def mainTable = aggregatedTables.remove(0)
+            //todo do not modify internal data
+            log.debug("Merging groups")
+            for (table in aggregatedTables) {
+                mainTable = mainTable.union(table)
+            }
+            return mainTable
+        } else {
+            def newCSV = new ArrayList(groups.size())
+            newCSV << header
+            groups.each { key, table -> newCSV << table.csv.get(1) }
+            return tbl(newCSV).select(columns)
         }
-        return mainTable
-
     }
 
     Map<Object, FuzzyCSVTable> groupBy(Closure groupFx) {
@@ -156,11 +170,17 @@ class FuzzyCSVTable implements Iterable<Record> {
         return column
     }
 
+
     def firstCell() {
-        return csv[1][0]
+        if (isEmpty()) return null
+        else return csv[1][0]
     }
 
-    static FuzzyCSVTable tbl(List<? extends List> csv) {
+    FuzzyCSVTable getAt(IntRange range) {
+        return tbl(FuzzyCSV.getAt(csv, range))
+    }
+
+    static FuzzyCSVTable tbl(List<? extends List> csv = [[]]) {
         return new FuzzyCSVTable(csv)
     }
 
@@ -406,6 +426,11 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     FuzzyCSVTable cleanUpRepeats(String[] columns) {
         tbl(FuzzyCSV.cleanUpRepeats(csv, columns))
+    }
+
+    FuzzyCSVTable appendEmptyRecord(int number = 1) {
+        number.times { FuzzyCSV.appendEmptyRecord(csv) }
+        return this
     }
 
     String toCsvString() {
