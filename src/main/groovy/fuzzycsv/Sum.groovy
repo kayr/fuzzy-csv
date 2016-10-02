@@ -34,7 +34,5 @@ class Sum extends AbstractAggregator<Number> {
         return new Sum(aggregateColumns as List)
     }
 
-    static Sum plnSum(Object[] aggregateColumns) {
-        sum("sum(${aggregateColumns.join(',')})", aggregateColumns)
-    }
+
 }

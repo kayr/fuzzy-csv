@@ -6,7 +6,7 @@ import groovy.transform.CompileStatic
 class Count extends AbstractAggregator {
 
     List<List> columns
-    boolean unique = false
+    private boolean unique = false
 
     Count() {}
 
@@ -24,6 +24,17 @@ class Count extends AbstractAggregator {
         return unique.size()
     }
 
+    Count unique() {
+        unique = true
+        return this
+    }
+
+    Count all() {
+        unique = false
+        return this
+    }
+
+
     static Count count() {
         return new Count(columnName: "count()")
     }
@@ -37,15 +48,15 @@ class Count extends AbstractAggregator {
     }
 
     static Count countUnique() {
-        return new Count(unique: true, columnName: "count()")
+        return new Count(columnName: "count()").unique()
     }
 
     static Count plnCountUnique(String name) {
-        return new Count(unique: true, columnName: name)
+        return new Count(columnName: name).unique()
     }
 
     static Count countUnique(String name, Object... columnsForCounting) {
-        return new Count(unique: true, columnName: name, columns: columnsForCounting as List<List>)
+        return new Count(columnName: name, columns: columnsForCounting as List<List>).unique()
     }
 
 
