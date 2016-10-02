@@ -87,8 +87,8 @@ class FuzzyCSVTable implements Iterable<Record> {
             This is a temporary hack to speed up removal of duplicates
             In future we should look into avoiding this inefficient aggregation
          */
-        def hasAnyFunctions = columns.any { it instanceof RecordFx || it instanceof Aggregator }
-        if (hasAnyFunctions) {
+        def hasAnyAggregations = columns.any { it instanceof Aggregator }
+        if (hasAnyAggregations) {
             List<FuzzyCSVTable> aggregatedTables = groups.collect { key, table ->
                 table.aggregate(columns)
             }
