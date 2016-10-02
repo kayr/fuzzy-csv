@@ -842,11 +842,4 @@ public class FuzzyCSV {
         csv.add(0, header)
         return csv
     }
-
-    static List<List> reverse(List<List> csv) {
-        def newCsv = new ArrayList(csv.size())
-        newCsv.add(csv[0])
-        newCsv.addAll(csv[-1..1])
-        return newCsv
-    }
 }

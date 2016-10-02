@@ -450,7 +450,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable reverse() {
-        tbl(FuzzyCSV.reverse(csv))
+        return this[-1..1]
     }
 
 
