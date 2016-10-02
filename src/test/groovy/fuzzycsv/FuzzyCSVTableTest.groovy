@@ -322,14 +322,18 @@ class FuzzyCSVTableTest {
 
     @Test
     void testReverse() {
-        def copy = tbl(csv2).sort { r, b -> r['sub_county'] <=> b['sub_county'] }.reverse()
+        def sortedCSV = tbl(csv2).sort { r, b -> r['sub_county'] <=> b['sub_county'] }
+        def copy = sortedCSV.reverse()
 
-        assert [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
-                ['Noon', null, null, 0],
-                ['Kisomoro', null, 1, 10],
-                ['Kabonero', 1, null, null],
-                ['Hakibale', 18.1, null, null],
-                ['Bunyangabu', null, null, '1']] == copy.csv
+
+        def expected = [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
+                        ['Noon', null, null, 0],
+                        ['Kisomoro', null, 1, 10],
+                        ['Kabonero', 1, null, null],
+                        ['Hakibale', 18.1, null, null],
+                        ['Bunyangabu', null, null, '1']]
+        assert expected == copy.csv
+        assert expected == sortedCSV[-1..1].csv
     }
 
     @Test
@@ -376,5 +380,78 @@ class FuzzyCSVTableTest {
                                ['45', 'pin', 'm']]
     }
 
+    @Test
+    void testGetAtRange() {
+        def csvText = '''id,name,sex
+                        |1,kayr,m
+                        |2,kayr,m
+                        |3,kayr,m
+                        |4,ron,f
+                        |5,ron,f
+                        |6,pin,m'''.stripMargin()
 
+        def csv = parseCsv(csvText)
+
+        //handle higher positive range
+        assert csv[1..7].csv == [['id', 'name', 'sex'],
+                                 ['1', 'kayr', 'm'],
+                                 ['2', 'kayr', 'm'],
+                                 ['3', 'kayr', 'm'],
+                                 ['4', 'ron', 'f'],
+                                 ['5', 'ron', 'f'],
+                                 ['6', 'pin', 'm']]
+
+        //hnadle big start value
+        assert csv[7..10].csv == [['id', 'name', 'sex'],
+                                  ['6', 'pin', 'm']]
+
+        //handle big negative range
+        assert csv[1..-10].csv == [['id', 'name', 'sex'],
+                                   ['1', 'kayr', 'm']]
+
+        //top 3
+        assert csv[1..3].csv == [['id', 'name', 'sex'],
+                                 ['1', 'kayr', 'm'],
+                                 ['2', 'kayr', 'm'],
+                                 ['3', 'kayr', 'm']]
+
+        //from one to 3rd last
+        assert csv[1..-3].csv == [['id', 'name', 'sex'],
+                                  ['1', 'kayr', 'm'],
+                                  ['2', 'kayr', 'm'],
+                                  ['3', 'kayr', 'm'],
+                                  ['4', 'ron', 'f']]
+
+        //from 2nd last to 2nd
+        csv[-3..2].csv == [['id', 'name', 'sex'],
+                           ['4', 'ron', 'f'],
+                           ['3', 'kayr', 'm'],
+                           ['2', 'kayr', 'm']]
+
+        //last 3
+        assert csv[-3..-1].csv == [['id', 'name', 'sex'],
+                                   ['4', 'ron', 'f'],
+                                   ['5', 'ron', 'f'],
+                                   ['6', 'pin', 'm']]
+
+        //last item
+        assert csv[-1..-1].csv == [['id', 'name', 'sex'],
+                                   ['6', 'pin', 'm']]
+
+        //top item
+        assert csv[1..1].csv == [['id', 'name', 'sex'],
+                                 ['1', 'kayr', 'm']]
+
+        //empty record
+        assert tbl()[1..3].csv == [[]]
+
+        //empty csv
+        assert tbl([])[1..3].csv == []
+
+    }
+
+    //helper to printout array list
+    static def insp(FuzzyCSVTable t) {
+        println(t.csv.inspect().replaceAll(/\], \[/, '],\n['))
+    }
 }

@@ -44,10 +44,29 @@ public class FuzzyCSV {
         csvList.collect { it[colIdx] }
     }
 
-    static List getAt(List<? extends List> csv, IntRange range) {
+    static <T> List getAt(List<T> csv, IntRange range) {
+
+        def csvSize = csv.size()
+
+        if (csvSize <= 1) return csv
+
         def header = csv[0]
-        def tail = csv[(range.fromInt + 1)..range.toInt]
-        def newCsv = [header]; newCsv.addAll(tail)
+        def maxValue = csvSize - 1
+        def fromInt = range.fromInt
+        def toInt = range.toInt
+        def isReverse = range.reverse
+        if (fromInt.abs() >= csvSize) {
+            fromInt = (maxValue) * (fromInt < 0 ? -1 : 1)
+        }
+
+        if (toInt.abs() >= csvSize) {
+            toInt = (maxValue) * (toInt < 0 ? -1 : 1)
+        }
+
+        range = isReverse ? new IntRange(toInt, fromInt) : new IntRange(fromInt, toInt)
+
+        def tail = csv[range]
+        def newCsv = [header]; newCsv.addAll(tail);
         return newCsv
 
     }
