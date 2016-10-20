@@ -29,6 +29,7 @@
     - [Transform each cell record](#transform-each-cell-record)
     - [Transposing](#transposing)
     - [Simplistic Aggregations](#simplistic-aggregations)
+    - [Custom Aggregation](#custom-aggregation)
 - [Note:](#note)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -184,7 +185,10 @@ _________
 
 #### Record functions:
 
-These Help you write expression or functions for a record. E.g A function multiplying price by quantity
+These Help you write expression or functions for a record. E.g A function multiplying price by quantity. The record function run in two modes:
+
+ - One with type coercion which can be created using`RecordFx.fn{}`.This mode is lenient and does not throw most exceptions. This mode create supports division of nulls(`null/2`), zero(`2/0`) division and type coercion(`"2"/2 or Object/null`) . This mode adds extra overhead and is much slower if your are dealing with lots of records.
+ - Another mode is `RecordFx.fx{}` which uses the default groovy evaluator. This mode is much faster if you are working with lots of records. However this mode is not lenient and hence can throw `java.lang.ArithmeticException: Division by zero`. If you want to enable leniency but still want to use the faster `RecordFx.fx{}` you can wrap your code in the `fuzzycsv.FxExtensions` category(e.g `use(FxExtensions){ ...code here.. }`) So the category is registered only once as compared to the former where the category is reqistered on each and every evaluation.
 ```groovy
 import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.RecordFx.fn
@@ -426,6 +430,23 @@ _________
 */
 ```
 
+#### Custom Aggregation
+```groovy
+tbl(csv2).autoAggregate(
+        'Hobby',
+        reduce { group -> group['Hobby'] }.az('HobbyList')
+).printTable()
+/*output
+  Hobby      HobbyList
+  -----      ---------------
+  biking     [biking, biking]
+  swimming   [swimming, swimming]
+_________
+2 Rows
+
+*/
+```
+
 ## Note:
 This library has not been tested with very large CSV files. So performance might be a concern
 
@@ -436,4 +457,5 @@ https://github.com/kayr/fuzzy-csv/blob/master/src/test/groovy/fuzzycsv/FuzzyCSVT
 and
 
 https://github.com/kayr/fuzzy-csv/blob/master/src/test/groovy/fuzzycsv/FuzzyCSVTableTest.groovy
+
 
