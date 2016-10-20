@@ -434,13 +434,13 @@ _________
 ```groovy
 tbl(csv2).autoAggregate(
         'Hobby',
-        reduce { group -> group['Hobby'] }.az('HobbyList')
+        reduce { FuzzyCSVTable group -> group['age'] }.az('AgeList')
 ).printTable()
 /*output
-  Hobby      HobbyList
-  -----      ---------------
-  biking     [biking, biking]
-  swimming   [swimming, swimming]
+  Hobby      AgeList
+  -----      -------
+  biking     [21, 16]
+  swimming   [21, 15]
 _________
 2 Rows
 
