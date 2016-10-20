@@ -16,9 +16,7 @@
     - [Right join](#right-join)
     - [Full join](#full-join)
     - [Join with custom functions](#join-with-custom-functions)
-  - [Other Utilities](#other-utilities)
     - [Record functions:](#record-functions)
-  - [More Examples](#more-examples)
     - [Iterating over records/tables](#iterating-over-recordstables)
     - [Get Cell Value](#get-cell-value)
     - [Delete Column](#delete-column)
@@ -26,6 +24,9 @@
     - [Sql To CSV](#sql-to-csv)
     - [Add Column](#add-column)
     - [Filter Records](#filter-records)
+    - [Sorting](#sorting)
+    - [Ranges](#ranges)
+    - [Transform each cell record](#transform-each-cell-record)
     - [Transposing](#transposing)
     - [Simplistic Aggregations](#simplistic-aggregations)
 - [Note:](#note)
@@ -181,8 +182,6 @@ _________
 ```
 
 
-### Other Utilities
-
 #### Record functions:
 
 These Help you write expression or functions for a record. E.g A function multiplying price by quantity
@@ -203,8 +202,6 @@ println csv
 //[2, 40, 80]
 //[3, 20, 60]
 ```
-
-### More Examples
 
 Consider we have the following csv
 ```groovy
@@ -268,6 +265,100 @@ println tbl(csv2).filter { it.name == 'alex' }.toStringFormatted()
   alex   21    biking
 _________
 1 Rows
+*/
+```
+
+#### Sorting
+
+```groovy
+import static fuzzycsv.FuzzyCSVTable.tbl
+
+def csv2 = [
+        ['name', 'age','hobby'],
+        ['alex', '21','biking'],
+        ['martin', '40','swimming'],
+        ['dan', '25','swimming'],
+        ['peter', '21','swimming'],
+]
+
+tbl(csv2).sort('age','name').printTable()
+
+//or sort using closure
+tbl(csv2).sort{"$it.age $it.name"}.printTable()
+
+/*Output for both
+  name     age   hobby
+  ----     ---   -----
+  alex     21    biking
+  peter    21    swimming
+  dan      25    swimming
+  martin   40    swimming
+_________
+4 Rows
+ */
+```
+
+#### Ranges
+Ranges help slice the csv record..e.g selecting last 2, top 2,  3rd to 2nd last record
+```groovy
+import static fuzzycsv.FuzzyCSVTable.tbl
+
+def table = tbl([
+        ['name', 'age','hobby'],
+        ['alex', '21','biking'],
+        ['martin', '40','swimming'],
+        ['dan', '25','swimming'],
+        ['peter', '21','swimming'],
+])
+
+//top 2
+table[1..2].printTable()
+
+/*Output
+  name     age   hobby
+  ----     ---   -----
+  alex     21    biking
+  martin   40    swimming
+_________
+2 Rows
+ */
+
+//last 2
+table[-1..-2].printTable()
+/*
+  name    age   hobby
+  ----    ---   -----
+  peter   21    swimming
+  dan     25    swimming
+_________
+2 Rows
+ */
+
+```
+
+#### Transform each cell record
+```groovy
+import static fuzzycsv.FuzzyCSVTable.tbl
+
+def table = tbl([
+        ['name', 'age','hobby'],
+        ['alex', '21','biking'],
+        ['martin', '40','swimming'],
+        ['dan', '25','swimming'],
+        ['peter', '21','swimming'],
+])
+
+table.transform {it.padRight(10,'-')}.printTable()
+
+/*
+  name         age          hobby
+  ----         ---          -----
+  alex------   21--------   biking----
+  martin----   40--------   swimming--
+  dan-------   25--------   swimming--
+  peter-----   21--------   swimming--
+_________
+4 Rows
 */
 ```
 
@@ -345,3 +436,4 @@ https://github.com/kayr/fuzzy-csv/blob/master/src/test/groovy/fuzzycsv/FuzzyCSVT
 and
 
 https://github.com/kayr/fuzzy-csv/blob/master/src/test/groovy/fuzzycsv/FuzzyCSVTableTest.groovy
+
