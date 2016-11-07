@@ -8,6 +8,7 @@ import de.vandermeer.asciitable.v2.themes.V2_E_TableThemes
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log4j
+import org.codehaus.groovy.runtime.DefaultGroovyMethods
 
 import java.sql.ResultSet
 
@@ -71,6 +72,10 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     FuzzyCSVTable aggregate(List columns, Closure groupFx) {
         return aggregate(columns, fx(groupFx))
+    }
+
+    FuzzyCSVTable distinct(){
+        return autoAggregate(header as Object[])
     }
 
     FuzzyCSVTable aggregate(List columns, RecordFx groupFx) {
@@ -294,6 +299,14 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     FuzzyCSVTable transpose() {
         tbl(csv.transpose())
+    }
+
+    FuzzyCSVTable leftShift(FuzzyCSVTable other){
+        return mergeByColumn(other)
+    }
+
+    FuzzyCSVTable leftShift(List<? extends List> other){
+       return mergeByColumn(other)
     }
 
     FuzzyCSVTable mergeByColumn(List<? extends List> otherCsv) {

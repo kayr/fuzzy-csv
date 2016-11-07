@@ -98,4 +98,8 @@ class IndentHelper {
     static Integer get() {
         indent.get()
     }
+
+    static clear(){
+        indent.remove()
+    }
 }

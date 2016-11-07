@@ -113,6 +113,7 @@ class FuzzyCSVTest {
 
         assert tbl(csv1).mergeByColumn(csv3).csv == expected
         assert tbl(csv1).mergeByColumn(tbl(csv3)).csv == expected
+        assert (tbl(csv1) << tbl(csv3)).csv == expected
     }
 
     @Test

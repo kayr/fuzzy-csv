@@ -2,9 +2,7 @@ package fuzzycsv
 
 import org.junit.Test
 
-import static fuzzycsv.FuzzyCSVTable.parseCsv
-import static fuzzycsv.FuzzyCSVTable.tbl
-import static fuzzycsv.FuzzyCSVTable.toCSVFromRecordList
+import static fuzzycsv.FuzzyCSVTable.*
 import static fuzzycsv.RecordFx.fn
 import static fuzzycsv.RecordFx.fx
 import static fuzzycsv.Reducer.reduce
@@ -374,6 +372,12 @@ class FuzzyCSVTableTest {
 
 
         def deDuped = csv.aggregate(csv.header, { it.id })
+        assert deDuped.csv == [['id', 'name', 'sex'],
+                               ['23', 'kayr', 'm'],
+                               ['5d', 'ron', 'f'],
+                               ['45', 'pin', 'm']]
+
+        deDuped = csv.distinct()
         assert deDuped.csv == [['id', 'name', 'sex'],
                                ['23', 'kayr', 'm'],
                                ['5d', 'ron', 'f'],
