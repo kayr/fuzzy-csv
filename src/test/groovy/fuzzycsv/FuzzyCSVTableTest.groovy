@@ -454,6 +454,69 @@ class FuzzyCSVTableTest {
 
     }
 
+    @Test
+    void testUnwind() {
+        def table = [
+                ['name', 'age', 'subjects'],
+                ['ronald', 12, ['math', 'gp']],
+                ['victor', 13, ['math', 'sst']],
+                ['marting', 70, ['sst', 'gp']],
+                ['mary', null, ['english']],
+                ['cathy', 12, 'handle'],
+        ]
+
+        assert tbl(table).unwind('subjects').csv == [['name', 'age', 'subjects'],
+                                                     ['ronald', 12, 'math'],
+                                                     ['ronald', 12, 'gp'],
+                                                     ['victor', 13, 'math'],
+                                                     ['victor', 13, 'sst'],
+                                                     ['marting', 70, 'sst'],
+                                                     ['marting', 70, 'gp'],
+                                                     ['mary', null, 'english'],
+                                                     ['cathy', 12, 'handle']]
+    }
+
+    @Test
+    void testUnwind2() {
+        def table = [
+                ['name', 'age', 'subjects', 'friends'],
+                ['ronald', 12, ['math', 'gp'], ['john', 'jose']],
+                ['victor', 13, ['math', 'sst'], ['sara', 'jane', 'sophie']],
+                ['marting', 70, ['sst', 'gp'], ['sara', 'john']],
+                ['mary', null, ['english'], ['fatuma', 'gp']],
+                ['cathy', 12, 'handle', ['jp', 'isaac']],
+        ]
+
+        assert tbl(table).unwind('subjects', 'friends').csv == [['name', 'age', 'subjects', 'friends'],
+                                                                ['ronald', 12, 'math', 'john'],
+                                                                ['ronald', 12, 'math', 'jose'],
+                                                                ['ronald', 12, 'gp', 'john'],
+                                                                ['ronald', 12, 'gp', 'jose'],
+                                                                ['victor', 13, 'math', 'sara'],
+                                                                ['victor', 13, 'math', 'jane'],
+                                                                ['victor', 13, 'math', 'sophie'],
+                                                                ['victor', 13, 'sst', 'sara'],
+                                                                ['victor', 13, 'sst', 'jane'],
+                                                                ['victor', 13, 'sst', 'sophie'],
+                                                                ['marting', 70, 'sst', 'sara'],
+                                                                ['marting', 70, 'sst', 'john'],
+                                                                ['marting', 70, 'gp', 'sara'],
+                                                                ['marting', 70, 'gp', 'john'],
+                                                                ['mary', null, 'english', 'fatuma'],
+                                                                ['mary', null, 'english', 'gp'],
+                                                                ['cathy', 12, 'handle', 'jp'],
+                                                                ['cathy', 12, 'handle', 'isaac']]
+    }
+
+    @Test
+    void testAggregationEmptyTable() {
+        def csv = tbl([['a', 'b']])
+        def result = csv.autoAggregate('a', sum('b').az('sum'))
+        assert result.csv.size() == 1
+        assert result.header.contains('sum')
+        assert result.header.size() == 2
+    }
+
     //helper to printout array list
     static def insp(FuzzyCSVTable t) {
         println(t.csv.inspect().replaceAll(/\], \[/, '],\n['))

@@ -11,7 +11,6 @@ import java.sql.ResultSet
 import java.sql.ResultSetMetaData
 import java.sql.SQLException
 
-import static fuzzycsv.RecordFx.fn
 import static fuzzycsv.RecordFx.fx
 
 @Log4j
@@ -480,6 +479,12 @@ public class FuzzyCSV {
                 return
             }
 
+
+            if (header instanceof Unwind) {
+                newCsv = header.doUnwind(newCsv, header, idx)
+                return
+            }
+
             if (header instanceof Aggregator) {
                 def fnAddColumn = {
                     if (header instanceof Reducer) {
@@ -489,7 +494,7 @@ public class FuzzyCSV {
                     }
 
                 }
-                newCsv = putInColumn(newCsv, fn(header.columnName, fnAddColumn), idx, csv)
+                newCsv = putInColumn(newCsv, fx(header.columnName, fnAddColumn), idx, csv)
                 return
             }
 
@@ -502,6 +507,42 @@ public class FuzzyCSV {
                 oldCsvColumn = [header]
 
             newCsv = putInColumn(newCsv, oldCsvColumn, idx)
+        }
+        return newCsv
+    }
+
+    @CompileStatic
+    static List<List> unwind(List<? extends List> csv, String... columns) {
+        List<List> newCsv = csv
+        for (unwindColumn in columns) {
+            newCsv = _unwind(newCsv, unwindColumn)
+        }
+        return newCsv
+    }
+
+    @CompileStatic
+    private static List<List> _unwind(List<? extends List> csv, String column) {
+        def header = csv[0]
+        def newCsv = new ArrayList(csv.size())
+        newCsv << header
+        for (record in csv) {
+
+            if (record.is(header)) continue
+
+            def unwindIdx = header.indexOf(column)
+            def unwindItems = record.get(unwindIdx)
+
+            if (unwindItems instanceof Collection) {
+
+                for (unwindItem in unwindItems) {
+                    def newRecord = new ArrayList(record)
+                    newRecord.set(unwindIdx, unwindItem)
+                    newCsv << newRecord
+                }
+
+            } else {
+                newCsv << record
+            }
         }
         return newCsv
     }

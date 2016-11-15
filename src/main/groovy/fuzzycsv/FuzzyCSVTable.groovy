@@ -93,6 +93,10 @@ class FuzzyCSVTable implements Iterable<Record> {
             In future we should look into avoiding this inefficient aggregation
          */
         def hasAnyAggregations = columns.any { it instanceof Aggregator }
+
+        if(!groups){
+            return select(columns)
+        }
         if (hasAnyAggregations) {
             List<FuzzyCSVTable> aggregatedTables = groups.collect { key, table ->
                 table.aggregate(columns)
@@ -291,6 +295,14 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     FuzzyCSVTable select(List<?> columns) {
         return tbl(FuzzyCSV.select(columns, csv))
+    }
+
+    FuzzyCSVTable unwind(String[] columns) {
+        return unwind(columns as List)
+    }
+
+    FuzzyCSVTable unwind(List<String> columns) {
+        return tbl(FuzzyCSV.unwind(csv,columns as String[]))
     }
 
     FuzzyCSVTable transpose(String columToBeHeader, String columnForCell, String[] primaryKeys) {

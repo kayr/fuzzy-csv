@@ -41,4 +41,8 @@ class FuzzyStaticApi {
         return FuzzyCSVUtils.toNumbers(list)
     }
 
+    static Unwind unwind(String... cols){
+        return new Unwind(columns: cols)
+    }
+
 }
