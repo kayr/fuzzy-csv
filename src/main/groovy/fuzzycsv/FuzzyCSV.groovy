@@ -540,6 +540,13 @@ public class FuzzyCSV {
                     newCsv << newRecord
                 }
 
+            } else if (unwindItems instanceof Map) {
+                for (unwindItem in unwindItems.entrySet()) {
+                    def newRecord = new ArrayList(record)
+                    newRecord.set(unwindIdx, unwindItem)
+                    newCsv << newRecord
+                }
+
             } else {
                 newCsv << record
             }

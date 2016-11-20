@@ -509,6 +509,26 @@ class FuzzyCSVTableTest {
     }
 
     @Test
+    void testUnwindMap() {
+        def csv = [
+                ['rec', 'map'],
+                ['a', [name: 'Ronald', sex: 'Male']],
+                ['b', [name: 'Ronah', sex: 'James']],
+
+        ]
+
+        def result = tbl(csv)
+                .unwind('map')
+                .transform('map') { it['map'] as String }
+        assert result.csv == [['rec', 'map'],
+                              ['a', 'name=Ronald'],
+                              ['a', 'sex=Male'],
+                              ['b', 'name=Ronah'],
+                              ['b', 'sex=James']]
+    }
+
+
+    @Test
     void testAggregationEmptyTable() {
         def csv = tbl([['a', 'b']])
         def result = csv.autoAggregate('a', sum('b').az('sum'))
