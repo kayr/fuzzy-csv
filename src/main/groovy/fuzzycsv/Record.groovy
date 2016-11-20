@@ -248,9 +248,14 @@ class Record {
 
     boolean isHeader() { recordIdx == 0 }
 
-    Map toMap() {
-        def header = leftHeaders ?: finalHeaders
-        header.collectEntries { [it, propertyMissing(it as String)] }
+    Map toMap(String... headers) {
+        if(!headers)
+             headers = finalHeaders as String[]
+        headers.collectEntries { [it, propertyMissing(it as String)] }
+    }
+
+    Map toMap(List<String> headers) {
+         return toMap(headers as String[])
     }
 
     def propertyMissing(String name, def arg) {

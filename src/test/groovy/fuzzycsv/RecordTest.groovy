@@ -80,5 +80,16 @@ class RecordTest extends GroovyTestCase {
         assert r.d == 0
     }
 
+    @Test
+    void test_toMap() {
+        Record r = new Record(['a', 'b','c'], [1, 2,3])
+        assert [a: 1, b: 2, c: 3] == r.toMap()
+        assert [a: 1, b: 2] == r.toMap('a', 'b')
+        assert [a: 1, b: 2] == r.toMap(['a', 'b'])
+        assert [a: 1] == r.toMap('a')
+        assert [a: 1] == r.toMap(['a'])
+
+    }
+
 
 }
