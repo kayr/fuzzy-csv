@@ -480,11 +480,6 @@ public class FuzzyCSV {
             }
 
 
-            if (header instanceof Unwind) {
-                newCsv = header.doUnwind(newCsv, header, idx)
-                return
-            }
-
             if (header instanceof Aggregator) {
                 def fnAddColumn = {
                     if (header instanceof Reducer) {
@@ -522,14 +517,15 @@ public class FuzzyCSV {
 
     @CompileStatic
     private static List<List> _unwind(List<? extends List> csv, String column) {
+        assertValidSelectHeaders([column], csv)
         def header = csv[0]
         def newCsv = new ArrayList(csv.size())
+        def unwindIdx = header.indexOf(column)
         newCsv << header
         for (record in csv) {
 
             if (record.is(header)) continue
 
-            def unwindIdx = header.indexOf(column)
             def unwindItems = record.get(unwindIdx)
 
             if (unwindItems instanceof Collection) {
