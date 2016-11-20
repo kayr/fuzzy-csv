@@ -13,6 +13,13 @@ class FuzzyCSVUtils {
         return rt
     }
 
+    static <T> List<T> replace(List<T> source, T from, T to) {
+        def idx = source.indexOf(from)
+        if (idx != -1)
+            source.set(idx, to)
+        return source
+    }
+
     static Number coerceToNumber(obj, Class preferredType = Integer) {
         toNumber(obj, false, preferredType)
     }
@@ -56,8 +63,6 @@ class FuzzyCSVUtils {
     }
 
 
-
-
     static def <T> T time(String name, Closure<T> worker) {
         def padding = '    '.multiply(IndentHelper.get())
         IndentHelper.increment()
@@ -99,7 +104,7 @@ class IndentHelper {
         indent.get()
     }
 
-    static clear(){
+    static clear() {
         indent.remove()
     }
 }

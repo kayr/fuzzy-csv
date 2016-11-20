@@ -8,7 +8,6 @@ import de.vandermeer.asciitable.v2.themes.V2_E_TableThemes
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log4j
-import org.codehaus.groovy.runtime.DefaultGroovyMethods
 
 import java.sql.ResultSet
 
@@ -23,16 +22,34 @@ class FuzzyCSVTable implements Iterable<Record> {
         this.csv = csv
     }
 
-    FuzzyCSVTable normalizeHeaders(String prefix = 'C_') {
+    FuzzyCSVTable normalizeHeaders(String prefix = 'C_', String postFix = '_') {
         def visited = new HashSet()
         header.eachWithIndex { h, int i ->
             def origH = h
             h = h?.trim()
-            if (!h) h = "$prefix$i".toString()
-            else if (visited.contains(h)) h = "$prefix$i$h".toString()
+            if (!h) h = "$prefix$i$postFix".toString()
+            else if (visited.contains(h)) h = "$prefix$i$postFix$h".toString()
             visited << origH
             header.set(i, h)
         }
+        return this
+    }
+
+    FuzzyCSVTable renameHeader(String from, String to) {
+        FuzzyCSVUtils.replace(header, from, to)
+        return this
+    }
+
+    FuzzyCSVTable renameHeader(Map<String, String> renameMapping) {
+        for (it in renameMapping) {
+            renameHeader(it.key, it.value)
+        }
+        return this
+    }
+
+    FuzzyCSVTable renameHeader(int from, String to) {
+        if (from >= 0 && from < header.size())
+            header.set(from, to)
         return this
     }
 
@@ -74,7 +91,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         return aggregate(columns, fx(groupFx))
     }
 
-    FuzzyCSVTable distinct(){
+    FuzzyCSVTable distinct() {
         return autoAggregate(header as Object[])
     }
 
@@ -94,7 +111,7 @@ class FuzzyCSVTable implements Iterable<Record> {
          */
         def hasAnyAggregations = columns.any { it instanceof Aggregator }
 
-        if(!groups){
+        if (!groups) {
             return select(columns)
         }
         if (hasAnyAggregations) {
@@ -302,7 +319,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable unwind(List<String> columns) {
-        return tbl(FuzzyCSV.unwind(csv,columns as String[]))
+        return tbl(FuzzyCSV.unwind(csv, columns as String[]))
     }
 
     FuzzyCSVTable transpose(String columToBeHeader, String columnForCell, String[] primaryKeys) {
@@ -313,12 +330,12 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(csv.transpose())
     }
 
-    FuzzyCSVTable leftShift(FuzzyCSVTable other){
+    FuzzyCSVTable leftShift(FuzzyCSVTable other) {
         return mergeByColumn(other)
     }
 
-    FuzzyCSVTable leftShift(List<? extends List> other){
-       return mergeByColumn(other)
+    FuzzyCSVTable leftShift(List<? extends List> other) {
+        return mergeByColumn(other)
     }
 
     FuzzyCSVTable mergeByColumn(List<? extends List> otherCsv) {
@@ -407,7 +424,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(FuzzyCSV.copy(csv))
     }
 
-    FuzzyCSVTable clone(){
+    FuzzyCSVTable clone() {
         return tbl(csv.clone())
     }
 

@@ -537,6 +537,17 @@ class FuzzyCSVTableTest {
         assert result.header.size() == 2
     }
 
+    @Test
+    void testRenameHeader() {
+        def csv = tbl([['a', 'b', 'c']])
+
+        assert csv.copy().renameHeader(1, 'cc').header == ['a', 'cc', 'c']
+        assert csv.copy().renameHeader('b', 'bb').header == ['a', 'bb', 'c']
+        assert csv.copy().renameHeader('zz', 'b').header == ['a', 'b', 'c']
+        assert csv.copy().renameHeader(100, 'b').header == ['a', 'b', 'c']
+        assert csv.copy().renameHeader(a:'cc',c:'zz').header == ['cc', 'b', 'zz']
+    }
+
     //helper to printout array list
     static def insp(FuzzyCSVTable t) {
         println(t.csv.inspect().replaceAll(/\], \[/, '],\n['))
