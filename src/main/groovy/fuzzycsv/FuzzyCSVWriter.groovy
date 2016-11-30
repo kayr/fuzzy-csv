@@ -1,11 +1,13 @@
 package fuzzycsv
 
 import com.opencsv.CSVWriter
+import groovy.transform.CompileStatic
 
 
 /**
  * Simple CSV Writer from which allows writing List<Object[]>
  */
+@CompileStatic
 class FuzzyCSVWriter extends CSVWriter {
 
     Writer writer
