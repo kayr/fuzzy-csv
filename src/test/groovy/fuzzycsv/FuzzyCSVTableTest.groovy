@@ -344,10 +344,10 @@ class FuzzyCSVTableTest {
         def data = [['name', '', null, 'sex']]
         def csv = tbl(data).normalizeHeaders()
 
-        assert csv.csv == [['name', 'C_1', 'C_2', 'sex']]
+        assert csv.csv == [['name', 'C_1_', 'C_2_', 'sex']]
 
         data = [['name', '', null, 'sex', 'name', 'sex']]
-        csv = tbl(data).normalizeHeaders()
+        csv = tbl(data).normalizeHeaders('C_','')
         assert csv.csv == [['name', 'C_1', 'C_2', 'sex', 'C_4name', 'C_5sex']]
 
     }
