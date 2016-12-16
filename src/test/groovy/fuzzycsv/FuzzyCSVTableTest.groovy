@@ -548,8 +548,11 @@ class FuzzyCSVTableTest {
         assert csv.copy().renameHeader(a:'cc',c:'zz').header == ['cc', 'b', 'zz']
     }
 
+
+
     //helper to printout array list
     static def insp(FuzzyCSVTable t) {
         println(t.csv.inspect().replaceAll(/\], \[/, '],\n['))
+        return t
     }
 }
