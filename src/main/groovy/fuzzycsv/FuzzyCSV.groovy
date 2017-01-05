@@ -463,6 +463,7 @@ public class FuzzyCSV {
         rearrangeColumns(headers as List, csv, mode)
     }
 
+    //todo compile static
     static List<List> rearrangeColumns(List<?> headers, List<? extends List> csv, Mode mode = Mode.RELAXED) {
         if (mode.isStrict()) {
             assertValidSelectHeaders(headers, csv)
