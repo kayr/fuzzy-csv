@@ -15,7 +15,6 @@ apply plugin: 'groovy'
 
 // Using a setter method
 project.buildDir = 'target'
-afterReleaseBuild.dependsOn uploadArchives
 
 description = """"""
 
@@ -33,13 +32,12 @@ repositories {
     mavenLocal()
     mavenCentral()
 
-    maven { url "https://dl.dropboxusercontent.com/u/3038882/p/m2/snapshots" }
-    maven { url "https://dl.dropboxusercontent.com/u/3038882/p/m2/releases" }
+    maven { url "https://omnitech.co.ug/m2/releases" }
     maven { url "http://repo.maven.apache.org/maven2" }
 }
 dependencies {
     compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.0.4'
-    compile group: 'secondstring', name: 'secondstring', version: '1.0'
+    compile group: 'com.omnitech', name: 'phrase-helper', version: '0.1.0'
     compile group: 'com.opencsv', name: 'opencsv', version: '3.8'
     compile group: 'log4j', name: 'log4j', version: '1.2.17'
     compile 'de.vandermeer:asciitable:0.2.5'
