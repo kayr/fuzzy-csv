@@ -32,7 +32,7 @@ repositories {
     mavenLocal()
     mavenCentral()
 
-    maven { url "https://omnitech.co.ug/m2/releases" }
+    maven { url "http://omnitech.co.ug/m2/releases" }
     maven { url "http://repo.maven.apache.org/maven2" }
 }
 dependencies {
