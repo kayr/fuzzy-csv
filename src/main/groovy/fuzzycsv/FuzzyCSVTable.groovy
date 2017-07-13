@@ -548,7 +548,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         return size
     }
 
-    FuzzyCSVTable writeFile(String filePath) {
+    FuzzyCSVTable write(String filePath) {
         FuzzyCSV.writeToFile(csv, filePath)
         return this
     }
@@ -560,7 +560,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable write(Writer writer) {
-        FuzzyCSV.write(csv, writer)
+        FuzzyCSV.writeCSV(csv, writer)
         return this
     }
 

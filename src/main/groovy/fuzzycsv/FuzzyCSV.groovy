@@ -208,12 +208,12 @@ public class FuzzyCSV {
         }
 
         sysFile.withWriter { fileWriter ->
-            write(csv, fileWriter)
+            writeCSV(csv, fileWriter)
         }
 
     }
 
-    static void write(List<? extends List> csv, Writer fileWriter) {
+    static void writeCSV(List<? extends List> csv, Writer fileWriter) {
         CSVWriter writer = new FuzzyCSVWriter(fileWriter)
         writer.writeAll(csv)
     }
