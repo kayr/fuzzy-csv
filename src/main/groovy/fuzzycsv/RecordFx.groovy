@@ -50,7 +50,7 @@ class RecordFx<RT> {
     }
 
     /**
-     Record function with coercion off this -> FASTER
+     Record function with coercion ON -> SLOWER
      * @param function
      * @return
      */
@@ -65,7 +65,7 @@ class RecordFx<RT> {
     }
 
     /**
-     * Record function with coercion on -> SLOWER
+     * Record function with coercion OFF -> FASTER
      * @param function
      * @return
      */
