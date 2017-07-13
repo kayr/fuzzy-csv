@@ -137,6 +137,21 @@ public class FuzzyCSV {
         return csv
     }
 
+    @CompileStatic
+    static int writeCsv(Sql sql, String query, Writer stream, boolean trim = false) {
+        def rt = -1
+        sql.query(query) { ResultSet rs ->
+            rt = writeCsv(rs, stream, trim)
+        }
+        return rt
+    }
+
+    @CompileStatic
+    static int writeCsv(ResultSet resultSet, Writer stream, boolean trim = false) {
+        def writer = new CSVWriter(stream)
+        return writer.writeAll(resultSet, true, trim)
+    }
+
     @SuppressWarnings("GroovyVariableNotAssigned")
     @CompileStatic
     static List<List<?>> toCSV(Sql sql, String query) {
@@ -181,14 +196,26 @@ public class FuzzyCSV {
     }
 
     static void writeToFile(List<? extends List> csv, String file) {
-        def sysFile = new File(file)
+        writeToFile(csv, new File(file))
+    }
+
+    static void writeToFile(List<? extends List> csv, File sysFile) {
         if (sysFile.exists())
             sysFile.delete()
-        sysFile.withWriter { fileWriter ->
-            CSVWriter writer = new FuzzyCSVWriter(fileWriter)
-            writer.writeAll(csv)
+
+        if (!sysFile.parentFile.exists()) {
+            sysFile.parentFile.mkdirs()
         }
 
+        sysFile.withWriter { fileWriter ->
+            write(csv, fileWriter)
+        }
+
+    }
+
+    static void write(List<? extends List> csv, Writer fileWriter) {
+        CSVWriter writer = new FuzzyCSVWriter(fileWriter)
+        writer.writeAll(csv)
     }
 
     @CompileStatic

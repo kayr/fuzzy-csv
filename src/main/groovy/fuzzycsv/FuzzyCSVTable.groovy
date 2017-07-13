@@ -134,7 +134,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     Map<Object, FuzzyCSVTable> groupBy(Closure groupFx) {
-        return groupFx(fx(groupFx))
+        return groupBy(fx(groupFx))
     }
 
     @CompileStatic
@@ -546,6 +546,22 @@ class FuzzyCSVTable implements Iterable<Record> {
             return size - 1
         }
         return size
+    }
+
+    FuzzyCSVTable writeFile(String filePath) {
+        FuzzyCSV.writeToFile(csv, filePath)
+        return this
+    }
+
+    FuzzyCSVTable write(File file) {
+        FuzzyCSV.writeToFile(csv, file)
+        return this
+
+    }
+
+    FuzzyCSVTable write(Writer writer) {
+        FuzzyCSV.write(csv, writer)
+        return this
     }
 
     //todo write unit tests
