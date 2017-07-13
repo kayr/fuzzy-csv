@@ -669,6 +669,7 @@ class FuzzyCSVTest {
 
 
         def sql = Sql.newInstance('jdbc:h2:mem:test')
+        sql.execute("DROP TABLE IF EXISTS PERSON")
         sql.execute(table)
 
         def f = File.createTempFile("Temp-FuzzyCSV", ".csv")
