@@ -36,8 +36,9 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
-## Maven Dependency
+## Dependency
 
+#### Maven
 ```xml
  <dependency>
      <groupId>fuzzy-csv</groupId>
@@ -45,16 +46,15 @@
      <version>${version}</version>
 </dependency>
 ```
+#### Gradle
+` compile 'fuzzy-csv:fuzzycsv:1.6.7'`
+
 Repositories
 ```xml
 <repositories>
     <repository>
-        <id>kayr.repo.snapshots</id>
-        <url>https://dl.dropboxusercontent.com/u/3038882/p/m2/snapshots</url>
-    </repository>
-    <repository>
         <id>kayr.repo.releases</id>
-        <url>https://dl.dropboxusercontent.com/u/3038882/p/m2/releases</url>
+        <url>http://omnitech.co.ug/m2/releases</url>
     </repository>
 </repositories>
 ```
