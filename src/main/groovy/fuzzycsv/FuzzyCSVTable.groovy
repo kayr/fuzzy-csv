@@ -183,9 +183,8 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    @CompileStatic
     List getAt(String columnName) {
-        getAt(Fuzzy.findPosition(header, columnName))
+       return getAt(Fuzzy.findPosition(header, columnName))
     }
 
 
@@ -497,6 +496,11 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     FuzzyCSVTable reverse() {
         return this[-1..1]
+    }
+
+    @CompileStatic
+    FuzzyCSVTable padAllRecords() {
+        return tbl(FuzzyCSV.padAllRecords(csv))
     }
 
 

@@ -62,7 +62,7 @@ public class FuzzyCSV {
             toInt = (maxValue) * (toInt < 0 ? -1 : 1)
         }
 
-        range = isReverse ? new IntRange(toInt, fromInt) : new IntRange(fromInt, toInt)
+        range = isReverse ? new IntRange(true,toInt, fromInt) : new IntRange(true,fromInt, toInt)
 
         def tail = csv[range]
         def newCsv = [header]; newCsv.addAll(tail);
@@ -409,7 +409,7 @@ public class FuzzyCSV {
     private static List<Object> buildCSVRecord(List columns, Record recObj) {
         List mergedRecord = columns.collect { columnFx ->
             if (columnFx instanceof RecordFx)
-                columnFx.getValue(recObj)
+                ((RecordFx)columnFx).getValue(recObj)
             else
                 recObj.val(columnFx)
         }
@@ -912,6 +912,16 @@ public class FuzzyCSV {
             }
         }
         csv.add(0, header)
+        return csv
+    }
+
+    @CompileStatic
+    static List<List> padAllRecords(List<List> csv) {
+        def maxColumns = csv.max { Collection c -> c.size() }.size()
+        csv.each { Collection c ->
+            def size = c.size()
+            for (int i = size; i < maxColumns; i++) c.add(null);
+        }
         return csv
     }
 }

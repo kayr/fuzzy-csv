@@ -547,6 +547,25 @@ class FuzzyCSVTableTest {
         assert csv.copy().renameHeader(100, 'b').header == ['a', 'b', 'c']
         assert csv.copy().renameHeader(a:'cc',c:'zz').header == ['cc', 'b', 'zz']
     }
+    @Test
+    void testPadAllRecords() {
+        def csv = tbl([
+                ['a', 'b', 'c'],
+                ['b', 'c'],
+                [],
+                [null,null,'','']
+
+        ])
+
+
+
+        def result = csv.padAllRecords()
+
+        assert result.csv == [['a', 'b', 'c', null],
+                              ['b', 'c', null, null],
+                              [null, null, null, null],
+                              [null, null, '', '']]
+    }
 
 
 
