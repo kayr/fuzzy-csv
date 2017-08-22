@@ -62,7 +62,7 @@ public class FuzzyCSV {
             toInt = (maxValue) * (toInt < 0 ? -1 : 1)
         }
 
-        range = isReverse ? new IntRange(true,toInt, fromInt) : new IntRange(true,fromInt, toInt)
+        range = isReverse ? new IntRange(true, toInt, fromInt) : new IntRange(true, fromInt, toInt)
 
         def tail = csv[range]
         def newCsv = [header]; newCsv.addAll(tail);
@@ -409,7 +409,7 @@ public class FuzzyCSV {
     private static List<Object> buildCSVRecord(List columns, Record recObj) {
         List mergedRecord = columns.collect { columnFx ->
             if (columnFx instanceof RecordFx)
-                ((RecordFx)columnFx).getValue(recObj)
+                ((RecordFx) columnFx).getValue(recObj)
             else
                 recObj.val(columnFx)
         }
@@ -490,7 +490,7 @@ public class FuzzyCSV {
         rearrangeColumns(headers as List, csv, mode)
     }
 
-    //todo compile static
+    @CompileStatic
     static List<List> rearrangeColumns(List<?> headers, List<? extends List> csv, Mode mode = Mode.RELAXED) {
         if (mode.isStrict()) {
             assertValidSelectHeaders(headers, csv)
@@ -503,25 +503,26 @@ public class FuzzyCSV {
         headers.eachWithIndex { header, idx ->
 
             if (header instanceof RecordFx) {
-                newCsv = putInColumn(newCsv, header, idx, csv)
+                newCsv = putInColumn(newCsv, header as RecordFx, idx, csv)
                 return
             }
 
 
             if (header instanceof Aggregator) {
-                def fnAddColumn = {
+                def aggregator = header as Aggregator
+                def fnAddColumn = { Record it ->
                     if (header instanceof Reducer) {
-                        header.getValue(it)
+                        (aggregator as Reducer).getValue(it)
                     } else {
-                        header.value
+                        aggregator.value
                     }
 
                 }
-                newCsv = putInColumn(newCsv, fx(header.columnName, fnAddColumn), idx, csv)
+                newCsv = putInColumn(newCsv, fx(aggregator.columnName, fnAddColumn), idx, csv)
                 return
             }
 
-            int oldCsvColIdx = Fuzzy.findBestPosition(csv[0], header, ACCURACY_THRESHOLD.get())
+            int oldCsvColIdx = Fuzzy.findBestPosition(csv[0], header.toString(), ACCURACY_THRESHOLD.get())
 
             def oldCsvColumn
             if (oldCsvColIdx != -1)
