@@ -138,18 +138,18 @@ public class FuzzyCSV {
     }
 
     @CompileStatic
-    static int writeCsv(Sql sql, String query, Writer stream, boolean trim = false) {
+    static int writeCsv(Sql sql, String query, Writer stream, boolean includeNames = true, boolean trim = false) {
         def rt = -1
         sql.query(query) { ResultSet rs ->
-            rt = writeCsv(rs, stream, trim)
+            rt = writeCsv(rs, stream, includeNames, trim)
         }
         return rt
     }
 
     @CompileStatic
-    static int writeCsv(ResultSet resultSet, Writer stream, boolean trim = false) {
+    static int writeCsv(ResultSet resultSet, Writer stream, boolean includeNames = true, boolean trim = false) {
         def writer = new CSVWriter(stream)
-        return writer.writeAll(resultSet, true, trim)
+        return writer.writeAll(resultSet, includeNames, trim)
     }
 
     @SuppressWarnings("GroovyVariableNotAssigned")

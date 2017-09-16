@@ -663,7 +663,7 @@ class FuzzyCSVTest {
     }
 
     @Test
-    void testWriting() {
+    void testWritingFromSql() {
         def table = "CREATE TABLE PERSON (ID INT PRIMARY KEY, FIRSTNAME VARCHAR(64), LASTNAME VARCHAR(64));"
         def insert = "insert into PERSON values (1,'kay','r')"
 
@@ -700,6 +700,14 @@ class FuzzyCSVTest {
         }
         //test aliases on columns
         assert [['Identifier', 'Another ID'], ['1', '1']] == FuzzyCSVTable.parseCsv(f.text).csv
+
+
+        f.withPrintWriter {
+            FuzzyCSV.writeCsv(sql, 'select id as "Identifier",id as "Another ID" from PERSON', it, false, false)
+
+        }
+        //test aliases on columns
+        assert [['1', '1']] == FuzzyCSVTable.parseCsv(f.text).csv
 
     }
 
