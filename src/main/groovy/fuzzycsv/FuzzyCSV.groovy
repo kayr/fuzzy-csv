@@ -1,5 +1,6 @@
 package fuzzycsv
 
+import com.opencsv.CSVParser
 import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
 import groovy.sql.Sql
@@ -34,9 +35,20 @@ public class FuzzyCSV {
     static boolean trace = false
 
     @CompileStatic
-    static List<String[]> parseCsv(String csv) {
-        def rd = new CSVReader(new StringReader(csv))
-        return rd.readAll();
+    static List<String[]> parseCsv(String csv,
+                                   char separator = CSVParser.DEFAULT_SEPARATOR,
+                                   char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
+                                   char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
+        return parseCsv(new StringReader(csv),separator, quoteChar, escapeChar)
+    }
+
+    @CompileStatic
+    static List<String[]> parseCsv(Reader reader,
+                                   char separator = CSVParser.DEFAULT_SEPARATOR,
+                                   char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
+                                   char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
+        def rd = new CSVReader(reader,separator, quoteChar, escapeChar)
+        return rd.readAll()
     }
 
     static List getValuesForColumn(List<? extends List> csvList, int colIdx) {

@@ -1,5 +1,6 @@
 package fuzzycsv
 
+import com.opencsv.CSVParser
 import de.vandermeer.asciitable.v2.V2_AsciiTable
 import de.vandermeer.asciitable.v2.render.V2_AsciiTableRenderer
 import de.vandermeer.asciitable.v2.render.WidthLongestLine
@@ -184,7 +185,7 @@ class FuzzyCSVTable implements Iterable<Record> {
 
 
     List getAt(String columnName) {
-       return getAt(Fuzzy.findPosition(header, columnName))
+        return getAt(Fuzzy.findPosition(header, columnName))
     }
 
 
@@ -504,8 +505,18 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    static FuzzyCSVTable parseCsv(String csvString) {
-        toListOfLists(FuzzyCSV.parseCsv(csvString))
+    static FuzzyCSVTable parseCsv(String csvString,
+                                  char separator = CSVParser.DEFAULT_SEPARATOR,
+                                  char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
+                                  char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
+        toListOfLists(FuzzyCSV.parseCsv(csvString, separator, quoteChar, escapeChar))
+    }
+
+    static FuzzyCSVTable parseCsv(Reader reader,
+                                  char separator = CSVParser.DEFAULT_SEPARATOR,
+                                  char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
+                                  char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
+        toListOfLists(FuzzyCSV.parseCsv(reader, separator, quoteChar, escapeChar))
     }
 
     static FuzzyCSVTable toCSV(List<? extends Map> listOfMaps, String[] cols) {
