@@ -1,0 +1,3 @@
+run:
+   name: chmod permissions
+   command: chmod +x ./gradlew
