@@ -347,7 +347,7 @@ class FuzzyCSVTableTest {
         assert csv.csv == [['name', 'C_1_', 'C_2_', 'sex']]
 
         data = [['name', '', null, 'sex', 'name', 'sex']]
-        csv = tbl(data).normalizeHeaders('C_','')
+        csv = tbl(data).normalizeHeaders('C_', '')
         assert csv.csv == [['name', 'C_1', 'C_2', 'sex', 'C_4name', 'C_5sex']]
 
     }
@@ -545,15 +545,16 @@ class FuzzyCSVTableTest {
         assert csv.copy().renameHeader('b', 'bb').header == ['a', 'bb', 'c']
         assert csv.copy().renameHeader('zz', 'b').header == ['a', 'b', 'c']
         assert csv.copy().renameHeader(100, 'b').header == ['a', 'b', 'c']
-        assert csv.copy().renameHeader(a:'cc',c:'zz').header == ['cc', 'b', 'zz']
+        assert csv.copy().renameHeader(a: 'cc', c: 'zz').header == ['cc', 'b', 'zz']
     }
+
     @Test
     void testPadAllRecords() {
         def csv = tbl([
                 ['a', 'b', 'c'],
                 ['b', 'c'],
                 [],
-                [null,null,'','']
+                [null, null, '', '']
 
         ])
 
@@ -567,7 +568,40 @@ class FuzzyCSVTableTest {
                               [null, null, '', '']]
     }
 
+    @Test
+    void testParsingOptions() {
 
+        def normal = '''name,sex,age
+k,male,30
+p,female,31
+'''
+
+        def tabs = '''name\tsex\tage
+k\tmale\t30
+p\tfemale\t31
+'''
+
+        def quoteChar = '''name\tsex\tage
+k\t|male|\t30
+p\tfemale\t31
+'''
+
+        def escapeChar = '''name\tsex\tage
+k\t|male|\t30
+p\tfema+le\t31'''
+
+        def normalTb = parseCsv(normal)
+        def tabsCsv = parseCsv(tabs, '\t' as char)
+        def quoteCsv = parseCsv(quoteChar, '\t' as char, '|' as char)
+        def escapeCsv = parseCsv(escapeChar, '\t' as char, '|' as char, '+' as char)
+
+        for (f in [normalTb, tabsCsv, quoteCsv, escapeCsv]) {
+            for (s in [normalTb, tabsCsv, quoteCsv, escapeCsv]) {
+                assert f.csv == s.csv
+            }
+        }
+
+    }
 
     //helper to printout array list
     static def insp(FuzzyCSVTable t) {
