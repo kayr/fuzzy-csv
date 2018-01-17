@@ -83,27 +83,30 @@ Using the following as examples:
 import static fuzzycsv.FuzzyCSVTable.tbl
 
 def csv1 = [
-        ['name', 'sex'],
+        ['first name', 'sex'],
         ['alex', 'male'],
         ['sara', 'female']
 ]
 
 def csv2 = [
-        ['name', 'age', 'sex'],
+        ['ferts nama', 'age', 'sex'],
         ['alex', '21', 'male'],
         ['peter', '21', 'male']
 ]
 
 FuzzyCSV.ACCURACY_THRESHOLD.set(75) //set accuracy threshold
-def csv = tbl(csv1).mergeByColumn(csv2)
-println csv
+tbl(csv1).mergeByColumn(csv2).printTable()
 ```
 This will output (Notice how it merged ***[first name]*** and ***[ferts nama]***)
 ```
-[first name, sex, age]
-[alex, male, ]
-[sara, female, ]
-[alex, male, 21]
+  first name   sex      age  
+  ----------   ---      ---  
+  alex         male     -    
+  sara         female   -    
+  alex         male     21   
+  peter        male     21   
+_________
+4 Rows
 ```
 
 #### Joins
