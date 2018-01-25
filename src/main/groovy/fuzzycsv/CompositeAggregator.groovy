@@ -1,6 +1,7 @@
 package fuzzycsv
 
 
+@Deprecated
 class CompositeAggregator<T> implements Aggregator<T> {
 
     Map<String, Aggregator> aggregatorMap = [:]
