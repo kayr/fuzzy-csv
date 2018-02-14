@@ -11,15 +11,34 @@ class Excel2Csv {
 
     private static Logger log = LoggerFactory.getLogger(FuzzyCSVUtils)
 
+    static void testClassPath() {
+        try {
+            Class.forName('org.apache.poi.ss.usermodel.Workbook')
+        } catch (Throwable e) {
+            log.error("Apache Poi No Found.")
+            printRequiredDependencies()
+            throw e
+        }
+    }
+
+    static void printRequiredDependencies() {
+        println("Add to Gradle:\n " +
+                "    compileOnly 'org.apache.poi:poi-ooxml:3.16', {\n" +
+                "        exclude group: 'stax', module: 'stax-api'\n" +
+                "    }\n" +
+                "    compileOnly 'org.apache.poi:ooxml-schemas:1.3', {\n" +
+                "        exclude group: 'stax', module: 'stax-api'\n" +
+                "    }")
+    }
 
     static Map<String, FuzzyCSVTable> toCsv(File file) {
-        Workbook wb = new XSSFWorkbook(file);
+        Workbook wb = new XSSFWorkbook(file)
         return allSheetsToCsv(wb)
 
     }
 
     static Map<String, FuzzyCSVTable> allSheetsToCsv(Workbook wb) {
-        FormulaEvaluator fe = wb.getCreationHelper().createFormulaEvaluator();
+        FormulaEvaluator fe = wb.getCreationHelper().createFormulaEvaluator()
         Map<String, FuzzyCSVTable> entries = wb.collectEntries { Sheet sheet -> [sheet.sheetName, sheetToCsvImpl(sheet, fe)] }
         return entries
 
@@ -27,7 +46,7 @@ class Excel2Csv {
     }
 
     static FuzzyCSVTable toCsv(Workbook wb, int sheetNo = 0) {
-        FormulaEvaluator fe = wb.getCreationHelper().createFormulaEvaluator();
+        FormulaEvaluator fe = wb.getCreationHelper().createFormulaEvaluator()
         def sheet = wb.getSheetAt(sheetNo)
         return sheetToCsvImpl(sheet, fe)
 
@@ -39,7 +58,8 @@ class Excel2Csv {
 
     }
 
-    private static FuzzyCSVTable sheetToCsvImpl(Sheet sheet, FormulaEvaluator fe, int startRow = 0, int endRow = Integer.MAX_VALUE) {
+    private
+    static FuzzyCSVTable sheetToCsvImpl(Sheet sheet, FormulaEvaluator fe, int startRow = 0, int endRow = Integer.MAX_VALUE) {
         List<List> result = []
         for (Row row in sheet) {
             if (row == null) { continue }
@@ -54,7 +74,7 @@ class Excel2Csv {
         if (cell == null) return null
 
         if (cell.getCellTypeEnum() == CellType.FORMULA) {
-            cell = fe.evaluateInCell(cell);
+            cell = fe.evaluateInCell(cell)
         }
         switch (cell.cellTypeEnum) {
             case CellType.BOOLEAN:
