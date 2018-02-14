@@ -2,11 +2,14 @@ package fuzzycsv
 
 import groovy.time.TimeCategory
 import groovy.transform.CompileStatic
-import groovy.util.logging.Log4j
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-@Log4j
 @CompileStatic
 class FuzzyCSVUtils {
+
+    private static Logger log = LoggerFactory.getLogger(FuzzyCSVUtils)
+
 
     static List<Number> toNumbers(List list) {
         def rt = list.collect { Object it -> coerceToNumber(it) }

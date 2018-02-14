@@ -5,7 +5,8 @@ import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
-import groovy.util.logging.Log4j
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import secondstring.PhraseHelper
 
 import java.sql.ResultSet
@@ -14,9 +15,9 @@ import java.sql.SQLException
 
 import static fuzzycsv.RecordFx.fx
 
-@Log4j
 public class FuzzyCSV {
 
+    private static Logger log = LoggerFactory.getLogger(FuzzyCSV.class)
 
     public static ThreadLocal<Float> ACCURACY_THRESHOLD = new ThreadLocal<Float>() {
         @Override
@@ -39,7 +40,7 @@ public class FuzzyCSV {
                                    char separator = CSVParser.DEFAULT_SEPARATOR,
                                    char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
                                    char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
-        return parseCsv(new StringReader(csv),separator, quoteChar, escapeChar)
+        return parseCsv(new StringReader(csv), separator, quoteChar, escapeChar)
     }
 
     @CompileStatic
@@ -47,7 +48,7 @@ public class FuzzyCSV {
                                    char separator = CSVParser.DEFAULT_SEPARATOR,
                                    char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
                                    char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
-        def rd = new CSVReader(reader,separator, quoteChar, escapeChar)
+        def rd = new CSVReader(reader, separator, quoteChar, escapeChar)
         return rd.readAll()
     }
 

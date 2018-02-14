@@ -1,12 +1,13 @@
 package fuzzycsv
 
 import groovy.transform.CompileStatic
-import groovy.util.logging.Log4j
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import secondstring.PhraseHelper
 
-@Log4j
 @CompileStatic
 class Fuzzy {
+    private static Logger log = LoggerFactory.getLogger(Fuzzy)
 
     static int findBestPosition(def phrases, String header, float minScore) {
         phrases = phrases as List

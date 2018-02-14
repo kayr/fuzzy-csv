@@ -8,14 +8,16 @@ import de.vandermeer.asciitable.v2.render.WidthLongestWordMinCol
 import de.vandermeer.asciitable.v2.themes.V2_E_TableThemes
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
-import groovy.util.logging.Log4j
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import java.sql.ResultSet
 
 import static fuzzycsv.RecordFx.fx
 
-@Log4j
 class FuzzyCSVTable implements Iterable<Record> {
+
+    private static Logger log = LoggerFactory.getLogger(FuzzyCSVTable)
 
     final List<List> csv
 
