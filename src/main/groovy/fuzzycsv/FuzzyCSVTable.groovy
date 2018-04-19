@@ -141,7 +141,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     @CompileStatic
-    Map<Object, Object> groupBy(RecordFx groupFx) {
+    Map<Object, FuzzyCSVTable> groupBy(RecordFx groupFx) {
 
         def csvHeader = csv[0]
 
