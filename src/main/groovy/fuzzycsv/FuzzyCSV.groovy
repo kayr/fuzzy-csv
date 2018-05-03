@@ -1,6 +1,6 @@
 package fuzzycsv
 
-import com.github.kayr.phrasehelper.PhraseHelper2
+import com.github.kayr.phrasematcher.PhraseMatcher
 import com.opencsv.CSVParser
 import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
@@ -644,7 +644,7 @@ public class FuzzyCSV {
     static List mergeHeaders(List<?> h1, List<?> h2) {
 
 
-        def phraseHelper = PhraseHelper2.train(h1)
+        def phraseHelper = PhraseMatcher.train(h1)
         def newHeaders = []
 
 

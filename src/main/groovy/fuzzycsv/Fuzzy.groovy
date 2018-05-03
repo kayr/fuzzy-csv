@@ -1,6 +1,6 @@
 package fuzzycsv
 
-import com.github.kayr.phrasehelper.PhraseHelper2
+import com.github.kayr.phrasematcher.PhraseMatcher
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -20,7 +20,7 @@ class Fuzzy {
 
     static int findClosestPosition(def phrases, String phrase, double minScore) {
         phrases = phrases as List
-        def ph = PhraseHelper2.train(phrases as List)
+        def ph = PhraseMatcher.train(phrases as List)
         def newName = ph.bestHit(phrase, minScore)
 
         if (newName.isInvalid()) {
