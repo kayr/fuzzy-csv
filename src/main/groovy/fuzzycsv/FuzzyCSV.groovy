@@ -1,5 +1,6 @@
 package fuzzycsv
 
+import com.github.kayr.phrasehelper.PhraseHelper2
 import com.opencsv.CSVParser
 import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
@@ -7,7 +8,6 @@ import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import secondstring.PhraseHelper
 
 import java.sql.ResultSet
 import java.sql.ResultSetMetaData
@@ -19,10 +19,10 @@ public class FuzzyCSV {
 
     private static Logger log = LoggerFactory.getLogger(FuzzyCSV.class)
 
-    public static ThreadLocal<Float> ACCURACY_THRESHOLD = new ThreadLocal<Float>() {
+    public static ThreadLocal<Double> ACCURACY_THRESHOLD = new ThreadLocal<Double>() {
         @Override
-        protected Float initialValue() {
-            return 100
+        protected Double initialValue() {
+            return 1.0
         }
     }
 
@@ -192,7 +192,8 @@ public class FuzzyCSV {
             def cellValue
             if (lstIdx == 0) {
                 cellValue = column.name
-            } else {
+            }
+            else {
                 def record = Record.getRecord(header, entry, lstIdx)
                 if (sourceCSV) {
 //                    record.resolutionStrategy = ResolutionStrategy.LEFT_FIRST
@@ -526,7 +527,8 @@ public class FuzzyCSV {
                 def fnAddColumn = { Record it ->
                     if (header instanceof Reducer) {
                         (aggregator as Reducer).getValue(it)
-                    } else {
+                    }
+                    else {
                         aggregator.value
                     }
 
@@ -578,14 +580,16 @@ public class FuzzyCSV {
                     newCsv << newRecord
                 }
 
-            } else if (unwindItems instanceof Map) {
+            }
+            else if (unwindItems instanceof Map) {
                 for (unwindItem in unwindItems.entrySet()) {
                     def newRecord = new ArrayList(record)
                     newRecord.set(unwindIdx, unwindItem)
                     newCsv << newRecord
                 }
 
-            } else {
+            }
+            else {
                 newCsv << record
             }
         }
@@ -640,7 +644,7 @@ public class FuzzyCSV {
     static List mergeHeaders(List<?> h1, List<?> h2) {
 
 
-        def phraseHelper = PhraseHelper.train(h1)
+        def phraseHelper = PhraseHelper2.train(h1)
         def newHeaders = []
 
 
@@ -649,21 +653,20 @@ public class FuzzyCSV {
 
         log.debug '========'
         h2.each { String header ->
-            def hit = phraseHelper.bestInternalHit(header, ACCURACY_THRESHOLD.get())
-            def bestScore = phraseHelper.bestInternalScore(header)
-            def bestWord = phraseHelper.bestInternalHit(header, 0)
-            if (hit != null) {
-                log.debug "mergeHeaders(): [matchfound] :$bestScore% compare('$header', '$hit')"
-            } else {
+            def hit = phraseHelper.bestHit(header, ACCURACY_THRESHOLD.get())
+            if (hit.isValid()) {
+                log.debug "mergeHeaders(): [matchfound] :$hit% compare('$header', '$hit')"
+            }
+            else {
                 newHeaders.add(header)
-                log.debug "mergeHeaders(): [no-match] :$bestScore% compare('$header',BestMatch['$bestWord'])"
+                log.debug "mergeHeaders(): [no-match] :${phraseHelper.bestHit(header, 0)}% compare('$header')"
 
             }
         }
 
         log.debug "=======\n" +
-                "mergeHeaders(): HEADER1 \t= $h1 \n HEADER2 \t= $h2 \nNEW_HEADER \t= $newHeaders\n" +
-                "======="
+                          "mergeHeaders(): HEADER1 \t= $h1 \n HEADER2 \t= $h2 \nNEW_HEADER \t= $newHeaders\n" +
+                          "======="
         return newHeaders
     }
 
@@ -864,9 +867,11 @@ public class FuzzyCSV {
                 def value
                 if (maxParams == 3) {
                     value = transform.call(recordObj, entry, cIdx)
-                } else if (maxParams == 2) {
+                }
+                else if (maxParams == 2) {
                     value = transform.call(recordObj, entry)
-                } else {
+                }
+                else {
                     value = transform.call(entry)
                 }
                 record[cIdx] = value
@@ -915,7 +920,8 @@ public class FuzzyCSV {
                 }
 
             }
-        } else {
+        }
+        else {
             use(FxExtensions) {
                 csv = csv.sort(false) { List a, List b ->
                     def r = Record.getRecord(header, a)

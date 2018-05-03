@@ -30,7 +30,7 @@ class FuzzyCSVTest {
 
     @Before
     void setUp() {
-        FuzzyCSV.ACCURACY_THRESHOLD.set(75)
+        FuzzyCSV.ACCURACY_THRESHOLD.set(0.75)
     }
 
     @Test
