@@ -94,7 +94,7 @@ def csv2 = [
         ['peter', '21', 'male']
 ]
 
-FuzzyCSV.ACCURACY_THRESHOLD.set(75) //set accuracy threshold
+FuzzyCSV.ACCURACY_THRESHOLD.set(0.75) //set accuracy threshold
 tbl(csv1).mergeByColumn(csv2).printTable()
 ```
 This will output (Notice how it merged ***[first name]*** and ***[ferts nama]***)
