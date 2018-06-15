@@ -71,6 +71,37 @@ class FuzzyCSVTest {
     }
 
     @Test
+    public void testMergeByAppendingWithEmptyCsv() {
+        def newCSV = FuzzyCSV.mergeByAppending([], csv2)
+        def expected = [
+                ['name', 'sex'] as String[],
+                ['alex', 'male'] as String[]
+        ]
+        assertTrue newCSV.equals(expected)
+
+        newCSV = FuzzyCSV.mergeByAppending(csv2, [])
+        expected = [
+                ['name', 'sex'] as String[],
+                ['alex', 'male'] as String[]
+        ]
+        assertTrue newCSV.equals(expected)
+
+        newCSV = FuzzyCSV.mergeByAppending(csv2, [[]])
+        expected = [
+                ['name', 'sex'] as String[],
+                ['alex', 'male'] as String[]
+        ]
+        assertTrue newCSV.equals(expected)
+
+        newCSV = FuzzyCSV.mergeByAppending([[]], csv2)
+        expected = [
+                ['name', 'sex'] as String[],
+                ['alex', 'male'] as String[]
+        ]
+        assertTrue newCSV.equals(expected)
+    }
+
+    @Test
     void test_TableShouldMergerEmptySecondCSV() {
         def a = tbl([['a'], ['r1']])
         def b = tbl([['a']])

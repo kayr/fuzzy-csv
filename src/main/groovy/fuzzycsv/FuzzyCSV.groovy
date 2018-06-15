@@ -689,6 +689,14 @@ public class FuzzyCSV {
      * Merges data from from CSV1 into CSV2
      */
     static List<List> mergeByAppending(List<? extends List> csv1, List<? extends List> csv2) {
+        if (csv1 == null || csv1.size() == 0 || csv1[0].size() == 0) {
+            return csv2
+        }
+
+        if (csv2 == null || csv2.size() == 0 || csv2[0].size() == 0) {
+            return csv1
+        }
+
         def toAppend = csv2?.size() <= 1 ? [] : csv2[1..-1]
         def merged = csv1 + toAppend
         return merged
