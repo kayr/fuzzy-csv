@@ -217,8 +217,8 @@ public class FuzzyCSV {
         if (sysFile.exists())
             sysFile.delete()
 
-        if (!sysFile.parentFile.exists()) {
-            sysFile.parentFile.mkdirs()
+        if (!sysFile.parentFile?.exists()) {
+            sysFile.parentFile?.mkdirs()
         }
 
         sysFile.withWriter { fileWriter ->
