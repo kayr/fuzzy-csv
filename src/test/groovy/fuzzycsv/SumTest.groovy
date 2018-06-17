@@ -63,4 +63,17 @@ class SumTest {
         assert sumFx.value == 31.1
         assert sumFx.columnName == 'sum'
     }
+
+    @Test
+    void testName(){
+        def count = new Sum(['a'], null)
+        assert count.getColumnName() == 'sum(a)'
+
+        count = new Sum(['a','b'], null)
+        assert count.getColumnName() == 'sum(a,b)'
+
+
+        count = new Sum(['a','b'], null).az('xxx')
+        assert count.getColumnName() == 'xxx'
+    }
 }

@@ -34,5 +34,13 @@ class Sum extends AbstractAggregator<Number> {
         return new Sum(aggregateColumns as List)
     }
 
-
+    @Override
+    String getColumnName() {
+        if (!super.columnName) {
+            return "sum(${columns*.toString().join(',')})"
+        }
+        else {
+            return super.getColumnName()
+        }
+    }
 }

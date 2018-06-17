@@ -26,4 +26,19 @@ class CountTest extends GroovyTestCase {
 
 
     }
+
+    @Test
+    void testName(){
+        def count = new Count(['a'], null)
+        assert count.getColumnName() == 'count(a)'
+
+        count = new Count(['a','b'], null)
+        assert count.getColumnName() == 'count(a,b)'
+
+        count = new Count(['a','b'], null).unique()
+        assert count.getColumnName() == 'countunique(a,b)'
+
+        count = new Count(['a','b'], null).unique().az('xxx')
+        assert count.getColumnName() == 'xxx'
+    }
 }

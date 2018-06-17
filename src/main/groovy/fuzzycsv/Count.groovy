@@ -5,8 +5,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class Count extends AbstractAggregator {
 
-    List<List> columns
-    private boolean unique = false
+            List<List> columns
+    private boolean    unique = false
 
     Count() {}
 
@@ -59,5 +59,17 @@ class Count extends AbstractAggregator {
         return new Count(columnName: name, columns: columnsForCounting as List<List>).unique()
     }
 
+    @Override
+    String getColumnName() {
+        if (!super.columnName) {
+            if (unique)
+                return "countunique(${columns*.toString().join(',')})"
+            else
+                return "count(${columns*.toString().join(',')})"
+        }
+        else {
+            return super.getColumnName()
+        }
+    }
 
 }
