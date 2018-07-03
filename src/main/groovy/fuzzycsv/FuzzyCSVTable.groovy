@@ -60,6 +60,9 @@ class FuzzyCSVTable implements Iterable<Record> {
         aggregate(columns as List)
     }
 
+    FuzzyCSVTable summarize(Object... columns) {
+        return autoAggregate(columns)
+    }
     FuzzyCSVTable autoAggregate(Object... columns) {
         def groupByColumns = columns.findAll { !(it instanceof Aggregator) }
         def fn = fx { Record r ->

@@ -1,27 +1,22 @@
 package fuzzycsv
 
+import groovy.transform.CompileStatic
+
 /**
  * helper class consolidating all commonly used methods
  */
+@CompileStatic
 class FuzzyStaticApi {
 
-    static Count count() {
-        return new Count(columnName: "count()")
+    static Count count(Object... columnsForCounting) {
+        return new Count(columns: columnsForCounting as List<List>)
     }
 
-    static Count count(String name, Object... columnsForCounting) {
-        return new Count(columnName: name, columns: columnsForCounting as List<List>)
+    static Count countUnique(Object... columnsForCounting) {
+        return new Count(unique: true, columns: columnsForCounting as List<List>)
     }
 
-    static Count countUnique() {
-        return new Count(columnName: "countUnique()").unique()
-    }
-
-    static Count countUnique(String name, Object... columnsForCounting) {
-        return new Count(unique: true, columnName: name, columns: columnsForCounting as List<List>)
-    }
-
-    static Sum sum(Object[] aggregateColumns) {
+    static Sum sum(Object... aggregateColumns) {
         Sum.sum(aggregateColumns)
     }
 
@@ -30,7 +25,7 @@ class FuzzyStaticApi {
     }
 
     static Aggregator reduce(String column, Closure fx) {
-        return new Reducer(fx).az(column)
+        return reduce(fx).az(column)
     }
 
     static Number num(def obj) {
@@ -40,5 +35,30 @@ class FuzzyStaticApi {
     static List<Number> nums(List list) {
         return FuzzyCSVUtils.toNumbers(list)
     }
+
+    /**
+     Record function with coercion ON -> SLOWER
+     * @param function
+     */
+    static RecordFx fn(Closure function) {
+        return RecordFx.fn(function)
+    }
+
+    static RecordFx fn(String name, Closure function) {
+        return RecordFx.fn(name, function)
+    }
+
+    /**
+     * Record function with coercion OFF -> FASTER
+     * @param function
+     */
+    static RecordFx fx(Closure function) {
+        return RecordFx.fx(function)
+    }
+
+    static RecordFx fx(String name, Closure function) {
+        return RecordFx.fx(name, function)
+    }
+
 
 }
