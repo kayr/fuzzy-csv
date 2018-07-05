@@ -197,8 +197,8 @@ These Help you write expression or functions for a record. E.g A function multip
 #### Doing a Select with a calculated field
 
 ```groovy
-import static fuzzycsv.FuzzyCSVTable.tbl
-import static fuzzycsv.RecordFx.fn
+
+import static fuzzycsv.FuzzyStaticApi.*
 
 def csv2 = [
         ['price', 'quantity'],
@@ -206,12 +206,20 @@ def csv2 = [
         ['3', '20']
 ]
 
-def csv = tbl(csv2).select('price', 'quantity', fn('total') { it.price * it.quantity })
-println csv
-//output
-//[price, quantity, total]
-//[2, 40, 80]
-//[3, 20, 60]
+tbl(csv2).select('price',
+                 'quantity',
+                 fn('total') { it.price * it.quantity })
+         .printTable()
+
+/* output
+  price   quantity   total  
+  -----   --------   -----  
+  2       40         80     
+  3       20         60     
+_________
+2 Rows
+
+ */
 ```
 
 Consider we have the following csv
@@ -239,14 +247,30 @@ peter
 ```
 #### Delete Column
 ```groovy
-println tbl(csv2).delete('name','age')
-//output
-//[hobby]
-//[biking]
-//[swimming]
+
+import static fuzzycsv.FuzzyStaticApi.*
+
+def csv2 = [
+        ['name', 'age','hobby'],
+        ['alex', '21','biking'],
+        ['peter', '21','swimming']
+]
+
+
+tbl(csv2).delete('name','age').printTable()
+
+/* output
+  hobby     
+  -----     
+  biking    
+  swimming  
+_________
+2 Rows
+ */
 ```
 
 #### CSV To MapList
+
 ```groovy
 println tbl(csv2).toMapList()
 /*output
@@ -256,27 +280,45 @@ println tbl(csv2).toMapList()
 
 #### Sql To CSV
 ```groovy
-tbl(FuzzyCSV.toCSV(sql, 'select * from PERSON'))
+FuzzyCSVTable.toCSV(groovySql,"select * from PERSON")
+//or
+FuzzyCSVTable.toCSV(resultSet)
 ```
 
 #### Add Column
 ```groovy
-println tbl(csv2).addColumn(fn('Double Age') {it.age * 2})
-//output
-//[name, age, hobby, Double Age]
-//[alex, 21, biking, 42]
-//[peter, 21, swimming, 42]
+import static fuzzycsv.FuzzyStaticApi.*
+
+def csv2 = [
+        ['name', 'age', 'hobby'],
+        ['alex', '21', 'biking'],
+        ['peter', '21', 'swimming']
+]
+
+
+tbl(csv2).addColumn(fn('Double Age') { it.age * 2 }).printTable()
+
+/*output
+  name    age   hobby      Double Age  
+  ----    ---   -----      ----------  
+  alex    21    biking     42          
+  peter   21    swimming   42          
+_________
+2 Rows
+
+ */
 ```
 #### Filter Records
 ```groovy
-println tbl(csv2).filter { it.name == 'alex' }.toStringFormatted()
+tbl(csv2).filter { it.name == 'alex' }.printTable()
+
 /*output
-  name   age   hobby
-  ----   ---   -----
-  alex   21    biking
+  name   age   hobby   
+  ----   ---   -----   
+  alex   21    biking  
 _________
 1 Rows
-*/
+ */
 ```
 
 #### Sorting
@@ -375,31 +417,44 @@ _________
 
 #### Transposing
 ```groovy
-println tbl(csv2).transpose()
+tbl(csv2).transpose()
+         .printTable()
+
 /*output
-[name, alex, peter]
-[age, 21, 21]
-[hobby, biking, swimming]
-*/
+  name    alex     peter     
+  ----    ----     -----     
+  age     21       21        
+  hobby   biking   swimming  
+_________
+2 Rows
+ */
 ```
 
 Example 2:
 ```groovy
 
+import static fuzzycsv.FuzzyStaticApi.*
+
 def csv2 = [
-        ['name', 'age','hobby','id'],
-        ['alex', '21','biking',1],
-        ['peter', '21','swimming',2]
+        ['name', 'age', 'hobby', 'category'],
+        ['alex', '21', 'biking', 'A'],
+        ['peter', '21', 'swimming', 'S'],
+        ['charles', '21', 'swimming','S'],
+        ['barbara', '23', 'swimming', 'S']
 ]
 
 //name = Column To Become Header
 //age = Column Needed in Cells
 //id and hobby = Columns that uniquely identify a record/row
-println tbl(csv2).transpose('name','age','id','hobby')
+tbl(csv2).transpose('name', 'age', 'category', 'hobby')
+         .printTable()
 /*output
-[id, hobby, alex, peter]
-[1, biking, 21, null]
-[2, swimming, null, 21]
+  category   hobby      alex   peter   charles   barbara  
+  --------   -----      ----   -----   -------   -------  
+  A          biking     21     -       -         -        
+  S          swimming   -      21      21        23       
+_________
+2 Rows
 */
 ```
 
@@ -408,6 +463,9 @@ println tbl(csv2).transpose('name','age','id','hobby')
 In the example below we find the average age in each hobby by making use of sum count and group by functions
 
 ```groovy
+
+import static fuzzycsv.FuzzyStaticApi.*
+
 def csv2 = [
         ['name', 'age', 'Hobby'],
         ['alex', '21', 'biking'],
@@ -417,16 +475,14 @@ def csv2 = [
 ]
 
 
-println tbl(csv2)
-        .autoAggregate(
+tbl(csv2).summarize(
 
         'Hobby',
 
         sum('age').az('TT.Age'),
 
-        count('name').az('TT.Count'),
-
-).toStringFormatted()
+        count('name').az('TT.Count')
+).printTable()
 /*output
   Hobby      TT.Age   TT.Count
   -----      ------   --------
@@ -439,9 +495,9 @@ _________
 
 #### Custom Aggregation
 ```groovy
-tbl(csv2).autoAggregate(
+tbl(csv2).summarize(
         'Hobby',
-        reduce { FuzzyCSVTable group -> group['age'] }.az('AgeList')
+        reduce { group -> group['age'] }.az('AgeList')
 ).printTable()
 /*output
   Hobby      AgeList
@@ -455,7 +511,7 @@ _________
 ```
 
 ## Note:
-This library has not been tested with very large CSV files. So performance might be a concern
+This library has not been tested with very large(700,000 records plus) CSV files. So performance might be a concern.
 
 More example can be seen here
 

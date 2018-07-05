@@ -60,5 +60,9 @@ class FuzzyStaticApi {
         return RecordFx.fx(name, function)
     }
 
+    static FuzzyCSVTable tbl(List<? extends List> csv = [[]]) {
+        return FuzzyCSVTable.tbl(csv)
+    }
+
 
 }
