@@ -47,7 +47,7 @@
 </dependency>
 ```
 #### Gradle
-` compile 'fuzzy-csv:fuzzycsv:1.6.11'`
+` compile 'fuzzy-csv:fuzzycsv:1.6.14'`
 
 Repositories
 ```xml
