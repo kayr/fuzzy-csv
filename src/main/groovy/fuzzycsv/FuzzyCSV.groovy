@@ -479,44 +479,57 @@ class FuzzyCSV {
             assertValidSelectHeaders(headers, csv)
         }
 
-        List<List> newCsv = new ArrayList<>(csv.size())
+        List<List> newCsv = newList(csv.size())
         csv.size().times {
-            newCsv.add(new ArrayList(headers.size()))
+            newCsv.add(newList(headers.size()))
         }
+
+        //prepare aggregators and turn them into record functions
+        headers = headers.collect { header ->
+            if (header instanceof Aggregator) {
+                return toRecordFx(header as Aggregator)
+            }
+            else {
+                return header
+            }
+        }
+
         headers.eachWithIndex { header, idx ->
 
             if (header instanceof RecordFx) {
                 newCsv = putInColumn(newCsv, header as RecordFx, idx, csv)
                 return
             }
+            else {
+                int oldCsvColIdx = Fuzzy.findBestPosition(csv[0], header.toString(), ACCURACY_THRESHOLD.get())
 
+                def oldCsvColumn
+                if (oldCsvColIdx != -1)
+                    oldCsvColumn = getValuesForColumn(csv, oldCsvColIdx)
+                else
+                    oldCsvColumn = [header]
 
-            if (header instanceof Aggregator) {
-                def aggregator = header as Aggregator
-                def fnAddColumn = { Record it ->
-                    if (header instanceof Reducer) {
-                        (aggregator as Reducer).getValue(it)
-                    }
-                    else {
-                        aggregator.value
-                    }
-
-                }
-                newCsv = putInColumn(newCsv, fx(aggregator.columnName, fnAddColumn), idx, csv)
-                return
+                newCsv = putInColumn(newCsv, oldCsvColumn, idx)
             }
-
-            int oldCsvColIdx = Fuzzy.findBestPosition(csv[0], header.toString(), ACCURACY_THRESHOLD.get())
-
-            def oldCsvColumn
-            if (oldCsvColIdx != -1)
-                oldCsvColumn = getValuesForColumn(csv, oldCsvColIdx)
-            else
-                oldCsvColumn = [header]
-
-            newCsv = putInColumn(newCsv, oldCsvColumn, idx)
         }
         return newCsv
+    }
+
+    @CompileStatic
+    private static <T> ArrayList<T> newList(int size) {
+        return new ArrayList(size)
+    }
+
+    @CompileStatic
+    private static RecordFx toRecordFx(Aggregator aggregator) {
+        fx(aggregator.columnName) { Record r ->
+            if (aggregator instanceof Reducer) {
+                return (aggregator as Reducer).getValue(r)
+            }
+            else {
+                return aggregator.value
+            }
+        }
     }
 
     @CompileStatic
