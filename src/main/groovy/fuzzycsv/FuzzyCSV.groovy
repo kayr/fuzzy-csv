@@ -15,7 +15,7 @@ import java.sql.SQLException
 
 import static fuzzycsv.RecordFx.fx
 
-public class FuzzyCSV {
+class FuzzyCSV {
 
     private static Logger log = LoggerFactory.getLogger(FuzzyCSV.class)
 
@@ -78,7 +78,7 @@ public class FuzzyCSV {
         range = isReverse ? new IntRange(true, toInt, fromInt) : new IntRange(true, fromInt, toInt)
 
         def tail = csv[range]
-        def newCsv = [header]; newCsv.addAll(tail);
+        def newCsv = [header]; newCsv.addAll(tail)
         return newCsv
 
     }
@@ -139,7 +139,9 @@ public class FuzzyCSV {
         def metaData = resultSet.getMetaData()
         def columnCount = metaData.columnCount
         def columns = getColumns(metaData)
-        def csv = [columns]
+        def resultSetSize = resultSet.fetchSize
+        def csv = new ArrayList(resultSetSize >= 1 ? resultSetSize : 10)
+        csv << columns
         while (resultSet.next()) {
             List record = new ArrayList(columnCount)
             for (int i = 0; i < columnCount; i++) {
@@ -177,10 +179,10 @@ public class FuzzyCSV {
 
     @CompileStatic
     static List<String> getColumns(ResultSetMetaData metadata) throws SQLException {
-        int columnCount = metadata.getColumnCount();
+        int columnCount = metadata.getColumnCount()
         List<String> nextLine = new ArrayList(columnCount)
         for (int i = 0; i < columnCount; i++) {
-            nextLine[i] = metadata.getColumnLabel(i + 1);
+            nextLine[i] = metadata.getColumnLabel(i + 1)
         }
         return nextLine
     }
@@ -241,7 +243,7 @@ public class FuzzyCSV {
     }
 
     static String csvToString(List<? extends List> csv) {
-        def stringWriter = new StringWriter();
+        def stringWriter = new StringWriter()
         def writer = new FuzzyCSVWriter(stringWriter)
         writer.writeAll(csv)
         stringWriter.toString()
@@ -320,8 +322,8 @@ public class FuzzyCSV {
     }
 
     @CompileStatic
-    private static Closure<List> getDefaultRightRecordFinder() {
-        def c = { Record r, RecordFx mOnFunction, List<? extends List> mRCsv ->
+    private static Closure<List<Record>> getDefaultRightRecordFinder() {
+        Closure<List<Record>> c = { Record r, RecordFx mOnFunction, List<? extends List> mRCsv ->
 
             def rSize = mRCsv.size()
             List<Record> finalValues = []
@@ -348,7 +350,7 @@ public class FuzzyCSV {
                                         RecordFx onFunction,
                                         boolean doLeftJoin,
                                         boolean doRightJoin,
-                                        Closure<List> findRightRecord = null) {
+                                        Closure<List<Record>> findRightRecord = null) {
 
         //container to keep track the matchedCSV2 records
         def matchedRightRecordIndices = new HashSet()
@@ -442,7 +444,7 @@ public class FuzzyCSV {
     }
 
     static List selectAllHeaders(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        List derivedHeader = csv1[0] + (csv2[0].minus(joinColumns as List))
+        List derivedHeader = csv1[0] + (csv2[0] - (joinColumns as List))
         return derivedHeader
     }
 
@@ -799,7 +801,7 @@ public class FuzzyCSV {
             cols = list[0].keySet() as String[]
 
         def columnSize = cols.size()
-        List<List<String>> csv = new ArrayList(list.size())
+        List<List> csv = new ArrayList(list.size())
         csv.add(cols.toList())
         for (mapRow in list) {
             def row = new ArrayList(columnSize)
@@ -816,7 +818,7 @@ public class FuzzyCSV {
         def cols = list[0].finalHeaders
         def columnSize = cols.size()
 
-        List<List<String>> csv = new ArrayList(list.size())
+        List<List> csv = new ArrayList(list.size())
         csv.add(cols.toList())
 
         for (record in list) {
@@ -948,7 +950,7 @@ public class FuzzyCSV {
         def maxColumns = csv.max { Collection c -> c.size() }.size()
         csv.each { Collection c ->
             def size = c.size()
-            for (int i = size; i < maxColumns; i++) c.add(null);
+            for (int i = size; i < maxColumns; i++) c.add(null)
         }
         return csv
     }

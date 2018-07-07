@@ -2,11 +2,7 @@ package fuzzycsv
 
 import org.junit.Test
 
-import static fuzzycsv.FuzzyCSVTable.*
-import static fuzzycsv.RecordFx.fn
-import static fuzzycsv.RecordFx.fx
-import static fuzzycsv.Reducer.reduce
-import static fuzzycsv.Sum.sum
+import static fuzzycsv.FuzzyStaticApi.*
 
 class FuzzyCSVTableTest {
 
@@ -303,7 +299,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testRecordListToCSV() {
-        assert toCSVFromRecordList(tbl(csv2).collect()).csv == csv2
+        assert FuzzyCSVTable.toCSVFromRecordList(tbl(csv2).collect()).csv == csv2
     }
 
     @Test
@@ -335,7 +331,7 @@ class FuzzyCSVTableTest {
                         |5d,ron,f
                         |45,pin,m'''.stripMargin()
 
-        def csv = parseCsv(csvText)
+        def csv = FuzzyCSVTable.parseCsv(csvText)
 
 
         def deDuped = csv.aggregate(csv.header, { it.id })
@@ -361,7 +357,7 @@ class FuzzyCSVTableTest {
                         |5,ron,f
                         |6,pin,m'''.stripMargin()
 
-        def csv = parseCsv(csvText)
+        def csv = FuzzyCSVTable.parseCsv(csvText)
 
         //handle higher positive range
         assert csv[1..7].csv == [['id', 'name', 'sex'],
@@ -557,10 +553,10 @@ p\tfemale\t31
 k\t|male|\t30
 p\tfema+le\t31'''
 
-        def normalTb = parseCsv(normal)
-        def tabsCsv = parseCsv(tabs, '\t' as char)
-        def quoteCsv = parseCsv(quoteChar, '\t' as char, '|' as char)
-        def escapeCsv = parseCsv(escapeChar, '\t' as char, '|' as char, '+' as char)
+        def normalTb = FuzzyCSVTable.parseCsv(normal)
+        def tabsCsv = FuzzyCSVTable.parseCsv(tabs, '\t' as char)
+        def quoteCsv = FuzzyCSVTable.parseCsv(quoteChar, '\t' as char, '|' as char)
+        def escapeCsv = FuzzyCSVTable.parseCsv(escapeChar, '\t' as char, '|' as char, '+' as char)
 
         for (f in [normalTb, tabsCsv, quoteCsv, escapeCsv]) {
             for (s in [normalTb, tabsCsv, quoteCsv, escapeCsv]) {
