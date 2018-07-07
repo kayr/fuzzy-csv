@@ -154,7 +154,7 @@ class FuzzyCSVTable implements Iterable<Record> {
             Record record = Record.getRecord(csvHeader, entry, i)
             record.leftHeaders = csvHeader
             record.leftRecord = entry
-            def value = groupFx.getValue(record);
+            def value = groupFx.getValue(record)
             groupAnswer(groups, entry, value)
         }
 
@@ -586,7 +586,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         def t = new V2_AsciiTable()
 
         // add header
-        t.addRow(header as Object[]);
+        t.addRow(header as Object[])
 
         //add header underline
         t.addRow(header.collect { "-".multiply("$it".size()) } as Object[])
@@ -611,7 +611,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     protected V2_AsciiTableRenderer getRenderer(boolean wrap, int minCol) {
         def rend = new V2_AsciiTableRenderer()
                 .setTheme(V2_E_TableThemes.ASC7_LATEX_STYLE_STRONG.get())
-                .setWidth(wrap ? new WidthLongestWordMinCol(minCol) : new WidthLongestLine());
+                .setWidth(wrap ? new WidthLongestWordMinCol(minCol) : new WidthLongestLine())
         return rend
     }
 

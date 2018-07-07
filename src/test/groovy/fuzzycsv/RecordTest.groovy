@@ -19,8 +19,8 @@ class RecordTest extends GroovyTestCase {
     @Test
     void testPropertyMissing() {
         Record record = new Record(derivedHeader, derivedRecord)
-        record.sourceHeaders = sourceHeader
-        record.sourceRecord = sourceRecord
+        record.leftHeaders = sourceHeader
+        record.leftRecord = sourceRecord
 
         assert record.name == 'ron'
         assert record.'@name' == 'kay'
@@ -37,8 +37,8 @@ class RecordTest extends GroovyTestCase {
     @Test
     void testValue() {
         Record record = new Record(derivedHeader, ['ron', null])
-        record.sourceHeaders = sourceHeader
-        record.sourceRecord = sourceRecord
+        record.leftHeaders = sourceHeader
+        record.leftRecord = sourceRecord
 
         shouldFail(IllegalArgumentException) { record.value('blah') }
         assert record.value('name') == 'ron'

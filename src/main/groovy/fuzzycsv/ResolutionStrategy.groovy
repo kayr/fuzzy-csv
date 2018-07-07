@@ -1,4 +1,4 @@
-package fuzzycsv;
+package fuzzycsv
 
 enum ResolutionStrategy {
     DERIVED_FIRST, SOURCE_FIRST,LEFT_FIRST,RIGHT_FIRST,FINAL_FIRST

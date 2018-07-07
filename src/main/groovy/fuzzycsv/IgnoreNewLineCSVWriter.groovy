@@ -5,8 +5,8 @@ package fuzzycsv
  */
 class IgnoreNewLineCSVWriter extends FuzzyCSVWriter {
 
-    public static final char LINE_END = '\n';
-    public static final char LINE_RETURN = '\r';
+    public static final char LINE_END = '\n'
+    public static final char LINE_RETURN = '\r'
 
     /**
      *  Constructs CSVWriter using a comma for the separator.

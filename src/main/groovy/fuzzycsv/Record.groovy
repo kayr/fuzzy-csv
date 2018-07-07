@@ -30,47 +30,6 @@ class Record {
         setFinalHeaders(headers)
     }
 
-    /**LEAVING THIS FOR BACKWARD COMPATIBILITY*/
-    @Deprecated
-    void setDerivedHeaders(List<String> derivedHeaders) {
-        this.finalHeaders = derivedHeaders ?: [] as List<String>
-    }
-
-    @Deprecated
-    void setDerivedRecord(List derivedRecord) {
-        this.finalRecord = derivedRecord ?: []
-    }
-
-    @Deprecated
-    void setSourceHeaders(List<String> sourceHeaders) {
-        this.leftHeaders = sourceHeaders ?: [] as List<String>
-    }
-
-    @Deprecated
-    void setSourceRecord(List sourceRecord) {
-        this.leftRecord = sourceRecord ?: []
-    }
-
-    @Deprecated
-    List getDerivedRecord() {
-        return finalRecord
-    }
-
-    @Deprecated
-    List getSourceRecord() {
-        return leftRecord
-    }
-
-    @Deprecated
-    List<String> getDerivedHeaders() {
-        return finalHeaders
-    }
-
-    @Deprecated
-    List<String> getSourceHeaders() {
-        return leftHeaders
-    }
-    /**END kLEAVING THIS FOR BACKWARD COMPATIBILITY*/
 
     def left(String name) {
         return resolveValue(leftHeaders, leftRecord, name)
@@ -189,13 +148,6 @@ class Record {
         return tryFinal(name)
     }
 
-
-    private def static findNonNull(Closure... fns) {
-        return fns.findResult { Closure c ->
-            def data = c.call()
-            return data == null ? null : data
-        }
-    }
 
     private boolean shouldThrowException() {
         if (useDefaultSilentMode) {

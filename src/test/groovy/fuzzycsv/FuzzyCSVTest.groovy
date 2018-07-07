@@ -37,7 +37,7 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testReArrangeColumns() {
+    void testReArrangeColumns() {
         def newCSV = FuzzyCSV.rearrangeColumns(['name', 'blah', 'sex'] as String[], csv1)
 
         def expected = [
@@ -51,7 +51,7 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testReArrangeColumnsWithMissSpeltName() {
+    void testReArrangeColumnsWithMissSpeltName() {
         def newCSV = FuzzyCSV.rearrangeColumns(['nam', 'blah', 'sex'] as String[], csv1)
         def expected = [
                 ['name', 'blah', 'sex'] as String[],
@@ -62,7 +62,7 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testMergeByAppending() {
+    void testMergeByAppending() {
         def newCSV = FuzzyCSV.mergeByAppending(csv1, csv2)
         def expected = [
                 ['name', 'sex'] as String[],
@@ -74,7 +74,7 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testMergeByAppendingWithEmptyCsv() {
+    void testMergeByAppendingWithEmptyCsv() {
         def newCSV = FuzzyCSV.mergeByAppending([], csv2)
         def expected = [
                 ['name', 'sex'] as String[],
@@ -133,7 +133,7 @@ class FuzzyCSVTest {
 
 
     @Test
-    public void testMergeHeaders() {
+    void testMergeHeaders() {
 
         def h1 = ['name', 'sex'] as String[]
         def h2 = ['nam', 'secName', 'sex'] as String[]
@@ -150,19 +150,18 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testMergeHeadersUsesBestHit() {
+    void testMergeHeadersUsesBestHit() {
 
         def h1 = ['name', 'sex'] as String[]
         def h2 = ['nam', 'secName', 'sexy', 'sex'] as String[]
 
         def newHeader = FuzzyCSV.mergeHeaders(h1, h2)
-        println newHeader
         assertTrue newHeader.equals(['name', 'sex', 'secName'])
     }
 
 
     @Test
-    public void testMyByColumn() {
+    void testMyByColumn() {
         def newCSV = FuzzyCSV.mergeByColumn(csv1, csv3)
 
         def expected = [
@@ -179,7 +178,7 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testJoinColumn() {
+    void testJoinColumn() {
 
         def csv1 = getCSV('/csv2.csv')
         def csv2 = getCSV('/csv1.csv')
@@ -215,7 +214,7 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testLeftJoinColumn() {
+    void testLeftJoinColumn() {
 
         def csv_2 = getCSV('/csv2.csv')
         def csv_1 = getCSV('/csv1.csv')
@@ -257,7 +256,7 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testRightJoinColumn() {
+    void testRightJoinColumn() {
 
         def csv_2 = getCSV('/csv2.csv')
         def csv_1 = getCSV('/csv1.csv')
@@ -295,14 +294,12 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testFullJoinColumn() {
+    void testFullJoinColumn() {
 
         def csv_2 = getCSV('/csv2.csv')
         def csv_1 = getCSV('/csv1.csv')
 
         def join = FuzzyCSV.fullJoin(csv_1, csv_2, 'Name')
-
-        println tbl(join)
 
         def expected = [
                 ['Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark'],
@@ -335,7 +332,7 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testFullJoinMultiColumn() {
+    void testFullJoinMultiColumn() {
 
         def csv_1 = getCSV('/csv1.csv')
         def csv_2 = getCSV('/csv1_4.csv')
@@ -412,7 +409,7 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testPutInCell() {
+    void testPutInCell() {
 
         def actualCsv = tbl(csv3).putInCell(1, 1, '44').csv
         def expectCSV = [
@@ -432,7 +429,7 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testRecordFX() {
+    void testRecordFX() {
         def csv = getCSV('/csv1csv2.csv')
 
         def recordFx = fn('Age*Mark') { it.Age * it.Mark }
@@ -451,7 +448,7 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testRecordFXWithSource() {
+    void testRecordFXWithSource() {
         def csv = getCSV('/csv1csv2.csv')
 
         def recordFx = fn('Age*Mark') { it.'@Age' * it.'@Mark' }
@@ -469,7 +466,7 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testRecordFXWithSourceFirstResolution() {
+    void testRecordFXWithSourceFirstResolution() {
         def csv = getCSV('/csv1csv2.csv')
 
         def recordFx = fn('Age*Mark') { it.'Age' * it.'Mark' }.withSourceFirst()
@@ -488,7 +485,7 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testFullJoinWithDifferentInstanceHeaders() {
+    void testFullJoinWithDifferentInstanceHeaders() {
         def one = [
                 ['sub', 'perc', '43']
         ]
@@ -506,7 +503,7 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testFullJoinWithDifferentInstanceHeaders2() {
+    void testFullJoinWithDifferentInstanceHeaders2() {
         def one = [
                 ['sub', 'perc', '43']
         ]
@@ -655,7 +652,7 @@ class FuzzyCSVTest {
 
 
         def actual = tbl(orig).transform(fx('dis') { "SC ${it.dis}" },
-                                         fx('qlt') { "$it.dis $it.qlt" }).printTable().csv
+                                         fx('qlt') { "$it.dis $it.qlt" }).csv
         assert actual == expected
 
 

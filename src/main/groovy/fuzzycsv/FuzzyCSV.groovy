@@ -226,7 +226,7 @@ class FuzzyCSV {
         stringWriter.toString()
     }
 
-final static NULL_MATCHER = null;
+final static NULL_MATCHER = null
     static List<List> join(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
         return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), NULL_MATCHER, false, false, hpRightRecordFinder(joinColumns))
     }

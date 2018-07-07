@@ -26,7 +26,7 @@ class FuzzyCSVWriter extends CSVWriter {
     void writeAll(List allLines) {
         for (Iterator iter = allLines.iterator(); iter.hasNext();) {
             String[] line = iter.next() as String[]
-            writeNext(line);
+            writeNext(line)
         }
         writer.flush()
     }

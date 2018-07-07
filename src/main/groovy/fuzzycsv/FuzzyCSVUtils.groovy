@@ -66,7 +66,7 @@ class FuzzyCSVUtils {
     }
 
 
-    static def <T> T time(String name, Closure<T> worker) {
+    static <T> T time(String name, Closure<T> worker) {
         def padding = '    '.multiply(IndentHelper.get())
         IndentHelper.increment()
         println "$padding ### Task: {$name}..."

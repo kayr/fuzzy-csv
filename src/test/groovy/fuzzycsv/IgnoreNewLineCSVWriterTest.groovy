@@ -6,10 +6,10 @@ import org.junit.Test
 /**
  * Created by kay on 11/30/2016.
  */
-public class IgnoreNewLineCSVWriterTest {
+class IgnoreNewLineCSVWriterTest {
 
     @Test
-    public void writeTo() throws Exception {
+    void writeTo() throws Exception {
         def csv = [
                 ['asas', 'sasas'],
                 ['kasj \n ', '''""asas"\\" ' \r ''']

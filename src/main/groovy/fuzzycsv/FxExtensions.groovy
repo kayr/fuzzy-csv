@@ -1333,21 +1333,21 @@ class FxExtensions {
     //implementations
     private static def plusImpl(Object first, Object second) {
         if (forNullReturning(first, second)) {
-            return null;
+            return null
         }
         NumberMath.add(coerceToNumber(first, second?.getClass()), coerceToNumber(second, first?.getClass()))
     }
 
     private static def minusImpl(Object first, Object second) {
         if (forNullReturning(first, second)) {
-            return null;
+            return null
         }
         NumberMath.subtract(coerceToNumber(first, second?.getClass()), coerceToNumber(second, first?.getClass()))
     }
 
     private static def divImpl(Object first, Object second) {
         if (forNullReturning(first, second)) {
-            return null;
+            return null
         }
         def divisor = coerceToNumber(second, first?.getClass())
         if (divisor == 0) return null
@@ -1356,7 +1356,7 @@ class FxExtensions {
 
     private static def multiplyImpl(Object first, Object second) {
         if (forNullReturning(first, second)) {
-            return null;
+            return null
         }
         //Todo check if the integer are both BigNumbers and execute those
         NumberMath.multiply(coerceToNumber(first, second?.getClass()), coerceToNumber(second, first?.getClass()))
