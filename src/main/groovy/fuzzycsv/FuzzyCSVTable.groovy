@@ -405,11 +405,13 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable transform(RecordFx... fns) {
-        return fns.inject(this) { FuzzyCSVTable acc, RecordFx val -> acc.transform(val.name, val) }
+        return tbl(FuzzyCSV.transform(csv, fns))
+//fns.inject(this) { FuzzyCSVTable acc, RecordFx val -> acc.transform(val.name, val) }
     }
 
     FuzzyCSVTable transform(String column, RecordFx fx) {
-        return tbl(FuzzyCSV.transform(csv, column, fx))
+        fx.setName(column)
+        return tbl(FuzzyCSV.transform(csv, fx))
     }
 
     /**

@@ -8,6 +8,7 @@ import org.junit.Test
 import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.RecordFx.fn
 import static fuzzycsv.RecordFx.fx
+import static fuzzycsv.ResolutionStrategy.DERIVED_FIRST
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
 import static org.junit.Assert.fail
@@ -632,6 +633,31 @@ class FuzzyCSVTest {
         GroovyAssert.shouldFail(IllegalArgumentException) {
             tbl(orig).transform('fakeColumn', fx {})
         }
+
+
+    }
+
+    @Test
+    void testTransformMultiple() {
+        def orig = FuzzyCSV.toUnModifiableCSV([
+                ['dis', 'qlt', 'qty', 'acss', 'rel'],
+                ['kava', 'male', 2, 4, 4],
+                ['lira', 'female', 44, 55, 66],
+                ['lira', 'male', 44, 55, 66]
+        ])
+
+        def expected = [
+                ['dis', 'qlt', 'qty', 'acss', 'rel'],
+                ['SC kava', 'SC kava male', 2, 4, 4],
+                ['SC lira', 'SC lira female', 44, 55, 66],
+                ['SC lira', 'SC lira male', 44, 55, 66]
+        ]
+
+
+        def actual = tbl(orig).transform(fx('dis') { "SC ${it.dis}" },
+                                         fx('qlt') { "$it.dis $it.qlt" }).printTable().csv
+        assert actual == expected
+
 
 
     }

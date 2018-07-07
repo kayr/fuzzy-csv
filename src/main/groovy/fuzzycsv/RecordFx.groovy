@@ -87,6 +87,11 @@ class RecordFx<RT> {
         return this
     }
 
+    RecordFx withResolution(ResolutionStrategy strategy) {
+        this.resolutionStrategy = strategy
+        return this
+    }
+
     @CompileStatic
     RecordFx az(String name) {
         this.name = name

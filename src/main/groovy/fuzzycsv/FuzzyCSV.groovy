@@ -183,7 +183,6 @@ class FuzzyCSV {
             else {
                 def record = Record.getRecord(header, entry, lstIdx)
                 if (sourceCSV) {
-//                    record.resolutionStrategy = ResolutionStrategy.LEFT_FIRST
                     def oldCSVRecord = sourceCSV[lstIdx]
                     def oldCSVHeader = sourceCSV[0]
                     record.leftRecord = oldCSVRecord
@@ -448,16 +447,17 @@ final static NULL_MATCHER = null;
      *  Note: One thing to note is that the fn is converted to sourceFirstResolution
      *
      */
-    static transform(List<? extends List> csv, String column, RecordFx fx) {
+    static transform(List<? extends List> csv, RecordFx... fxs) {
         def newHeaders = new ArrayList<>(csv[0])
-        def columnPosition = Fuzzy.findPosition(csv[0], column)
 
-        if (columnPosition < 0)
-            throw new IllegalArgumentException("Column[$column] not found in csv")
+        fxs.each { fx ->
+            def columnPosition = Fuzzy.findPosition(csv[0], fx.name)
 
-        fx.withSourceFirst()
-        fx.name = column
-        newHeaders.set(columnPosition, fx)
+            if (columnPosition < 0)
+                throw new IllegalArgumentException("Column[$fx.name] not found in csv")
+
+            newHeaders.set(columnPosition, fx)
+        }
 
         rearrangeColumns(newHeaders, csv)
     }
@@ -478,7 +478,7 @@ final static NULL_MATCHER = null;
             assertValidSelectHeaders(headers, csv)
         }
 
-        List<List> newCsv = []
+        List<List> newCsv = new ArrayList<>(csv.size())
         csv.size().times {
             newCsv.add(new ArrayList(headers.size()))
         }
