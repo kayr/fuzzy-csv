@@ -593,8 +593,12 @@ p\tfema+le\t31'''
 
         //write to one existent
         def nonExistent = new File(UUID.randomUUID().toString())
-        table.write(nonExistent)
-        assert nonExistent.text == csvString
+        try {
+            table.write(nonExistent)
+            assert nonExistent.text == csvString
+        }finally {
+            nonExistent.delete()
+        }
 
     }
 
@@ -612,11 +616,6 @@ p\tfema+le\t31'''
         }
     }
 
-    @Test
-    void testJoinWithFunction(){
-
-
-    }
 
 
 

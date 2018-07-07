@@ -226,21 +226,22 @@ class FuzzyCSV {
         stringWriter.toString()
     }
 
-final static NULL_MATCHER = null
+    private final static NULL_ON_FUNCTION = null
+
     static List<List> join(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), NULL_MATCHER, false, false, hpRightRecordFinder(joinColumns))
+        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), NULL_ON_FUNCTION, false, false, hpRightRecordFinder(joinColumns))
     }
 
     static List<List> leftJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), NULL_MATCHER, true, false, hpRightRecordFinder(joinColumns))
+        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), NULL_ON_FUNCTION, true, false, hpRightRecordFinder(joinColumns))
     }
 
     static List<List> rightJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), NULL_MATCHER, false, true, hpRightRecordFinder(joinColumns))
+        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), NULL_ON_FUNCTION, false, true, hpRightRecordFinder(joinColumns))
     }
 
     static List<List> fullJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), NULL_MATCHER, true, true, hpRightRecordFinder(joinColumns))
+        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), NULL_ON_FUNCTION, true, true, hpRightRecordFinder(joinColumns))
     }
 
     static List<List> join(List<? extends List> csv1, List<? extends List> csv2, RecordFx onExpression, String[] selectColumns) {
