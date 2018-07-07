@@ -392,6 +392,11 @@ class FuzzyCSVTable implements Iterable<Record> {
         return tbl(thisCsv)
     }
 
+    FuzzyCSVTable addColumnByCopy(RecordFx... fnz) {
+        def newHeader = [*header,*fnz]
+        return select(newHeader)
+    }
+
     FuzzyCSVTable deleteColumns(String[] columnNames) {
         return tbl(FuzzyCSV.deleteColumn(csv, columnNames))
     }

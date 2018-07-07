@@ -284,7 +284,7 @@ class FuzzyCSV {
                     def rightString = joinColumns.collect { String colName -> rRecObj.val(colName) }.join('-')
 
                     if (!rightIdx[rightString]) {
-                        rightIdx[rightString] = []
+                        rightIdx[rightString] = (List<Record>)newList()
                     }
                     rightIdx[rightString] << rRecObj
                 }
@@ -389,7 +389,7 @@ class FuzzyCSV {
             if (matchedRightRecordIndices.contains(rIdx)) continue
 
             recObj.resolutionStrategy = ResolutionStrategy.RIGHT_FIRST
-            recObj.leftRecord = []
+            recObj.leftRecord = Collections.emptyList()
             recObj.rightRecord = rightRecord
 
             def newCombinedRecord = buildCSVRecord(selectColumns, recObj)
@@ -494,14 +494,18 @@ class FuzzyCSV {
             }
         }
 
+        //prepare positions for the headers
+        Map<String, Integer> positions = headers.collectEntries {
+            [it.toString(), Fuzzy.findBestPosition(csv[0], it.toString(), ACCURACY_THRESHOLD.get())]
+        }
+
         headers.eachWithIndex { header, idx ->
 
             if (header instanceof RecordFx) {
                 newCsv = putInColumn(newCsv, header as RecordFx, idx, csv)
-                return
             }
             else {
-                int oldCsvColIdx = Fuzzy.findBestPosition(csv[0], header.toString(), ACCURACY_THRESHOLD.get())
+                int oldCsvColIdx = positions[header.toString()]
 
                 def oldCsvColumn
                 if (oldCsvColIdx != -1)
@@ -516,7 +520,7 @@ class FuzzyCSV {
     }
 
     @CompileStatic
-    private static <T> ArrayList<T> newList(int size) {
+    private static <T> ArrayList<T> newList(int size = 10) {
         return new ArrayList(size)
     }
 
@@ -679,7 +683,7 @@ class FuzzyCSV {
             return csv1
         }
 
-        def toAppend = csv2?.size() <= 1 ? [] : csv2[1..-1]
+        def toAppend = csv2?.size() <= 1 ? Collections.EMPTY_LIST : csv2[1..-1]
         def merged = csv1 + toAppend
         return merged
     }
@@ -754,7 +758,7 @@ class FuzzyCSV {
 
         List<List<String>> csv = [map.headers]
         rows.each { Map values ->
-            def csvRow = []
+            def csvRow = newList(headers.size())
             headers.each { header ->
                 csvRow << values[header]
             }
