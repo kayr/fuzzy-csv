@@ -441,14 +441,6 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(FuzzyCSV.filter(csv, fx))
     }
 
-    FuzzyCSVTable map(Closure func) {
-        map(fx(func))
-    }
-
-    FuzzyCSVTable map(RecordFx fx) {
-        tbl(FuzzyCSV.map(csv, fx))
-    }
-
     FuzzyCSVTable putInCell(String header, int rowIdx, Object value) {
         tbl(FuzzyCSV.putInCellWithHeader(csv, header, rowIdx, value))
     }
@@ -624,5 +616,20 @@ class FuzzyCSVTable implements Iterable<Record> {
     @Override
     Iterator<Record> iterator() {
         return new TableIterator(this)
+    }
+
+    boolean equals(o) {
+        if (this.is(o)) return true
+        if (!(o instanceof FuzzyCSVTable)) return false
+
+        FuzzyCSVTable records = (FuzzyCSVTable) o
+
+        if (csv != records.csv) return false
+
+        return true
+    }
+
+    int hashCode() {
+        return csv.hashCode()
     }
 }

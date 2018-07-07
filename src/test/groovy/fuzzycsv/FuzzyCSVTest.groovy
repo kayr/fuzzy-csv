@@ -1,6 +1,7 @@
 package fuzzycsv
 
 import groovy.sql.Sql
+import groovy.test.GroovyAssert
 import org.junit.Before
 import org.junit.Test
 
@@ -9,6 +10,7 @@ import static fuzzycsv.RecordFx.fn
 import static fuzzycsv.RecordFx.fx
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
+import static org.junit.Assert.fail
 
 class FuzzyCSVTest {
 
@@ -233,6 +235,11 @@ class FuzzyCSVTest {
         }, 'Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
         assertEquals expected.toString(), join.toString()
 
+        join = FuzzyCSV.leftJoin(csv_1, csv_2, fx {
+            it.r('Name') == it.l('Name')
+        }, 'Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
+        assertEquals expected.toString(), join.toString()
+
         //fuzzy csv table
         join = tbl(csv_1).leftJoin(tbl(csv_2), fx {
             it.Name == it.'@Name'
@@ -365,15 +372,42 @@ class FuzzyCSVTest {
     }
 
     @Test
-    public void testInsertColumn() {
+    void testInsertColumn() {
         def newColumn = ['phone', '775']
-        def actualCsv = tbl(csv3).insertColumn(newColumn, 1).csv
+        def table = tbl(csv3)
+        def actualCsv = table.insertColumn(newColumn, 1).csv
         def expectCSV = [
                 ['namel', 'phone', 'age', 'sex'],
                 ['alex', '775', '21', 'male']
         ]
 
+
+        def table2 = tbl([['one', 'two'],
+                          ['one', 'two'],
+                          ['one', 'two'],
+                          ['one', 'two'],
+                          ['one', 'two'],
+                          ['one', 'two'],
+                          ['one', 'two']])
+
+        assert table2.copy().insertColumn(newColumn, 2) == tbl([['one', 'two', 'phone'],
+                                                                ['one', 'two', '775'],
+                                                                ['one', 'two', null],
+                                                                ['one', 'two', null],
+                                                                ['one', 'two', null],
+                                                                ['one', 'two', null],
+                                                                ['one', 'two', null]])
+
         assert expectCSV == actualCsv
+
+        try {
+            table2.insertColumn(newColumn, 3)
+            fail("Should not reach here")
+        } catch (IllegalArgumentException x) {
+            assert x.message.contains("Column index is greater than the column size")
+        }
+
+
     }
 
     @Test
@@ -594,6 +628,10 @@ class FuzzyCSVTest {
 
         def actual = tbl(orig).transform('dis', fx { "SC ${it.dis}" }).csv
         assert actual == expected
+
+        GroovyAssert.shouldFail(IllegalArgumentException) {
+            tbl(orig).transform('fakeColumn', fx {})
+        }
 
 
     }

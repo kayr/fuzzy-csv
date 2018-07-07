@@ -70,7 +70,7 @@ class Record {
     List<String> getSourceHeaders() {
         return leftHeaders
     }
-    /**LEAVING THIS FOR BACKWARD COMPATIBILITY*/
+    /**END kLEAVING THIS FOR BACKWARD COMPATIBILITY*/
 
     def left(String name) {
         return resolveValue(leftHeaders, leftRecord, name)
@@ -86,17 +86,17 @@ class Record {
 
     //convenience method for left
     def l(String name) {
-        return resolveValue(leftHeaders, leftRecord, name)
+        return left(name)
     }
 
     //convenience method for right
     def r(String name) {
-        return resolveValue(rightHeaders, rightRecord, name)
+        return right(name)
     }
 
     //convenience method for final
     def f(String name) {
-        return resolveValue(finalHeaders, finalRecord, name)
+        return 'final'(name)
     }
 
 

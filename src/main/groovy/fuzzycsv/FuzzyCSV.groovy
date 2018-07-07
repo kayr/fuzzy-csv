@@ -105,21 +105,6 @@ class FuzzyCSV {
         return csvList
     }
 
-    //todo not tested or complete
-    static List<List> map(List<? extends List> csvList, RecordFx<List> fx) {
-        def header = csvList[0]
-        def newCsv = []
-        if (!fx.headerEnabled) newCsv << header
-        csvList.eachWithIndex { entry, idx ->
-            if (idx == 0 && !fx.headerEnabled) {
-                return
-            }
-            def rec = Record.getRecord(header, entry, idx)
-            def value = fx.getValue(rec)
-            newCsv << value
-        }
-        return newCsv
-    }
 
     @CompileStatic
     static List<List> filter(List<? extends List> csvList, RecordFx fx) {
@@ -235,13 +220,6 @@ class FuzzyCSV {
     }
 
     @CompileStatic
-    static String toCSVString(List<? extends List> csv) {
-        StringWriter w = new StringWriter()
-        def fw = new FuzzyCSVWriter(w)
-        fw.writeAll(csv)
-        return w.toString()
-    }
-
     static String csvToString(List<? extends List> csv) {
         def stringWriter = new StringWriter()
         def writer = new FuzzyCSVWriter(stringWriter)
@@ -249,21 +227,21 @@ class FuzzyCSV {
         stringWriter.toString()
     }
 
-
+final static NULL_MATCHER = null;
     static List<List> join(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), getDefaultRecordMatcher(joinColumns), false, false, hpRightRecordFinder(joinColumns))
+        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), NULL_MATCHER, false, false, hpRightRecordFinder(joinColumns))
     }
 
     static List<List> leftJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), getDefaultRecordMatcher(joinColumns), true, false, hpRightRecordFinder(joinColumns))
+        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), NULL_MATCHER, true, false, hpRightRecordFinder(joinColumns))
     }
 
     static List<List> rightJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), getDefaultRecordMatcher(joinColumns), false, true, hpRightRecordFinder(joinColumns))
+        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), NULL_MATCHER, false, true, hpRightRecordFinder(joinColumns))
     }
 
     static List<List> fullJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), getDefaultRecordMatcher(joinColumns), true, true, hpRightRecordFinder(joinColumns))
+        return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), NULL_MATCHER, true, true, hpRightRecordFinder(joinColumns))
     }
 
     static List<List> join(List<? extends List> csv1, List<? extends List> csv2, RecordFx onExpression, String[] selectColumns) {
@@ -432,16 +410,7 @@ class FuzzyCSV {
         return mergedRecord
     }
 
-    @CompileStatic
-    private static RecordFx getDefaultRecordMatcher(String[] joinColumns) {
 
-        RecordFx fn = fx { Record record ->
-            joinColumns.every { String r ->
-                record.left(r) == record.right(r)
-            }
-        }
-        return fn
-    }
 
     static List selectAllHeaders(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
         List derivedHeader = csv1[0] + (csv2[0] - (joinColumns as List))
@@ -466,9 +435,6 @@ class FuzzyCSV {
         rearrangeColumns(headers, csv, mode)
     }
 
-    static List<List> select(String[] headers, List<? extends List> csv, Mode mode = Mode.RELAXED) {
-        rearrangeColumns(headers as List, csv, mode)
-    }
 
     static deleteColumn(List<? extends List> csv, String[] columns, Mode mode = Mode.RELAXED) {
         def newHeaders = new ArrayList<>(csv[0])
@@ -674,13 +640,13 @@ class FuzzyCSV {
 
     static List<List> insertColumn(List<? extends List> csv, List<?> column, int colIdx) {
 
-        if (colIdx >= csv.size())
+        if (colIdx > csv[0].size())
             throw new IllegalArgumentException("Column index is greater than the column size")
 
         def newCSV = new ArrayList(csv.size())
         csv.eachWithIndex { record, lstIdx ->
             def newRecord = record instanceof List ? record : record as List
-            def cellValue = lstIdx >= column.size() ? "" : column[lstIdx]
+            def cellValue = lstIdx >= column.size() ? null : column[lstIdx]
             newRecord.add(colIdx, cellValue)
             newCSV.add(newRecord)
         }

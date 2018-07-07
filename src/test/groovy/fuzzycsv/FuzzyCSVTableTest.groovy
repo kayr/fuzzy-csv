@@ -578,6 +578,48 @@ p\tfema+le\t31'''
         assert tbl(csv).toMapList() == [['name': 'kay', 'age': 1], ['name': 'sa', 'age': 22], ['name': 'ben', 'age': 10]]
     }
 
+    @Test
+    void writeToFile() {
+        def file = File.createTempFile("Fuzzzy", ".csv")
+        def table = tbl(csv2)
+
+        def csvString = table.toCsvString()
+
+        table.write(file)
+        assert file.text == csvString
+
+        table.write(file.absolutePath)
+        assert file.text == csvString
+
+        //write to one existent
+        def nonExistent = new File(UUID.randomUUID().toString())
+        table.write(nonExistent)
+        assert nonExistent.text == csvString
+
+    }
+
+    @Test
+    void testAppendEmptyRecords() {
+        def newData = tbl(csv2).copy()
+                               .appendEmptyRecord(2)
+
+        assert newData.size() == csv2.size() + 1
+
+        newData[-2..-1].each { r ->
+            newData.header.forEach { h ->
+                assert r[h] == null
+            }
+        }
+    }
+
+    @Test
+    void testJoinWithFunction(){
+
+
+    }
+
+
+
     //helper to printout array list
     static def insp(FuzzyCSVTable t) {
         println(t.csv.inspect().replaceAll(/\], \[/, '],\n['))
