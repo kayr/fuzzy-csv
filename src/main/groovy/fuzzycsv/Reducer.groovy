@@ -1,7 +1,4 @@
 package fuzzycsv
-
-import static fuzzycsv.FuzzyCSVTable.tbl
-
 /**
  * Created by kay on 9/9/2016.
  */
@@ -10,7 +7,7 @@ class Reducer extends AbstractAggregator {
     Closure reducer
     private passRecord
 
-    public Reducer(Closure reducer) {
+    Reducer(Closure reducer) {
         this.reducer = reducer
         this.passRecord = reducer.maximumNumberOfParameters > 1
     }

@@ -40,41 +40,8 @@ class FuzzyCSVTableTest {
         assert data.csv == expected
     }
 
-    @Test
-    void testAggregateAggregator() {
-        def data = tbl(Data.csv).aggregate(['sub_county',
-                                            CompositeAggregator.get('avg',
-                                                    [
-                                                            new Sum(['ps_total_score', 'pipes_total_score'], 'sum'),
-                                                            new Sum(['tap_total_score'], 'sum_taps')
-                                                    ]
-                                                    , { it.sum_taps + it.sum })])
-        def expected = [
-                ['sub_county', 'avg'],
-                ['Hakibale', 31.1]
-        ]
-        assert data.csv == expected
-    }
 
 
-    @Test
-    void testCount() {
-        def data = tbl(Data.csv).aggregate(
-                ['sub_county',
-                 new Sum(columns: ['ps_total_score', 'pipes_total_score'], columnName: 'sum'),
-                 CompositeAggregator.get('perc_taps',
-                         [
-                                 new Sum(['ps_total_score', 'pipes_total_score', 'tap_total_score'], 'total'),
-                                 new Sum(['ps_total_score'], 'total_taps'),
-                         ]) { it['total_taps'] / it['total'] * 100 }]
-        )
-
-        def expected = [
-                ['sub_county', 'sum', 'perc_taps'],
-                ['Hakibale', 20.1, 61.4147910000]
-        ]
-        assert data.csv == expected
-    }
 
     @Test
     void testCountReducer() {
@@ -601,6 +568,18 @@ p\tfema+le\t31'''
             }
         }
 
+    }
+
+    @Test
+    void testToMapList() {
+        def csv = [
+                ["name", "age"],
+                ["kay", 1],
+                ["sa", 22],
+                ["ben", 10]
+        ]
+
+        assert tbl(csv).toMapList() == [['name': 'kay', 'age': 1], ['name': 'sa', 'age': 22], ['name': 'ben', 'age': 10]]
     }
 
     //helper to printout array list
