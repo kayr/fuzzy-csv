@@ -198,6 +198,19 @@ class Record {
 
     def getAt(def name) { throw new UnsupportedOperationException("object column names not supported. $name") }
 
+    Record setAt(String name, def value) {
+        def position = Fuzzy.findPosition(finalHeaders, name)
+        if (position == -1) {
+            throwColumnNotFound(name)
+        }
+        finalRecord.set(position, value)
+        return this
+    }
+
+    Record set(String name, def value) {
+        return setAt(name, value)
+    }
+
     boolean isHeader() { recordIdx == 0 }
 
     Map toMap(String... headers) {

@@ -353,7 +353,16 @@ class FuzzyCSVTable implements Iterable<Record> {
         return mergeByColumn(tbl.csv)
     }
 
+
+    FuzzyCSVTable modify(@DelegatesTo(DataAction) Closure action) {
+        def update = new DataAction(table: this)
+        action.setDelegate(update)
+        action()
+        return this
+    }
+
     /**
+     *
      * Deprecated use #union
      */
     @Deprecated
@@ -641,3 +650,5 @@ class FuzzyCSVTable implements Iterable<Record> {
         return csv.hashCode()
     }
 }
+
+

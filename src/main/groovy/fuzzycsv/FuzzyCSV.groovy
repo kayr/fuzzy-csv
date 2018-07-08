@@ -454,8 +454,6 @@ class FuzzyCSV {
     /**
      * Transforms a table with a source.With the given transformer.
      *
-     *  Note: One thing to note is that the fn is converted to sourceFirstResolution
-     *
      */
     static transform(List<? extends List> csv, RecordFx... fxs) {
         def newHeaders = new ArrayList<>(csv[0])
@@ -470,6 +468,22 @@ class FuzzyCSV {
         }
 
         rearrangeColumns(newHeaders, csv)
+    }
+
+    /**
+     * Transforms a table with a source.With the given transformer. Using mutation
+     *
+     */
+    @CompileStatic
+    static List<List> modify(List<? extends List> csv, RecordFx action, RecordFx filter) {
+        def size = csv.size()
+        for (int i = 1; i < size; i++) {
+            def record = Record.getRecord(csv, i)
+            if (filter.getValue(record)) {
+                action.getValue(record)
+            }
+        }
+        return csv
     }
     /**
      * Re-arranges columns as specified by the headers using direct merge and if it fails

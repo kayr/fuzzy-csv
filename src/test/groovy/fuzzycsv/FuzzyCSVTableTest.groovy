@@ -631,6 +631,40 @@ p\tfema+le\t31'''
         }
     }
 
+    @Test
+    void testDataUpdateWithFilter() {
+        def csv = [["name", "age"],
+                   ["kay", 1],
+                   ["sa", 22],
+                   ["ben", 10]]
+
+        def result = tbl(csv).modify {
+            set {
+                it.set('age', 2000)
+            }
+            where {
+                it.name == 'kay'
+            }
+        }
+        assert result.csv == [['name', 'age'], ['kay', 2000], ['sa', 22], ['ben', 10]]
+    }
+
+    @Test
+    void testDataUpdateWithNoFilter() {
+        def csv = [["name", "age"],
+                   ["kay", 1],
+                   ["sa", 22],
+                   ["ben", 10]]
+
+        def result = tbl(csv).modify {
+            set {
+                it.set('age', 2000)
+            }
+            withNoFilter()
+        }
+        assert result.csv == [['name', 'age'], ['kay', 2000], ['sa', 2000], ['ben', 2000]]
+    }
+
 
 
 
