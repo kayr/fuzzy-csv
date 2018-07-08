@@ -520,8 +520,8 @@ class FuzzyCSV {
     }
 
     @CompileStatic
-    private static <T> ArrayList<T> newList(int size = 10) {
-        return new ArrayList(size)
+    private static <T> List<T> newList(int size = 10) {
+        return new ArrayList<T>(size)
     }
 
     @CompileStatic
