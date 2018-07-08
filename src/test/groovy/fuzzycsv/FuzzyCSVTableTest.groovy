@@ -665,8 +665,20 @@ p\tfema+le\t31'''
         assert result.csv == [['name', 'age'], ['kay', 2000], ['sa', 2000], ['ben', 2000]]
     }
 
+    @Test
+    void testClone() {
+        def csv = [["name", "age"],
+                   ["kay", 1],
+                   ["sa", 22],
+                   ["ben", 10]]
+
+        def one = tbl(csv)
+        def two = one.clone().transform('age') { null }
 
 
+        assert one['age'].every { it != null } && two['age'].every { it == null }
+
+    }
 
     //helper to printout array list
     static def insp(FuzzyCSVTable t) {

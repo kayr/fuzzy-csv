@@ -118,6 +118,7 @@ class Record {
         return value
     }
 
+
     def tryLeftFinalRight(String name) {
         def value = tryLeft(name)
         if (value != null) return value
@@ -224,7 +225,7 @@ class Record {
     }
 
     def propertyMissing(String name, def arg) {
-        throw new UnsupportedOperationException("setting a property in a record is not supported")
+        set(name, arg)
     }
 
     int idx() {

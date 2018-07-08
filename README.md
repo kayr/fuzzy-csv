@@ -6,7 +6,9 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
-- [Maven Dependency](#maven-dependency)
+- [Dependency](#dependency)
+    - [Maven](#maven)
+    - [Gradle](#gradle)
 - [Features](#features)
   - [Illustrations:](#illustrations)
     - [Merging with a fuzzy match](#merging-with-a-fuzzy-match)
@@ -27,6 +29,7 @@
     - [Filter Records](#filter-records)
     - [Sorting](#sorting)
     - [Ranges](#ranges)
+    - [Update values with where clause](#update-values-with-where-clause)
     - [Transform each cell record](#transform-each-cell-record)
     - [Transposing](#transposing)
     - [Simplistic Aggregations](#simplistic-aggregations)
@@ -389,6 +392,41 @@ _________
 
 ```
 
+#### Update values with where clause
+
+```groovy
+
+import static fuzzycsv.FuzzyStaticApi.*
+
+def csv2 = [
+        ['name', 'age', 'hobby'],
+        ['alex', '21', 'biking'],
+        ['martin', '40', 'swimming'],
+        ['dan', '25', 'swimming'],
+        ['peter', '21', 'swimming'],
+]
+
+tbl(csv2).modify {
+    set {
+        it.hobby = "running"
+        it.age  = '900'
+    }
+    where {
+        it.name in ['dan', 'alex']
+    }
+}.printTable()
+
+/*Output for both
+  name     age   hobby     
+  ----     ---   -----     
+  alex     900   running   
+  martin   40    swimming  
+  dan      900   running   
+  peter    21    swimming  
+_________
+4 Rows
+ */
+```
 #### Transform each cell record
 ```groovy
 import static fuzzycsv.FuzzyCSVTable.tbl
