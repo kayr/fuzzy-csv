@@ -105,6 +105,15 @@ class FuzzyCSV {
         return csvList
     }
 
+    @CompileStatic
+    static List<List> copyColumn(List<? extends List> src, List<List> dest, int srcIdx, int destIdx) {
+        def size = src.size()
+        for (int i = 0; i < size; i++) {
+            dest[i][destIdx] = src[i][srcIdx]
+        }
+        return dest
+    }
+
 
     @CompileStatic
     static List<List> filter(List<? extends List> csvList, RecordFx fx) {
@@ -507,13 +516,11 @@ class FuzzyCSV {
             else {
                 int oldCsvColIdx = positions[header.toString()]
 
-                def oldCsvColumn
                 if (oldCsvColIdx != -1)
-                    oldCsvColumn = getValuesForColumn(csv, oldCsvColIdx)
+                    newCsv = copyColumn(csv, newCsv, oldCsvColIdx, idx)
                 else
-                    oldCsvColumn = [header]
+                    putInColumn(newCsv, [header], idx)
 
-                newCsv = putInColumn(newCsv, oldCsvColumn, idx)
             }
         }
         return newCsv
