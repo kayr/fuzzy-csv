@@ -648,28 +648,16 @@ class FuzzyCSV {
         mergeHeaders(h1 as List, h2 as List)
     }
 
-    static List mergeHeaders(List<?> h1, List<?> h2) {
+    static List mergeHeaders(List<String> h1, List<String> h2) {
 
 
-        def phraseHelper = PhraseMatcher.train(h1)
-        def newHeaders = []
+        def phraseMatcher = PhraseMatcher.train(h1)
 
+        def newHeaders = [*h1]
 
-        newHeaders.addAll(h1)
+        def h2MinusH1 = h2.findAll { phraseMatcher.bestHit(it, ACCURACY_THRESHOLD.get()).isInvalid() }
 
-
-        log.debug '========'
-        h2.each { String header ->
-            def hit = phraseHelper.bestHit(header, ACCURACY_THRESHOLD.get())
-            if (hit.isValid()) {
-                log.debug "mergeHeaders(): [matchfound] :$hit% compare('$header', '$hit')"
-            }
-            else {
-                newHeaders.add(header)
-                log.debug "mergeHeaders(): [no-match] :${phraseHelper.bestHit(header, 0)}% compare('$header')"
-
-            }
-        }
+        newHeaders.addAll(h2MinusH1)
 
         log.debug "=======\n" +
                           "mergeHeaders(): HEADER1 \t= $h1 \n HEADER2 \t= $h2 \nNEW_HEADER \t= $newHeaders\n" +
@@ -788,7 +776,6 @@ class FuzzyCSV {
         return csv
     }
 
-    //todo test
     static List<Map> toMapList(List<? extends List> csv) {
         def header = csv[0]
         int i = 0
