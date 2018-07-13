@@ -1,3 +1,17 @@
-- run:
+run:
      name: chmod permissions
      command: chmod +x ./gradlew
+
+machine:
+  java:
+    version:
+      oraclejdk8
+
+general:
+  branches:
+    only:
+      - master # only build/deploy from master
+
+test:
+  override:
+    - ./gradlew test -is
