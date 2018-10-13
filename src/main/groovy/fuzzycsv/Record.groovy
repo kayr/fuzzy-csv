@@ -21,7 +21,7 @@ class Record {
 
     int recordIdx = -1
 
-    ResolutionStrategy resolutionStrategy = DERIVED_FIRST
+    ResolutionStrategy resolutionStrategy = FINAL_FIRST
 
     Record() {}
 
@@ -191,8 +191,9 @@ class Record {
 
 
     def getAt(int idx) {
-        if (resolutionStrategy == SOURCE_FIRST) return leftRecord[idx]
-        if (resolutionStrategy == DERIVED_FIRST) return leftRecord[idx]
+        if (FINAL_FIRST) return finalRecord[idx]
+        if (resolutionStrategy == LEFT_FIRST) return leftRecord[idx]
+        if (resolutionStrategy == RIGHT_FIRST) return rightRecord[idx]
     }
 
     def getAt(CharSequence name) { propertyMissing(name as String) }

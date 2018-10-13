@@ -1,5 +1,6 @@
 package fuzzycsv
 
+import groovy.json.JsonOutput
 import org.junit.Test
 
 import static fuzzycsv.FuzzyStaticApi.*
@@ -678,6 +679,16 @@ p\tfema+le\t31'''
 
         assert one['age'].every { it != null } && two['age'].every { it == null }
 
+    }
+
+    @Test
+    void testJson() {
+        def t = '''[["name","number"],["john",1.1]]'''
+        def c = FuzzyCSVTable.fromJsonText(t)
+        assert c.size() == 1
+        assert c[1][0] instanceof BigDecimal
+        assert c.row(1)[1] == 1.1
+        assert c.toJsonText() == t
     }
 
     //helper to printout array list

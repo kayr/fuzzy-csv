@@ -4,6 +4,8 @@ import com.github.kayr.phrasematcher.PhraseMatcher
 import com.opencsv.CSVParser
 import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -233,6 +235,48 @@ class FuzzyCSV {
         def writer = new FuzzyCSVWriter(stringWriter)
         writer.writeAll(csv)
         stringWriter.toString()
+    }
+
+    @CompileStatic
+    static void writeJson(List<? extends List> csv, String file) {
+        writeToFile(csv, new File(file))
+    }
+
+    @CompileStatic
+    static void writeJson(List<? extends List> csv, File file) {
+        file.withWriter { BufferedWriter w -> writeJson(csv, w) }
+    }
+
+    @CompileStatic
+    static void writeJson(List<? extends List> csv, Writer fileWriter) {
+        def json = toJsonText(csv)
+        fileWriter.write(json)
+    }
+
+    static String toJsonText(List<? extends List> csv) {
+        return JsonOutput.toJson(csv)
+    }
+
+    @CompileStatic
+    static List<List> fromJsonText(String text) {
+        return toListofList(new JsonSlurper().parseText(text))
+    }
+
+    private static List<List> toListofList(Object object) {
+        if (object instanceof List) {
+            return object;
+        }
+        throw new IllegalArgumentException("Json is not a valid csv")
+    }
+
+    @CompileStatic
+    static List<List> fromJson(InputStream reader) {
+        return toListofList(new JsonSlurper().parse(reader))
+    }
+
+    @CompileStatic
+    static List<List> fromJson(File source) {
+        return toListofList(new JsonSlurper().parse(source))
     }
 
     private final static NULL_ON_FUNCTION = null

@@ -204,6 +204,10 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
+    Record row(int idx) {
+        return Record.getRecord(csv, idx);
+    }
+
     def firstCell() {
         if (isEmpty()) return null
         else return csv[1][0]
@@ -591,6 +595,37 @@ class FuzzyCSVTable implements Iterable<Record> {
     FuzzyCSVTable write(Writer writer) {
         FuzzyCSV.writeCSV(csv, writer)
         return this
+    }
+
+    FuzzyCSVTable writeToJson(String filePath) {
+        FuzzyCSV.writeJson(csv, filePath)
+        return this;
+    }
+
+    FuzzyCSVTable writeToJson(File file) {
+        FuzzyCSV.writeJson(csv, file)
+        return this;
+    }
+
+    FuzzyCSVTable writeToJson(Writer w) {
+        FuzzyCSV.writeJson(csv, w)
+        return this;
+    }
+
+    String toJsonText() {
+        return FuzzyCSV.toJsonText(csv)
+    }
+
+    static FuzzyCSVTable fromJsonText(String text) {
+        return tbl(FuzzyCSV.fromJsonText(text))
+    }
+
+    static FuzzyCSVTable fromJson(File file) {
+        return tbl(FuzzyCSV.fromJson(file))
+    }
+
+    static FuzzyCSVTable fromJson(Reader r) {
+        return tbl(FuzzyCSV.fromJson(r))
     }
 
     //todo write unit tests
