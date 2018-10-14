@@ -86,10 +86,10 @@ class Excel2Csv {
             case CellType.BLANK:
                 return null
             case CellType.ERROR:
+                log.error("Unable to read data from cell[{},{}]", cell.rowIndex, cell.columnIndex)
                 return "!!ERROR!!"
 
         }
-        log.error("Unable to read data from ")
         return "!!UNKNOWN DATA TYPE!!"
     }
 

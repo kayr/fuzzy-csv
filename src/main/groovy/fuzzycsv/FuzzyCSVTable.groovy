@@ -8,6 +8,7 @@ import de.vandermeer.asciitable.v2.render.WidthLongestWordMinCol
 import de.vandermeer.asciitable.v2.themes.V2_E_TableThemes
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
+import org.apache.poi.ss.usermodel.Workbook
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -557,6 +558,20 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(FuzzyCSV.toCSVFromRecordList(Collection0))
     }
 
+
+    static FuzzyCSVTable fromJsonText(String text) {
+        return tbl(FuzzyCSV.fromJsonText(text))
+    }
+
+    static FuzzyCSVTable fromJson(File file) {
+        return tbl(FuzzyCSV.fromJson(file))
+    }
+
+    static FuzzyCSVTable fromJson(Reader r) {
+        return tbl(FuzzyCSV.fromJson(r))
+    }
+
+
     String toString() {
         if (csv == null)
             return 'null'
@@ -616,16 +631,13 @@ class FuzzyCSVTable implements Iterable<Record> {
         return FuzzyCSV.toJsonText(csv)
     }
 
-    static FuzzyCSVTable fromJsonText(String text) {
-        return tbl(FuzzyCSV.fromJsonText(text))
+    FuzzyCSVTable writeToExcel(String filePath) {
+        CSVToExcel.exportToExcelFile([data: this], filePath);
+        return this;
     }
 
-    static FuzzyCSVTable fromJson(File file) {
-        return tbl(FuzzyCSV.fromJson(file))
-    }
-
-    static FuzzyCSVTable fromJson(Reader r) {
-        return tbl(FuzzyCSV.fromJson(r))
+    Workbook toExcel() {
+        return CSVToExcel.exportToExcel([data: this]);
     }
 
     //todo write unit tests
