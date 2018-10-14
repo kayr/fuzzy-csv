@@ -691,6 +691,14 @@ p\tfema+le\t31'''
         assert c.toJsonText() == t
     }
 
+    @Test
+    void testWriteToExcel() {
+        def t = '''[["name","number"],["john",1.1]]'''
+        def c = FuzzyCSVTable.fromJsonText(t)
+
+        CSVToExcel.exportToExcelFile(["data": c], "ddsdk.xlsx")
+    }
+
     //helper to printout array list
     static def insp(FuzzyCSVTable t) {
         println(t.csv.inspect().replaceAll(/\], \[/, '],\n['))

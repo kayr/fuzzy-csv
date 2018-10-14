@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory
 @CompileStatic
 class Excel2Csv {
 
-    private static Logger log = LoggerFactory.getLogger(FuzzyCSVUtils)
+    private static Logger log = LoggerFactory.getLogger(Excel2Csv)
 
     static void testClassPath() {
         try {
