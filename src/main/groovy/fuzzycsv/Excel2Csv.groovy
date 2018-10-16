@@ -1,7 +1,9 @@
 package fuzzycsv
 
 import groovy.transform.CompileStatic
+import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.*
+import org.apache.poi.xssf.streaming.SXSSFWorkbook
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -31,15 +33,23 @@ class Excel2Csv {
                 "    }")
     }
 
-    static Map<String, FuzzyCSVTable> toCsv(File file) {
-        Workbook wb = new XSSFWorkbook(file)
-        return allSheetsToCsv(wb)
+    static Map<String, FuzzyCSVTable> toCsv(File file, int startRow = 0, int endRow = Integer.MAX_VALUE) {
+
+        Workbook wb = null;
+        if (file.name.endsWith(".xls")) {
+            file.withInputStream {
+                wb = new HSSFWorkbook(it)
+            }
+        } else {
+            wb = new XSSFWorkbook(file);
+        }
+        return allSheetsToCsv(wb, startRow, endRow)
 
     }
 
-    static Map<String, FuzzyCSVTable> allSheetsToCsv(Workbook wb) {
+    static Map<String, FuzzyCSVTable> allSheetsToCsv(Workbook wb, int startRow = 0, int endRow = Integer.MAX_VALUE) {
         FormulaEvaluator fe = wb.getCreationHelper().createFormulaEvaluator()
-        Map<String, FuzzyCSVTable> entries = wb.collectEntries { Sheet sheet -> [sheet.sheetName, sheetToCsvImpl(sheet, fe)] }
+        Map<String, FuzzyCSVTable> entries = wb.collectEntries { Sheet sheet -> [sheet.sheetName, sheetToCsvImpl(sheet, fe, startRow, endRow)] }
         return entries
 
 
@@ -61,10 +71,16 @@ class Excel2Csv {
     private
     static FuzzyCSVTable sheetToCsvImpl(Sheet sheet, FormulaEvaluator fe, int startRow = 0, int endRow = Integer.MAX_VALUE) {
         List<List> result = []
+
+        int index = 0
         for (Row row in sheet) {
-            if (row == null) { continue }
+            if (row == null || index++ < startRow) {
+                continue
+            }
             def csvRow = row.collect { Cell cell -> getCellValue(fe, cell) }
             result.add(csvRow)
+
+            if (index > endRow) break
         }
         return FuzzyCSVTable.tbl(result)
     }

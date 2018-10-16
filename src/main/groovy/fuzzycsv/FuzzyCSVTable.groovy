@@ -8,6 +8,7 @@ import de.vandermeer.asciitable.v2.render.WidthLongestWordMinCol
 import de.vandermeer.asciitable.v2.themes.V2_E_TableThemes
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
+import groovy.transform.stc.ClosureParams
 import org.apache.poi.ss.usermodel.Workbook
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -219,6 +220,9 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     static FuzzyCSVTable tbl(List<? extends List> csv = [[]]) {
+        if(csv.isEmpty()){
+            csv = [[]]
+        }
         return new FuzzyCSVTable(csv)
     }
 
@@ -455,7 +459,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         return tbl(csv.clone())
     }
 
-    FuzzyCSVTable filter(Closure func) {
+    FuzzyCSVTable filter( Closure func) {
         filter(fx(func))
     }
 
@@ -642,6 +646,10 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     //todo write unit tests
     String toStringFormatted(boolean wrap = false, int minCol = 10) {
+
+        if(header.isEmpty()){
+            return "_________${System.lineSeparator()}${size()} Rows"
+        }
 
         def r = getRenderer(wrap, minCol)
 
