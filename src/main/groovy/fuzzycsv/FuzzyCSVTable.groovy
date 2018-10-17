@@ -220,7 +220,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     static FuzzyCSVTable tbl(List<? extends List> csv = [[]]) {
-        if(csv.isEmpty()){
+        if(csv?.isEmpty()){
             csv = [[]]
         }
         return new FuzzyCSVTable(csv)
@@ -635,14 +635,6 @@ class FuzzyCSVTable implements Iterable<Record> {
         return FuzzyCSV.toJsonText(csv)
     }
 
-    FuzzyCSVTable writeToExcel(String filePath) {
-        CSVToExcel.exportToExcelFile([data: this], filePath);
-        return this;
-    }
-
-    Workbook toExcel() {
-        return CSVToExcel.exportToExcel([data: this]);
-    }
 
     //todo write unit tests
     String toStringFormatted(boolean wrap = false, int minCol = 10) {

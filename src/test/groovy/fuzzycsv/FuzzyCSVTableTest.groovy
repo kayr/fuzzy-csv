@@ -429,7 +429,7 @@ class FuzzyCSVTableTest {
         assert tbl()[1..3].csv == [[]]
 
         //empty csv
-        assert tbl([])[1..3].csv == []
+        assert tbl([])[1..3].csv == [[]]
 
     }
 
@@ -696,7 +696,7 @@ p\tfema+le\t31'''
         def t = '''[["name","number"],["john",1.1]]'''
         def c = FuzzyCSVTable.fromJsonText(t)
 
-        CSVToExcel.exportToExcelFile(["data": c], "ddsdk.xlsx")
+//        CSVToExcel.exportToExcelFile(["data": c], "ddsdk.xlsx")
     }
 
     //helper to printout array list
