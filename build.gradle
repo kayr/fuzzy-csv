@@ -34,7 +34,7 @@ repositories {
 }
 dependencies {
     compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.3.8'
-    compile group: 'com.github.kayr', name: 'phrase-matcher', version: '0.1.5'
+    compile group: 'com.github.kayr', name: 'phrase-matcher', version: '0.1.6'
     compile group: 'com.opencsv', name: 'opencsv', version: '3.8'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 
