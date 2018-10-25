@@ -6,14 +6,18 @@ import static fuzzycsv.ResolutionStrategy.*
 
 @CompileStatic
 class Record {
+
     List<String> finalHeaders
     List finalRecord
+    private FuzzyCSVTable finalTable
 
     List<String> leftHeaders
     List leftRecord
+    private FuzzyCSVTable leftTable
 
     List<String> rightHeaders
     List rightRecord
+    private FuzzyCSVTable rightTable
 
     boolean useFuzzy = false
     boolean throwExceptionOnNullColumn = true
@@ -56,6 +60,58 @@ class Record {
     //convenience method for final
     def f(String name) {
         return 'final'(name)
+    }
+
+    FuzzyCSVTable getFinalCsv() {
+        return finalTable
+    }
+
+    Record setFinalCsv(List<List> finalCsv) {
+        this.finalTable = new FuzzyCSVTable(finalCsv)
+        return this
+    }
+
+    FuzzyCSVTable getLeftCsv() {
+        return leftTable
+    }
+
+    Record setLeftCsv(List<List> leftCsv) {
+        this.leftTable = new FuzzyCSVTable(leftCsv)
+        return this
+    }
+
+    FuzzyCSVTable getRightCsv() {
+        return rightTable
+    }
+
+    Record setRightCsv(List<List> rightCsv) {
+        this.rightTable = new FuzzyCSVTable(rightCsv)
+        return this
+    }
+
+    Record up() {
+        if (isTop()) {
+            return getRecord(finalHeaders, Collections.emptyList(), finalCsv.csv, 1)
+        } else {
+            return finalTable.row(idx() - 1)
+        }
+    }
+
+    Record down() {
+        def idx = idx()
+        if (isBottom()) {
+            return getRecord(finalHeaders, Collections.emptyList(), finalCsv.csv, idx)
+        } else {
+            return finalTable.row(idx + 1)
+        }
+    }
+
+    boolean isTop() {
+        return idx() == 1
+    }
+
+    boolean isBottom() {
+        return idx() == finalCsv.size()
     }
 
 
@@ -236,16 +292,17 @@ class Record {
     static Record getRecord(List<List> csv, int i) {
         def header = csv[0]
         def record = csv[i]
-        getRecord(header, record, i)
+        getRecord(header, record, csv, i)
     }
 
-    static Record getRecord(List header, List record) {
-        return getRecord(header, record, -1)
+    static Record getRecord(List header, List record, List<List> csv) {
+        return getRecord(header, record, csv, -1)
     }
 
-    static Record getRecord(List header, List record, int idx) {
+    static Record getRecord(List header, List record, List<List> csv, int idx) {
         Record record1 = new Record(header, record)
         record1.recordIdx = idx
+        record1.setFinalCsv(csv)
         return record1
     }
 

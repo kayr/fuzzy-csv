@@ -30,7 +30,7 @@ class TableIterator implements Iterator<Record> {
     @Override
     Record next() {
         def recData = csvIterator.next()
-        def record = Record.getRecord(header, recData, counter)
+        def record = Record.getRecord(header, recData, csv, counter)
         counter++
         return record
     }

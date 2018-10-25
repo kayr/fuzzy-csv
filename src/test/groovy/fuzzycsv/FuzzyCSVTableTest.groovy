@@ -692,6 +692,58 @@ p\tfema+le\t31'''
     }
 
     @Test
+    void testUpNavigation() {
+        def csv = [["name", "age"],
+                   ["kay", 1],
+                   ["sa", 22],
+                   ["kay2", 1],
+                   ["ben", 10]]
+
+        def result = tbl(csv).copy().addColumn(fx("running_sum") { (it.up()?.running_sum ?: 0) + it.age })
+
+
+        assert result.csv == [['name', 'age', 'running_sum'],
+                              ['kay', 1, 1],
+                              ['sa', 22, 23],
+                              ['kay2', 1, 24],
+                              ['ben', 10, 34]]
+
+        result = tbl(csv).copy().filter { it.up().name != 'sa' }.printTable()
+
+        assert result.csv == [['name', 'age'],
+                              ['kay', 1],
+                              ['sa', 22],
+                              ['ben', 10]]
+
+    }
+
+    @Test
+    void testDownNavigation() {
+        def csv = [["name", "age"],
+                   ["kay", 1],
+                   ["sa", 22],
+                   ["kay2", 1],
+                   ["ben", 10]]
+
+        def result = tbl(csv).copy().addColumn(fx("bottom_up") { (it.down().age ?: 0) + it.age })
+
+
+        assert result.csv == [['name', 'age', 'bottom_up'],
+                              ['kay', 1, 23],
+                              ['sa', 22, 23],
+                              ['kay2', 1, 11],
+                              ['ben', 10, 10]]
+
+        result = tbl(csv).copy().filter { it.down().age != 1 }
+
+        assert result.csv == [['name', 'age'],
+                              ['kay', 1],
+                              ["kay2", 1],
+                              ['ben', 10]]
+
+    }
+
+    @Test
     void testWriteToExcel() {
         def t = '''[["name","number"],["john",1.1]]'''
         def c = FuzzyCSVTable.fromJsonText(t)

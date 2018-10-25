@@ -123,7 +123,7 @@ class FuzzyCSV {
         def newCsv = [header]
         csvList.eachWithIndex { List entry, Integer idx ->
             if (idx == 0) return
-            def rec = Record.getRecord(header, entry, idx)
+            def rec = Record.getRecord(header, entry,csvList, idx)
             def value = fx.getValue(rec)
             if (value == true) newCsv.add entry
         }
@@ -192,7 +192,7 @@ class FuzzyCSV {
                 cellValue = column.name
             }
             else {
-                def record = Record.getRecord(header, entry, lstIdx)
+                def record = Record.getRecord(header, entry,csvList, lstIdx).setLeftCsv(sourceCSV)
                 if (sourceCSV) {
                     def oldCSVRecord = sourceCSV[lstIdx]
                     def oldCSVHeader = sourceCSV[0]
@@ -332,7 +332,7 @@ class FuzzyCSV {
                 def csvSize = mRCsv.size()
                 for (int i = 0; i < csvSize; i++) {
                     def rRecord = mRCsv[i]
-                    def rRecObj = Record.getRecord(header, rRecord, i)
+                    def rRecObj = Record.getRecord(header, rRecord,mRCsv, i)
 
                     def rightString = joinColumns.collect { String colName -> rRecObj.val(colName) }.join('-')
 
@@ -365,7 +365,7 @@ class FuzzyCSV {
 
                 r.rightRecord = rightRecord
                 if (mOnFunction.getValue(r)) {
-                    def rec = Record.getRecord(mRCsv[0], rightRecord, rIdx)
+                    def rec = Record.getRecord(mRCsv[0], rightRecord,mRCsv, rIdx)
                     finalValues << rec
                 }
             }
@@ -387,7 +387,7 @@ class FuzzyCSV {
         def matchedRightRecordIndices = new HashSet()
         def finalCSV = [selectColumns]
 
-        Record recObj = new Record(leftHeaders: leftCsv[0], rightHeaders: rightCsv[0], recordIdx: -1)
+        Record recObj = new Record(leftHeaders: leftCsv[0], rightHeaders: rightCsv[0], recordIdx: -1,leftCsv: leftCsv,rightCsv: rightCsv,finalCsv: finalCSV)
 
         if (!findRightRecord) {
             findRightRecord = getDefaultRightRecordFinder()
@@ -777,7 +777,7 @@ class FuzzyCSV {
                 continue
             }
 
-            def rowMap = Record.getRecord(origCsvHeader, record)
+            def rowMap = Record.getRecord(origCsvHeader, record,csv)
             def key = primaryKeys.collect { rowMap."$it" }
 
             //check if this row was already visited
@@ -827,7 +827,7 @@ class FuzzyCSV {
             if (i == 0) {
                 i++; return null
             }
-            Record.getRecord(header, it).toMap()
+            Record.getRecord(header, it,csv).toMap()
         }
     }
 
@@ -907,7 +907,7 @@ class FuzzyCSV {
 
         csv.eachWithIndex { List<Object> record, int rIdx ->
             if (rIdx == 0) return
-            def recordObj = maxParams > 1 ? Record.getRecord(header, record, rIdx) : null
+            def recordObj = maxParams > 1 ? Record.getRecord(header, record,csv, rIdx) : null
             record.eachWithIndex { Object entry, int cIdx ->
 
                 def value
@@ -934,14 +934,14 @@ class FuzzyCSV {
             Closure rt
             switch (s) {
                 case Closure:
-                    rt = { List r -> s.asType(Closure).call(Record.getRecord(header, r)) }
+                    rt = { List r -> s.asType(Closure).call(Record.getRecord(header, r,csv)) }
                     break
                 case RecordFx:
-                    rt = { List r -> s.asType(RecordFx).getValue(Record.getRecord(header, r)) }
+                    rt = { List r -> s.asType(RecordFx).getValue(Record.getRecord(header, r,csv)) }
 
                     break
                 default:
-                    rt = { List r -> Record.getRecord(header, r).getAt(s) }
+                    rt = { List r -> Record.getRecord(header, r,csv).getAt(s) }
             }
             return rt
         }
@@ -961,7 +961,7 @@ class FuzzyCSV {
         if (parameters == 1) {
             use(FxExtensions) {
                 csv = csv.sort(false) { List a ->
-                    def r = Record.getRecord(header, a)
+                    def r = Record.getRecord(header, a,csv)
                     fx.call(r)
                 }
 
@@ -970,8 +970,8 @@ class FuzzyCSV {
         else {
             use(FxExtensions) {
                 csv = csv.sort(false) { List a, List b ->
-                    def r = Record.getRecord(header, a)
-                    def l = Record.getRecord(header, b)
+                    def r = Record.getRecord(header, a,csv)
+                    def l = Record.getRecord(header, b,csv)
 
                     fx.call(r, l)
                 }

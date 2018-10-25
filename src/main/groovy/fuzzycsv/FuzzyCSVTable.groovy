@@ -155,7 +155,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         Map<Object, List<List>> groups = [:]
         csv.eachWithIndex { List entry, int i ->
             if (i == 0) return
-            Record record = Record.getRecord(csvHeader, entry, i)
+            Record record = Record.getRecord(csvHeader, entry,csv, i)
             record.leftHeaders = csvHeader
             record.leftRecord = entry
             def value = groupFx.getValue(record)
