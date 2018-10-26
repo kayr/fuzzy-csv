@@ -24,13 +24,13 @@ class Excel2Csv {
     }
 
     static void printRequiredDependencies() {
-        println("Add to Gradle:\n " +
-                "    compileOnly 'org.apache.poi:poi-ooxml:3.16', {\n" +
-                "        exclude group: 'stax', module: 'stax-api'\n" +
-                "    }\n" +
-                "    compileOnly 'org.apache.poi:ooxml-schemas:1.3', {\n" +
-                "        exclude group: 'stax', module: 'stax-api'\n" +
-                "    }")
+        println("""Add to Gradle:
+     compileOnly 'org.apache.poi:poi-ooxml:3.16', {
+        exclude group: 'stax', module: 'stax-api'
+    }
+    compileOnly 'org.apache.poi:ooxml-schemas:1.3', {
+        exclude group: 'stax', module: 'stax-api'
+    }""")
     }
 
     static Map<String, FuzzyCSVTable> toCsv(File file, int startRow = 0, int endRow = Integer.MAX_VALUE) {

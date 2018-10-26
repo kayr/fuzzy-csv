@@ -803,6 +803,10 @@ class FuzzyCSV {
         return [headers: headers, data: mapTransposed.values()]
     }
 
+    static List<List> pivotToCSV(List<? extends List> list, String columnToBeHeader, String columnNeeded, String[] primaryKeys) {
+        return transposeToCSV(list, columnToBeHeader, columnNeeded, primaryKeys)
+    }
+
     static List<List> transposeToCSV(List<? extends List> list, String columnToBeHeader, String columnNeeded, String[] primaryKeys) {
         Map map = transpose(list, columnToBeHeader, columnNeeded, primaryKeys)
 

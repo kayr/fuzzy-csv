@@ -566,6 +566,21 @@ class FuzzyCSVTest {
     }
 
     @Test
+    void testPivot() {
+        List<List> myCsv = FuzzyCSV.toCSV(map)
+        def actual = FuzzyCSV.pivotToCSV(myCsv, 'name', 'number_passed', 'sex')
+        def expectedMap = [
+                ['sex', 'p2', 'p3', 'p4'],
+                ['male', 2, null, 1],
+                ['female', null, 4, null]
+
+        ]
+        assert expectedMap == actual
+
+        assert tbl(myCsv).pivot('name', 'number_passed', 'sex').csv == expectedMap
+    }
+
+    @Test
     void testTranspose2() {
         def orig = FuzzyCSV.toUnModifiableCSV([
                 ['dis', 'qlt', 'qty', 'acss', 'rel'],

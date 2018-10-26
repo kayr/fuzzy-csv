@@ -339,7 +339,11 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable transpose(String columToBeHeader, String columnForCell, String[] primaryKeys) {
-        tbl(FuzzyCSV.transposeToCSV(csv, columToBeHeader, columnForCell, primaryKeys))
+        pivot(columToBeHeader, columnForCell, primaryKeys)
+    }
+
+    FuzzyCSVTable pivot(String columToBeHeader, String columnForCell, String[] primaryKeys) {
+        tbl(FuzzyCSV.pivotToCSV(csv, columToBeHeader, columnForCell, primaryKeys))
     }
 
     FuzzyCSVTable transpose() {

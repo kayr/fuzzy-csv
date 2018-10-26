@@ -1,4 +1,13 @@
-# FuzzyCSV is a groovy library to help you merge/append/query/ or manipulate CSV files.
+# FuzzyCSV is a simple light weight groovy data processing/shaping library to help you merge/append/query/ or manipulate CSV files or any tabular data.
+
+### Use Cases
+
+FuzzyCSV is a lightweigt groovy data processing library that helps in shaping and cleaning your dataset before its consumed by another service. 
+- Merging multiple csv files into one. i.e if you have two datasets with hundreds of columns and need to merge this data
+- Preparing and shaping sql result sets rendering the data in a report
+- Joining two datasets with using fuzzy matching logic
+- Data cleanup
+- 2nd level aggregations
 
 **Table of Contents**
 
@@ -9,8 +18,10 @@
 - [Dependency](#dependency)
     - [Maven](#maven)
     - [Gradle](#gradle)
+    - [Repositories](#repositories)
 - [Features](#features)
   - [Illustrations:](#illustrations)
+    - [Loading data into fuzzyCSV](#loading-data-into-fuzzycsv)
     - [Merging with a fuzzy match](#merging-with-a-fuzzy-match)
     - [Joins](#joins)
     - [Inner join](#inner-join)
@@ -34,6 +45,8 @@
     - [Transposing](#transposing)
     - [Simplistic Aggregations](#simplistic-aggregations)
     - [Custom Aggregation](#custom-aggregation)
+    - [Unwinding a column](#unwinding-a-column)
+    - [Excel utility classes](#excel-utility-classes)
 - [Note:](#note)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -43,21 +56,23 @@
 
 #### Maven
 ```xml
- <dependency>
-     <groupId>fuzzy-csv</groupId>
-     <artifactId>fuzzycsv</artifactId>
-     <version>${version}</version>
+<dependency>
+     <groupId>com.github.kayr</groupId>
+     <artifactId>fuzzy-csv</artifactId>
+     <version>1.6.17</version>
 </dependency>
 ```
 #### Gradle
-` compile 'fuzzy-csv:fuzzycsv:1.6.14'`
+` compile 'com.github.kayr:fuzzy-csv:1.6.17'`
 
-Repositories
+
+#### Repositories
 ```xml
 <repositories>
-    <repository>
-        <id>kayr.repo.releases</id>
-        <url>http://omnitech.co.ug/m2/releases</url>
+   <repository>
+            <name>JitPack.io</name>
+            <id>JitPack</id>
+            <url>https://jitpack.io</url>
     </repository>
 </repositories>
 ```
@@ -79,6 +94,19 @@ Repositories
 
 Using the following as examples:
 
+#### Loading data into fuzzyCSV
+```groovy
+FuzzyCSVTable.toCSV(sqlResultSet)
+FuzzyCSVTable.toCSV(groovySql,"select * from table")
+FuzzyCSVTable.toCSV(List<Map>)
+FuzzyCSVTable.tbl(List<List>)
+FuzzyCSVTable.fromJsonText('''[["colum"],["value1"]]''' )
+//parse 
+FuzzyCSVTable.parseCsv(String csvString)
+FuzzyCSVTable.parseCsv(Reader csvString)
+//if you wish to customise the parsing you can provide more options
+FuzzyCSVTable.parseCsv(String csvString, separator/* , */, quoteChar /* " */, escapeChar /* \ */)
+```
 #### Merging with a fuzzy match
 1. Set the accuracy threshold to 75%
 2. Merge using code below
@@ -547,6 +575,52 @@ _________
 
 */
 ```
+
+#### Unwinding a column
+This is kind can be used to unwind a coluwn which has nested listes
+
+```groovy
+import static fuzzycsv.FuzzyStaticApi.*
+
+def csv = [
+        ['name',     'AgeList'  ],
+        ['biking',   [21,16]    ],
+        ['swimming', [21,15]    ]
+]
+
+
+tbl(csv).unwind('AgeList')
+        .printTable()
+        
+/*output
+  name       AgeList  
+  ----       -------  
+  biking     21       
+  biking     16       
+  swimming   21       
+  swimming   15       
+_________
+4 Rows
+*/
+
+```
+
+#### Excel utility classes
+To use the excel utilities you have to add the poi dependency to your classpath
+
+If you are using gradle add this.
+```groovy
+     compile 'org.apache.poi:poi-ooxml:3.16', {
+         exclude group: 'stax', module: 'stax-api'
+     }
+     compile 'org.apache.poi:ooxml-schemas:1.3', {
+         exclude group: 'stax', module: 'stax-api'
+     }
+```
+
+After this you can use the Excel utilities to convert excel sheets to and from FuzzyCSVTables.
+
+There are mainly two classes that help with this which include `fuzzycsv.Excel2Csv` and `fuzzycsv.CSVToExcel` 
 
 ## Note:
 This library has not been tested with very large(700,000 records plus) CSV files. So performance might be a concern.
