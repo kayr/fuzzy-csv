@@ -1,5 +1,7 @@
 # FuzzyCSV is a simple light weight groovy data processing library to help you merge/append/query/ or manipulate CSV files or any tabular data.
 
+[![Release](https://jitpack.io/v/kayr/fuzzy-csv.svg)]
+(https://jitpack.io/#kayr/fuzzy-csv)
 ### Use Cases
 
 FuzzyCSV is a lightweigt groovy data processing library that helps in shaping and cleaning your dataset before its consumed by another service. 
@@ -51,17 +53,18 @@ FuzzyCSV is a lightweigt groovy data processing library that helps in shaping an
 
 
 ## Dependency
-
+[![Release](https://jitpack.io/v/kayr/fuzzy-csv.svg)]
+(https://jitpack.io/#kayr/fuzzy-csv)
 #### Maven
 ```xml
 <dependency>
      <groupId>com.github.kayr</groupId>
      <artifactId>fuzzy-csv</artifactId>
-     <version>1.6.17</version>
+     <version>${version}</version>
 </dependency>
 ```
 #### Gradle
-` compile 'com.github.kayr:fuzzy-csv:1.6.17'`
+` compile 'com.github.kayr:fuzzy-csv:${version}'`
 
 
 #### Repositories
