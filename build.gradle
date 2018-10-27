@@ -28,7 +28,7 @@ repositories {
     // mavenRepo name:'Local', urls: "file://" + System.properties['user.home'] + "/.m2/repository"
     mavenLocal()
     mavenCentral()
-
+    maven { url 'https://jitpack.io' }
     maven { url "http://repo.maven.apache.org/maven2" }
 }
 dependencies {
