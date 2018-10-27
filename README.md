@@ -40,9 +40,11 @@ FuzzyCSV is a lightweigt groovy data processing library that helps in shaping an
     - [Filter Records](#filter-records)
     - [Sorting](#sorting)
     - [Ranges](#ranges)
+    - [Up and Down Navigation e.g (for running sum)](#up-and-down-navigation-eg-for-running-sum)
     - [Update values with where clause](#update-values-with-where-clause)
     - [Transform each cell record](#transform-each-cell-record)
     - [Transposing](#transposing)
+    - [Pivoting](#pivoting)
     - [Simplistic Aggregations](#simplistic-aggregations)
     - [Custom Aggregation](#custom-aggregation)
     - [Unwinding a column](#unwinding-a-column)
@@ -543,7 +545,7 @@ _________
  */
 ```
 
-Example 2:
+#### Pivoting
 ```groovy
 
 import static fuzzycsv.FuzzyStaticApi.*
@@ -559,7 +561,7 @@ def csv2 = [
 //name = Column To Become Header
 //age = Column Needed in Cells
 //id and hobby = Columns that uniquely identify a record/row
-tbl(csv2).transpose('name', 'age', 'category', 'hobby')
+tbl(csv2).pivot('name', 'age', 'category', 'hobby')
          .printTable()
 /*output
   category   hobby      alex   peter   charles   barbara  

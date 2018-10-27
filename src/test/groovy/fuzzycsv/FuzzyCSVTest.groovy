@@ -563,6 +563,7 @@ class FuzzyCSVTest {
         assert expectedMap == actual
 
         assert tbl(myCsv).transpose('name', 'number_passed', 'sex').csv == expectedMap
+        assert tbl(myCsv).pivot('name', 'number_passed', 'sex').csv == expectedMap
     }
 
     @Test
