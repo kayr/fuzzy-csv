@@ -29,7 +29,6 @@ repositories {
     mavenLocal()
     mavenCentral()
 
-    maven { url "http://omnitech.co.ug/m2/releases" }
     maven { url "http://repo.maven.apache.org/maven2" }
 }
 dependencies {
