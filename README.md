@@ -419,6 +419,53 @@ _________
  */
 
 ```
+#### Up and Down Navigation e.g (for running sum)
+
+Example showing running sum
+```groovy
+
+def csv = [["name", "age"],
+           ["kay", 1],
+           ["sa", 22],
+           ["kay2", 1],
+           ["ben", 10]]
+
+
+           
+//add running sum of age
+
+tbl(csv).addColumn(fx("running_sum") { (it.up()?.running_sum ?: 0) + it.age }).printTable()
+/*output
+  name   age   running_sum  
+  ----   ---   -----------  
+  kay    1     1            
+  sa     22    23           
+  kay2   1     24           
+  ben    10    34           
+_________
+4 Rows
+*/
+                   
+                   
+```
+
+Or sum bottom value with current value
+
+```groovy
+tbl(csv).addColumn(fx("bottom_up") { (it.down().age ?: 0) + it.age }).printTable()
+
+/*output
+  name   age   bottom_up  
+  ----   ---   ---------  
+  kay    1     23         
+  sa     22    23         
+  kay2   1     11         
+  ben    10    10         
+_________
+4 Rows
+ */
+
+```
 
 #### Update values with where clause
 
