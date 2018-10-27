@@ -1,13 +1,9 @@
-# FuzzyCSV is a simple light weight groovy data processing/shaping library to help you merge/append/query/ or manipulate CSV files or any tabular data.
+# FuzzyCSV is a simple light weight groovy data processing library to help you merge/append/query/ or manipulate CSV files or any tabular data.
 
 ### Use Cases
 
 FuzzyCSV is a lightweigt groovy data processing library that helps in shaping and cleaning your dataset before its consumed by another service. 
-- Merging multiple csv files into one. i.e if you have two datasets with hundreds of columns and need to merge this data
-- Preparing and shaping sql result sets rendering the data in a report
-- Joining two datasets with using fuzzy matching logic
-- Data cleanup
-- 2nd level aggregations
+
 
 **Table of Contents**
 
@@ -91,6 +87,8 @@ FuzzyCSV is a lightweigt groovy data processing library that helps in shaping an
  * Grouping
  * Sum and Count Aggregate functions
  * Lenient arithmetic operations i.e strings are coerced to numbers
+ * Pivoting
+ * and some extra utilities
 
 ### Illustrations:
 
