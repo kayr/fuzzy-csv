@@ -49,7 +49,7 @@ dependencies {
     testCompile group: 'org.bitbucket.mstrobel', name: 'procyon-reflection', version: '0.5.32'
 }
 
-afterReleaseBuild.dependsOn uploadArchives
+//afterReleaseBuild.dependsOn uploadArchives
 
 configurations { deployerJars }
 
