@@ -1,6 +1,7 @@
 package fuzzycsv
 
-import groovy.json.JsonOutput
+
+import groovy.transform.ToString
 import org.junit.Test
 
 import static fuzzycsv.FuzzyStaticApi.*
@@ -740,6 +741,55 @@ p\tfema+le\t31'''
                               ['kay', 1],
                               ["kay2", 1],
                               ['ben', 10]]
+
+    }
+
+    @ToString
+    class StudentStrings {
+        String name
+        String school
+        String age
+        String grade
+    }
+
+    @ToString
+    class StudentInts {
+        String name
+        String school
+        int age
+        int grade
+    }
+
+    @ToString
+    class StudentDate {
+        String name
+        String school
+        Date age
+        int grade
+    }
+
+    @Test
+    void testToPojo() {
+        def data = [
+                ['name', 'school', 'age', 'grade'],
+                ['name1', 'school1', 1, 5.1],
+                ['name2', 'school2', 1, 4.3],
+        ]
+
+        def listOfStudents = FuzzyCSVTable.tbl(data).toPojoList(StudentStrings.class)
+
+        assert listOfStudents.any { it.name == 'name1' && it.school == 'school1' && it.age == "1" && it.grade == "5.1" }
+
+        listOfStudents = FuzzyCSVTable.tbl(data).toPojoList(StudentInts.class)
+
+        assert listOfStudents.any { it.name == 'name1' && it.school == 'school1' && it.age == 1 && it.grade == 5 }
+
+        try {
+            listOfStudents = FuzzyCSVTable.tbl(data).toPojoList(StudentDate.class)
+            fail("Expecting a failure")
+        } catch (ClassCastException x) {
+
+        }
 
     }
 

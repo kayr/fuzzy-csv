@@ -10,6 +10,7 @@ import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import groovy.transform.stc.ClosureParams
 import org.apache.poi.ss.usermodel.Workbook
+import org.codehaus.groovy.runtime.InvokerHelper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -529,6 +530,19 @@ class FuzzyCSVTable implements Iterable<Record> {
     @CompileStatic
     FuzzyCSVTable padAllRecords() {
         return tbl(FuzzyCSV.padAllRecords(csv))
+    }
+
+    @CompileStatic
+    <T> List<T> toPojoList(Class<T> aClass) {
+        iterator().collect { Record r ->
+            def instance = aClass.newInstance()
+
+            r.finalHeaders.each { String h ->
+                InvokerHelper.setProperty(instance, h, r.f(h))
+            }
+
+            return instance
+        }
     }
 
 
