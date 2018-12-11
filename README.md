@@ -33,6 +33,7 @@ FuzzyCSV is a lightweigt groovy data processing library that helps in shaping an
     - [Get Cell Value](#get-cell-value)
     - [Delete Column](#delete-column)
     - [CSV To MapList](#csv-to-maplist)
+    - [Map Table To POJO](#map-table-to-pojo)
     - [Sql To CSV](#sql-to-csv)
     - [Add Column](#add-column)
     - [Filter Records](#filter-records)
@@ -330,7 +331,7 @@ FuzzyCSVTable.toCSV(groovySql,"select * from PERSON")
 FuzzyCSVTable.toCSV(reCSVsultSet)
 ```
 
-#### Add ColumnCSV
+#### Add Column
 ```groovy
 import static fuzzycsv.FuzzyStaticApi.*
 
