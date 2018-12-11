@@ -311,15 +311,26 @@ println tbl(csv2).toMapList()
 [[name:alex, age:21, hobby:biking], [name:peter, age:21, hobby:swimming]]
 */
 ```
+#### Map Table To POJO
+
+```groovy
+import static fuzzycsv.FuzzyCSVTable.tbl
+class Person{
+  Sting name
+  Integer age
+  String hobby
+}
+List<Person> people = tbl(csv2).toPojoList(Person.class)
+```
 
 #### Sql To CSV
 ```groovy
 FuzzyCSVTable.toCSV(groovySql,"select * from PERSON")
 //or
-FuzzyCSVTable.toCSV(resultSet)
+FuzzyCSVTable.toCSV(reCSVsultSet)
 ```
 
-#### Add Column
+#### Add ColumnCSV
 ```groovy
 import static fuzzycsv.FuzzyStaticApi.*
 

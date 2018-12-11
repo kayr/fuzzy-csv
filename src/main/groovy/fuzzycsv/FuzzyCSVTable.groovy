@@ -533,12 +533,21 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     @CompileStatic
-    <T> List<T> toPojoList(Class<T> aClass) {
+    <T> List<T> toPojoListStrict(Class<T> aClass) {
+        return toPojoList(aClass,true)
+    }
+
+    @CompileStatic
+    <T> List<T> toPojoList(Class<T> aClass, boolean strict = false) {
         iterator().collect { Record r ->
             def instance = aClass.newInstance()
 
             r.finalHeaders.each { String h ->
-                InvokerHelper.setProperty(instance, h, r.f(h))
+                if (instance.hasProperty(h)) {
+                    InvokerHelper.setProperty(instance, h, r.f(h))
+                } else if (strict) {
+                    throw new MissingPropertyException(h, aClass)
+                }
             }
 
             return instance

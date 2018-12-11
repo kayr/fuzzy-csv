@@ -768,6 +768,12 @@ p\tfema+le\t31'''
         int grade
     }
 
+    @ToString
+    class StudentMissingPropery {
+        String name
+        String school
+    }
+
     @Test
     void testToPojo() {
         def data = [
@@ -785,11 +791,25 @@ p\tfema+le\t31'''
         assert listOfStudents.any { it.name == 'name1' && it.school == 'school1' && it.age == 1 && it.grade == 5 }
 
         try {
-            listOfStudents = FuzzyCSVTable.tbl(data).toPojoList(StudentDate.class)
+            FuzzyCSVTable.tbl(data).toPojoList(StudentDate.class)
             fail("Expecting a failure")
         } catch (ClassCastException x) {
 
         }
+
+
+        try {
+            FuzzyCSVTable.tbl(data).toPojoListStrict(StudentMissingPropery.class)
+            fail("Expecting a failure")
+        } catch (MissingPropertyException x) {
+
+        }
+
+
+        def list = FuzzyCSVTable.tbl(data).toPojoList(StudentMissingPropery.class)
+
+        assert !list.isEmpty()
+
 
     }
 
