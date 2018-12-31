@@ -2,6 +2,7 @@ package fuzzycsv
 
 import com.github.kayr.phrasematcher.PhraseMatcher
 import groovy.transform.CompileStatic
+import groovy.transform.Memoized
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -12,7 +13,7 @@ class Fuzzy {
     static int findBestPosition(def phrases, String header, double minScore) {
         phrases = phrases as List
         def csvColIdx = findPosition(phrases, header)
-        if (csvColIdx == -1 && FuzzyCSV.ACCURACY_THRESHOLD.get() <= 1.0) {
+        if (csvColIdx == -1 && minScore <= 1.0) {
             csvColIdx = findClosestPosition(phrases, header, minScore)
         }
         csvColIdx

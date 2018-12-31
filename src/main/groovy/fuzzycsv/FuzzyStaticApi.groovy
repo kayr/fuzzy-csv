@@ -2,6 +2,7 @@ package fuzzycsv
 
 import groovy.transform.CompileStatic
 import groovy.transform.stc.ClosureParams
+import groovy.transform.stc.SimpleType
 
 /**
  * helper class consolidating all commonly used methods
@@ -41,11 +42,11 @@ class FuzzyStaticApi {
      Record function with coercion ON -> SLOWER
      * @param function
      */
-    static RecordFx fn(Closure function) {
+    static RecordFx fn(@ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure function) {
         return RecordFx.fn(function)
     }
 
-    static RecordFx fn(String name, Closure function) {
+    static RecordFx fn(String name, @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure function) {
         return RecordFx.fn(name, function)
     }
 
@@ -53,11 +54,11 @@ class FuzzyStaticApi {
      * Record function with coercion OFF -> FASTER
      * @param function
      */
-    static RecordFx fx(Closure function) {
+    static RecordFx fx(@ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure function) {
         return RecordFx.fx(function)
     }
 
-    static RecordFx fx(String name,  Closure function) {
+    static RecordFx fx(String name, @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure function) {
         return RecordFx.fx(name, function)
     }
 

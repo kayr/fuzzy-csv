@@ -662,7 +662,6 @@ p\tfema+le\t31'''
             set {
                 it.set('age', 2000)
             }
-            withNoFilter()
         }
         assert result.csv == [['name', 'age'], ['kay', 2000], ['sa', 2000], ['ben', 2000]]
     }

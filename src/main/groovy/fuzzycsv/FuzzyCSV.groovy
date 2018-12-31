@@ -35,7 +35,6 @@ class FuzzyCSV {
         }
     }
 
-    static boolean trace = false
 
     @CompileStatic
     static List<String[]> parseCsv(String csv,

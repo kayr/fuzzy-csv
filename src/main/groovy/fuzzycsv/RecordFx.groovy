@@ -1,6 +1,8 @@
 package fuzzycsv
 
 import groovy.transform.CompileStatic
+import groovy.transform.stc.ClosureParams
+import groovy.transform.stc.SimpleType
 
 class RecordFx<RT> {
 
@@ -13,7 +15,7 @@ class RecordFx<RT> {
 
     protected RecordFx() {}
 
-    RecordFx(String name, Closure c) {
+    RecordFx(String name, @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure c) {
         this.name = name
         this.c = c
     }
@@ -45,7 +47,7 @@ class RecordFx<RT> {
      * use @fn
      */
     @Deprecated
-    static RecordFx get(String name, Closure c) {
+    static RecordFx get(String name, @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure c) {
         return fx(name, c)
     }
 
@@ -55,12 +57,12 @@ class RecordFx<RT> {
      * @return
      */
     @CompileStatic
-    static RecordFx fn(Closure function) {
+    static RecordFx fn(@ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure function) {
         fn(RecordFx.class.getSimpleName(), function)
     }
 
     @CompileStatic
-    static RecordFx fn(String name, Closure function) {
+    static RecordFx fn(String name, @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure function) {
         return new RecordFx(name, function)
     }
 
@@ -70,12 +72,12 @@ class RecordFx<RT> {
      * @return
      */
     @CompileStatic
-    static RecordFx fx(Closure function) {
+    static RecordFx fx(@ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure function) {
         fx(RecordFx.class.getSimpleName(), function)
     }
 
     @CompileStatic
-    static RecordFx fx(String name, Closure function) {
+    static RecordFx fx(String name, @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure function) {
         def r = new RecordFx(name, function)
         r.useCoercion = false
         return r
@@ -83,7 +85,7 @@ class RecordFx<RT> {
 
     @CompileStatic
     RecordFx withSourceFirst() {
-        resolutionStrategy = ResolutionStrategy.SOURCE_FIRST
+        resolutionStrategy = ResolutionStrategy.LEFT_FIRST
         return this
     }
 

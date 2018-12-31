@@ -143,7 +143,7 @@ class Record {
         def ourResolveStrategy = resolutionStrategy
         if (name?.startsWith('@')) {
             name = name.replaceFirst('@', '')
-            ourResolveStrategy = SOURCE_FIRST
+            ourResolveStrategy = LEFT_FIRST
         }
 
 
@@ -167,7 +167,7 @@ class Record {
             case RIGHT_FIRST:
                 value = tryRightLeftFinal(name)
                 break
-            default:
+            default://covers also derived
                 value = tryFinalRightLeft(name)
         }
 
