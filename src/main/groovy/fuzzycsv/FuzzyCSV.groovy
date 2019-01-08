@@ -238,7 +238,7 @@ class FuzzyCSV {
 
     @CompileStatic
     static void writeJson(List<? extends List> csv, String file) {
-        writeToFile(csv, new File(file))
+        writeJson(csv, new File(file))
     }
 
     @CompileStatic
