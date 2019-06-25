@@ -325,7 +325,13 @@ class Record {
     }
 
 
-    def val(def col) { propertyMissing(col as String) }
+    def val(def col) {
+        if (col instanceof RecordFx) {
+            col.getValue(this)
+        } else {
+            propertyMissing(col as String)
+        }
+    }
 
     //todo add a try finally block
     def withSilentMode(Closure c) {

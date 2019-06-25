@@ -2,11 +2,22 @@ package fuzzycsv
 
 
 import groovy.transform.ToString
+import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Test
 
 import static fuzzycsv.FuzzyStaticApi.*
 
 class FuzzyCSVTableTest {
+
+    @BeforeClass
+
+    static void inspector() {
+        FuzzyCSVTable.metaClass.insp = {
+            insp(delegate)
+            return delegate
+        }
+    }
 
     static def csv2 = FuzzyCSV.toUnModifiableCSV([
             ['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
@@ -362,6 +373,54 @@ class FuzzyCSVTableTest {
                                ['23', 'kayr', 'm'],
                                ['5d', 'ron', 'f'],
                                ['45', 'pin', 'm']]
+    }
+
+    @Test
+    void testDeDupingSpecificColumns() {
+        def csvText = '''id,name,sex
+                        |25,kayr,m
+                        |23,kayr,m
+                        |24,kayr,m
+                        |24,kayr,m
+                        |24,kayr,f
+                        |6d,ron,f
+                        |5d,ron,f
+                        |45,pin,m'''.stripMargin()
+
+        def csv = FuzzyCSVTable.parseCsv(csvText)
+
+
+        def deDuped = csv.distinctBy('name')
+        assert deDuped.csv == [['id', 'name', 'sex'],
+                               ['25', 'kayr', 'm'],
+                               ['6d', 'ron', 'f'],
+                               ['45', 'pin', 'm']]
+
+        deDuped = csv.distinctBy('name', 'sex')
+        assert deDuped.csv == [['id', 'name', 'sex'],
+                               ['25', 'kayr', 'm'],
+                               ['24', 'kayr', 'f'],
+                               ['6d', 'ron', 'f'],
+                               ['45', 'pin', 'm']]
+
+        deDuped = csv.distinctBy('name', 'sex', 'id')
+        assert deDuped.csv == [['id', 'name', 'sex'],
+                               ['25', 'kayr', 'm'],
+                               ['23', 'kayr', 'm'],
+                               ['24', 'kayr', 'm'],
+                               ['24', 'kayr', 'f'],
+                               ['6d', 'ron', 'f'],
+                               ['5d', 'ron', 'f'],
+                               ['45', 'pin', 'm']]
+
+        deDuped = csv.distinctBy(fx { [it.name, it.sex] })
+        assert deDuped.csv ==  [['id', 'name', 'sex'],
+                                ['25', 'kayr', 'm'],
+                                ['24', 'kayr', 'f'],
+                                ['6d', 'ron', 'f'],
+                                ['45', 'pin', 'm']]
+
+
     }
 
     @Test

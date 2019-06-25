@@ -107,6 +107,12 @@ class FuzzyCSVTable implements Iterable<Record> {
         return autoAggregate(header as Object[])
     }
 
+    FuzzyCSVTable distinctBy(Object... columns) {
+        def allHeaders = header as List
+        def groupFx = fx { r -> columns.collect { c -> r.val(c) } }
+        return aggregate(allHeaders, groupFx)
+    }
+
     FuzzyCSVTable aggregate(List columns, RecordFx groupFx) {
 
 
