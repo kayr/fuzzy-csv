@@ -527,6 +527,29 @@ class FuzzyCSVTable implements Iterable<Record> {
         return this
     }
 
+
+    FuzzyCSVTable addRecordArr(Object... item) {
+        if (!item) return appendEmptyRecord()
+
+        addRecord(item as List)
+        return this
+    }
+
+    FuzzyCSVTable addRecordMap(Map item) {
+        return this << toCSV([item])
+    }
+
+    FuzzyCSVTable addRecord(List item) {
+        addRecords(item)
+    }
+
+    FuzzyCSVTable addRecords(List... item) {
+        for (it in item) {
+            csv.add(it as List)
+        }
+        return this
+    }
+
     String toCsvString() {
         return FuzzyCSV.csvToString(csv)
     }

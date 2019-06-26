@@ -2,7 +2,6 @@ package fuzzycsv
 
 
 import groovy.transform.ToString
-import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 
@@ -877,6 +876,30 @@ p\tfema+le\t31'''
         def c = FuzzyCSVTable.fromJsonText(t)
 
 //        CSVToExcel.exportToExcelFile(["data": c], "ddsdk.xlsx")
+    }
+
+    @Test
+    void tesAppending() {
+        def t = '''[["name","number"],["john",1.1]]'''
+
+        def c = FuzzyCSVTable.fromJsonText(t)
+
+        def result = c.addRecordArr("JB", 455)
+                .addRecord(["JLis", 767])
+                .addRecordMap([name: "MName", number: 90])
+                .addRecordArr()
+                .addRecordMap([name: "MNameEmp"])
+
+
+        assert result.csv == [['name', 'number'],
+                              ['john', 1.1],
+                              ['JB', 455],
+                              ['JLis', 767],
+                              ['MName', 90],
+                              [null, null],
+                              ['MNameEmp', null]]
+
+
     }
 
     //helper to printout array list
