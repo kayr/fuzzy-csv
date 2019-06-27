@@ -902,6 +902,20 @@ p\tfema+le\t31'''
 
     }
 
+    @Test
+    void testTableWithHeader() {
+        def header = FuzzyCSVTable.withHeader(['dsd', 'sdsd'])
+
+        def header1 = FuzzyCSVTable.withHeader('dsd', 'sdsd')
+
+        def result = [['dsd', 'sdsd']]
+
+        assert header.csv == result
+        assert header1.csv == result
+
+
+    }
+
     //helper to printout array list
     static def insp(FuzzyCSVTable t) {
         println(t.csv.inspect().replaceAll(/\], \[/, '],\n['))

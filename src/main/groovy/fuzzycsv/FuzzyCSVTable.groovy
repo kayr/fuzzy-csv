@@ -235,6 +235,14 @@ class FuzzyCSVTable implements Iterable<Record> {
         return new FuzzyCSVTable(csv)
     }
 
+    static FuzzyCSVTable withHeader(String... headers) {
+        return withHeader(headers as List)
+    }
+
+    static FuzzyCSVTable withHeader(List<String> headers) {
+        return tbl([headers])
+    }
+
     FuzzyCSVTable join(FuzzyCSVTable tbl, String[] joinColumns) {
         return join(tbl.csv, joinColumns)
     }
@@ -476,12 +484,14 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable copy() {
+        FuzzyCSV.toListOfLists()
         tbl(FuzzyCSV.copy(csv))
     }
 
     FuzzyCSVTable clone() {
         return tbl(csv.clone())
     }
+
 
     FuzzyCSVTable filter(@ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func) {
         filter(fx(func))
