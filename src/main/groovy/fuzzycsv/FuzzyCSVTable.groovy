@@ -484,7 +484,6 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable copy() {
-        FuzzyCSV.toListOfLists()
         tbl(FuzzyCSV.copy(csv))
     }
 
