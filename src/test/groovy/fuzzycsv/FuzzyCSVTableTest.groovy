@@ -137,7 +137,7 @@ class FuzzyCSVTableTest {
     @Test
     void testAutoAggregateGrouping() {
         def results = tbl(Data.groupingData)
-                .autoAggregate('sub_county',
+                .summarize('sub_county',
                 sum('ps_total_score').az('sum'),
                 sum('tap_total_score').az('tap_sum'))
 

@@ -1,11 +1,12 @@
 package fuzzycsv
 
 import com.opencsv.CSVParser
-import de.vandermeer.asciitable.v2.V2_AsciiTable
-import de.vandermeer.asciitable.v2.render.V2_AsciiTableRenderer
-import de.vandermeer.asciitable.v2.render.WidthLongestLine
-import de.vandermeer.asciitable.v2.render.WidthLongestWordMinCol
-import de.vandermeer.asciitable.v2.themes.V2_E_TableThemes
+import de.vandermeer.asciitable.AT_Renderer
+import de.vandermeer.asciitable.AsciiTable
+import de.vandermeer.asciitable.CWC_LongestLine
+import de.vandermeer.asciitable.CWC_LongestWordMin
+import de.vandermeer.asciithemes.TA_GridThemes
+import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import groovy.transform.stc.ClosureParams
@@ -23,10 +24,16 @@ class FuzzyCSVTable implements Iterable<Record> {
     private static Logger log = LoggerFactory.getLogger(FuzzyCSVTable)
 
     final List<List> csv
+    String tableName
 
     FuzzyCSVTable(List<? extends List> csv) {
         this.csv = csv
     }
+
+    FuzzyCSVTable name(String name) {
+        return tbl(name, csv)
+    }
+
 
     FuzzyCSVTable normalizeHeaders(String prefix = 'C_', String postFix = '_') {
         def visited = new HashSet()
@@ -229,10 +236,16 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     static FuzzyCSVTable tbl(List<? extends List> csv = [[]]) {
+        tbl(null, csv)
+    }
+
+    static FuzzyCSVTable tbl(String name, List<? extends List> csv = [[]]) {
         if(csv?.isEmpty()){
             csv = [[]]
         }
-        return new FuzzyCSVTable(csv)
+        def table = new FuzzyCSVTable(csv)
+        table.tableName = name
+        return table
     }
 
     static FuzzyCSVTable withHeader(String... headers) {
@@ -724,7 +737,16 @@ class FuzzyCSVTable implements Iterable<Record> {
 
         def r = getRenderer(wrap, minCol)
 
-        def t = new V2_AsciiTable()
+        def t = new AsciiTable()
+
+        t.getContext().setGridTheme(TA_GridThemes.HORIZONTAL)
+
+        if (tableName) {
+            def nameRow = header.collect { null }
+            nameRow[-1] = tableName
+            t.addRow(nameRow).setTextAlignment(TextAlignment.CENTER)
+            t.addRule()
+        }
 
         // add header
         t.addRow(header as Object[])
@@ -738,9 +760,10 @@ class FuzzyCSVTable implements Iterable<Record> {
         } else {
             (1..csv.size() - 1).each { t.addRow(csv[it].collect { it == null || it == '' ? '-' : it } as Object[]) }
         }
-
+        t.addRule()
+        t.setRenderer(r)
         //render
-        r.render(t).toStrBuilder().append("_________${System.lineSeparator()}${size()} Rows")
+        "${t.render()}${System.lineSeparator()}${size()} Rows"
     }
 
     FuzzyCSVTable printTable(PrintStream out = System.out, boolean wrap = false, int minCol = 10) {
@@ -749,11 +772,9 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     @SuppressWarnings("GrMethodMayBeStatic")
-    protected V2_AsciiTableRenderer getRenderer(boolean wrap, int minCol) {
-        def rend = new V2_AsciiTableRenderer()
-                .setTheme(V2_E_TableThemes.ASC7_LATEX_STYLE_STRONG.get())
-                .setWidth(wrap ? new WidthLongestWordMinCol(minCol) : new WidthLongestLine())
-        return rend
+    protected AT_Renderer getRenderer(boolean wrap, int minCol) {
+        return AT_Renderer.create()
+                .setCWC(wrap ? new CWC_LongestWordMin(minCol) : new CWC_LongestLine())
     }
 
     @Override
