@@ -727,7 +727,12 @@ class FuzzyCSVTable implements Iterable<Record> {
         return FuzzyCSV.toJsonText(csv)
     }
 
+    private boolean withFooter = true
 
+    FuzzyCSVTable withFormatFooter(boolean val) {
+        this.withFooter = val
+        return this
+    }
     //todo write unit tests
     String toStringFormatted(boolean wrap = false, int minCol = 10) {
 
@@ -760,10 +765,15 @@ class FuzzyCSVTable implements Iterable<Record> {
         } else {
             (1..csv.size() - 1).each { t.addRow(csv[it].collect { it == null || it == '' ? '-' : it } as Object[]) }
         }
-        t.addRule()
+
         t.setRenderer(r)
         //render
-        "${t.render()}${System.lineSeparator()}${size()} Rows"
+        if (withFooter) {
+            t.addRule()
+            return "${t.render()}${System.lineSeparator()}${size()} Rows"
+        } else {
+            return t.render()
+        }
     }
 
     FuzzyCSVTable printTable(PrintStream out = System.out, boolean wrap = false, int minCol = 10) {

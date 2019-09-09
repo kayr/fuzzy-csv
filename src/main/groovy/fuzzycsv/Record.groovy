@@ -311,6 +311,7 @@ class Record {
 
         assertHeaderNameExists(name)
 
+        //todo bug casting to string
         def value = propertyMissing(name)?.toString()?.trim()
         if (required && value == null) {
             if (defaultValue) return defaultValue
