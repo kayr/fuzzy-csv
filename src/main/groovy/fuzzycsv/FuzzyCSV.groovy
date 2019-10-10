@@ -256,9 +256,8 @@ class FuzzyCSV {
         return JsonOutput.toJson(csv)
     }
 
-    @CompileStatic
-    static List<List> fromJsonText(String text) {
-        return toListofList(new JsonSlurper().parseText(text))
+    static Object fromJsonText(String text) {
+        new JsonSlurper().parseText(text)
     }
 
     private static List<List> toListofList(Object object) {
@@ -849,6 +848,27 @@ class FuzzyCSV {
             }
             csv << row
         }
+        return csv
+    }
+
+    static List<List> toCSVLenient(List<? extends Map> list) {
+
+        def indexMap = new HashMap()
+        def indexTracker = 0
+
+        List<List> csv = new ArrayList(list.size())
+        for (mapRow in list) {
+            def row =  new ArrayList(indexTracker)
+            for (it in mapRow) {
+                if (!indexMap.containsKey(it.key)) {
+                    indexMap[it.key] = indexTracker++
+                }
+                row[indexMap[it.key]] = it.value
+            }
+            csv << row as List
+        }
+        csv.add(0,indexMap.keySet().toList())
+
         return csv
     }
 

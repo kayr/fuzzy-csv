@@ -925,7 +925,7 @@ p\tfema+le\t31'''
 
 
         def formatted = table.addRecordArr(FuzzyCSVTable.tbl([['a', 'b'], [1, 2]]), "\n\n\n\nskdksd\n\tfkkfdjf", "\n\n\n\nskdksd\n\tfkkfdjf")
-                .allToStringNoTabs()
+                .restructure()
                 .toStringFormatted()
 
 
@@ -967,6 +967,52 @@ p\tfema+le\t31'''
 ║ ╚═══╧═════╝ │ skdksd     │ skdksd          ║
 ║             │    fkkfdjf │    fkkfdjf      ║
 ╚═════════════╧════════════╧═════════════════╝'''.trim()
+    }
+
+    @Test
+    void testFromJson() {
+
+        def json = '{\n  "name": "kate",\n  "sho": "muj",\n  "list": [\n    "dsd",\n    "sdsd"\n  ],\n  "csv": [\n    [\n      "dsd",\n      "sdsd",\n      null\n    ],\n    [\n      "sdsd",\n      1\n    ],\n    [\n      "sd"\n    ]\n  ],\n  "full name": {\n    "fname": "fu",\n    "lname": "last"\n  },\n  "data": [\n    {\n      "sdsd": "r1c1",\n      "sdsdd": "r1c2"\n    },\n    {\n      "sd": "r2c1"\n    }\n  ]\n}'
+
+        def formatted = FuzzyCSVTable.fromJsonText(json).restructure().printTable().toStringFormatted()
+
+
+        assert formatted.trim() == '''
+╔═══════════╤═════════════════════════╗
+║ key       │ value                   ║
+╠═══════════╪═════════════════════════╣
+║ csv       │ ╔══════╤══════╤═══╗     ║
+║           │ ║ dsd  │ sdsd │ - ║     ║
+║           │ ╠══════╪══════╪═══╣     ║
+║           │ ║ sdsd │ 1    │ - ║     ║
+║           │ ╟──────┼──────┼───╢     ║
+║           │ ║ sd   │ -    │ - ║     ║
+║           │ ╚══════╧══════╧═══╝     ║
+╟───────────┼─────────────────────────╢
+║ data      │ ╔═══════╤══════╤══════╗ ║
+║           │ ║ sdsdd │ sd   │ sdsd ║ ║
+║           │ ╠═══════╪══════╪══════╣ ║
+║           │ ║ r1c1  │ r1c2 │ -    ║ ║
+║           │ ╟───────┼──────┼──────╢ ║
+║           │ ║ -     │ -    │ r2c1 ║ ║
+║           │ ╚═══════╧══════╧══════╝ ║
+╟───────────┼─────────────────────────╢
+║ full name │ ╔═══════╤═══════╗       ║
+║           │ ║ key   │ value ║       ║
+║           │ ╠═══════╪═══════╣       ║
+║           │ ║ fname │ fu    ║       ║
+║           │ ╟───────┼───────╢       ║
+║           │ ║ lname │ last  ║       ║
+║           │ ╚═══════╧═══════╝       ║
+╟───────────┼─────────────────────────╢
+║ list      │ [dsd, sdsd]             ║
+╟───────────┼─────────────────────────╢
+║ name      │ kate                    ║
+╟───────────┼─────────────────────────╢
+║ sho       │ muj                     ║
+╚═══════════╧═════════════════════════╝
+'''.trim()
+
     }
 
 

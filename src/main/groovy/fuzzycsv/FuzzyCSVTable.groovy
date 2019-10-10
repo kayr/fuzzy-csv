@@ -643,6 +643,10 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(FuzzyCSV.toCSV(listOfMaps, cols))
     }
 
+    static FuzzyCSVTable fromMap(List<? extends Map> listOfMaps) {
+        tbl(FuzzyCSV.toCSVLenient(listOfMaps))
+    }
+
     static FuzzyCSVTable toCSV(Sql sql, String query) {
         tbl(FuzzyCSV.toCSV(sql, query))
     }
@@ -753,26 +757,29 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    FuzzyCSVTable allToStringNoTabs() {
+    FuzzyCSVTable restructure() {
         def table = copy()
         table.header.each { table.renameHeader(it, it?.toString()?.replace('\t', '   ')) }
         return table.transform {
 
             if (it instanceof FuzzyCSVTable)
-                return it.allToStringNoTabs()
+                return it.restructure()
 
             if (it instanceof Iterable && !(it instanceof Collection)) {
                 it = it.collect()
             }
 
             if (it instanceof Collection) {
-                if (it && it[0] instanceof Collection) {
-                    return tbl(it.collect()).allToStringNoTabs()
+                if (it) {
+                    if (it[0] instanceof Collection)
+                        return tbl(it.collect()).padAllRecords().restructure()
+                    if (it[0] instanceof Map)
+                        return fromMap(it).padAllRecords().restructure()
                 }
             }
 
             if (it instanceof Map) {
-                return tbl(it).allToStringNoTabs()
+                return tbl(it).restructure()
             }
 
 
