@@ -125,7 +125,7 @@ class FuzzyCSVTest {
     @Test
     void test_TableShouldMergeNullCsv() {
         def a = tbl([['a'], ['r1']])
-        def b = tbl(null)
+        def b = tbl((List)null)
 
         assert a.union(b).csv == [['a'],
                                   ['r1']]
