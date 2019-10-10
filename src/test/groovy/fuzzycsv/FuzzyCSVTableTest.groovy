@@ -916,6 +916,60 @@ p\tfema+le\t31'''
 
     }
 
+    @Test
+    void testPrinting() {
+        def table = FuzzyCSVTable.withHeader("dsd\nfgfg", "dsssd\n\n\n", "\n\n\n\nskdksd\n\tfkkfdjf")
+                .addRecordArr("dsdsd", "\n\n\n\nskdksd\n\tfkkfdjf", "\n\n\n\nskdksd\n\tfkkfdjf")
+                .addRecordArr("dsdsd", "\n\n\n\nskdksd\n\tfkkfdjf", [f: 'sdm', fd: 'kdd'])
+                .addRecordArr("dsdsd", "\n\n\n\nskdksd\n\tfkkfdjf", [['sdsd']])
+
+
+        def formatted = table.addRecordArr(FuzzyCSVTable.tbl([['a', 'b'], [1, 2]]), "\n\n\n\nskdksd\n\tfkkfdjf", "\n\n\n\nskdksd\n\tfkkfdjf")
+                .allToStringNoTabs()
+                .toStringFormatted()
+
+
+        assert formatted.trim() == '''
+╔═════════════╤════════════╤═════════════════╗
+║ dsd         │ dsssd      │                 ║
+║ fgfg        │            │                 ║
+║             │            │                 ║
+║             │            │                 ║
+║             │            │ skdksd          ║
+║             │            │    fkkfdjf      ║
+╠═════════════╪════════════╪═════════════════╣
+║ dsdsd       │            │                 ║
+║             │            │                 ║
+║             │            │                 ║
+║             │            │                 ║
+║             │ skdksd     │ skdksd          ║
+║             │    fkkfdjf │    fkkfdjf      ║
+╟─────────────┼────────────┼─────────────────╢
+║ dsdsd       │            │ ╔═════╤═══════╗ ║
+║             │            │ ║ key │ value ║ ║
+║             │            │ ╠═════╪═══════╣ ║
+║             │            │ ║ f   │ sdm   ║ ║
+║             │ skdksd     │ ╟─────┼───────╢ ║
+║             │    fkkfdjf │ ║ fd  │ kdd   ║ ║
+║             │            │ ╚═════╧═══════╝ ║
+╟─────────────┼────────────┼─────────────────╢
+║ dsdsd       │            │ ╔═════════╗     ║
+║             │            │ ║ sdsd    ║     ║
+║             │            │ ╠═════════╣     ║
+║             │            │ ║ (empty) ║     ║
+║             │ skdksd     │ ╚═════════╝     ║
+║             │    fkkfdjf │                 ║
+╟─────────────┼────────────┼─────────────────╢
+║ ╔═══╤═════╗ │            │                 ║
+║ ║ a │ b   ║ │            │                 ║
+║ ╠═══╪═════╣ │            │                 ║
+║ ║ 1 │ 2   ║ │            │                 ║
+║ ╚═══╧═════╝ │ skdksd     │ skdksd          ║
+║             │    fkkfdjf │    fkkfdjf      ║
+╚═════════════╧════════════╧═════════════════╝'''.trim()
+    }
+
+
     //helper to printout array list
     static def insp(FuzzyCSVTable t) {
         println(t.csv.inspect().replaceAll(/\], \[/, '],\n['))

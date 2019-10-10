@@ -1,12 +1,7 @@
 package fuzzycsv
 
+import com.jakewharton.fliptables.FlipTable
 import com.opencsv.CSVParser
-import de.vandermeer.asciitable.AT_Renderer
-import de.vandermeer.asciitable.AsciiTable
-import de.vandermeer.asciitable.CWC_LongestLine
-import de.vandermeer.asciitable.CWC_LongestWordMin
-import de.vandermeer.asciithemes.TA_GridThemes
-import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import groovy.transform.stc.ClosureParams
@@ -237,6 +232,16 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     static FuzzyCSVTable tbl(List<? extends List> csv = [[]]) {
         tbl(null, csv)
+    }
+
+    static FuzzyCSVTable tbl(Map<Object, Object> kv) {
+        List<List<Object>> head = [["key", "value"]]
+        kv.each { k, v -> head.add([k, v]) }
+        return tbl(head)
+    }
+
+    static FuzzyCSVTable fromPojo(Object kv) {
+        return tbl(kv.properties)
     }
 
     static FuzzyCSVTable tbl(String name, List<? extends List> csv = [[]]) {
@@ -727,65 +732,60 @@ class FuzzyCSVTable implements Iterable<Record> {
         return FuzzyCSV.toJsonText(csv)
     }
 
-    private boolean withFooter = true
-
-    FuzzyCSVTable withFormatFooter(boolean val) {
-        this.withFooter = val
-        return this
-    }
     //todo write unit tests
     String toStringFormatted(boolean wrap = false, int minCol = 10) {
 
-        if(header.isEmpty()){
-            return "_________${System.lineSeparator()}${size()} Rows"
-        }
+        def array = toArray()
 
-        def r = getRenderer(wrap, minCol)
+        String[][] object = isEmpty() ? [] : array[1..-1] as String[][]
 
-        def t = new AsciiTable()
+        return FlipTable.of(array[0], object)
+    }
 
-        t.getContext().setGridTheme(TA_GridThemes.HORIZONTAL)
-
-        if (tableName) {
-            def nameRow = header.collect { null }
-            nameRow[-1] = tableName
-            t.addRow(nameRow).setTextAlignment(TextAlignment.CENTER)
-            t.addRule()
-        }
-
-        // add header
-        t.addRow(header as Object[])
-
-        //add header underline
-        t.addRow(header.collect { "-".multiply("$it".size()) } as Object[])
-
-        //add body
-        if (isEmpty()) {
-            t.addRow(header.collect { '-' } as Object[])
-        } else {
-            (1..csv.size() - 1).each { t.addRow(csv[it].collect { it == null || it == '' ? '-' : it } as Object[]) }
-        }
-
-        t.setRenderer(r)
-        //render
-        if (withFooter) {
-            t.addRule()
-            return "${t.render()}${System.lineSeparator()}${size()} Rows"
-        } else {
-            return t.render()
+    private String[][] toArray() {
+        return csv.collect { l ->
+            l.collect { d ->
+                if (d == null || d == '') return '-'
+                if (d instanceof FuzzyCSVTable) return d.toStringFormatted()
+                return d.toString()
+            }
         }
     }
+
+
+    FuzzyCSVTable allToStringNoTabs() {
+        def table = copy()
+        table.header.each { table.renameHeader(it, it?.toString()?.replace('\t', '   ')) }
+        return table.transform {
+
+            if (it instanceof FuzzyCSVTable)
+                return it.allToStringNoTabs()
+
+            if (it instanceof Iterable && !(it instanceof Collection)) {
+                it = it.collect()
+            }
+
+            if (it instanceof Collection) {
+                if (it && it[0] instanceof Collection) {
+                    return tbl(it.collect()).allToStringNoTabs()
+                }
+            }
+
+            if (it instanceof Map) {
+                return tbl(it).allToStringNoTabs()
+            }
+
+
+            return it?.toString()?.replace('\t', '   ')
+        }
+    }
+
 
     FuzzyCSVTable printTable(PrintStream out = System.out, boolean wrap = false, int minCol = 10) {
         out.println(toStringFormatted(wrap, minCol))
         return this
     }
 
-    @SuppressWarnings("GrMethodMayBeStatic")
-    protected AT_Renderer getRenderer(boolean wrap, int minCol) {
-        return AT_Renderer.create()
-                .setCWC(wrap ? new CWC_LongestWordMin(minCol) : new CWC_LongestLine())
-    }
 
     @Override
     Iterator<Record> iterator() {

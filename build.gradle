@@ -37,7 +37,7 @@ dependencies {
     compile group: 'com.opencsv', name: 'opencsv', version: '3.8'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 
-    compile 'de.vandermeer:asciitable:0.3.2'
+    compile 'com.jakewharton.fliptables:fliptables:1.0.2'
     compileOnly 'org.apache.poi:poi-ooxml:3.16', {
         exclude group: 'stax', module: 'stax-api'
     }
