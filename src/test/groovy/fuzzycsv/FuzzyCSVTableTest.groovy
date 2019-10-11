@@ -887,19 +887,7 @@ p\tfema+le\t31'''
 
         def table = c.toStringFormatted()
 
-        assert table.trim() == '''
-╔═══════╤═══════════════════════════════╗
-║ key   │ value                         ║
-╠═══════╪═══════════════════════════════╣
-║ data  │ [[name, number], [john, 1.1]] ║
-╟───────┼───────────────────────────────╢
-║ lname │ lasty                         ║
-╟───────┼───────────────────────────────╢
-║ name  │ joe                           ║
-╚═══════╧═══════════════════════════════╝'''.trim()
-        def formatted = c.asListGrid().toStringFormatted()
-
-        assert formatted.trim() == '''
+        Assert.assertEquals table.trim() , '''
 ╔═══════╤═══════════════════╗
 ║ key   │ value             ║
 ╠═══════╪═══════════════════╣
@@ -912,8 +900,8 @@ p\tfema+le\t31'''
 ║ lname │ lasty             ║
 ╟───────┼───────────────────╢
 ║ name  │ joe               ║
-╚═══════╧═══════════════════╝
-'''.trim()
+╚═══════╧═══════════════════╝'''.trim()
+
     }
 
     @Test
