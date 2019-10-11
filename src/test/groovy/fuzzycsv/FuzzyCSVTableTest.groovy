@@ -950,7 +950,7 @@ p\tfema+le\t31'''
                 .addRecordArr("dsdsd", "\n\n\n\nskdksd\n\tfkkfdjf", [['sdsd']])
 
 
-        def formatted = table.addRecordArr(FuzzyCSVTable.tbl([['a', 'b'], [1, 2]]), "\n\n\n\nskdksd\n\tfkkfdjf", "\n\n\n\nskdksd\n\tfkkfdjf")
+        def formatted = table.addRecordArr([['a', 'b'], [1, 2]], "\n\n\n\nskdksd\n\tfkkfdjf", "\n\n\n\nskdksd\n\tfkkfdjf")
                 .asSimpleGrid()
                 .toStringFormatted()
 
@@ -998,12 +998,12 @@ p\tfema+le\t31'''
     @Test
     void testFromJson() {
 
-        def json = '{\n  "name": "kate",\n  "sho": "muj",\n  "list": [\n    "dsd",\n    "sdsd"\n  ],\n  "csv": [\n    [\n      "dsd",\n      "sdsd",\n      null\n    ],\n    [\n      "sdsd",\n      1\n    ],\n    "hanging cell",\n    [\n      "sd",\n      [\n        2,\n        3,\n        4,\n        {\n          "a": 3,\n          "b": 6\n        }\n      ]\n    ],\n    [\n      {\n        "a": 3,\n        "b": 6\n      },\n      "b",\n      "c"\n    ]\n  ],\n  "full name": {\n    "fname": "fu",\n    "lname": "last"\n  },\n  "data": [\n    {\n      "sdsd": "r1c1",\n      "sdsdd": "r1c2"\n    },\n    {\n      "sd": "r2c1"\n    }\n  ]\n}'
+        def json = '{\n  "name": "kate",\n  "sho": "muj",\n  "list": [\n    "dsd",\n    "sdsd"\n  ],\n  "csv": [\n    [\n      "dsd",\n      "sdsd",\n      null\n    ],\n    [\n      "sdsd",\n      1\n    ],\n    "hanging cell",\n    [\n      "sd",\n      [\n        2,\n        3,\n        4,\n        {\n          "a": 3,\n          "b": 6\n        }\n      ]\n    ],\n    [\n      {\n        "a": 3,\n        "b": 6\n      },\n      "b",\n      "c"\n    ]\n  ],\n  "full name": {\n    "fname": "fu",\n    "lname": "last"\n  },\n  "data": [\n    {\n      "r1c1-col": "r1c1",\n      "r1c2-col": "r1c2"\n    },\n    {\n      "r2c1-col": "r2c1"\n    }\n  ]\n}'
 
         def formatted = FuzzyCSVTable.fromJsonText(json).asListGrid().toStringFormatted()
 
 
-        assert formatted.trim() == '''
+        Assert.assertEquals formatted.trim(), '''
 ╔═══════════╤═════════════════════════════════════════╗
 ║ key       │ value                                   ║
 ╠═══════════╪═════════════════════════════════════════╣
@@ -1071,13 +1071,13 @@ p\tfema+le\t31'''
 ║           │ ║   │ ╚═══╧═════════════════╝         ║ ║
 ║           │ ╚═══╧═════════════════════════════════╝ ║
 ╟───────────┼─────────────────────────────────────────╢
-║ data      │ ╔═══════╤══════╤══════╗                 ║
-║           │ ║ sdsdd │ sd   │ sdsd ║                 ║
-║           │ ╠═══════╪══════╪══════╣                 ║
-║           │ ║ r1c1  │ r1c2 │ -    ║                 ║
-║           │ ╟───────┼──────┼──────╢                 ║
-║           │ ║ -     │ -    │ r2c1 ║                 ║
-║           │ ╚═══════╧══════╧══════╝                 ║
+║ data      │ ╔══════════╤══════════╤══════════╗      ║
+║           │ ║ r1c1-col │ r1c2-col │ r2c1-col ║      ║
+║           │ ╠══════════╪══════════╪══════════╣      ║
+║           │ ║ r1c1     │ r1c2     │ -        ║      ║
+║           │ ╟──────────┼──────────┼──────────╢      ║
+║           │ ║ -        │ -        │ r2c1     ║      ║
+║           │ ╚══════════╧══════════╧══════════╝      ║
 ╟───────────┼─────────────────────────────────────────╢
 ║ full name │ ╔═══════╤═══════╗                       ║
 ║           │ ║ key   │ value ║                       ║
@@ -1098,25 +1098,24 @@ p\tfema+le\t31'''
 ║ name      │ kate                                    ║
 ╟───────────┼─────────────────────────────────────────╢
 ║ sho       │ muj                                     ║
-╚═══════════╧═════════════════════════════════════════╝
-'''.trim()
+╚═══════════╧═════════════════════════════════════════╝'''.trim()
 
         def formatted2 = FuzzyCSVTable.fromJsonText(json).asSimpleGrid().printTable().toStringFormatted()
 
 
-        assert formatted2.trim() == '''
+        Assert.assertEquals formatted2.trim(), '''
 ╔═══════════╤═══════════════════════════════════════════════════════════════════════════════════════════════╗
 ║ key       │ value                                                                                         ║
 ╠═══════════╪═══════════════════════════════════════════════════════════════════════════════════════════════╣
 ║ csv       │ [[dsd, sdsd, null], [sdsd, 1], hanging cell, [sd, [2, 3, 4, [a:3, b:6]]], [[a:3, b:6], b, c]] ║
 ╟───────────┼───────────────────────────────────────────────────────────────────────────────────────────────╢
-║ data      │ ╔═══════╤══════╤══════╗                                                                       ║
-║           │ ║ sdsdd │ sd   │ sdsd ║                                                                       ║
-║           │ ╠═══════╪══════╪══════╣                                                                       ║
-║           │ ║ r1c1  │ r1c2 │ -    ║                                                                       ║
-║           │ ╟───────┼──────┼──────╢                                                                       ║
-║           │ ║ -     │ -    │ r2c1 ║                                                                       ║
-║           │ ╚═══════╧══════╧══════╝                                                                       ║
+║ data      │ ╔══════════╤══════════╤══════════╗                                                            ║
+║           │ ║ r1c1-col │ r1c2-col │ r2c1-col ║                                                            ║
+║           │ ╠══════════╪══════════╪══════════╣                                                            ║
+║           │ ║ r1c1     │ r1c2     │ -        ║                                                            ║
+║           │ ╟──────────┼──────────┼──────────╢                                                            ║
+║           │ ║ -        │ -        │ r2c1     ║                                                            ║
+║           │ ╚══════════╧══════════╧══════════╝                                                            ║
 ╟───────────┼───────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ full name │ ╔═══════╤═══════╗                                                                             ║
 ║           │ ║ key   │ value ║                                                                             ║
@@ -1131,9 +1130,36 @@ p\tfema+le\t31'''
 ║ name      │ kate                                                                                          ║
 ╟───────────┼───────────────────────────────────────────────────────────────────────────────────────────────╢
 ║ sho       │ muj                                                                                           ║
-╚═══════════╧═══════════════════════════════════════════════════════════════════════════════════════════════╝
-'''.trim()
+╚═══════════╧═══════════════════════════════════════════════════════════════════════════════════════════════╝'''.trim()
 
+
+    }
+
+    @Test
+    void testGridifyMap() {
+        def json = '''[
+    {
+        "type": "DEPOSIT",
+        "chargeOwner": null,
+        "amount": 10000.00
+    },
+    {
+        "type": "AD_CHARGE",
+        "chargeOwner": "CLIENT",
+        "amount": 2000.00,
+        "dsd" : "nnot"
+    }
+]'''
+
+        def text = FuzzyCSVTable.fromJsonText(json)
+        Assert.assertEquals '''
+╔════════╤═════════════╤═══════════╤══════╗
+║ amount │ chargeOwner │ type      │ dsd  ║
+╠════════╪═════════════╪═══════════╪══════╣
+║ 10000  │ -           │ DEPOSIT   │ -    ║
+╟────────┼─────────────┼───────────┼──────╢
+║ 2000   │ CLIENT      │ AD_CHARGE │ nnot ║
+╚════════╧═════════════╧═══════════╧══════╝'''.trim(), text.toStringFormatted().trim()
 
     }
 

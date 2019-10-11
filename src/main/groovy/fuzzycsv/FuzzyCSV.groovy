@@ -853,7 +853,7 @@ class FuzzyCSV {
 
     static List<List> toCSVLenient(List<? extends Map> list) {
 
-        def indexMap = new HashMap()
+        def indexMap = [:]
         def indexTracker = 0
 
         List<List> csv = new ArrayList(list.size())
@@ -863,7 +863,8 @@ class FuzzyCSV {
                 if (!indexMap.containsKey(it.key)) {
                     indexMap[it.key] = indexTracker++
                 }
-                row[indexMap[it.key]] = it.value
+                def indexToSet = indexMap[it.key]
+                row[indexToSet] = it.value
             }
             csv << row as List
         }
