@@ -665,7 +665,13 @@ class FuzzyCSVTable implements Iterable<Record> {
 
 
     static FuzzyCSVTable fromJsonText(String text) {
-        return tbl(FuzzyCSV.fromJsonText(text))
+        def json = FuzzyCSV.fromJsonText(text)
+
+        if (json instanceof List) return toCSV(json)
+
+        if (json instanceof Map) return tbl(json)
+
+        throw new UnsupportedOperationException("could not convert to table: $text")
     }
 
     static FuzzyCSVTable fromJson(File file) {
@@ -776,7 +782,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         return table.transform { gridifyCell(it, gridOptions) }
     }
 
-    private Object gridifyCell(def cellValue, GridOptions options) {
+    private static Object gridifyCell(def cellValue, GridOptions options) {
         if (cellValue instanceof FuzzyCSVTable)
             return cellValue.gridify(options)
 

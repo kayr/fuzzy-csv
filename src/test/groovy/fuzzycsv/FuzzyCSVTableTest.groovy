@@ -880,6 +880,43 @@ p\tfema+le\t31'''
     }
 
     @Test
+    void testFromJsonMap() {
+        def t = '''{"name":"joe","lname":"lasty","data":[["name","number"],["john",1.1]]}'''
+
+        def c = FuzzyCSVTable.fromJsonText(t)
+
+        def table = c.toStringFormatted()
+
+        assert table.trim() == '''
+╔═══════╤═══════════════════════════════╗
+║ key   │ value                         ║
+╠═══════╪═══════════════════════════════╣
+║ data  │ [[name, number], [john, 1.1]] ║
+╟───────┼───────────────────────────────╢
+║ lname │ lasty                         ║
+╟───────┼───────────────────────────────╢
+║ name  │ joe                           ║
+╚═══════╧═══════════════════════════════╝'''.trim()
+        def formatted = c.asListGrid().toStringFormatted()
+
+        assert formatted.trim() == '''
+╔═══════╤═══════════════════╗
+║ key   │ value             ║
+╠═══════╪═══════════════════╣
+║ data  │ ╔══════╤════════╗ ║
+║       │ ║ name │ number ║ ║
+║       │ ╠══════╪════════╣ ║
+║       │ ║ john │ 1.1    ║ ║
+║       │ ╚══════╧════════╝ ║
+╟───────┼───────────────────╢
+║ lname │ lasty             ║
+╟───────┼───────────────────╢
+║ name  │ joe               ║
+╚═══════╧═══════════════════╝
+'''.trim()
+    }
+
+    @Test
     void tesAppending() {
         def t = '''[["name","number"],["john",1.1]]'''
 
