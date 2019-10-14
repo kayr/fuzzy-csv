@@ -643,7 +643,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(FuzzyCSV.toCSV(listOfMaps, cols))
     }
 
-    static FuzzyCSVTable gridifyMap(Collection<? extends Map> listOfMaps) {
+    static FuzzyCSVTable fromMapList(Collection<? extends Map> listOfMaps) {
         tbl(FuzzyCSV.toCSVLenient(listOfMaps as List))
     }
 
@@ -663,23 +663,25 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(FuzzyCSV.toCSVFromRecordList(Collection0))
     }
 
-
     static FuzzyCSVTable fromJsonText(String text) {
-        def json = FuzzyCSV.fromJsonText(text)
-
-        def cell = gridifyCell(json, GridOptions.LIST_AS_STRING)
-        if (cell instanceof FuzzyCSVTable)
-            return cell
-        throw new UnsupportedOperationException("could not convert to table : $text")
+        return coerceFromObj(FuzzyCSV.fromJsonText(text))
     }
 
     static FuzzyCSVTable fromJson(File file) {
-        return tbl(FuzzyCSV.fromJson(file))
+        return coerceFromObj(FuzzyCSV.fromJson(file))
     }
 
     static FuzzyCSVTable fromJson(Reader r) {
-        return tbl(FuzzyCSV.fromJson(r))
+        return coerceFromObj(FuzzyCSV.fromJson(r))
     }
+
+    private static FuzzyCSVTable coerceFromObj(json) {
+        def cell = gridifyCell(json, EnumSet.of(GridOptions.SHALLOW_MODE))
+        if (cell instanceof FuzzyCSVTable)
+            return cell
+        throw new UnsupportedOperationException("could not convert to table : $json")
+    }
+
 
 
     String toString() {
@@ -763,27 +765,31 @@ class FuzzyCSVTable implements Iterable<Record> {
 
 
     static enum GridOptions {
-        LIST_AS_TABLE, LIST_AS_STRING
+        LIST_AS_TABLE, LIST_AS_STRING, SHALLOW_MODE
     }
 
     FuzzyCSVTable asListGrid() {
-        return gridify(GridOptions.LIST_AS_TABLE)
+        return gridify(EnumSet.of(GridOptions.LIST_AS_TABLE))
 
     }
 
     FuzzyCSVTable asSimpleGrid() {
-        return gridify(GridOptions.LIST_AS_STRING)
+        return gridify(EnumSet.of(GridOptions.LIST_AS_STRING))
     }
 
-    FuzzyCSVTable gridify(GridOptions gridOptions) {
+    FuzzyCSVTable gridify(Set<GridOptions> gridOptions) {
         def table = copy()
         table.header.each { table.renameHeader(it, it?.toString()?.replace('\t', '   ')) }
         return table.transform { gridifyCell(it, gridOptions) }
     }
 
-    private static Object gridifyCell(def cellValue, GridOptions options) {
+    private FuzzyCSVTable mayBeGridify(Set<GridOptions> options) {
+        return GridOptions.SHALLOW_MODE in options ? this : gridify(options)
+    }
+
+    private static Object gridifyCell(def cellValue, Set<GridOptions> options) {
         if (cellValue instanceof FuzzyCSVTable)
-            return cellValue.gridify(options)
+            return cellValue.mayBeGridify(options)
 
         if (cellValue instanceof Iterable && !(cellValue instanceof Collection)) {
             cellValue = cellValue.collect()
@@ -793,21 +799,21 @@ class FuzzyCSVTable implements Iterable<Record> {
             if (cellValue) {
                 if (cellValue[0] instanceof Collection &&
                         cellValue.every { it instanceof Collection }) {
-                    return tbl(cellValue.collect()).padAllRecords().gridify(options)
+                    return tbl(cellValue.collect()).padAllRecords().mayBeGridify(options)
                 }
 
                 if (cellValue[0] instanceof Map &&
                         cellValue.every { it instanceof Map }) {
-                    return gridifyMap(cellValue).padAllRecords().gridify(options)
+                    return fromMapList(cellValue).padAllRecords().mayBeGridify(options)
                 }
 
-                if (options == GridOptions.LIST_AS_TABLE) return gridifyList(cellValue).gridify(options)
+                if (GridOptions.LIST_AS_TABLE in options) return gridifyList(cellValue).mayBeGridify(options)
 
             }
         }
 
         if (cellValue instanceof Map) {
-            return tbl(cellValue).gridify(options)
+            return tbl(cellValue).mayBeGridify(options)
         }
 
 

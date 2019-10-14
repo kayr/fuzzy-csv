@@ -885,9 +885,21 @@ p\tfema+le\t31'''
 
         def c = FuzzyCSVTable.fromJsonText(t)
 
-        def table = c.toStringFormatted()
 
-        Assert.assertEquals table.trim() , '''
+        Assert.assertEquals '''
+╔═══════╤═══════════════════════════════╗
+║ key   │ value                         ║
+╠═══════╪═══════════════════════════════╣
+║ data  │ [[name, number], [john, 1.1]] ║
+╟───────┼───────────────────────────────╢
+║ lname │ lasty                         ║
+╟───────┼───────────────────────────────╢
+║ name  │ joe                           ║
+╚═══════╧═══════════════════════════════╝'''.trim(),c.toStringFormatted().trim()
+
+        def table = c.gridify().toStringFormatted()
+
+        Assert.assertEquals '''
 ╔═══════╤═══════════════════╗
 ║ key   │ value             ║
 ╠═══════╪═══════════════════╣
@@ -900,7 +912,7 @@ p\tfema+le\t31'''
 ║ lname │ lasty             ║
 ╟───────┼───────────────────╢
 ║ name  │ joe               ║
-╚═══════╧═══════════════════╝'''.trim()
+╚═══════╧═══════════════════╝'''.trim(), table.trim()
 
     }
 

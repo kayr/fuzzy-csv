@@ -268,13 +268,13 @@ class FuzzyCSV {
     }
 
     @CompileStatic
-    static List<List> fromJson(InputStream reader) {
-        return toListofList(new JsonSlurper().parse(reader))
+    static def fromJson(Reader reader) {
+        return new JsonSlurper().parse(reader)
     }
 
     @CompileStatic
-    static List<List> fromJson(File source) {
-        return toListofList(new JsonSlurper().parse(source))
+    static def fromJson(File source) {
+        return new JsonSlurper().parse(source)
     }
 
     private final static NULL_ON_FUNCTION = null
