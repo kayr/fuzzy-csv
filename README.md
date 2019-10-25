@@ -111,6 +111,71 @@ FuzzyCSVTable.parseCsv(Reader csvString)
 //if you wish to customise the parsing you can provide more options
 FuzzyCSVTable.parseCsv(String csvString, separator/* , */, quoteChar /* " */, escapeChar /* \ */)
 ```
+
+### Visualize json data in a console grid table
+
+Given the following json:
+
+```json
+{
+  "id": "0001",
+  "type": "donut",
+  "name": "Cake",
+  "ppu": 0.55,
+  "batters":
+    {
+      "batter":
+        [
+          { "id": "1001", "type": "Regular" },
+          { "id": "1002", "type": "Chocolate","color": "Brown" }
+        ]
+    },
+  "topping":
+    [
+      { "id": "5001", "type": "None" },
+      { "id": "5002", "type": "Glazed" },
+      { "id": "5005", "type": "Sugar" ,"color": "Brown"}
+    ]
+}
+```
+Convert the above to a grid like this `FuzzyCSVTable.fromJsonText(r).asListGrid().printTable()`
+
+```text
+╔═════════╤═══════════════════════════════════════════╗
+║ key     │ value                                     ║
+╠═════════╪═══════════════════════════════════════════╣
+║ batters │ ╔════════╤══════════════════════════════╗ ║
+║         │ ║ key    │ value                        ║ ║
+║         │ ╠════════╪══════════════════════════════╣ ║
+║         │ ║ batter │ ╔══════╤═══════════╤═══════╗ ║ ║
+║         │ ║        │ ║ id   │ type      │ color ║ ║ ║
+║         │ ║        │ ╠══════╪═══════════╪═══════╣ ║ ║
+║         │ ║        │ ║ 1001 │ Regular   │ -     ║ ║ ║
+║         │ ║        │ ╟──────┼───────────┼───────╢ ║ ║
+║         │ ║        │ ║ 1002 │ Chocolate │ Brown ║ ║ ║
+║         │ ║        │ ╚══════╧═══════════╧═══════╝ ║ ║
+║         │ ╚════════╧══════════════════════════════╝ ║
+╟─────────┼───────────────────────────────────────────╢
+║ id      │ 0001                                      ║
+╟─────────┼───────────────────────────────────────────╢
+║ name    │ Cake                                      ║
+╟─────────┼───────────────────────────────────────────╢
+║ ppu     │ 0.55                                      ║
+╟─────────┼───────────────────────────────────────────╢
+║ topping │ ╔══════╤════════╤═══════╗                 ║
+║         │ ║ id   │ type   │ color ║                 ║
+║         │ ╠══════╪════════╪═══════╣                 ║
+║         │ ║ 5001 │ None   │ -     ║                 ║
+║         │ ╟──────┼────────┼───────╢                 ║
+║         │ ║ 5002 │ Glazed │ -     ║                 ║
+║         │ ╟──────┼────────┼───────╢                 ║
+║         │ ║ 5005 │ Sugar  │ Brown ║                 ║
+║         │ ╚══════╧════════╧═══════╝                 ║
+╟─────────┼───────────────────────────────────────────╢
+║ type    │ donut                                     ║
+╚═════════╧═══════════════════════════════════════════╝
+```
+
 #### Merging with a fuzzy match
 1. Set the accuracy threshold to 75%
 2. Merge using code below
