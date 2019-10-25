@@ -20,6 +20,7 @@ FuzzyCSV is a lightweigt groovy data processing library that helps in shaping an
 - [Features](#features)
   - [Illustrations:](#illustrations)
     - [Loading data into fuzzyCSV](#loading-data-into-fuzzycsv)
+    - [Visualize json data in a console grid table](#visualize-json-data-in-a-console-grid-table)
     - [Merging with a fuzzy match](#merging-with-a-fuzzy-match)
     - [Joins](#joins)
     - [Inner join](#inner-join)
@@ -112,7 +113,7 @@ FuzzyCSVTable.parseCsv(Reader csvString)
 FuzzyCSVTable.parseCsv(String csvString, separator/* , */, quoteChar /* " */, escapeChar /* \ */)
 ```
 
-### Visualize json data in a console grid table
+#### Visualize json data in a console grid table
 
 Given the following json:
 
