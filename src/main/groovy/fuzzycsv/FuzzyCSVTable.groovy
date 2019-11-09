@@ -700,6 +700,42 @@ class FuzzyCSVTable implements Iterable<Record> {
         return csv[0][index]
     }
 
+    FuzzyCSVTable spread(String colName) {
+
+        def transformIdx = header.indexOf(colName)
+        def indexSpreadMap = new LinkedHashSet()
+
+        def newMapList = iterator().collect {
+
+            def val = it.val(colName)
+
+            def map = it.toMap()
+
+            def spreadMap = [:]
+            if (val instanceof Collection) {
+                val.eachWithIndex { Object entry, int i -> spreadMap.put("${colName}_${i + 1}".toString(), entry) }
+            } else if (val instanceof Map) {
+                spreadMap = val.collectEntries { k, v ->
+                    ["${colName}_${k}".toString(), v]
+                }
+            } else {
+                spreadMap = [("${colName}_1".toString()): val]
+            }
+
+            spreadMap.each { k, v -> if (!indexSpreadMap.contains(k)) indexSpreadMap.add(k) }
+
+            map.putAll(spreadMap)
+
+            return map
+        }
+
+        def newHeaders = [*header]
+        newHeaders.set(transformIdx, indexSpreadMap)
+        def flatten = newHeaders.flatten()
+
+        return FuzzyCSV.toCSV(newMapList, *flatten)
+    }
+
     Long size() {
         def size = csv?.size() ?: 0
         if (size) {

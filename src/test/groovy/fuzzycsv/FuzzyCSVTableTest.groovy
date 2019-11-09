@@ -1176,6 +1176,67 @@ p\tfema+le\t31'''
     }
 
 
+    @Test
+    void testSpreadMap() {
+        def data = [['name', 'sex', 'marks'],
+                    ['r1', 'sex', [10, 20]],
+                    ['r2', 'sex', [10]],
+                    ['r3', 'sex', "Idle"],
+                    ['r3', 'sex', [math: 20, sst: 40]],
+                    ['r3', 'sex', [null, null, 50]]]
+
+        def spread = FuzzyCSVTable.tbl(data).spread("marks")
+
+        spread.csv == [['name', 'sex', 'marks_1', 'marks_2', 'marks_math', 'marks_sst', 'marks_3'],
+                       ['r1', 'sex', 10, 20, null, null, null],
+                       ['r2', 'sex', 10, null, null, null, null],
+                       ['r3', 'sex', 'Idle', null, null, null, null],
+                       ['r3', 'sex', null, null, 20, 40, null],
+                       ['r3', 'sex', null, null, null, null, 50]]
+
+        assert FuzzyCSVTable.tbl(data)
+                .select("marks", "name")
+                .spread("marks")
+                .csv == [['marks_1', 'marks_2', 'marks_math', 'marks_sst', 'marks_3', 'name'],
+                         [10, 20, null, null, null, 'r1'],
+                         [10, null, null, null, null, 'r2'],
+                         ['Idle', null, null, null, null, 'r3'],
+                         [null, null, 20, 40, null, 'r3'],
+                         [null, null, null, null, 50, 'r3']]
+
+        assert FuzzyCSVTable.tbl(data)
+                .select('marks')
+                .spread('marks')
+                .csv == [['marks_1', 'marks_2', 'marks_math', 'marks_sst', 'marks_3'],
+                         [10, 20, null, null, null],
+                         [10, null, null, null, null],
+                         ['Idle', null, null, null, null],
+                         [null, null, 20, 40, null],
+                         [null, null, null, null, 50]]
+
+
+    }
+
+    @Test
+    void testSpreadMap2() {
+        def data = [
+                ['name', 'sex', 'marks', 'other_value'],
+                ['r1', 'sex', [10, 20]],
+                ['r2', 'sex', [10]],
+                ['r3', 'sex', "Idle"],
+                ['r3', 'sex', [math: 20, sst: 40]],
+                ['r3', 'sex', [null, null, 50], "8000k"]
+        ]
+
+        def spread = FuzzyCSVTable.tbl(data).spread("marks")
+        assert spread.csv == [['name', 'sex', 'marks_1', 'marks_2', 'marks_math', 'marks_sst', 'marks_3', 'other_value'],
+                              ['r1', 'sex', 10, 20, null, null, null, null],
+                              ['r2', 'sex', 10, null, null, null, null, null],
+                              ['r3', 'sex', 'Idle', null, null, null, null, null],
+                              ['r3', 'sex', null, null, 20, 40, null, null],
+                              ['r3', 'sex', null, null, null, null, 50, '8000k']]
+    }
+
     //helper to printout array list
     static def insp(FuzzyCSVTable t) {
         println(t.csv.inspect().replaceAll(/\], \[/, '],\n['))

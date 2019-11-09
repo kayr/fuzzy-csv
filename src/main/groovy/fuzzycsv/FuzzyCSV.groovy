@@ -544,10 +544,7 @@ class FuzzyCSV {
             assertValidSelectHeaders(headers, csv)
         }
 
-        List<List> newCsv = newList(csv.size())
-        csv.size().times {
-            newCsv.add(newList(headers.size()))
-        }
+        List<List> newCsv = cloneEmpty(csv, headers)
 
         //prepare aggregators and turn them into record functions
         headers = headers.collect { header ->
@@ -580,6 +577,14 @@ class FuzzyCSV {
             }
         }
         return newCsv
+    }
+
+    static List<List> cloneEmpty(List<? extends List> csv, headers) {
+        List<List> newCsv = newList(csv.size())
+        csv.size().times {
+            newCsv.add(newList(headers.size()))
+        }
+        newCsv
     }
 
     @CompileStatic
@@ -644,6 +649,8 @@ class FuzzyCSV {
         }
         return newCsv
     }
+
+
 
     static void assertValidSelectHeaders(List<?> headers, List<? extends List> csv) {
         //confirm all headers exist
