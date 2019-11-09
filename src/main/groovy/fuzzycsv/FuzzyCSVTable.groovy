@@ -700,12 +700,16 @@ class FuzzyCSVTable implements Iterable<Record> {
         return csv[0][index]
     }
 
-    FuzzyCSVTable spread(String colName) {
+    FuzzyCSVTable spread(String... colNames) {
+        return colNames.inject(this) { acc, colName -> acc._spread(colName) }
+    }
+
+    private FuzzyCSVTable _spread(String colName) {
 
         def transformIdx = header.indexOf(colName)
         def indexSpreadMap = new LinkedHashSet()
 
-        def newMapList = iterator().collect {
+        List<Map> newMapList = iterator().collect {
 
             def val = it.val(colName)
 
@@ -733,7 +737,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         newHeaders.set(transformIdx, indexSpreadMap)
         def flatten = newHeaders.flatten()
 
-        return FuzzyCSV.toCSV(newMapList, *flatten)
+        return tbl(FuzzyCSV.toCSV(newMapList, *flatten))
     }
 
     Long size() {

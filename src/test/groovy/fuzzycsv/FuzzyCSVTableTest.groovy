@@ -1237,6 +1237,29 @@ p\tfema+le\t31'''
                               ['r3', 'sex', null, null, null, null, 50, '8000k']]
     }
 
+    @Test
+    void testSpreadMap3() {
+        def data = [
+                ['name', 'sex', 'marks', 'other_value'],
+                ['r1', 'sex', [10, 20]],
+                ['r2', 'sex', [10]],
+                ['r3', 'sex', "Idle"],
+                ['r3', 'sex', [math: 20, sst: 40]],
+                ['r3', 'sex', [null, null, 50], "8000k"]
+        ]
+
+        def spread = FuzzyCSVTable.tbl(data)
+                .addColumn(fx('marks3') { it.marks })
+                .spread("marks", "marks3")
+
+        assert spread.csv == [['name', 'sex', 'marks_1', 'marks_2', 'marks_math', 'marks_sst', 'marks_3', 'other_value', 'marks3_1', 'marks3_2', 'marks3_math', 'marks3_sst', 'marks3_3'],
+                              ['r1', 'sex', 10, 20, null, null, null, null, 10, 20, null, null, null],
+                              ['r2', 'sex', 10, null, null, null, null, null, 10, null, null, null, null],
+                              ['r3', 'sex', 'Idle', null, null, null, null, null, 'Idle', null, null, null, null],
+                              ['r3', 'sex', null, null, 20, 40, null, null, null, null, 20, 40, null],
+                              ['r3', 'sex', null, null, null, null, 50, '8000k', null, null, null, null, 50]]
+    }
+
     //helper to printout array list
     static def insp(FuzzyCSVTable t) {
         println(t.csv.inspect().replaceAll(/\], \[/, '],\n['))
