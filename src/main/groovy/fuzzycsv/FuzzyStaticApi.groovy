@@ -66,5 +66,9 @@ class FuzzyStaticApi {
         return FuzzyCSVTable.tbl(csv)
     }
 
+    static SpreadConfig spreader(Object col, Closure<String> nameGen) {
+        new SpreadConfig().withCol(col).withNameGenFn(nameGen)
+    }
+
 
 }

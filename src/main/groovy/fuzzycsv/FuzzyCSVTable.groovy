@@ -700,44 +700,61 @@ class FuzzyCSVTable implements Iterable<Record> {
         return csv[0][index]
     }
 
-    FuzzyCSVTable spread(String... colNames) {
+    FuzzyCSVTable spread(SpreadConfig... colNames) {
         return colNames.inject(this) { acc, colName -> acc._spread(colName) }
+
     }
 
-    private FuzzyCSVTable _spread(String colName) {
+    FuzzyCSVTable spread(Object... colNames) {
+        def configs = colNames.collect { new SpreadConfig().withCol(it) } as SpreadConfig[]
+        return spread(configs)
+    }
 
-        def transformIdx = header.indexOf(colName)
-        def indexSpreadMap = new LinkedHashSet()
+    @CompileStatic
+    private FuzzyCSVTable _spread(SpreadConfig config) {
 
-        List<Map> newMapList = iterator().collect {
+        def col = config.col
 
-            def val = it.val(colName)
+        def transformIdx = header.indexOf(col)
+        def spreadColumns = new LinkedHashSet()
 
-            def map = it.toMap()
+        List<Map> newMapList = iterator().collect { Record it ->
+
+            def val = it.val(col)
+
+            def recordMap = it.toMap()
 
             def spreadMap = [:]
             if (val instanceof Collection) {
-                val.eachWithIndex { Object entry, int i -> spreadMap.put("${colName}_${i + 1}".toString(), entry) }
+                val.eachWithIndex { Object entry, int i ->
+                    def name = config.createName(i + 1)
+                    spreadMap.put(name.toString(), entry)
+                }
             } else if (val instanceof Map) {
                 spreadMap = val.collectEntries { k, v ->
-                    ["${colName}_${k}".toString(), v]
+                    [config.createName(k), v]
                 }
             } else {
-                spreadMap = [("${colName}_1".toString()): val]
+                spreadMap = [(config.createName("1")): val]
             }
 
-            spreadMap.each { k, v -> if (!indexSpreadMap.contains(k)) indexSpreadMap.add(k) }
+            spreadMap.each { k, v -> if (!spreadColumns.contains(k)) spreadColumns.add(k) }
 
-            map.putAll(spreadMap)
+            recordMap.putAll(spreadMap)
 
-            return map
+            return recordMap
         }
 
-        def newHeaders = [*header]
-        newHeaders.set(transformIdx, indexSpreadMap)
-        def flatten = newHeaders.flatten()
+        def newHeaders = new ArrayList(header)
+        if (col instanceof RecordFx) {
+            newHeaders.add(spreadColumns)
+        } else {
+            newHeaders.set(transformIdx, spreadColumns)
+        }
+        def flattenedHeader = newHeaders.flatten()
 
-        return tbl(FuzzyCSV.toCSV(newMapList, *flatten))
+        def newCsv = FuzzyCSV.toCSV(newMapList, flattenedHeader as String[])
+        return tbl(newCsv)
     }
 
     Long size() {
@@ -783,7 +800,6 @@ class FuzzyCSVTable implements Iterable<Record> {
         return FuzzyCSV.toJsonText(csv)
     }
 
-    //todo write unit tests
     String toStringFormatted(boolean wrap = false, int minCol = 10) {
 
         def array = toStrArray()

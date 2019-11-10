@@ -1214,6 +1214,25 @@ p\tfema+le\t31'''
                          [null, null, 20, 40, null],
                          [null, null, null, null, 50]]
 
+        assert FuzzyCSVTable.tbl(data)
+                .spread(spreader("marks") { col, key -> "new-$key-$col" })
+                .csv == [['name', 'sex', 'new-1-marks', 'new-2-marks', 'new-math-marks', 'new-sst-marks', 'new-3-marks'],
+                         ['r1', 'sex', 10, 20, null, null, null],
+                         ['r2', 'sex', 10, null, null, null, null],
+                         ['r3', 'sex', 'Idle', null, null, null, null],
+                         ['r3', 'sex', null, null, 20, 40, null],
+                         ['r3', 'sex', null, null, null, null, 50]]
+
+        assert FuzzyCSVTable.tbl(data)
+                .select("name", "sex")
+                .spread(fx { [it.name, it.sex] }.az('ns'))
+                .csv == [['name', 'sex', 'ns_1', 'ns_2'],
+                         ['r1', 'sex', 'r1', 'sex'],
+                         ['r2', 'sex', 'r2', 'sex'],
+                         ['r3', 'sex', 'r3', 'sex'],
+                         ['r3', 'sex', 'r3', 'sex'],
+                         ['r3', 'sex', 'r3', 'sex']]
+
 
     }
 

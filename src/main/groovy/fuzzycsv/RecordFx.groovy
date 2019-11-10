@@ -101,4 +101,17 @@ class RecordFx<RT> {
     }
 
 
+    @CompileStatic
+    static String resolveName(o) {
+        switch (o) {
+            case RecordFx:
+                return (o as RecordFx).name
+            case String:
+                return (String) o
+            default:
+                return o?.toString()
+        }
+
+    }
+
 }
