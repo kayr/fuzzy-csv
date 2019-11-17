@@ -550,8 +550,7 @@ class FuzzyCSV {
         headers = headers.collect { header ->
             if (header instanceof Aggregator) {
                 return toRecordFx(header as Aggregator)
-            }
-            else {
+            } else {
                 return header
             }
         }
@@ -567,7 +566,8 @@ class FuzzyCSV {
                 newCsv = putInColumn(newCsv, header as RecordFx, idx, csv)
             }
             else {
-                int oldCsvColIdx = positions[header.toString()]
+
+                int oldCsvColIdx = (header instanceof  Integer) ? header as Integer: positions[header.toString()]
 
                 if (oldCsvColIdx != -1)
                     newCsv = copyColumn(csv, newCsv, oldCsvColIdx, idx)
@@ -658,6 +658,9 @@ class FuzzyCSV {
             if (it instanceof String) {
                 def columnPosition = Fuzzy.findBestPosition(csv[0], it, ACCURACY_THRESHOLD.get())
                 if (columnPosition == -1) throw new IllegalArgumentException("Header[$it] Should Exist In The CSV Header ${csv[0]}")
+            }
+            if (it instanceof Integer) {
+                if (it >= csv[0].size()) throw new IllegalArgumentException("Header at index[$it] Should Exist In The CSV Header ${csv[0]}")
             }
         }
     }
@@ -917,7 +920,12 @@ class FuzzyCSV {
         return strings
     }
 
-    private static def firstCellAbove(List<? extends List> strings, int fromRecord, int column) {
+    @Override
+    String toString() {
+        return super.toString()
+    }
+
+    static def firstCellAbove(List<? extends List> strings, int fromRecord, int column) {
         if (fromRecord <= 1) {
             return null
         }

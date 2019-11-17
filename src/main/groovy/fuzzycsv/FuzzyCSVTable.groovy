@@ -2,6 +2,7 @@ package fuzzycsv
 
 import com.jakewharton.fliptables.FlipTable
 import com.opencsv.CSVParser
+import fuzzycsv.nav.Navigator
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import groovy.transform.stc.ClosureParams
@@ -219,6 +220,10 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     Record row(int idx) {
         return Record.getRecord(csv, idx);
+    }
+
+    def value(Navigator navigator) {
+        return csv[navigator.row][navigator.col]
     }
 
     def firstCell() {

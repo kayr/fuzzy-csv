@@ -8,10 +8,7 @@ import org.junit.Test
 import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.RecordFx.fn
 import static fuzzycsv.RecordFx.fx
-import static fuzzycsv.ResolutionStrategy.DERIVED_FIRST
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertTrue
-import static org.junit.Assert.fail
+import static org.junit.Assert.*
 
 class FuzzyCSVTest {
 
@@ -363,7 +360,7 @@ class FuzzyCSVTest {
     }
 
     def getCSV(String path) {
-        def text = getClass().getResource(path).text
+        def text = getClass().getClassLoader().getResource(path).text
         return FuzzyCSV.toUnModifiableCSV(
                 FuzzyCSVTable.toListOfLists(
                         FuzzyCSVTable.parseCsv(text).csv).csv)
@@ -848,6 +845,31 @@ class FuzzyCSVTest {
                 ['v', 'm']
         ]
         assert tbl(table).toCsvString() == '"name","sex"\n"v","m"\n'
+
+    }
+
+    @Test
+    void testSelectIndices() {
+        def csv = [
+                ['sex', 'p2', 'p4', 'p4'],
+                ['male', 2, null, 1],
+                ['male', 2, null, 5],
+                ['male', 2, null, 5],
+                ['female', null, 4, null],
+                ['female', null, 5, null],
+                ['female', null, 4, null]
+
+        ]
+
+        def table = tbl(csv).select(0, 'p2', 3)
+
+        assert table.csv == [['sex', 'p2', 'p4'],
+                             ['male', 2, 1],
+                             ['male', 2, 5],
+                             ['male', 2, 5],
+                             ['female', null, null],
+                             ['female', null, null],
+                             ['female', null, null]]
 
     }
 }

@@ -13,7 +13,7 @@ class Fuzzy {
     static int findBestPosition(def phrases, String header, double minScore) {
         phrases = phrases as List
         def csvColIdx = findPosition(phrases, header)
-        if (csvColIdx == -1 && minScore <= 1.0) {
+        if (csvColIdx == -1 && minScore < 1.0) {
             csvColIdx = findClosestPosition(phrases, header, minScore)
         }
         csvColIdx
