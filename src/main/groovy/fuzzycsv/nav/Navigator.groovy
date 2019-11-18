@@ -23,6 +23,7 @@ class Navigator {
         this.table = table
     }
 
+
     int getCol() {
         return col
     }
@@ -64,7 +65,7 @@ class Navigator {
         return new Navigator(col + 1, row, table)
     }
 
-    Navigator selfStart() {
+    Navigator fromSelf() {
         def navigator = copy()
         navigator.startFromSelf = true
         return navigator
@@ -74,15 +75,12 @@ class Navigator {
         new Navigator(col, row, table)
     }
 
-    def value() {
-        return table.value(this)
+
+    def value(FuzzyCSVTable t=table) {
+        return t.value(this)
     }
 
-    def value(FuzzyCSVTable table) {
-        return table.value(this)
-    }
-
-    boolean canMoveLeft() {
+    boolean canGoLeft() {
         return col > 0
     }
 
@@ -90,7 +88,7 @@ class Navigator {
         return row < t.size()
     }
 
-    boolean canMoveUp() {
+    boolean canGoUp() {
         return row > 0
     }
 
@@ -172,8 +170,8 @@ class Navigator {
         }
     }
 
-    Mutable toMutableNav() {
-        return new Mutable(this)
+    MutableNav toMutableNav() {
+        return new MutableNav(this)
     }
 
     @Override
@@ -183,36 +181,3 @@ class Navigator {
 
 }
 
-class Mutable {
-
-
-    Navigator curr
-
-    Mutable(Navigator curr) {
-        this.curr = curr
-    }
-
-    def value() {
-        curr.value()
-    }
-
-    Navigator up() {
-        return curr = curr.up()
-    }
-
-    Navigator down() {
-        return curr = curr.down()
-    }
-
-    Navigator left() {
-        return curr = curr.left()
-    }
-
-    Navigator right() {
-        return curr = curr.right()
-    }
-
-    boolean canMoveUp() {
-        curr.canMoveUp()
-    }
-}

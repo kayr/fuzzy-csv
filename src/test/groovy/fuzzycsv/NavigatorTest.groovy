@@ -1,5 +1,6 @@
 package fuzzycsv
 
+
 import fuzzycsv.nav.Navigator
 
 class NavigatorTest extends GroovyTestCase {
@@ -21,12 +22,49 @@ class NavigatorTest extends GroovyTestCase {
         assert navigator.right().right().right().up().value() == 14 //rotation
 
 
-        def collect = navigator.selfStart().allIterator().collect { it.value() }
+        def collect = navigator.fromSelf().allIterator().collect { it.value() }
 
         assert collect == ['1', '2', '3', '4', '5', 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 
-        def coll2 = navigator.selfStart().allBoundedIterator(2, 1).collect { it.value() }
+        def coll2 = navigator.fromSelf().allBoundedIterator(2, 1).collect { it.value() }
         assert coll2 == ['1', '2', '3', 6, 7, 8]
+
+        assert navigator.downIterator().collect { it.value() } == [6, 11]
+        assert navigator.fromSelf().downIterator().collect { it.value() } == ['1', 6, 11]
+        assert navigator.fromSelf().downIterator().collect { it.value() } == ['1', 6, 11]
+        assert navigator.fromSelf().rightIterator().collect { it.value() } == ['1', '2', '3', '4', '5']
+        assert navigator.right().right().right().fromSelf().rightIterator().collect { it.value() } == ['4', '5']
+
+        def row = navigator.withRow(4)
+        assert row.row == 4 && row.col == navigator.col
+        assert !navigator.canGoLeft() && !navigator.canGoUp()
+        assert navigator.canGoRight() && navigator.canGoDown()
+        assert navigator.getTable().csv == data
+        assert row.getTable().csv == data
+
+
+    }
+
+    void testMutableNav() {
+
+        def navigator = new Navigator(0, 0, FuzzyCSVTable.tbl(data))
+
+        def nav = navigator.toMutableNav()
+
+
+        nav.right().right()
+        assert nav.value() == '3'
+
+
+        nav.down().down().up()
+        assert nav.value() == 8
+
+        nav.right().right().left()
+        assert nav.value() == 9
+
+        nav.up().left().left().right().left()
+        assert nav.value() == '2'
+
 
     }
 }
