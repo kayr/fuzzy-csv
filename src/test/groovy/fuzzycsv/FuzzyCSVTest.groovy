@@ -836,6 +836,9 @@ class FuzzyCSVTest {
         assert [['name', 'sex'], ['v', 'm'], ['k', 'm']] == tbl(table).filter(fx { it.sex == 'm' }).csv
         assert [['name', 'sex']] == FuzzyCSV.filter([['name', 'sex']], fx { it.name = '' })
 
+
+        assert [['name', 'sex'], ['k', 'm'], ['r', 'f']] == tbl(table).delete {it.name == 'v'}.csv
+
     }
 
     @Test

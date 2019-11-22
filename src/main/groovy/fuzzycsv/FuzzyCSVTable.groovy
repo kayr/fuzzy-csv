@@ -519,6 +519,10 @@ class FuzzyCSVTable implements Iterable<Record> {
         filter(fx(func))
     }
 
+    FuzzyCSVTable delete(@ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func) {
+        filter {  func.call(it) == false }
+    }
+
     FuzzyCSVTable filter(RecordFx fx) {
         tbl(FuzzyCSV.filter(csv, fx))
     }
