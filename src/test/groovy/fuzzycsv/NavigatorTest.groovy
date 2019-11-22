@@ -22,18 +22,20 @@ class NavigatorTest extends GroovyTestCase {
         assert navigator.right().right().right().up().value() == 14 //rotation
 
 
-        def collect = navigator.fromSelf().allIterator().collect { it.value() }
+        def collect = navigator.allIterator().collect { it.value() }
 
         assert collect == ['1', '2', '3', '4', '5', 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 
-        def coll2 = navigator.fromSelf().allBoundedIterator(2, 1).collect { it.value() }
+        def coll2 = navigator.allBoundedIterator(2, 1).collect { it.value() }
         assert coll2 == ['1', '2', '3', 6, 7, 8]
 
-        assert navigator.downIterator().collect { it.value() } == [6, 11]
-        assert navigator.fromSelf().downIterator().collect { it.value() } == ['1', 6, 11]
-        assert navigator.fromSelf().downIterator().collect { it.value() } == ['1', 6, 11]
-        assert navigator.fromSelf().rightIterator().collect { it.value() } == ['1', '2', '3', '4', '5']
-        assert navigator.right().right().right().fromSelf().rightIterator().collect { it.value() } == ['4', '5']
+        assert navigator.downIterator().skip().collect { it.value() } == [6, 11]
+        assert navigator.downIterator().collect { it.value() } == ['1', 6, 11]
+        assert navigator.downIterator().collect { it.value() } == ['1', 6, 11]
+        assert navigator.rightIterator().collect { it.value() } == ['1', '2', '3', '4', '5']
+        assert navigator.right().right().right().rightIterator().collect { it.value() } == ['4', '5']
+
+        assert navigator.downIterator().last().upIterator().collect { it.value() } == [11, 6, '1']
 
         def row = navigator.withRow(4)
         assert row.row == 4 && row.col == navigator.col

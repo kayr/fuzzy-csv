@@ -38,7 +38,7 @@ class MutableNav {
 
     }
 
-    boolean canMoveUp() {
+    boolean canGoUp() {
         curr.canGoUp()
 
     }

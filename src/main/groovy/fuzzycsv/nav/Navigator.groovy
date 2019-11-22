@@ -2,8 +2,6 @@ package fuzzycsv.nav
 
 import fuzzycsv.FuzzyCSVTable
 import groovy.transform.CompileStatic
-import groovy.transform.stc.ClosureParams
-import groovy.transform.stc.FromString
 
 @CompileStatic
 class Navigator {
@@ -65,11 +63,6 @@ class Navigator {
         return new Navigator(col + 1, row, table)
     }
 
-    Navigator fromSelf() {
-        def navigator = copy()
-        navigator.startFromSelf = true
-        return navigator
-    }
 
     Navigator copy() {
         new Navigator(col, row, table)
@@ -97,19 +90,25 @@ class Navigator {
     }
 
 
-    Iterator<Navigator> downIterator(FuzzyCSVTable pTable = table) {
+    NavIterator upIterator(FuzzyCSVTable pTable = table) {
+        def hasNextFn = { FuzzyCSVTable t, Navigator n -> n.canGoUp() }
+        def navFn = { Navigator n -> n.up() }
+        return NavIterator.from(this, pTable).withStopper(hasNextFn).withStepper(navFn)
+    }
+
+    NavIterator downIterator(FuzzyCSVTable pTable = table) {
         def hasNextFn = { FuzzyCSVTable t, Navigator n -> n.canGoDown(t) }
         def navFn = { Navigator n -> n.down() }
-        return downIterator(pTable, hasNextFn, navFn)
+        return NavIterator.from(this, pTable).withStopper(hasNextFn).withStepper(navFn)
     }
 
-    Iterator<Navigator> rightIterator(FuzzyCSVTable pTable = table) {
+    NavIterator rightIterator(FuzzyCSVTable pTable = table) {
         def hasNextFn = { FuzzyCSVTable t, Navigator n -> n.canGoRight(t) }
         def navFn = { Navigator n -> n.right() }
-        return downIterator(pTable, hasNextFn, navFn)
+        return NavIterator.from(this, pTable).withStopper(hasNextFn).withStepper(navFn)
     }
 
-    Iterator<Navigator> allBoundedIterator(int colBound, int rowBound, FuzzyCSVTable pTable = table) {
+    NavIterator allBoundedIterator(int colBound, int rowBound, FuzzyCSVTable pTable = table) {
 
         def hasNextFn = { FuzzyCSVTable t, Navigator n ->
             (n.canGoRight(t) || n.canGoDown(t)) &&
@@ -124,10 +123,10 @@ class Navigator {
             }
         }
 
-        return downIterator(pTable, hasNextFn, navFn)
+        return NavIterator.from(this, pTable).withStopper(hasNextFn).withStepper(navFn)
     }
 
-    Iterator<Navigator> allIterator(FuzzyCSVTable pTable = table) {
+    NavIterator allIterator(FuzzyCSVTable pTable = table) {
 
         def hasNextFn = { FuzzyCSVTable t, Navigator n ->
             n.canGoRight(t) || n.canGoDown(t)
@@ -140,35 +139,9 @@ class Navigator {
                 return n.down().withCol(col)
             }
         }
-
-        return downIterator(pTable, hasNextFn, navFn)
+        return NavIterator.from(this, pTable).withStopper(hasNextFn).withStepper(navFn)
     }
 
-
-    Iterator<Navigator> downIterator(FuzzyCSVTable table,
-                                     @ClosureParams(value = FromString, options = ["fuzzycsv.FuzzyCSVTable", "fuzzycsv.Navigator"]) Closure<Boolean> stopper,
-                                     Closure<Navigator> next) {
-        def currNav = this
-        return new Iterator<Navigator>() {
-            Navigator curr = currNav
-            boolean selfFinished = false
-
-            @Override
-            boolean hasNext() {
-                return stopper(table, curr)
-            }
-
-            @Override
-            Navigator next() {
-                if (startFromSelf && !selfFinished) {
-                    selfFinished = true
-                } else {
-                    curr = next(curr)
-                }
-                return curr
-            }
-        }
-    }
 
     MutableNav toMutableNav() {
         return new MutableNav(this)
