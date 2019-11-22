@@ -709,6 +709,10 @@ class FuzzyCSVTable implements Iterable<Record> {
         return csv[0][index]
     }
 
+    int columnIdx(String name, double accuracy = FuzzyCSV.ACCURACY_THRESHOLD.get()) {
+        return Fuzzy.findBestPosition(header, name, accuracy)
+    }
+
     FuzzyCSVTable spread(SpreadConfig... colNames) {
         return colNames.inject(this) { acc, colName -> acc._spread(colName) }
 

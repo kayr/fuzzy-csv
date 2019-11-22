@@ -360,7 +360,11 @@ class FuzzyCSVTest {
     }
 
     def getCSV(String path) {
-        def text = getClass().getResource(path).text
+
+
+
+
+        def text = Data.csvs[path.replace('/','')]
         return FuzzyCSV.toUnModifiableCSV(
                 FuzzyCSVTable.toListOfLists(
                         FuzzyCSVTable.parseCsv(text).csv).csv)
