@@ -41,6 +41,7 @@ class FuzzyCSVTable implements Iterable<Record> {
             visited << origH
             header.set(i, h)
         }
+
         return this
     }
 
@@ -60,6 +61,31 @@ class FuzzyCSVTable implements Iterable<Record> {
         if (from >= 0 && from < header.size())
             header.set(from, to)
         return this
+    }
+
+    FuzzyCSVTable moveCol(String col, int dest) {
+        def tHeader = header
+        def colIdx = tHeader.indexOf(col)
+        def toIdx = dest
+        return moveCol(colIdx, toIdx)
+
+    }
+
+    FuzzyCSVTable moveCol(String col, String dest) {
+        def tHeader = header
+        def colIdx = tHeader.indexOf(col)
+        def toIdx = tHeader.indexOf(dest)
+        return moveCol(colIdx, toIdx)
+    }
+
+    FuzzyCSVTable moveCol(int col, int dest) {
+
+        def headers = []
+        header.size().times { headers.add it }
+
+        def idx1 = FuzzyCSVUtils.move(headers, col, dest)
+
+        return select(idx1)
     }
 
     FuzzyCSVTable aggregate(Object... columns) {
@@ -503,7 +529,14 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     List<String> getHeader() {
-        return csv[0]
+        return getHeader(false)
+    }
+
+    List<String> getHeader(boolean copy) {
+        if (copy)
+            return new ArrayList<String>(csv[0])
+        else
+            csv[0]
     }
 
     FuzzyCSVTable copy() {

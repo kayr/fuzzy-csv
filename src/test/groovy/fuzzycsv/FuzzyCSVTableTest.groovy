@@ -1279,6 +1279,31 @@ p\tfema+le\t31'''
                               ['r3', 'sex', null, null, null, null, 50, '8000k', null, null, null, null, 50]]
     }
 
+    @Test
+    void testMoveColumn() {
+        def data = '''c1,c2,c3,c2
+1,2,3,4
+11,22,22,44
+'''
+
+        def csv = FuzzyCSVTable.parseCsv(data)
+
+        csv.copy().normalizeHeaders()
+
+        assert csv.moveCol('c2', 'c1').csv == [['c2', 'c1', 'c3', 'c2'],
+                                               ['2', '1', '3', '4'],
+                                               ['22', '11', '22', '44']]
+
+        assert csv.moveCol('c2', 0).csv == [['c2', 'c1', 'c3', 'c2'],
+                                            ['2', '1', '3', '4'],
+                                            ['22', '11', '22', '44']]
+        assert csv.moveCol(1, 0).csv == [['c2', 'c1', 'c3', 'c2'],
+                                         ['2', '1', '3', '4'],
+                                         ['22', '11', '22', '44']]
+
+
+    }
+
     //helper to printout array list
     static def insp(FuzzyCSVTable t) {
         println(t.csv.inspect().replaceAll(/\], \[/, '],\n['))

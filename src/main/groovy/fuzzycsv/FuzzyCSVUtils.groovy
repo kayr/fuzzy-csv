@@ -16,6 +16,21 @@ class FuzzyCSVUtils {
         return rt
     }
 
+    static List moveElem2Idx(List h, from, int idx) {
+        move(h, h.indexOf(from), idx)
+    }
+
+    static List moveElems(List h, from, to) {
+        move(h, h.indexOf(from), h.indexOf(to))
+    }
+
+    static List move(List h, int from, int to) {
+        def get = h.get(from)
+        h.remove(from)
+        h.add(to, get)
+        return h
+    }
+
     static <T> List<T> replace(List<T> source, T from, T to) {
         def idx = source.indexOf(from)
         if (idx != -1)
