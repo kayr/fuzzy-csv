@@ -5,10 +5,10 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 class Navigator {
+    private static final Navigator START = new Navigator(0, 0)
     private int col
     private int row
     private FuzzyCSVTable table
-    private boolean startFromSelf
 
 
     Navigator(int col, int row) {
@@ -21,6 +21,9 @@ class Navigator {
         this.table = table
     }
 
+    static Navigator start() {
+        return START
+    }
 
     int getCol() {
         return col
@@ -30,15 +33,21 @@ class Navigator {
         return row
     }
 
-    Navigator withRow(int newRow) {
+    Navigator row(int newRow) {
         def navigator = copy()
         navigator.@row = newRow
         return navigator
     }
 
-    Navigator withCol(int newCol) {
+    Navigator col(int newCol) {
         def navigator = copy()
         navigator.@col = newCol
+        return navigator
+    }
+
+    Navigator table(FuzzyCSVTable t) {
+        def navigator = copy()
+        navigator.@table = t
         return navigator
     }
 
@@ -71,6 +80,10 @@ class Navigator {
 
     def value(FuzzyCSVTable t=table) {
         return t.value(this)
+    }
+
+    def value(obj, FuzzyCSVTable t = table) {
+        t.putInCell(col, row, obj)
     }
 
     boolean canGoLeft() {
@@ -119,7 +132,7 @@ class Navigator {
             if (n.canGoRight() && n.col < colBound)
                 n.right()
             else {
-                return n.down().withCol(col)
+                return n.down().col(col)
             }
         }
 
@@ -136,7 +149,7 @@ class Navigator {
             if (n.canGoRight())
                 n.right()
             else {
-                return n.down().withCol(col)
+                return n.down().col(col)
             }
         }
         return NavIterator.from(this, pTable).withStopper(hasNextFn).withStepper(navFn)

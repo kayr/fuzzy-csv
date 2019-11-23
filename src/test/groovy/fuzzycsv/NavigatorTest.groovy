@@ -3,6 +3,8 @@ package fuzzycsv
 
 import fuzzycsv.nav.Navigator
 
+import static fuzzycsv.FuzzyCSVTable.tbl
+
 class NavigatorTest extends GroovyTestCase {
     def data = [['1', '2', '3', '4', '5'],
                 [6, 7, 8, 9, 10],
@@ -11,7 +13,7 @@ class NavigatorTest extends GroovyTestCase {
 
     void testUp() {
 
-        def navigator = new Navigator(0, 0, FuzzyCSVTable.tbl(data))
+        def navigator = Navigator.start().table(tbl(data))
 
         assert navigator.value() == '1'
         assert navigator.right().right().right().value() == '4'
@@ -37,7 +39,7 @@ class NavigatorTest extends GroovyTestCase {
 
         assert navigator.downIterator().last().upIterator().collect { it.value() } == [11, 6, '1']
 
-        def row = navigator.withRow(4)
+        def row = navigator.row(4)
         assert row.row == 4 && row.col == navigator.col
         assert !navigator.canGoLeft() && !navigator.canGoUp()
         assert navigator.canGoRight() && navigator.canGoDown()
@@ -45,11 +47,16 @@ class NavigatorTest extends GroovyTestCase {
         assert row.getTable().csv == data
 
 
+        def copy = tbl(data).copy()
+        assert navigator.value("Hhe", copy)
+        assert copy.value(navigator) == 'Hhe'
+
+
     }
 
     void testMutableNav() {
 
-        def navigator = new Navigator(0, 0, FuzzyCSVTable.tbl(data))
+        def navigator = new Navigator(0, 0, tbl(data))
 
         def nav = navigator.toMutableNav()
 
