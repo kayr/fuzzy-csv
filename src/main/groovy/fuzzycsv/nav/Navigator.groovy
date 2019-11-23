@@ -77,13 +77,24 @@ class Navigator {
         new Navigator(col, row, table)
     }
 
+    Navigator mark(FuzzyCSVTable t = table) {
+        value('[' + value(t) + ']', t)
+        return this
+    }
+
+    Navigator mark(String i, FuzzyCSVTable t = table) {
+        value(i + value(t), t)
+        return this
+    }
+
 
     def value(FuzzyCSVTable t=table) {
         return t.value(this)
     }
 
-    def value(obj, FuzzyCSVTable t = table) {
+    Navigator value(obj, FuzzyCSVTable t = table) {
         t.putInCell(col, row, obj)
+        return this
     }
 
     boolean canGoLeft() {
@@ -103,25 +114,25 @@ class Navigator {
     }
 
 
-    NavIterator upIterator(FuzzyCSVTable pTable = table) {
+    NavIterator upIter(FuzzyCSVTable pTable = table) {
         def hasNextFn = { FuzzyCSVTable t, Navigator n -> n.canGoUp() }
         def navFn = { Navigator n -> n.up() }
         return NavIterator.from(this, pTable).withStopper(hasNextFn).withStepper(navFn)
     }
 
-    NavIterator downIterator(FuzzyCSVTable pTable = table) {
+    NavIterator downIter(FuzzyCSVTable pTable = table) {
         def hasNextFn = { FuzzyCSVTable t, Navigator n -> n.canGoDown(t) }
         def navFn = { Navigator n -> n.down() }
         return NavIterator.from(this, pTable).withStopper(hasNextFn).withStepper(navFn)
     }
 
-    NavIterator rightIterator(FuzzyCSVTable pTable = table) {
+    NavIterator rightIter(FuzzyCSVTable pTable = table) {
         def hasNextFn = { FuzzyCSVTable t, Navigator n -> n.canGoRight(t) }
         def navFn = { Navigator n -> n.right() }
         return NavIterator.from(this, pTable).withStopper(hasNextFn).withStepper(navFn)
     }
 
-    NavIterator allBoundedIterator(int colBound, int rowBound, FuzzyCSVTable pTable = table) {
+    NavIterator allBoundedIter(int colBound, int rowBound, FuzzyCSVTable pTable = table) {
 
         def hasNextFn = { FuzzyCSVTable t, Navigator n ->
             (n.canGoRight(t) || n.canGoDown(t)) &&
@@ -139,7 +150,7 @@ class Navigator {
         return NavIterator.from(this, pTable).withStopper(hasNextFn).withStepper(navFn)
     }
 
-    NavIterator allIterator(FuzzyCSVTable pTable = table) {
+    NavIterator allIter(FuzzyCSVTable pTable = table) {
 
         def hasNextFn = { FuzzyCSVTable t, Navigator n ->
             n.canGoRight(t) || n.canGoDown(t)

@@ -6,6 +6,8 @@ import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.FirstParam
 import groovy.transform.stc.FromString
 
+import java.util.concurrent.atomic.AtomicInteger
+
 @CompileStatic
 class IterHelper {
     static <T> T last(Iterator<T> iter) {
@@ -44,13 +46,19 @@ trait ExIterator<E, SELF extends Iterator> implements Iterator<E> {
 
 @CompileStatic
 class NavIterator implements ExIterator<Navigator, NavIterator> {
+    private static AtomicInteger i = new AtomicInteger()
 
     Navigator curr
     FuzzyCSVTable table
+    FuzzyCSVTable pathTrack
     private boolean selfFinished = false
+    private boolean markPath = false
     private Closure<Boolean> stopper
     private Closure<Navigator> next
 
+    //internal use
+    private Integer id = i.incrementAndGet()
+    private int steps = 0
 
     static NavIterator from(Navigator curr, FuzzyCSVTable table = curr.table) {
         return new NavIterator(curr: curr, table: table)
@@ -66,19 +74,27 @@ class NavIterator implements ExIterator<Navigator, NavIterator> {
         return this
     }
 
+    NavIterator markPath(FuzzyCSVTable t = table.copy()) {
+        markPath = true
+        pathTrack = t
+        return this
+    }
 
     @Override
     boolean hasNext() {
         return stopper(curr.table, curr)
     }
-
     @Override
     Navigator next() {
+
         if (!selfFinished) {
             selfFinished = true
         } else {
             curr = next(curr)
         }
+
+        if (markPath) curr?.mark("$id-${steps++}|", pathTrack)
+
         return curr
     }
 
