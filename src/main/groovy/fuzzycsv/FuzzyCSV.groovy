@@ -487,10 +487,19 @@ class FuzzyCSV {
     }
 
 
-    static deleteColumn(List<? extends List> csv, String[] columns, Mode mode = Mode.RELAXED) {
+    static deleteColumn(List<? extends List> csv, Object[] columns, Mode mode = Mode.RELAXED) {
         def newHeaders = new ArrayList<>(csv[0])
-        newHeaders.removeAll(columns)
-        rearrangeColumns(newHeaders, csv, mode)
+
+        def newHeaderIndices = newHeaders.findIndexValues { true }
+
+        def colIndicesToDelete = columns.collect {
+            if (it instanceof Number) return it.longValue()
+            return Fuzzy.findBestPosition(newHeaders, it as String, ACCURACY_THRESHOLD.get()).longValue()
+        }
+
+        newHeaderIndices.removeAll(colIndicesToDelete)
+
+        rearrangeColumns(newHeaderIndices, csv, mode)
     }
 
     /**
@@ -567,7 +576,7 @@ class FuzzyCSV {
             }
             else {
 
-                int oldCsvColIdx = (header instanceof  Integer) ? header as Integer: positions[header.toString()]
+                int oldCsvColIdx = (header instanceof  Integer || header instanceof Long) ? header as Integer: positions[header.toString()]
 
                 if (oldCsvColIdx != -1)
                     newCsv = copyColumn(csv, newCsv, oldCsvColIdx, idx)

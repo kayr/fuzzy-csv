@@ -620,6 +620,9 @@ class FuzzyCSVTest {
                 [44, 55, 66]]
 
         assert tbl(orig).deleteColumns('dis', 'qlt').csv == expected
+        assert tbl(orig).deleteColumns(0, 'qlt').csv == expected
+        assert tbl(orig).deleteColumns('dis', 1).csv == expected
+        assert tbl(orig).deleteColumns(0, 1).csv == expected
 
 
     }

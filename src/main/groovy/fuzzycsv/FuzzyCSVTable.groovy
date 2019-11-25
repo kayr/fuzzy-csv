@@ -497,7 +497,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         return select(newHeader)
     }
 
-    FuzzyCSVTable deleteColumns(String[] columnNames) {
+    FuzzyCSVTable deleteColumns(Object[] columnNames) {
         return tbl(FuzzyCSV.deleteColumn(csv, columnNames))
     }
 
