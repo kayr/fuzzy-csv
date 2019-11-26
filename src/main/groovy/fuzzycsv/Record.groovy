@@ -250,14 +250,28 @@ class Record {
         switch (resolutionStrategy1) {
             case FINAL_FIRST:
             case DERIVED_FIRST:
-                return finalRecord[idx]
+                def get = FuzzyCSVUtils.safeGet(finalRecord, idx)
+                if (get != null) return get
+                get = FuzzyCSVUtils.safeGet(rightRecord, idx)
+                if (get != null) return get
+                return FuzzyCSVUtils.safeGet(leftRecord, idx)
+
 
             case LEFT_FIRST:
             case SOURCE_FIRST:
-                return leftRecord[idx]
+                def get = FuzzyCSVUtils.safeGet(leftRecord, idx)
+                if (get != null) return get
+                get = FuzzyCSVUtils.safeGet(finalRecord, idx)
+                if (get != null) return get
+                return FuzzyCSVUtils.safeGet(rightRecord, idx)
 
             case RIGHT_FIRST:
-                return rightRecord[idx]
+                def get = FuzzyCSVUtils.safeGet(rightRecord, idx)
+                if (get != null) return get
+                get = FuzzyCSVUtils.safeGet(leftRecord, idx)
+                if (get != null) return get
+                return FuzzyCSVUtils.safeGet(finalRecord, idx)
+
         }
     }
 

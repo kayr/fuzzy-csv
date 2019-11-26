@@ -16,6 +16,11 @@ class FuzzyCSVUtils {
         return rt
     }
 
+    static Object safeGet(List it, int idx) {
+        if (idx < 0 || it == null) return null
+        return it.size() > idx ? it.get(idx) : null
+    }
+
     static List moveElem2Idx(List h, from, int idx) {
         move(h, h.indexOf(from), idx)
     }
