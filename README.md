@@ -38,6 +38,9 @@ FuzzyCSV is a lightweigt groovy data processing library that helps in shaping an
     - [Sql To CSV](#sql-to-csv)
     - [Add Column](#add-column)
     - [Filter Records](#filter-records)
+    - [Delete rows](#delete-rows)
+    - [Distinct by column](#distinct-by-column)
+    - [Adding records](#adding-records)
     - [Sorting](#sorting)
     - [Ranges](#ranges)
     - [Up and Down Navigation e.g (for running sum)](#up-and-down-navigation-eg-for-running-sum)
@@ -48,6 +51,9 @@ FuzzyCSV is a lightweigt groovy data processing library that helps in shaping an
     - [Simplistic Aggregations](#simplistic-aggregations)
     - [Custom Aggregation](#custom-aggregation)
     - [Unwinding a column](#unwinding-a-column)
+    - [Spreading a column](#spreading-a-column)
+    - [Move column](#move-column)
+    - [Navigation](#navigation)
     - [Excel utility classes](#excel-utility-classes)
 - [Note:](#note)
 
@@ -433,6 +439,95 @@ _________
  */
 ```
 
+#### Delete rows
+
+```groovy
+import static fuzzycsv.FuzzyStaticApi.tbl
+
+def csv = [
+        ['name', 'age', 'hobby', 'category'],
+        ['alex', '21', 'biking', 'A'],
+        ['peter', '21', 'swimming', 'S'],
+        ['charles', '21', 'swimming', 'S'],
+        ['barbara', '23', 'swimming', 'S']
+]
+
+tbl(csv).delete {it.age == '21'}.printTable()
+
+/*
+╔═════════╤═════╤══════════╤══════════╗
+║ name    │ age │ hobby    │ category ║
+╠═════════╪═════╪══════════╪══════════╣
+║ barbara │ 23  │ swimming │ S        ║
+╚═════════╧═════╧══════════╧══════════╝
+ */
+
+```
+
+#### Distinct by column
+```groovy
+
+import static fuzzycsv.FuzzyStaticApi.tbl
+
+def csv = [
+        ['name', 'age', 'hobby', 'category'],
+        ['alex', '21', 'biking', 'A'],
+        ['peter', '21', 'swimming', 'S'],
+        ['charles', '21', 'swimming', 'S'],
+        ['barbara', '23', 'swimming', 'S']
+]
+
+tbl(csv).distinctBy('age','category').printTable()
+
+/*
+╔═════════╤═════╤══════════╤══════════╗
+║ name    │ age │ hobby    │ category ║
+╠═════════╪═════╪══════════╪══════════╣
+║ alex    │ 21  │ biking   │ A        ║
+╟─────────┼─────┼──────────┼──────────╢
+║ peter   │ 21  │ swimming │ S        ║
+╟─────────┼─────┼──────────┼──────────╢
+║ barbara │ 23  │ swimming │ S        ║
+╚═════════╧═════╧══════════╧══════════╝
+ */
+
+```
+
+#### Adding records
+
+```groovy
+def t = '''[["name","number"],["john",1.1]]'''
+
+def c = FuzzyCSVTable.fromJsonText(t)
+
+c.addRecordArr("JB", 455)
+        .addRecord(["JLis", 767])
+        .addRecordMap([name: "MName", number: 90])
+        .addRecordArr()
+        .addRecordMap([name: "MNameEmp"])
+        .printTable()
+
+
+/*
+╔══════════╤════════╗
+║ name     │ number ║
+╠══════════╪════════╣
+║ john     │ 1.1    ║
+╟──────────┼────────╢
+║ JB       │ 455    ║
+╟──────────┼────────╢
+║ JLis     │ 767    ║
+╟──────────┼────────╢
+║ MName    │ 90     ║
+╟──────────┼────────╢
+║ -        │ -      ║
+╟──────────┼────────╢
+║ MNameEmp │ -      ║
+╚══════════╧════════╝
+*/
+
+```
+
 #### Sorting
 
 ```groovy
@@ -730,6 +825,160 @@ tbl(csv).unwind('AgeList')
 _________
 4 Rows
 */
+
+```
+
+#### Spreading a column
+
+Expand outwards a column which contains list items
+
+```groovy
+
+import static fuzzycsv.FuzzyStaticApi.*
+
+def csv = [
+        ['name',     'AgeList'  ],
+        ['biking',   [21,16]    ],
+        ['swimming', [21,15]    ]
+]
+
+tbl(csv).spread('AgeList')
+        .printTable()
+
+/*
+╔══════════╤═══════════╤═══════════╗
+║ name     │ AgeList_1 │ AgeList_2 ║
+╠══════════╪═══════════╪═══════════╣
+║ biking   │ 21        │ 16        ║
+╟──────────┼───────────┼───────────╢
+║ swimming │ 21        │ 15        ║
+╚══════════╧═══════════╧═══════════╝
+*/
+```
+
+Spread out a column with maps
+```groovy
+
+
+import static fuzzycsv.FuzzyStaticApi.tbl
+
+def csv = [
+        ['name', 'Age'],
+        ['biking', [age: 21, height: 16]],
+        ['swimming', [age: 21, height: 15]]
+]
+
+tbl(csv).spread('Age')
+        .printTable()
+
+/*
+╔══════════╤═════════╤════════════╗
+║ name     │ Age_age │ Age_height ║
+╠══════════╪═════════╪════════════╣
+║ biking   │ 21      │ 16         ║
+╟──────────┼─────────┼────────────╢
+║ swimming │ 21      │ 15         ║
+╚══════════╧═════════╧════════════╝
+ */
+```
+
+Spread with custom column names
+
+```groovy
+import static fuzzycsv.FuzzyStaticApi.spreader
+import static fuzzycsv.FuzzyStaticApi.tbl
+
+def csv = [
+        ['name', 'Age'],
+        ['biking', [age: 21, height: 16]],
+        ['swimming', [age: 21, height: 15]]
+]
+
+tbl(csv).spread(spreader("Age") { col, key -> "MyColName: $key" })
+        .printTable()
+
+/*
+╔══════════╤═════════════╤════════════════╗
+║ name     │ MyTest: age │ MyTest: height ║
+╠══════════╪═════════════╪════════════════╣
+║ biking   │ 21          │ 16             ║
+╟──────────┼─────────────┼────────────────╢
+║ swimming │ 21          │ 15             ║
+╚══════════╧═════════════╧════════════════╝
+ */
+```
+
+#### Move column
+```groovy
+
+
+import static fuzzycsv.FuzzyStaticApi.tbl
+
+def csv = [
+        ['name', 'age', 'hobby', 'category'],
+        ['alex', '21', 'biking', 'A'],
+        ['peter', '21', 'swimming', 'S'],
+        ['charles', '21', 'swimming', 'S'],
+        ['barbara', '23', 'swimming', 'S']
+]
+tbl(csv).moveCol("age", "category")
+        .printTable()
+
+/*
+╔═════════╤══════════╤══════════╤═════╗
+║ name    │ hobby    │ category │ age ║
+╠═════════╪══════════╪══════════╪═════╣
+║ alex    │ biking   │ A        │ 21  ║
+╟─────────┼──────────┼──────────┼─────╢
+║ peter   │ swimming │ S        │ 21  ║
+╟─────────┼──────────┼──────────┼─────╢
+║ charles │ swimming │ S        │ 21  ║
+╟─────────┼──────────┼──────────┼─────╢
+║ barbara │ swimming │ S        │ 23  ║
+╚═════════╧══════════╧══════════╧═════╝
+ */
+```
+
+#### Navigation
+
+Navigators help move through the table cells easily. You can look above,below, right or left of a cell.
+
+```groovy
+
+import fuzzycsv.nav.Navigator
+
+import static fuzzycsv.FuzzyStaticApi.tbl
+
+def csv = [
+        ['name', 'age', 'hobby', 'category'],
+        ['alex', '21', 'biking', 'A'],
+        ['peter', '21', 'swimming', 'S'],
+        ['charles', '21', 'swimming', 'S'],
+        ['barbara', '23', 'swimming', 'S']
+]
+
+def navigator = new Navigator(0, 0, tbl(csv))
+
+
+assert navigator.down().down().value() == 'peter'
+assert navigator.right().value() == 'age'
+assert navigator.right().left().value() == 'name'
+assert navigator.down().up().value() == 'name'
+
+// Move down
+assert navigator.downIter().collect { it.value() } == ['name', 'alex', 'peter', 'charles', 'barbara']
+
+// MoveRight
+assert navigator.rightIter().collect { it.value() } == ['name', 'age', 'hobby', 'category']
+
+//move through all
+assert navigator.allIter().collect { it.value() } == ['name', 'age', 'hobby', 'category', 'alex', '21', 'biking', 'A', 'peter', '21', 'swimming',
+                                                      'S', 'charles', '21', 'swimming', 'S', 'barbara', '23', 'swimming', 'S']
+//move through all bounded
+assert navigator.allBoundedIter(1, 2).collect { it.value() } == ['name', 'age', 'alex', '21', 'peter', '21']
+
+//move up
+assert new Navigator(0, 4, tbl(csv)).upIter().collect { it.value() } == ['barbara', 'charles', 'peter', 'alex', 'name']
 
 ```
 
