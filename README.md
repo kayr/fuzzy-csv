@@ -2,6 +2,9 @@
 
 ![Release](https://jitpack.io/v/kayr/fuzzy-csv.svg)
 (https://jitpack.io/#kayr/fuzzy-csv)
+
+![Java CI](https://github.com/kayr/fuzzy-csv/workflows/Java%20CI/badge.svg)
+
 ### Use Cases
 
 FuzzyCSV is a lightweigt groovy data processing library that helps in shaping and cleaning your dataset before its consumed by another service. 
