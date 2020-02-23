@@ -695,7 +695,7 @@ class FuzzyCSV {
      * @return
      */
     static List<List> mergeByColumn(List<? extends List> csv1, List<? extends List> csv2) {
-        def header1 = mergeHeaders(csv1[0], csv2[0])
+        def header1 = mergeHeaders(FastIndexOfList.wrap(csv1[0]), FastIndexOfList.wrap(csv2[0]))
         log.debug("======rearranging[cvs1-header]-ignore the logs=======")
         def newCsv1 = rearrangeColumns(header1, csv1)
         log.debug("======rearranging [cvs2-header]-ignore the logs======")
