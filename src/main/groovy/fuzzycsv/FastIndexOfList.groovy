@@ -1,7 +1,9 @@
 package fuzzycsv
 
 import groovy.transform.CompileStatic
-import groovy.transform.Memoized
+
+import java.util.function.Predicate
+import java.util.function.UnaryOperator
 
 @CompileStatic
 class FastIndexOfList<E> extends ArrayList<E> implements List<E> {
@@ -18,30 +20,48 @@ class FastIndexOfList<E> extends ArrayList<E> implements List<E> {
         super(var1)
     }
 
-    Map<Object, Integer> indexCache = [:]
+    Map<Object, Integer> indexCache = new HashMap<>()
 
-    @Memoized
+
     int indexOf(Object o) {
+
+        def i1 = indexCache[nullObjIfNull(o)]
+        if (i1 != null) {
+            return i1
+        }
+
         def size = size()
         if (o == null) {
-            for (int i = 0; i < size; i++) {
+            for (int i = lastVisted; i < size; i++) {
                 def e = get(i)
-                if (e == null) return i
+                mayBeCacheIdx(nullObjIfNull(e), i)
+                if (e == null) i
             }
         } else {
-            for (int i = 0; i < size; i++) {
+            for (int i = lastVisted; i < size; i++) {
                 def e = get(i)
-                if (o.equals(e)) return i
+                mayBeCacheIdx(nullObjIfNull(e), i)
+                if (o == e) return i
             }
         }
         return -1
     }
 
-    int lastVisted = 0
+    private int lastVisted = 0
 
-    private def mayBeCacheIdx(e, i) {
-        if ()
-            indexCache.put(e, i)
+    private int mayBeCacheIdx(e, int i) {
+        if (i > lastVisted || lastVisted == 0) {
+            if (!indexCache.containsKey(e)) indexCache.put(e, i)
+            lastVisted = i
+        }
+        return i
+    }
+
+    private def nullObjIfNull(o) {
+        if (o == null) {
+            return null//;NullObject.getNullObject()
+        }
+        return o
     }
 
     @Override
@@ -59,6 +79,66 @@ class FastIndexOfList<E> extends ArrayList<E> implements List<E> {
     E set(int index, E element) {
         clearCache()
         return super.set(index, element)
+    }
+
+    @Override
+    void clear() {
+        clearCache()
+        super.clear()
+    }
+
+    @Override
+    boolean addAll(int index, Collection<? extends E> c) {
+        clearCache()
+        return super.addAll(index, c)
+    }
+
+    @Override
+    boolean removeAll(Collection<?> c) {
+        clearCache()
+        return super.removeAll(c)
+    }
+
+    @Override
+    boolean retainAll(Collection<?> c) {
+        clearCache()
+        return super.retainAll(c)
+    }
+
+    @Override
+    void replaceAll(UnaryOperator<E> operator) {
+        clearCache()
+        super.replaceAll(operator)
+    }
+
+    @Override
+    void sort(Comparator<? super E> c) {
+        clearCache()
+        super.sort(c)
+    }
+
+    @Override
+    protected void removeRange(int fromIndex, int toIndex) {
+        clearCache()
+        super.removeRange(fromIndex, toIndex)
+    }
+
+    @Override
+    boolean remove(Object o) {
+        clearCache()
+        return super.remove(o)
+    }
+
+    @Override
+    E remove(int index) {
+        clearCache()
+        return super.remove(index)
+    }
+
+    @Override
+    boolean removeIf(Predicate<? super E> filter) {
+        clearCache()
+        return super.removeIf(filter)
     }
 
     static <T> FastIndexOfList<T> wrap(Collection<T> data) {
