@@ -23,13 +23,22 @@ class FuzzyCSVTable implements Iterable<Record> {
     String tableName
 
     FuzzyCSVTable(List<? extends List> csv) {
+        if (csv == null || csv.isEmpty()) {
+            csv = [[]]
+        }
+
+        try {
+            def header = FastIndexOfList.wrap(csv.first())
+            csv.set(0, header)
+        } catch (x) {
+        }
         this.csv = csv
+
     }
 
     FuzzyCSVTable name(String name) {
         return tbl(name, csv)
     }
-
 
     FuzzyCSVTable normalizeHeaders(String prefix = 'C_', String postFix = '_') {
         def visited = new HashSet()
@@ -276,10 +285,10 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     static FuzzyCSVTable tbl(String name, List<? extends List> csv = [[]]) {
-        if(csv?.isEmpty()){
-            csv = [[]]
-        }
+
+
         def table = new FuzzyCSVTable(csv)
+
         table.tableName = name
         return table
     }
