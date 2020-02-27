@@ -12,6 +12,7 @@ class NavigatorTest extends GroovyTestCase {
                 [11, 12, 13, 14, 15]
     ]
 
+    @Test
     void testUp() {
 
         def navigator = Navigator.start().table(tbl(data))
@@ -58,6 +59,7 @@ class NavigatorTest extends GroovyTestCase {
 
     }
 
+    @Test
     void testMutableNav() {
 
         def navigator = new Navigator(0, 0, tbl(data))

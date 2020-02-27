@@ -183,7 +183,7 @@ class Navigator {
 
     Navigator addAbove(FuzzyCSVTable t = table, List<Object> list) {
         t.addRecord(row, list)
-        return this
+        return down()
     }
 
     Navigator addBelow(FuzzyCSVTable t = table) {
