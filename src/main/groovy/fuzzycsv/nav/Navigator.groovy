@@ -57,20 +57,20 @@ class Navigator {
     }
 
 
-    Navigator up() {
-        return new Navigator(col, row - 1, table)
+    Navigator up(int steps = 1) {
+        return new Navigator(col, row - steps, table)
     }
 
-    Navigator down() {
-        return new Navigator(col, row + 1, table)
+    Navigator down(int steps = 1) {
+        return new Navigator(col, row + steps, table)
     }
 
-    Navigator left() {
-        return new Navigator(col - 1, row, table)
+    Navigator left(int steps = 1) {
+        return new Navigator(col - steps, row, table)
     }
 
-    Navigator right() {
-        return new Navigator(col + 1, row, table)
+    Navigator right(int steps = 1) {
+        return new Navigator(col + steps, row, table)
     }
 
 
