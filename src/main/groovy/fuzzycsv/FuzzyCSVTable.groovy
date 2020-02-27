@@ -613,17 +613,22 @@ class FuzzyCSVTable implements Iterable<Record> {
         return this
     }
 
-    FuzzyCSVTable addRecordMap(Map item) {
-        return this << toCSV([item])
+    FuzzyCSVTable addRecordMap(int idx = size() + 1, Map item) {
+        def thisCsv = toCSV([item])
+
+        def headers = FuzzyCSV.mergeHeaders(header, thisCsv.header)
+        def record = thisCsv.select(headers).first().finalRecord
+
+        return addRecord(idx, record)
     }
 
-    FuzzyCSVTable addRecord(List item) {
-        addRecords(item)
+    FuzzyCSVTable addRecord(int idx = size() + 1, List item) {
+        addRecords(idx, item)
     }
 
-    FuzzyCSVTable addRecords(List... item) {
+    FuzzyCSVTable addRecords(int idx = size() + 1, List... item) {
         for (it in item) {
-            csv.add(it as List)
+            csv.add(idx, it as List)
         }
         return this
     }
@@ -812,7 +817,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         return tbl(newCsv)
     }
 
-    Long size() {
+    Integer size() {
         def size = csv?.size() ?: 0
         if (size) {
             return size - 1

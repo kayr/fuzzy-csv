@@ -2,6 +2,7 @@ package fuzzycsv
 
 
 import fuzzycsv.nav.Navigator
+import org.junit.Test
 
 import static fuzzycsv.FuzzyCSVTable.tbl
 
@@ -76,6 +77,38 @@ class NavigatorTest extends GroovyTestCase {
 
         nav.up().left().left().right().left()
         assert nav.value() == '2'
+
+
+    }
+
+    @Test
+    void testAddAbove(){
+
+        def table = tbl(data)
+        def navigator = new Navigator(0, 0, table)
+
+        navigator.down().addAbove().up().value("VVV")
+
+        assert table.csv == [['1', '2', '3', '4', '5'],
+                             ['VVV', null, null, null, null],
+                             [6, 7, 8, 9, 10],
+                             [11, 12, 13, 14, 15]]
+
+    }
+
+    @Test
+    void testAddBelow(){
+
+        def table = tbl(data)
+        def navigator = new Navigator(0, 0, table)
+
+        navigator.down().addBelow().down().value("VVV")
+
+        assert table.csv == [['1', '2', '3', '4', '5'],
+                             [6, 7, 8, 9, 10],
+                             ['VVV', null, null, null, null],
+                             [11, 12, 13, 14, 15]]
+
 
 
     }

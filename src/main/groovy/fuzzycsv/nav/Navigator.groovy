@@ -1,5 +1,6 @@
 package fuzzycsv.nav
 
+import fuzzycsv.FuzzyCSV
 import fuzzycsv.FuzzyCSVTable
 import groovy.transform.CompileStatic
 
@@ -174,6 +175,24 @@ class Navigator {
     @Override
     String toString() {
         return "Navigator{col=$col, row=$row}"
+    }
+
+    Navigator addAbove(FuzzyCSVTable t = table) {
+        addAbove(t, FuzzyCSV.createList(t.header))
+    }
+
+    Navigator addAbove(FuzzyCSVTable t = table, List<Object> list) {
+        t.addRecord(row, list)
+        return this
+    }
+
+    Navigator addBelow(FuzzyCSVTable t = table) {
+        addBelow(t, FuzzyCSV.createList(t.header))
+    }
+
+    Navigator addBelow(FuzzyCSVTable t = table, List<Object> list) {
+        t.addRecord(row + 1, list)
+        return this
     }
 
 }

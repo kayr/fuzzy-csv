@@ -470,9 +470,14 @@ class FuzzyCSV {
 
     static List appendEmptyRecord(List<? extends List> csv) {
         def record = csv[0]
+        List<Object> listRecord = createList(record)
+        csv.add(listRecord)
+        listRecord
+    }
+
+    static List<Object> createList(List record) {
         def newRecord = new Object[record instanceof List ? record.size() : record.length]
         def listRecord = newRecord as List
-        csv.add(listRecord)
         listRecord
     }
 
@@ -597,7 +602,7 @@ class FuzzyCSV {
     }
 
     @CompileStatic
-    private static <T> List<T> newList(int size = 10) {
+    static <T> List<T> newList(int size = 10) {
         return new ArrayList<T>(size)
     }
 
