@@ -1,5 +1,6 @@
 package fuzzycsv.nav
 
+
 import fuzzycsv.FuzzyCSV
 import fuzzycsv.FuzzyCSVTable
 import groovy.transform.CompileStatic
@@ -73,6 +74,11 @@ class Navigator {
         return new Navigator(col + steps, row, table)
     }
 
+    Navigator to(String column, FuzzyCSVTable t = table) {
+        def idx = t.header.indexOf(column)
+        if (idx == -1) throw new IllegalArgumentException("column[$column] not found")
+        return col(idx)
+    }
 
     Navigator copy() {
         new Navigator(col, row, table)

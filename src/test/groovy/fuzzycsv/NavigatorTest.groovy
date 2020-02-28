@@ -17,6 +17,16 @@ class NavigatorTest extends GroovyTestCase {
 
         def navigator = Navigator.start().table(tbl(data))
 
+        assert navigator.down().to('3').value() == 8
+
+        def message = shouldFail {
+            assert navigator.down().to('31').value() == 8
+        }
+
+        assert message == 'column[31] not found'
+
+        assert navigator.down().to('3').value() == 8
+
         assert navigator.value() == '1'
         assert navigator.right().right().right().value() == '4'
         assert navigator.right().right().right().left().value() == '3'
