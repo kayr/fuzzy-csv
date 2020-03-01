@@ -61,7 +61,7 @@ class NavIterator implements ExIterator<Navigator, NavIterator> {
     private int steps = 0
 
     static NavIterator from(Navigator curr, FuzzyCSVTable table = curr.table) {
-        return new NavIterator(curr: curr, table: table)
+        return new NavIterator(curr: curr.table(table), table: table)
     }
 
     NavIterator withStopper(@ClosureParams(value = FromString, options = ["fuzzycsv.FuzzyCSVTable", "fuzzycsv.Navigator"]) Closure<Boolean> stopper) {
@@ -82,7 +82,7 @@ class NavIterator implements ExIterator<Navigator, NavIterator> {
 
     @Override
     boolean hasNext() {
-        return stopper(curr.table, curr)
+        return stopper(table, curr)
     }
     @Override
     Navigator next() {

@@ -2,6 +2,7 @@ package fuzzycsv.nav
 
 import fuzzycsv.FuzzyCSV
 import fuzzycsv.FuzzyCSVTable
+import fuzzycsv.Record
 import groovy.transform.CompileStatic
 
 @CompileStatic
@@ -126,7 +127,8 @@ class Navigator {
     }
 
     boolean canGoRight(FuzzyCSVTable t = table) {
-        return col < t.csv[row].size() - 1
+        def list = t.csv[row]
+        return list != null && col < list.size() - 1
     }
 
     Navigator fixLocation(FuzzyCSVTable t = table) {
@@ -224,6 +226,10 @@ class Navigator {
     Navigator addBelow(FuzzyCSVTable t = table, List<Object> list) {
         t.addRecord(row + 1, list)
         return this
+    }
+
+    Record row() {
+        return table.row(row)
     }
 
 }
