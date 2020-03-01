@@ -122,6 +122,57 @@ class NavigatorTest extends GroovyTestCase {
                              [11, 12, 13, 14, 15]]
 
 
+    }
 
+    @Test
+    void testDeleteRow() {
+
+        def table = tbl(data)
+        def navigator = new Navigator(0, 0, table)
+
+        def n = navigator.down().deleteRow()
+
+        assert n.table.csv == [['1', '2', '3', '4', '5'],
+                               [11, 12, 13, 14, 15]]
+
+
+    }
+
+    @Test
+    void testDeleteCol() {
+
+        def table = tbl(data)
+        def navigator = new Navigator(0, 0, table)
+
+        def n = navigator.down().deleteRow().right().deleteCol()
+
+        assert n.table.csv == [['1', '3', '4', '5'],
+                               [11, 13, 14, 15]]
+
+
+    }
+
+    @Test
+    void testDeleteColOnBoarder() {
+
+        def table = tbl(data)
+        def navigator = new Navigator(0, 0, table)
+
+        def n = navigator.right(table.header.size() - 1).deleteCol()
+
+        assert n.value() == '4'
+        assert n.table.csv == tbl(data).delete('5').csv
+    }
+
+    @Test
+    void testDeleteRowOnBoarder() {
+
+        def table = tbl(data)
+        def navigator = new Navigator(0, 0, table)
+
+        def n = navigator.down(table.csv.size() - 1).deleteRow()
+
+        assert n.value() == 6 // should be 6 coz 11 is deleted
+        assert n.table.csv == tbl(data).delete { it.'1' == 11 }.csv
     }
 }

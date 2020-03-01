@@ -1,6 +1,5 @@
 package fuzzycsv.nav
 
-
 import fuzzycsv.FuzzyCSV
 import fuzzycsv.FuzzyCSVTable
 import groovy.transform.CompileStatic
@@ -80,6 +79,16 @@ class Navigator {
         return col(idx)
     }
 
+    Navigator deleteRow(FuzzyCSVTable t = table) {
+        t.csv.remove(row)
+        return copy().fixLocation(t)
+    }
+
+    Navigator deleteCol(FuzzyCSVTable t = table) {
+        def r = t.deleteColumns(col)
+        return copy().fixLocation(r)
+    }
+
     Navigator copy() {
         new Navigator(col, row, table)
     }
@@ -120,6 +129,22 @@ class Navigator {
         return col < t.csv[row].size() - 1
     }
 
+    Navigator fixLocation(FuzzyCSVTable t = table) {
+        def newCol = fixRange(col, t.header)
+        def newRow = fixRange(row, t.csv)
+        return new Navigator(newCol, newRow, t)
+    }
+
+    private static int fixRange(int oldValue, List records) {
+        if (oldValue < 0) {
+            return 0
+        } else if (oldValue >= records.size()) {
+            return records.size() - 1
+        } else {
+            return oldValue
+        }
+
+    }
 
     NavIterator upIter(FuzzyCSVTable pTable = table) {
         def hasNextFn = { FuzzyCSVTable t, Navigator n -> n.canGoUp() }
