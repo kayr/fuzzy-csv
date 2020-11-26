@@ -82,6 +82,7 @@ class NavIterator implements ExIterator<Navigator, NavIterator> {
 
     @Override
     boolean hasNext() {
+        if(!selfFinished && curr.inBounds(table)) return true
         return stopper(table, curr)
     }
     @Override

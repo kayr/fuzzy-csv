@@ -105,12 +105,17 @@ class Navigator {
     }
 
 
-    def value(FuzzyCSVTable t=table) {
+    def value(FuzzyCSVTable t = table) {
         return t.value(this)
     }
 
     Navigator value(obj, FuzzyCSVTable t = table) {
         t.putInCell(col, row, obj)
+        return this
+    }
+
+    Navigator clear(FuzzyCSVTable t = table) {
+        value(null, t)
         return this
     }
 
@@ -138,14 +143,20 @@ class Navigator {
     }
 
     private static int fixRange(int oldValue, List records) {
+        int rSize
         if (oldValue < 0) {
             return 0
-        } else if (oldValue >= records.size()) {
-            return records.size() - 1
+        } else if (oldValue >= (rSize = records.size())) {
+            return rSize - 1
         } else {
             return oldValue
         }
 
+    }
+
+    boolean inBounds(FuzzyCSVTable t = table) {
+        return fixRange(row, t.csv) == row &&
+                fixRange(col, t.header) == col
     }
 
     NavIterator upIter(FuzzyCSVTable pTable = table) {
@@ -163,6 +174,12 @@ class Navigator {
     NavIterator rightIter(FuzzyCSVTable pTable = table) {
         def hasNextFn = { FuzzyCSVTable t, Navigator n -> n.canGoRight(t) }
         def navFn = { Navigator n -> n.right() }
+        return NavIterator.from(this, pTable).withStopper(hasNextFn).withStepper(navFn)
+    }
+
+    NavIterator leftIter(FuzzyCSVTable pTable = table) {
+        def hasNextFn = { FuzzyCSVTable t, Navigator n -> n.canGoLeft() }
+        def navFn = { Navigator n -> n.left() }
         return NavIterator.from(this, pTable).withStopper(hasNextFn).withStepper(navFn)
     }
 
@@ -198,6 +215,10 @@ class Navigator {
             }
         }
         return NavIterator.from(this, pTable).withStopper(hasNextFn).withStepper(navFn)
+    }
+
+    boolean sameCoords(Navigator other) {
+        return other.col == this.col && other.row == this.row
     }
 
 

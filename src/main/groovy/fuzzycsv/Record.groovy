@@ -9,15 +9,15 @@ class Record {
 
     List<String> finalHeaders
     List finalRecord
-    private FuzzyCSVTable finalTable
+    FuzzyCSVTable finalTable
 
     List<String> leftHeaders
     List leftRecord
-    private FuzzyCSVTable leftTable
+    FuzzyCSVTable leftTable
 
     List<String> rightHeaders
     List rightRecord
-    private FuzzyCSVTable rightTable
+    FuzzyCSVTable rightTable
 
     boolean useFuzzy = false
     boolean throwExceptionOnNullColumn = true

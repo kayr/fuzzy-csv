@@ -70,6 +70,18 @@ class NavigatorTest extends GroovyTestCase {
     }
 
     @Test
+    void testNavigationOnBorder(){
+        def navigator = Navigator.start().table(tbl(data).printTable())
+
+        def corner = navigator.row(0).col(4)
+
+        assert corner.value() == '5'
+        assert corner.rightIter().collect{it.value()} == ['5']
+        assert corner.right().rightIter().collect{it.value()} == []
+
+    }
+
+    @Test
     void testMutableNav() {
 
         def navigator = new Navigator(0, 0, tbl(data))

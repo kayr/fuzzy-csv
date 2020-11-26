@@ -47,9 +47,6 @@ class FuzzyCSVUtils {
         toNumber(obj, false, preferredType)
     }
 
-    static Number coerceToNumberStrict(obj, Class preferredType = Integer) {
-        return toNumber(obj, true, preferredType)
-    }
 
     private static Number toNumber(obj, boolean strict = true, Class<? extends Number> preferredType = Integer) {
         if (obj == null)
