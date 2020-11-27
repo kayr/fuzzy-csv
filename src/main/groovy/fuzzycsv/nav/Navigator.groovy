@@ -27,6 +27,23 @@ class Navigator {
         return START
     }
 
+    static Navigator atTopLeft(FuzzyCSVTable t) {
+        return new Navigator(0, 0, t)
+    }
+
+    static Navigator atTopRight(FuzzyCSVTable t) {
+        return new Navigator(t.header.size() - 1, 0, t)
+    }
+
+
+    static Navigator atBottomLeft(FuzzyCSVTable t) {
+        return new Navigator(0, t.csv.size() - 1, t)
+    }
+
+    static Navigator atBottomRight(FuzzyCSVTable t) {
+        return new Navigator(t.header.size() - 1, t.csv.size() - 1, t)
+    }
+
     int getCol() {
         return col
     }
@@ -72,6 +89,22 @@ class Navigator {
 
     Navigator right(int steps = 1) {
         return new Navigator(col + steps, row, table)
+    }
+
+    Navigator toTopLeft(FuzzyCSVTable t = table){
+        return atTopLeft(t)
+    }
+
+    Navigator toToRight(FuzzyCSVTable t = table){
+        return atTopRight(t)
+    }
+
+    Navigator toBottomLeft(FuzzyCSVTable t = table){
+        return atBottomLeft(t)
+    }
+
+    Navigator toBottomRight(FuzzyCSVTable t = table){
+        return atBottomRight(t)
     }
 
     Navigator to(String column, FuzzyCSVTable t = table) {

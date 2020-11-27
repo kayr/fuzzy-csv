@@ -79,6 +79,12 @@ class NavigatorTest extends GroovyTestCase {
         assert corner.rightIter().collect{it.value()} == ['5']
         assert corner.right().rightIter().collect{it.value()} == []
 
+
+        assert corner.toTopLeft().value() == '1'
+        assert corner.toToRight().value() == '5'
+        assert corner.toBottomLeft().value() == 11
+        assert corner.toBottomRight().value() == 15
+
     }
 
     @Test
