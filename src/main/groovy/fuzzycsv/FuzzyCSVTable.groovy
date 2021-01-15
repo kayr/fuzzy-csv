@@ -3,6 +3,8 @@ package fuzzycsv
 import com.jakewharton.fliptables.FlipTable
 import com.opencsv.CSVParser
 import fuzzycsv.nav.Navigator
+import fuzzycsv.rdbms.FuzzyCSVDbExporter
+import fuzzycsv.rdbms.FuzzyCsvDbInserter
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import groovy.transform.stc.ClosureParams
@@ -11,6 +13,7 @@ import org.codehaus.groovy.runtime.InvokerHelper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+import java.sql.Connection
 import java.sql.ResultSet
 
 import static fuzzycsv.RecordFx.fx
@@ -470,6 +473,7 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     /**
      * Deprecated use #union
+     *
      */
     @Deprecated
     FuzzyCSVTable mergeByAppending(FuzzyCSVTable tbl) {
@@ -969,6 +973,24 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     int hashCode() {
         return csv.hashCode()
+    }
+
+    FuzzyCSVTable dbInsert(Connection connection, String pTableName = tableName) {
+        def table = name(pTableName)
+        new FuzzyCsvDbInserter().createTable(connection, table)
+
+
+    }
+
+    FuzzyCSVTable dbCreateTable(Connection connection, String pTableName = tableName) {
+        def table = name(pTableName)
+
+    }
+
+    FuzzyCSVTable dbCreateStructure(Connection connection, String pTableName = tableName) {
+        def table = name(pTableName)
+        new FuzzyCSVDbExporter().createTable(connection, table)
+        return table
     }
 }
 
