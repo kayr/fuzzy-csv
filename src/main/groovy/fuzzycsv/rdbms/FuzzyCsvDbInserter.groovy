@@ -13,7 +13,7 @@ class FuzzyCsvDbInserter {
     }
 
 
-    private static String inTicks(String s) {
+     static String inTicks(String s) {
         if (s.contains("`")) {
             throw new IllegalArgumentException("Header cannot contain backtick")
         }
@@ -79,14 +79,11 @@ class FuzzyCsvDbInserter {
         return Pair.of(valuePhrase + values.join(",\n"), params)
     }
 
-    static List<Pair<String, List<Object>>> generateInserts(int pageSize, FuzzyCSVTable table, String tableName, String... identifiers) {
+    static List<Pair<String, List<Object>>> generateInserts(int pageSize, FuzzyCSVTable table, String tableName) {
 
+        def tables = paginate(table, pageSize)
 
-        def size = table.size()
-
-        def itemsPerPage = size / pageSize
-
-
+        return tables.collect { generateInsert(it, tableName) }
     }
 
 

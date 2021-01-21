@@ -10,7 +10,7 @@
     </appender>
 
     <root>
-        <priority value="debug"/>
+        <priority value="ALL"/>
         <appender-ref ref="console"/>
     </root>
 

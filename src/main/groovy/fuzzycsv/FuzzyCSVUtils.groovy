@@ -102,6 +102,32 @@ class FuzzyCSVUtils {
 
     }
 
+    static void closeQuietly(Closeable c) {
+        if (c != null) {
+            try {
+                c.close()
+            } catch (IOException e) {
+                /* ignore */
+            }
+        }
+    }
+
+    static void closeQuietly(AutoCloseable c) {
+        if (c != null) {
+            try {
+                c.close()
+            } catch (IOException e) {
+                /* ignore */
+            }
+        }
+    }
+
+    static Map toProperties(Object o) {
+        final Map properties = o.properties
+        properties.remove("class")
+        return properties
+    }
+
 }
 
 class IndentHelper {

@@ -1,12 +1,21 @@
 package fuzzycsv
 
-import fuzzycsv.rdbms.FuzzyCSVDbExporter
-import fuzzycsv.rdbms.FuzzyCsvDbInserter
+import fuzzycsv.rdbms.*
+import org.junit.After
+import org.junit.Test
 
 import static fuzzycsv.FuzzyStaticApi.fx
 
 class FuzzyCSVDbExporterTest extends GroovyTestCase {
-    def export = new FuzzyCSVDbExporter()
+
+    def gsql = H2DbHelper.connection
+    def export = new FuzzyCSVDbExporter(connection: gsql.connection)
+
+
+    @After
+    void after() {
+        gsql.close()
+    }
 
     def data = [
             ['string_col', 'dec_col', 'int_col', 'bool_col'],
@@ -114,7 +123,34 @@ VALUES
                     it
                 }.csv == FuzzyCSVTable.toCSV(sql, 'select * from MYTABLE').csv
 
-        sql.close()
+    }
+
+
+    void testWithInsertWithPaginate() {
+
+        def table = FuzzyCSVTable.tbl(data)
+                .addColumn(fx { it.idx() }.az('id'))
+                .name('xxx')
+
+        table.dbExport(gsql.connection,
+                ExportParams
+                        .of(DbExportFlags.CREATE)
+                        .withPrimaryKeys('id'))
+
+        table.dbExport(gsql.connection,
+                ExportParams
+                        .of(DbExportFlags.INSERT)
+                        .withPageSize(2))
+
+
+        def d = FuzzyCSVTable.toCSV(gsql, 'select * from XXX')
+        assert d.csv == [['STRING_COL', 'DEC_COL', 'INT_COL', 'BOOL_COL', 'ID'],
+                         ['Hakibale', 18.1, null, null, 1],
+                         ['Hakibale', 19.0, null, null, 2],
+                         ['Kisomoro', null, 1, true, 3]]
+
+        assert DDLUtils.tableExists(gsql.connection, 'XXX')
+        assert !DDLUtils.tableExists(gsql.connection, 'XXX2')
     }
 
     void testPaginate() {
@@ -202,6 +238,74 @@ VALUES
             assert pages2.first().size() == 9
 
         }
+    }
+
+    void testExportIfTableDoesNotExist() {
+        def t = FuzzyCSVTable.tbl(data)
+                .addColumn('id') { it.idx() }
+                .name('xxd')
+
+
+        t.dbExport(gsql.connection, ExportParams
+                .of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT)
+                .withPageSize(2))
+
+
+        def d = FuzzyCSVTable.toCSV(gsql, 'select * from XXD')
+        assert d.csv == [['STRING_COL', 'DEC_COL', 'INT_COL', 'BOOL_COL', 'ID'],
+                         ['Hakibale', 18.1, null, null, 1],
+                         ['Hakibale', 19.0, null, null, 2],
+                         ['Kisomoro', null, 1, true, 3]]
+    }
+
+    @Test
+    void testSyncAndCreateMissingColumn() {
+        def table1 = FuzzyCSVTable.fromMapList([[id: 1, a: 1,
+                                                 b : 2.4,
+                                                 c : 3,
+                                                 a3: 'XXX']])
+
+        def table2 = FuzzyCSVTable.fromMapList([[id: 2,
+                                                 a : 11,
+                                                 b : 227,
+                                                 c : 33,
+                                                 d : 44,
+                                                 a3: 'XXX' * 100]])
+        def table3 = FuzzyCSVTable.fromMapList([[id: 2,
+                                                 a : 11,
+                                                 b : 9.0001,
+                                                 c : 33,
+                                                 d : 44,
+                                                 a3: 'XXX' * 100]])
+
+        table1.name('X1')
+                .dbExport(
+                        gsql.connection,
+                        ExportParams
+                                .of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT)
+                                .withPageSize(2))
+
+        table2
+                .transformHeader { it.toUpperCase() }
+                .name('X1')
+                .dbExport(
+                        gsql.connection,
+                        ExportParams
+                                .of(DbExportFlags.withRestructure())
+                                .withPageSize(2))
+
+        table3
+                .transformHeader { it.toUpperCase() }
+                .name('X1')
+                .dbExport(
+                        gsql.connection,
+                        ExportParams
+                                .of(DbExportFlags.withRestructure())
+                                .withPageSize(2))
+
+        FuzzyCSVTable.toCSV(gsql,'select * from X1').printTable()
+
+
     }
 
 }

@@ -3,11 +3,13 @@ package fuzzycsv
 import com.jakewharton.fliptables.FlipTable
 import com.opencsv.CSVParser
 import fuzzycsv.nav.Navigator
+import fuzzycsv.rdbms.DbExportFlags
+import fuzzycsv.rdbms.ExportParams
 import fuzzycsv.rdbms.FuzzyCSVDbExporter
-import fuzzycsv.rdbms.FuzzyCsvDbInserter
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import groovy.transform.stc.ClosureParams
+import groovy.transform.stc.FirstParam
 import groovy.transform.stc.SimpleType
 import org.codehaus.groovy.runtime.InvokerHelper
 import org.slf4j.Logger
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory
 
 import java.sql.Connection
 import java.sql.ResultSet
+import java.sql.SQLException
 
 import static fuzzycsv.RecordFx.fx
 
@@ -66,6 +69,16 @@ class FuzzyCSVTable implements Iterable<Record> {
         for (it in renameMapping) {
             renameHeader(it.key, it.value)
         }
+        return this
+    }
+
+    FuzzyCSVTable transformHeader(@ClosureParams(FirstParam.FirstGenericType) Closure<String> func) {
+        setHeaderRow(header.collect(func))
+        this
+    }
+
+    FuzzyCSVTable setHeaderRow(List<String> newHeader) {
+        csv[0] = FastIndexOfList.wrap(newHeader)
         return this
     }
 
@@ -215,7 +228,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         Map<Object, FuzzyCSVTable> entries = [:]
 
         groups.each { def key, List value ->
-            value.add(0, header)
+            value.add(0, csvHeader)
             entries[key] = tbl(value)
         }
 
@@ -505,8 +518,13 @@ class FuzzyCSVTable implements Iterable<Record> {
         return tbl(thisCsv)
     }
 
+    FuzzyCSVTable addColumn(String name,
+                            @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func) {
+        return addColumn(fx(name, func))
+    }
+
     FuzzyCSVTable addColumnByCopy(RecordFx... fnz) {
-        def newHeader = [*header,*fnz]
+        def newHeader = [*header, *fnz]
         return select(newHeader)
     }
 
@@ -705,6 +723,11 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     static FuzzyCSVTable fromMapList(Collection<? extends Map> listOfMaps) {
         tbl(FuzzyCSV.toCSVLenient(listOfMaps as List))
+    }
+
+    static FuzzyCSVTable fromPojoList(Collection<Object> pojoList) {
+        def listOfMaps = pojoList.collect { FuzzyCSVUtils.toProperties(it) }
+        return fromMapList(listOfMaps)
     }
 
     static FuzzyCSVTable toCSV(Sql sql, String query) {
@@ -975,22 +998,51 @@ class FuzzyCSVTable implements Iterable<Record> {
         return csv.hashCode()
     }
 
-    FuzzyCSVTable dbInsert(Connection connection, String pTableName = tableName) {
-        def table = name(pTableName)
-        new FuzzyCsvDbInserter().createTable(connection, table)
 
+    FuzzyCSVTable dbExport(Connection connection, ExportParams params) {
+        assert tableName != null
+
+        def exporter = new FuzzyCSVDbExporter(connection)
+
+        if (params.exportFlags.contains(DbExportFlags.CREATE)) {
+            exporter.createTable(this, params.primaryKeys as String[])
+        }
+
+        if (params.exportFlags.contains(DbExportFlags.CREATE_IF_NOT_EXISTS)) {
+            exporter.createTableIfNotExists(this, params.primaryKeys as String[])
+        }
+
+        if (params.exportFlags.contains(DbExportFlags.INSERT)) {
+            try {
+                exporter.insertData(this, params.pageSize)
+            } catch (SQLException e) {
+                retryInsert(params, e, exporter)
+            }
+        }
+
+        this
 
     }
 
-    FuzzyCSVTable dbCreateTable(Connection connection, String pTableName = tableName) {
-        def table = name(pTableName)
-
+    private void retryInsert(ExportParams params,
+                             SQLException retryCause,
+                             FuzzyCSVDbExporter exporter) {
+        if (params.exportFlags.contains(DbExportFlags.RESTRUCTURE)) {
+            log.warn("error while exporting [${tableName}] trying to restructure: $retryCause")
+            restructureAndInsert(exporter, params, retryCause)
+        } else {
+            throw retryCause
+        }
     }
 
-    FuzzyCSVTable dbCreateStructure(Connection connection, String pTableName = tableName) {
-        def table = name(pTableName)
-        new FuzzyCSVDbExporter().createTable(connection, table)
-        return table
+    private void restructureAndInsert(FuzzyCSVDbExporter exporter, ExportParams params, SQLException e) {
+        try {
+            exporter.restructureTable(this)
+            exporter.insertData(this, params.pageSize)
+        } catch (t) {
+            t.addSuppressed(e)
+            throw t
+        }
     }
 }
 
