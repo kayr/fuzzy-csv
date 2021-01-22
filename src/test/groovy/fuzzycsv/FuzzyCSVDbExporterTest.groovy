@@ -313,27 +313,12 @@ VALUES
                     }
                 }
 
-        Navigator.start().table(fromDb)
-                .allIter()
-                .every {
-                    def value = it.value()
-                    if (value instanceof BigDecimal) {
-                        it.value(value.stripTrailingZeros())
-                    }
-                }
 
         def mergedResult = (table1.transformHeader { it.toUpperCase() } << table2 << table3).select(fromDb.header)
 
-        Navigator.start().table(mergedResult)
-                .allIter()
-                .every {
-                    def value = it.value()
-                    if (value instanceof BigDecimal) {
-                        it.value(value.stripTrailingZeros())
-                    }
-                }
 
-        assertEquals(mergedResult.csv, fromDb.csv)
+
+        assert mergedResult.csv == fromDb.csv
 
 
     }
