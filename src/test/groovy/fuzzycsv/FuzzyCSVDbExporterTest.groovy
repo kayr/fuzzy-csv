@@ -1,5 +1,6 @@
 package fuzzycsv
 
+import fuzzycsv.nav.Navigator
 import fuzzycsv.rdbms.*
 import org.junit.After
 import org.junit.Test
@@ -28,7 +29,7 @@ class FuzzyCSVDbExporterTest extends GroovyTestCase {
     void testCreateColumn() {
 
 
-        def tbl = FuzzyCSVTable.tbl(data).printTable()
+        def tbl = FuzzyCSVTable.tbl(data)
         def columns = export.createColumns(tbl)
 
         columns.find { it.name == 'string_col' }.with {
@@ -65,14 +66,12 @@ class FuzzyCSVDbExporterTest extends GroovyTestCase {
 
         def ddl = export.createDDL(tbl.name("mytable"))
 
-        println(ddl)
 
         sql.execute(ddl)
 
 
         def columns = FuzzyCSVTable.toCSV(sql.connection.metaData.getColumns(null, null, 'MYTABLE', null))
 
-        columns.printTable()
 
         columns.find { it.COLUMN_NAME == 'STRING_COL' }.with {
             assert it.TYPE_NAME == 'VARCHAR'
@@ -305,8 +304,17 @@ VALUES
 
         def fromDb = FuzzyCSVTable.toCSV(gsql, 'select * from X1')
 
-//        assert v.toString() == (table1.transformHeader {it.toUpperCase()} << table2 << table3).csv
-        assertEquals((table1.transformHeader { it.toUpperCase() } << table2 << table3).select(fromDb.header).csv,fromDb.csv)
+        Navigator.start().table(fromDb)
+                .allIter()
+                .every {
+                    def value = it.value()
+                    if (value instanceof BigDecimal) {
+                        it.value(value.stripTrailingZeros())
+                    }
+
+                }
+
+        assertEquals((table1.transformHeader { it.toUpperCase() } << table2 << table3).select(fromDb.header).csv, fromDb.csv)
 
 
     }
