@@ -73,14 +73,10 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable transformHeader(@ClosureParams(FirstParam.FirstGenericType) Closure<String> func) {
-        setHeaderRow(header.collect(func))
+        setHeader(header.collect(func))
         this
     }
 
-    FuzzyCSVTable setHeaderRow(List<String> newHeader) {
-        csv[0] = FastIndexOfList.wrap(newHeader)
-        return this
-    }
 
     FuzzyCSVTable renameHeader(int from, String to) {
         if (from >= 0 && from < header.size())
@@ -569,6 +565,12 @@ class FuzzyCSVTable implements Iterable<Record> {
         else
             csv[0]
     }
+
+    FuzzyCSVTable setHeader(List<String> newHeader) {
+        csv[0] = FastIndexOfList.wrap(newHeader)
+        return this
+    }
+
 
     FuzzyCSVTable copy() {
         tbl(FuzzyCSV.copy(csv))

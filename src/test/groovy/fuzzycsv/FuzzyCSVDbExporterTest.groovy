@@ -39,13 +39,13 @@ class FuzzyCSVDbExporterTest extends GroovyTestCase {
 
         columns.find { it.name == 'dec_col' }.with {
             assert it.type == 'decimal'
-            assert it.size == 3
-            assert it.decimals == 1
+            assert it.size == 8
+            assert it.decimals == 6
         }
 
         columns.find { it.name == 'int_col' }.with {
-            assert it.type == 'decimal'
-            assert it.size == 1
+            assert it.type == 'bigint'
+            assert it.size == 11
             assert it.decimals == 0
         }
 
@@ -82,13 +82,13 @@ class FuzzyCSVDbExporterTest extends GroovyTestCase {
 
         columns.find { it.COLUMN_NAME == 'DEC_COL' }.with {
             assert it.TYPE_NAME == 'DECIMAL'
-            assert it.COLUMN_SIZE == 3
-            assert it.DECIMAL_DIGITS == 1
+            assert it.COLUMN_SIZE == 8
+            assert it.DECIMAL_DIGITS == 6
         }
 
         columns.find { it.COLUMN_NAME == 'INT_COL' }.with {
-            assert it.TYPE_NAME == 'DECIMAL'
-            assert it.COLUMN_SIZE == 1
+            assert it.TYPE_NAME == 'BIGINT'
+            assert it.COLUMN_SIZE == 19
             assert it.DECIMAL_DIGITS == 0
         }
 

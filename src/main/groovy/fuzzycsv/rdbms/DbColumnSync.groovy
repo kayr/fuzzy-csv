@@ -16,7 +16,7 @@ class DbColumnSync {
     Sql gSql
     String tableName
     FuzzyCSVTable table
-     int maxVarCharSize = 10000
+     int maxVarCharSize = 4000
 
 
     def sync() {
