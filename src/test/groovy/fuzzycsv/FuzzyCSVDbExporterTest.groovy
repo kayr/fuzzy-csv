@@ -276,7 +276,7 @@ VALUES
                                                  b : 9.0001,
                                                  c : 33,
                                                  d : 44,
-                                                 a3: 'XXX' * 100]])
+                                                 a3: 'X' * 10_0001]])
 
         table1.name('X1')
                 .dbExport(
@@ -303,7 +303,10 @@ VALUES
                                 .of(DbExportFlags.withRestructure())
                                 .withPageSize(2))
 
-        FuzzyCSVTable.toCSV(gsql,'select * from X1').printTable()
+        def fromDb = FuzzyCSVTable.toCSV(gsql, 'select * from X1')
+
+//        assert v.toString() == (table1.transformHeader {it.toUpperCase()} << table2 << table3).csv
+        assertEquals((table1.transformHeader { it.toUpperCase() } << table2 << table3).select(fromDb.header).csv,fromDb.csv)
 
 
     }

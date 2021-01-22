@@ -18,6 +18,7 @@ class FuzzyCSVDbExporter {
     private static Logger log = LoggerFactory.getLogger(FuzzyCSVDbExporter)
 
     Connection connection
+     int defaultDecimals = 6
 
     FuzzyCSVDbExporter() {
     }
@@ -36,74 +37,6 @@ class FuzzyCSVDbExporter {
     }
 
     void createTable(FuzzyCSVTable table, String... primaryKeys) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         def ddl = createDDL(table, primaryKeys)
 
@@ -182,8 +115,27 @@ class FuzzyCSVDbExporter {
         new Column(type: 'varchar', name: name, size: Math.max(data.size(), 255))
     }
 
+
+    Column resolveType(String name, Integer data) {
+        new Column(type: 'bigint', name: name, size: 11)
+    }
+
+    Column resolveType(String name, BigInteger data) {
+        new Column(type: 'bigint', name: name, size: 11)
+    }
+
+    Column resolveType(String name, Long data) {
+        new Column(type: 'bigint', name: name, size: 11)
+    }
+
     Column resolveType(String name, BigDecimal data) {
-        new Column(type: 'decimal', name: name, size: data.precision(), decimals: data.scale())
+        def decimals = Math.max(data.scale(), defaultDecimals)
+        def wholeNumbers = data.precision() - data.scale()
+
+
+        def scale = bigDecimalScale(wholeNumbers, decimals)
+
+        new Column(type: 'decimal', name: name, size: scale.precision, decimals: scale.scale)
     }
 
     Column resolveType(String name, Number data) {
@@ -202,6 +154,11 @@ class FuzzyCSVDbExporter {
         new Column(type: 'varchar', name: name, size: 255)
     }
 
+    static Map<String, Integer> bigDecimalScale(int wholeNumbers, int decimals) {
+        def precision = wholeNumbers + decimals
+        [precision: precision, scale: decimals]
+    }
+
     @ToString(includePackage = false)
     static class Column {
         String name
@@ -212,12 +169,15 @@ class FuzzyCSVDbExporter {
 
         @Override
         String toString() {
-            if (decimals > 0)
-                return "${inTicks(name)} $type($size, $decimals) ${isPrimaryKey ? 'primary key' : ''}"
-            if (size > 0)
-                return "${inTicks(name)} $type($size) ${isPrimaryKey ? 'primary key' : ''}"
+            def primaryKeyStr = isPrimaryKey ? 'primary key' : ''
 
-            return "${inTicks(name)} $type ${isPrimaryKey ? 'primary key' : ''}"
+            if (decimals > 0)
+                return "${inTicks(name)} $type($size, $decimals) ${primaryKeyStr}"
+
+            if (size > 0)
+                return "${inTicks(name)} $type($size) ${primaryKeyStr}"
+
+            return "${inTicks(name)} $type ${primaryKeyStr}"
 
 
         }

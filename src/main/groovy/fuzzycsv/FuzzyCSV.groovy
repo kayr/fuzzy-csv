@@ -4,6 +4,7 @@ import com.github.kayr.phrasematcher.PhraseMatcher
 import com.opencsv.CSVParser
 import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
+import fuzzycsv.rdbms.DDLUtils
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.sql.Sql
@@ -11,6 +12,7 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+import java.sql.Clob
 import java.sql.ResultSet
 import java.sql.ResultSetMetaData
 import java.sql.SQLException
@@ -140,12 +142,18 @@ class FuzzyCSV {
         while (resultSet.next()) {
             List record = new ArrayList(columnCount)
             for (int i = 0; i < columnCount; i++) {
-                record.add(resultSet.getObject(i + 1))
+                def object = resultSet.getObject(i + 1)
+                if (object instanceof Clob) {
+                    def stream = DDLUtils.clobToString(object)
+                    record.add(stream)
+                } else
+                    record.add(object)
             }
             csv << record
         }
         return csv
     }
+
 
     @CompileStatic
     static int writeCsv(Sql sql, String query, Writer stream, boolean includeNames = true, boolean trim = false) {

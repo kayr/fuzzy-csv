@@ -16,6 +16,7 @@ class DbColumnSync {
     Sql gSql
     String tableName
     FuzzyCSVTable table
+     int maxVarCharSize = 10000
 
 
     def sync() {
@@ -36,9 +37,8 @@ class DbColumnSync {
                 .each { addColumn(it) }
 
 
-        def joined = receivedColumns.join(dbColumns, 'COLUMN_NAME').printTable()
+        def joined = receivedColumns.join(dbColumns, 'COLUMN_NAME')
                 .filter { it.size > it.COLUMN_SIZE || it.decimals > it.DECIMAL_DIGITS }
-                .printTable()
 
 
         joined.each { adjust(it) }
@@ -46,7 +46,7 @@ class DbColumnSync {
 
     }
 
-    private void adjust(Record r) {
+    void adjust(Record r) {
         def string = r.TYPE_NAME.toString()
 
         Column newCol
@@ -86,11 +86,18 @@ class DbColumnSync {
     private Column adjustForVarChar(Record r) {
         def max = table[r.COLUMN_NAME as String].max { it?.toString()?.length() }
         if (max == null) return null
-        new Column(name: r.COLUMN_NAME, type: r.TYPE_NAME, size: max?.toString()?.length(), decimals: 0)
+
+        def length = max.toString().length()
+
+        if (length <= maxVarCharSize)
+            new Column(name: r.COLUMN_NAME, type: r.TYPE_NAME, size: length, decimals: 0)
+        else
+            new Column(name: r.COLUMN_NAME, type: 'text', size: 0, decimals: 0)
+
     }
 
 
-    private List<Column> getMissionColumns(FuzzyCSVTable receivedColumns, FuzzyCSVTable dbColumns) {
+    private static List<Column> getMissionColumns(FuzzyCSVTable receivedColumns, FuzzyCSVTable dbColumns) {
         def joined = receivedColumns.leftJoin(dbColumns, 'COLUMN_NAME')
 
 
@@ -106,7 +113,7 @@ class DbColumnSync {
     }
 
     def modifyColumn(Column column) {
-        def ddl = "ALTER TABLE ${FuzzyCsvDbInserter.inTicks(tableName)} MODIFY COLUMN ${column.sqlString()} ;"
+        def ddl = "ALTER TABLE ${FuzzyCsvDbInserter.inTicks(tableName)} MODIFY COLUMN ${column.sqlString()};"
         log.trace("adjusting column [$ddl]")
         gSql.execute(ddl as String)
 

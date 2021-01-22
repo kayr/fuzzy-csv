@@ -2,7 +2,9 @@ package fuzzycsv.rdbms
 
 import fuzzycsv.FuzzyCSVTable
 import fuzzycsv.FuzzyCSVUtils
+import groovy.transform.CompileStatic
 
+import java.sql.Clob
 import java.sql.Connection
 import java.sql.ResultSet
 
@@ -29,4 +31,17 @@ class DDLUtils {
     }
 
 
+    @CompileStatic
+    static String clobToString(Clob object) {
+        try {
+            def data = object.getSubString(1, object.length().intValue())
+            return data
+        } catch (Exception ignore) {
+            def stream = object.getCharacterStream(0l, object.length())
+            if (stream != null) {
+                return stream.text
+            }
+        }
+
+    }
 }
