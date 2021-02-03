@@ -84,7 +84,7 @@ class FuzzyCSVUtils {
 
 
     static <T> T time(String name, Closure<T> worker) {
-        def padding = '    '.multiply(IndentHelper.get())
+        def padding = repeat('    ', IndentHelper.get())
         IndentHelper.increment()
         println "$padding ### Task: {$name}..."
         def start = System.currentTimeMillis()
@@ -100,6 +100,21 @@ class FuzzyCSVUtils {
             IndentHelper.decrement()
         }
 
+    }
+
+    //added cause groovy 3 multiply now uses charsequence
+    private static String repeat(String self, Number factor) {
+        int size = factor.intValue();
+        if (size == 0)
+            return "";
+        else if (size < 0) {
+            throw new IllegalArgumentException("multiply() should be called with a number of 0 or greater not: " + size);
+        }
+        StringBuilder answer = new StringBuilder(self);
+        for (int i = 1; i < size; i++) {
+            answer.append(self);
+        }
+        return answer.toString();
     }
 
     static void closeQuietly(Closeable c) {

@@ -7,6 +7,7 @@ import org.apache.commons.lang3.tuple.Pair
 import java.util.concurrent.Callable
 import java.util.stream.StreamSupport
 
+//todo remove apache commons dependency
 class FuzzyCsvDbInserter {
 
     private FuzzyCsvDbInserter() {
