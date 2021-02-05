@@ -32,7 +32,7 @@ class DbColumnSyncTest extends GroovyTestCase {
                 ['col1', 'varchar', 255, 0])
 
         d.adjust(record)
-        assert lastSql.contains('ALTER TABLE `mytable` MODIFY COLUMN `col1` varchar(3) ;')
+        assert lastSql.isEmpty()
     }
 
     void testVarcharNull() {
