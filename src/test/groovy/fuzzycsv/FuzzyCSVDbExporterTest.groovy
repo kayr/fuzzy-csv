@@ -304,23 +304,68 @@ VALUES
 
         def fromDb = FuzzyCSVTable.toCSV(gsql, 'select * from X1')
 
-        Navigator.start().table(fromDb)
-                .allIter()
-                .every {
-                    def value = it.value()
-                    if (value instanceof BigDecimal) {
-                        it.value(value.stripTrailingZeros())
-                    }
-                }
+        normalizeNumbers(fromDb)
 
 
         def mergedResult = (table1.transformHeader { it.toUpperCase() } << table2 << table3).select(fromDb.header)
+        normalizeNumbers(mergedResult)
 
-
-
-        //assert mergedResult.csv == fromDb.csv
+        assert mergedResult.csv == fromDb.csv
 
 
     }
 
+    static FuzzyCSVTable normalizeNumbers(FuzzyCSVTable fromDb) {
+        Navigator
+                .start().table(fromDb)
+                .allIter()
+                .each {
+                    def value = it.value()
+                    if (value instanceof Number) {
+                        def stripped = value.toBigDecimal().stripTrailingZeros()
+                        it.value(stripped)
+                    }
+                }
+
+        return fromDb
+    }
+
+    void testUpdateData() {
+        def table1 = FuzzyCSVTable
+                .fromMapList([[id: 1, a: 1, b: 2.4, c: 3, a3: 'XXX', d1: 1.2],
+                              [id: 2, a: 11, b: 227, c: 33, d: 44, a3: 'BB']])
+                .name('X2')
+                .transformHeader { it.toUpperCase() }
+
+        def table2 = FuzzyCSVTable
+                .fromMapList([[id: 1, a: 12, b: 2.42, c: 32, a3: 'XXX2'],
+                              [id: 2, a: 112, b: 2272, c: 332, d: 44, a3: 'BB2',d1: 1.2]])
+                .name('X2')
+                .transformHeader { it.toUpperCase() }
+
+
+        def exporter = new FuzzyCSVDbExporter(gsql.connection)
+
+        table1.padAllRecords().dbExport(gsql.connection, ExportParams.of(DbExportFlags.CREATE,
+                DbExportFlags.INSERT,
+                DbExportFlags.RESTRUCTURE))
+
+        //make sure data is inserted
+        def inserted = FuzzyCSVTable.toCSV(gsql, 'select * from X2')
+        normalizeNumbers(inserted)
+        assert inserted.csv == [['ID', 'A', 'B', 'C', 'A3', 'D1', 'D'],
+                                [1, 1, 2.4, 3, 'XXX', 1.2, null],
+                                [2, 11, 227, 33, 'BB', null, 44]]
+
+
+        table2.padAllRecords().dbUpdate(gsql.connection, ExportParams.of(DbExportFlags.RESTRUCTURE).withPageSize(1), 'ID')
+
+        def v = FuzzyCSVTable.toCSV(gsql, 'select * from X2')
+
+        normalizeNumbers(v)
+        assert v.csv == [['ID', 'A', 'B', 'C', 'A3', 'D1', 'D'],
+                                           [1, 12, 2.42, 32, 'XXX2', null, null],
+                                           [2, 112, 2272, 332, 'BB2', 1.2, 44]]
+
+    }
 }

@@ -2,12 +2,14 @@ package fuzzycsv.rdbms
 
 import fuzzycsv.FuzzyCSVTable
 import fuzzycsv.Record
+import groovy.transform.CompileStatic
 import org.apache.commons.lang3.tuple.Pair
 
 import java.util.concurrent.Callable
 import java.util.stream.StreamSupport
 
 //todo remove apache commons dependency
+@CompileStatic
 class FuzzyCsvDbInserter {
 
     private FuzzyCsvDbInserter() {
@@ -26,7 +28,7 @@ class FuzzyCsvDbInserter {
 
         String updateStart = "UPDATE " + inTicks(tableName) + "\n"
 
-        List<String> finalHeaders = r.getFinalHeaders().findAll { h -> !identifiers.contains(h) }
+        Collection<String> finalHeaders = r.getFinalHeaders().findAll { String h -> !identifiers.contains(h) }
 
 
         List<Object> valueParams = new ArrayList<>()
@@ -41,7 +43,7 @@ class FuzzyCsvDbInserter {
 
 
         StringJoiner result = new StringJoiner(" AND ")
-        for (String i : finalHeaders) {
+        for (String i : identifiers) {
             String s = inTicks(i) + " = ?"
             result.add(s)
             valueParams.add(r.f(i))
@@ -55,7 +57,7 @@ class FuzzyCsvDbInserter {
 
     static List<Pair<String, List<Object>>> generateUpdate(FuzzyCSVTable table, String tableName, String... identifiers) {
         return StreamSupport.stream(table.spliterator(), false)
-                .collect { r -> generateUpdate(r, tableName, identifiers) }
+                .collect {Record r -> generateUpdate(r, tableName, identifiers) }
     }
 
     static Pair<String, List<Object>> generateInsert(FuzzyCSVTable table, String tableName) {
@@ -72,7 +74,7 @@ class FuzzyCsvDbInserter {
         String valueRow = table.getHeader().collect { "?" }.join(", ")
 
         for (Record r : table) {
-            values.add("($valueRow)")
+            values.add("($valueRow)".toString())
             params.addAll(r.getFinalRecord())
         }
 
@@ -103,7 +105,7 @@ class FuzzyCsvDbInserter {
         int pageCount = size % pageSize == 0 ? equalSizePageCount : equalSizePageCount + 1
 
 
-        return (0..pageCount - 1).collect { page ->
+        return (0..pageCount - 1).collect { Integer page ->
             int start = page * pageSize
             int end = start + pageSize
             def callable = { table[start + 1..end] } as Callable

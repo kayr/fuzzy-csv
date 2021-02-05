@@ -38,7 +38,6 @@ class DbColumnSync {
 
 
         def joined = receivedColumns.join(dbColumns, 'COLUMN_NAME')
-                .filter { it.size > it.COLUMN_SIZE || it.decimals > it.DECIMAL_DIGITS }
 
 
         joined.each { adjust(it) }
@@ -75,6 +74,11 @@ class DbColumnSync {
         def finalLeft = [origLeft, newLeft].max()
         def finalRight = [origRight, newRight].max()
 
+        if (origRight >= finalRight && origLeft >= finalLeft) {
+            log.trace("no adjustment required for [${r.COLUMN_NAME}]")
+            return null
+        }
+
 
         new Column(
                 name: r.COLUMN_NAME,
@@ -88,6 +92,12 @@ class DbColumnSync {
         if (max == null) return null
 
         def length = max.toString().length()
+
+        if(r.COLUMN_SIZE >= length) {
+            log.trace("no adjustment required for [${r.COLUMN_NAME}]")
+            return null
+        }
+
 
         if (length <= maxVarCharSize)
             new Column(name: r.COLUMN_NAME, type: r.TYPE_NAME, size: length, decimals: 0)

@@ -3,7 +3,6 @@ package fuzzycsv
 import com.jakewharton.fliptables.FlipTable
 import com.opencsv.CSVParser
 import fuzzycsv.nav.Navigator
-import fuzzycsv.rdbms.DbExportFlags
 import fuzzycsv.rdbms.ExportParams
 import fuzzycsv.rdbms.FuzzyCSVDbExporter
 import groovy.sql.Sql
@@ -17,7 +16,6 @@ import org.slf4j.LoggerFactory
 
 import java.sql.Connection
 import java.sql.ResultSet
-import java.sql.SQLException
 
 import static fuzzycsv.RecordFx.fx
 
@@ -44,6 +42,10 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     FuzzyCSVTable name(String name) {
         return tbl(name, csv)
+    }
+
+    String name() {
+        return tableName;
     }
 
     FuzzyCSVTable normalizeHeaders(String prefix = 'C_', String postFix = '_') {
@@ -679,7 +681,7 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     @CompileStatic
     FuzzyCSVTable padAllRecords() {
-        return tbl(FuzzyCSV.padAllRecords(csv))
+        return tbl(tableName, FuzzyCSV.padAllRecords(csv))
     }
 
     @CompileStatic
@@ -1002,50 +1004,17 @@ class FuzzyCSVTable implements Iterable<Record> {
 
 
     FuzzyCSVTable dbExport(Connection connection, ExportParams params) {
-        assert tableName != null
-
-        def exporter = new FuzzyCSVDbExporter(connection)
-
-        if (params.exportFlags.contains(DbExportFlags.CREATE)) {
-            exporter.createTable(this, params.primaryKeys as String[])
-        }
-
-        if (params.exportFlags.contains(DbExportFlags.CREATE_IF_NOT_EXISTS)) {
-            exporter.createTableIfNotExists(this, params.primaryKeys as String[])
-        }
-
-        if (params.exportFlags.contains(DbExportFlags.INSERT)) {
-            try {
-                exporter.insertData(this, params.pageSize)
-            } catch (SQLException e) {
-                retryInsert(params, e, exporter)
-            }
-        }
-
+        new FuzzyCSVDbExporter(connection)
+                .dbExport(this, params)
         this
-
     }
 
-    private void retryInsert(ExportParams params,
-                             SQLException retryCause,
-                             FuzzyCSVDbExporter exporter) {
-        if (params.exportFlags.contains(DbExportFlags.RESTRUCTURE)) {
-            log.warn("error while exporting [${tableName}] trying to restructure: $retryCause")
-            restructureAndInsert(exporter, params, retryCause)
-        } else {
-            throw retryCause
-        }
+    FuzzyCSVTable dbUpdate(Connection connection, ExportParams params, String... identifiers) {
+        new FuzzyCSVDbExporter(connection)
+                .updateData(this,params, identifiers)
+        this
     }
 
-    private void restructureAndInsert(FuzzyCSVDbExporter exporter, ExportParams params, SQLException e) {
-        try {
-            exporter.restructureTable(this)
-            exporter.insertData(this, params.pageSize)
-        } catch (t) {
-            t.addSuppressed(e)
-            throw t
-        }
-    }
 }
 
 

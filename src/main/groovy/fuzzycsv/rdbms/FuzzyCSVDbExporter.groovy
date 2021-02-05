@@ -5,11 +5,14 @@ package fuzzycsv.rdbms
 import fuzzycsv.FuzzyCSVTable
 import fuzzycsv.nav.Navigator
 import groovy.sql.Sql
+import groovy.transform.CompileStatic
 import groovy.transform.ToString
+import org.apache.commons.lang3.tuple.Pair
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import java.sql.Connection
+import java.util.concurrent.Callable
 
 import static fuzzycsv.rdbms.FuzzyCsvDbInserter.inTicks
 
@@ -18,13 +21,39 @@ class FuzzyCSVDbExporter {
     private static Logger log = LoggerFactory.getLogger(FuzzyCSVDbExporter)
 
     Connection connection
-     int defaultDecimals = 6
+    int defaultDecimals = 6
 
     FuzzyCSVDbExporter() {
     }
 
     FuzzyCSVDbExporter(Connection c) {
         this.connection = c
+
+    }
+
+
+    def dbExport(FuzzyCSVTable table, ExportParams params) {
+        assert table.name() != null
+
+        if (params.exportFlags.contains(DbExportFlags.CREATE)) {
+            createTable(table, params.primaryKeys as String[])
+        }
+
+        if (params.exportFlags.contains(DbExportFlags.CREATE_IF_NOT_EXISTS)) {
+            createTableIfNotExists(table, params.primaryKeys as String[])
+        }
+
+        if (params.exportFlags.contains(DbExportFlags.INSERT)) {
+            insertData(table, params)
+        }
+
+        return null
+
+    }
+
+    void insertData(FuzzyCSVTable table, ExportParams params) {
+
+        doInsertData(table, params.pageSize, params)
 
     }
 
@@ -99,17 +128,59 @@ class FuzzyCSVDbExporter {
     }
 
 
-    def insertData(FuzzyCSVTable table, int pageSize) {
+    def doInsertData(FuzzyCSVTable table, int pageSize, ExportParams params) {
 
         def inserts = FuzzyCsvDbInserter.generateInserts(pageSize, table, table.tableName)
 
-        def idList = inserts.collectMany {
-            log.trace("executing [$it.left] params $it.right")
-            sql().executeInsert(it.left, it.right)
+        def idList = inserts.collectMany { Pair<String, List<Object>> q ->
+            doWithRestructure(params, table) {
+                logQuery(q)
+                sql().executeInsert(q.left, q.right)
+
+            }
         }
 
         return idList
     }
+
+    private logQuery(Pair<String, List<Object>> it) {
+        log.trace("executing [$it.left] params $it.right")
+    }
+
+    @CompileStatic
+    def updateData(FuzzyCSVTable table, ExportParams params, String... identifiers) {
+        def queries = FuzzyCsvDbInserter.generateUpdate(table, table.name(), identifiers)
+
+        for (q in queries) {
+            doWithRestructure(params, table) {
+                logQuery(q)
+                sql().executeUpdate(q.left, q.right)
+            }
+        }
+    }
+
+    @CompileStatic
+    private <T> T doWithRestructure(ExportParams params, FuzzyCSVTable table, Callable<T> operation) {
+
+        try {
+            return operation.call()
+        } catch (x) {
+            if (!params.exportFlags.contains(DbExportFlags.RESTRUCTURE)) throw x
+
+            try {
+                log.warn("error while exporting [${table.name()}] trying to restructure: $x")
+
+                restructureTable(table)
+                return operation.call()
+
+            } catch (Exception x2) {
+                x.addSuppressed(x2)
+                throw x2
+            }
+        }
+
+    }
+
 
     Column resolveType(String name, String data) {
         new Column(type: 'varchar', name: name, size: Math.max(data.size(), 255))
