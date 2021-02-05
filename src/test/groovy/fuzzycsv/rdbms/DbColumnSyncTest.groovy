@@ -1,5 +1,6 @@
 package fuzzycsv.rdbms
 
+import fuzzycsv.FuzzyCSV
 import fuzzycsv.FuzzyCSVTable
 import fuzzycsv.H2DbHelper
 import fuzzycsv.Record
@@ -8,6 +9,9 @@ import groovy.sql.Sql
 import java.sql.SQLException
 
 class DbColumnSyncTest extends GroovyTestCase {
+    {
+        FuzzyCSV.ACCURACY_THRESHOLD.set(1)
+    }
 
     List<String> lastSql = []
     def sql = new Sql(H2DbHelper.connection.connection) {

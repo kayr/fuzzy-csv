@@ -3,14 +3,26 @@ package fuzzycsv
 import fuzzycsv.nav.Navigator
 import fuzzycsv.rdbms.*
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 
 import static fuzzycsv.FuzzyStaticApi.fx
 
 class FuzzyCSVDbExporterTest extends GroovyTestCase {
 
+    {
+        FuzzyCSV.ACCURACY_THRESHOLD.set(1)
+    }
+
     def gsql = H2DbHelper.connection
     def export = new FuzzyCSVDbExporter(connection: gsql.connection)
+
+
+    @Before
+    void clearMatcher() {
+        FuzzyCSV.ACCURACY_THRESHOLD.set(0.7)
+
+    }
 
 
     @After
@@ -344,7 +356,6 @@ VALUES
                 .transformHeader { it.toUpperCase() }
 
 
-        def exporter = new FuzzyCSVDbExporter(gsql.connection)
 
         table1.padAllRecords().dbExport(gsql.connection, ExportParams.of(DbExportFlags.CREATE,
                 DbExportFlags.INSERT,
