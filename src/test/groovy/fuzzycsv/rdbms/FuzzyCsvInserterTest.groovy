@@ -19,11 +19,11 @@ class FuzzyCsvInserterTest {
         Pair<String, List<Object>> result = FuzzyCsvDbInserter.generateInsert(table, "my_table")
 
         Assert.assertEquals("INSERT INTO `my_table`\n" +
-                " (`h1`,`h2`,`h3`)\n" +
+                " (`h1`, `h2`, `h3`) \n" +
                 "VALUES\n" +
-                " (?, ?, ?),\n" +
-                " (?, ?, ?),\n" +
-                " (?, ?, ?)", result.getKey())
+                "(?, ?, ?),\n" +
+                "(?, ?, ?),\n" +
+                "(?, ?, ?)", result.getKey())
 
         Assert.assertEquals("[1, '2', 'P', 1.2, '2.2', 'P.2', 1.3, '2.3', 'P.3']", DefaultGroovyMethods.inspect(result.getRight()))
 
