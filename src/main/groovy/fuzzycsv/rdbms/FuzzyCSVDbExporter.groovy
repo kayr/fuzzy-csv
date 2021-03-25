@@ -1,5 +1,3 @@
-
-
 package fuzzycsv.rdbms
 
 import fuzzycsv.FuzzyCSVTable
@@ -32,40 +30,61 @@ class FuzzyCSVDbExporter {
     }
 
 
-    def dbExport(FuzzyCSVTable table, ExportParams params) {
+    ExportResult dbExport(FuzzyCSVTable table, ExportParams params) {
         assert table.name() != null
 
+        ExportResult r = new ExportResult()
+        r.exportedData = table
+
         if (params.exportFlags.contains(DbExportFlags.CREATE)) {
-            createTable(table, params.primaryKeys as String[])
+            createTable(table, params)
+            r.createdTable = true
         }
 
         if (params.exportFlags.contains(DbExportFlags.CREATE_IF_NOT_EXISTS)) {
-            createTableIfNotExists(table, params.primaryKeys as String[])
+            r.createdTable = createTableIfNotExists(table, params)
         }
 
         if (params.exportFlags.contains(DbExportFlags.INSERT)) {
-            insertData(table, params)
+            def data = insertData(table, params)
+            r.primaryKeys = data
         }
 
-        return null
+        return r
 
     }
 
-    void insertData(FuzzyCSVTable table, ExportParams params) {
+    FuzzyCSVTable insertData(FuzzyCSVTable table, ExportParams params) {
 
-        doInsertData(table, params.pageSize, params)
+        def idList = doInsertData(table, params.pageSize, params)
+
+        return toPks(idList)
 
     }
 
+    FuzzyCSVTable toPks(List<List<Object>> lists) {
+        if (!lists || !lists[0]) {
+            return FuzzyCSVTable.withHeader('pk')
+        }
 
-    void createTableIfNotExists(FuzzyCSVTable table, String... primaryKeys) {
+        def first = lists.first()
+
+        def headers = (0..first.size() - 1).collect { "pk_$it".toString() }
+
+        return FuzzyCSVTable.tbl([headers, *lists])
+    }
+
+
+    boolean createTableIfNotExists(FuzzyCSVTable table, ExportParams primaryKeys) {
         def exists = DDLUtils.tableExists(connection, table.tableName)
         if (!exists) {
             createTable(table, primaryKeys)
+            return true
         }
+        return false
     }
 
-    void createTable(FuzzyCSVTable table, String... primaryKeys) {
+    void createTable(FuzzyCSVTable table, ExportParams primaryKeys) {
 
         def ddl = createDDL(table, primaryKeys)
 
@@ -83,7 +102,7 @@ class FuzzyCSVDbExporter {
     }
 
 
-    String createDDL(FuzzyCSVTable table, String... primaryKeys) {
+    String createDDL(FuzzyCSVTable table, ExportParams primaryKeys = ExportParams.defaultParams()) {
         def name = table.tableName
         assert name != null, "tables should contain name"
         def columnString =
@@ -95,20 +114,22 @@ class FuzzyCSVDbExporter {
 
     }
 
-    List<Column> createColumns(FuzzyCSVTable table, String... primaryKeys) {
+    List<Column> createColumns(FuzzyCSVTable table, ExportParams primaryKeys = ExportParams.defaultParams()) {
         def header = table.header
 
         def start = Navigator.atTopLeft(table)
 
         def columns = header.collect { name ->
             def firstValue = start.to(name).downIter().skip()
-                    .find { it.value() != null }
-                    ?.value()
+                    .find { it.value() != null }?.value()
 
             def column = resolveType(name, firstValue)
 
-            if (primaryKeys?.contains(name))
+            if (primaryKeys.primaryKeys?.contains(name))
                 column.isPrimaryKey = true
+
+            if (primaryKeys.autoIncrement?.contains(name))
+                column.autoIncrement = true
 
             return column
         }
@@ -128,19 +149,21 @@ class FuzzyCSVDbExporter {
     }
 
 
-    def doInsertData(FuzzyCSVTable table, int pageSize, ExportParams params) {
+    List<List<Object>> doInsertData(FuzzyCSVTable table, int pageSize, ExportParams params) {
 
         def inserts = FuzzyCsvDbInserter.generateInserts(pageSize, table, table.tableName)
 
-        def idList = inserts.collectMany { Pair<String, List<Object>> q ->
+        def rt = []
+        for (Pair<String, List<Object>> q in inserts) {
             doWithRestructure(params, table) {
                 logQuery(q)
-                sql().executeInsert(q.left, q.right)
-
+                def insert = sql().executeInsert(q.left, q.right)
+                rt.addAll(insert)
             }
         }
 
-        return idList
+
+        return rt
     }
 
     private logQuery(Pair<String, List<Object>> it) {
@@ -237,10 +260,15 @@ class FuzzyCSVDbExporter {
         int size
         int decimals
         boolean isPrimaryKey
+        boolean autoIncrement
 
         @Override
         String toString() {
             def primaryKeyStr = isPrimaryKey ? 'primary key' : ''
+
+            if (autoIncrement) {
+                primaryKeyStr = "$primaryKeyStr AUTO_INCREMENT"
+            }
 
             if (decimals > 0)
                 return "${inTicks(name)} $type($size, $decimals) ${primaryKeyStr}"
@@ -255,6 +283,16 @@ class FuzzyCSVDbExporter {
 
         String sqlString() {
             return toString()
+        }
+    }
+
+    static class ExportResult {
+        boolean createdTable
+        FuzzyCSVTable primaryKeys
+        FuzzyCSVTable exportedData
+
+        FuzzyCSVTable mergeKeys() {
+            primaryKeys.joinOnIdx(exportedData)
         }
     }
 

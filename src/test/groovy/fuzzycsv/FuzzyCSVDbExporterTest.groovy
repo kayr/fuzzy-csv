@@ -164,6 +164,43 @@ VALUES
         assert !DDLUtils.tableExists(gsql.connection, 'XXX2')
     }
 
+    void testWithInsertWithPaginateGeneratePKS() {
+
+        def table = FuzzyCSVTable.tbl(data)
+                .addColumn(fx { it.idx() }.az('id'))
+                .name('xxx1')
+
+        table.dbExport(gsql.connection,
+                ExportParams
+                        .of(DbExportFlags.CREATE)
+                        .withPrimaryKeys('id')
+                        .autoIncrement("id"))
+
+        table.deleteColumns('id')
+                .dbExportAndGetResult(gsql.connection,
+                        ExportParams
+                                .of(DbExportFlags.INSERT)
+                                .withPageSize(2))
+                .with {
+                    assert mergeKeys().csv == [['pk_0', 'string_col', 'dec_col', 'int_col', 'bool_col'],
+                                               [1, 'Hakibale', 18.1, null, null],
+                                               [2, 'Hakibale', 19, null, null],
+                                               [3, 'Kisomoro', null, 1, true]]
+
+                }
+
+
+        def d = FuzzyCSVTable.toCSV(gsql, 'select * from XXX1')
+        assert d.csv == [['STRING_COL', 'DEC_COL', 'INT_COL', 'BOOL_COL', 'ID'],
+                         ['Hakibale', 18.1, null, null, 1],
+                         ['Hakibale', 19.0, null, null, 2],
+                         ['Kisomoro', null, 1, true, 3]]
+
+        assert DDLUtils.tableExists(gsql.connection, 'XXX1')
+        assert !DDLUtils.tableExists(gsql.connection, 'XXX2')
+    }
+
+
     void testPaginate() {
 
         def table =
@@ -351,10 +388,9 @@ VALUES
 
         def table2 = FuzzyCSVTable
                 .fromMapList([[id: 1, a: 12, b: 2.42, c: 32, a3: 'XXX2'],
-                              [id: 2, a: 112, b: 2272, c: 332, d: 44, a3: 'BB2',d1: 1.2]])
+                              [id: 2, a: 112, b: 2272, c: 332, d: 44, a3: 'BB2', d1: 1.2]])
                 .name('X2')
                 .transformHeader { it.toUpperCase() }
-
 
 
         table1.padAllRecords().dbExport(gsql.connection, ExportParams.of(DbExportFlags.CREATE,
@@ -375,8 +411,8 @@ VALUES
 
         normalizeNumbers(v)
         assert v.csv == [['ID', 'A', 'B', 'C', 'A3', 'D1', 'D'],
-                                           [1, 12, 2.42, 32, 'XXX2', null, null],
-                                           [2, 112, 2272, 332, 'BB2', 1.2, 44]]
+                         [1, 12, 2.42, 32, 'XXX2', null, null],
+                         [2, 112, 2272, 332, 'BB2', 1.2, 44]]
 
     }
 }

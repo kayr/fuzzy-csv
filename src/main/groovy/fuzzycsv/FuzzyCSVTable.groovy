@@ -124,7 +124,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         def groupByColumns = columns.findAll { !(it instanceof Aggregator) }
         def fn = fx { Record r ->
             def answer = groupByColumns.collect { c ->
-                if (c instanceof RecordFx) ((RecordFx)c).getValue(r)
+                if (c instanceof RecordFx) ((RecordFx) c).getValue(r)
                 else r.final(c?.toString())
             }
             answer
@@ -216,7 +216,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         Map<Object, List<List>> groups = [:]
         csv.eachWithIndex { List entry, int i ->
             if (i == 0) return
-            Record record = Record.getRecord(csvHeader, entry,csv, i)
+            Record record = Record.getRecord(csvHeader, entry, csv, i)
             record.leftHeaders = csvHeader
             record.leftRecord = entry
             def value = groupFx.getValue(record)
@@ -419,6 +419,24 @@ class FuzzyCSVTable implements Iterable<Record> {
         return tbl(FuzzyCSV.fullJoin(csv, csv2, fx, FuzzyCSV.selectAllHeaders(csv, csv2) as String[]))
     }
 
+
+    FuzzyCSVTable joinOnIdx(FuzzyCSVTable data) {
+        return tbl(FuzzyCSV.joinOnIdx(csv, data.csv))
+    }
+
+    FuzzyCSVTable lefJoinOnIdx(FuzzyCSVTable data) {
+        return tbl(FuzzyCSV.leftJoinOnIdx(csv, data.csv))
+    }
+
+    FuzzyCSVTable rightJoinOnIdx(FuzzyCSVTable data) {
+        return tbl(FuzzyCSV.rightJoinOnIdx(csv, data.csv))
+    }
+
+    FuzzyCSVTable fullJoinOnIdx(FuzzyCSVTable data) {
+        return tbl(FuzzyCSV.fullJoinOnIdx(csv, data.csv))
+    }
+
+
     FuzzyCSVTable select(Object[] columns) {
         return select(columns as List)
     }
@@ -527,7 +545,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable deleteColumns(Object[] columnNames) {
-        return tbl(FuzzyCSV.deleteColumn(csv, columnNames))
+        return tbl(tableName, FuzzyCSV.deleteColumn(csv, columnNames))
     }
 
     FuzzyCSVTable delete(String[] columnNames) {
@@ -588,7 +606,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable delete(@ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func) {
-        filter {  func.call(it) == false }
+        filter { func.call(it) == false }
     }
 
     FuzzyCSVTable filter(RecordFx fx) {
@@ -686,7 +704,7 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     @CompileStatic
     <T> List<T> toPojoListStrict(Class<T> aClass) {
-        return toPojoList(aClass,true)
+        return toPojoList(aClass, true)
     }
 
     @CompileStatic
@@ -768,7 +786,6 @@ class FuzzyCSVTable implements Iterable<Record> {
             return cell
         throw new UnsupportedOperationException("could not convert to table : $json")
     }
-
 
 
     String toString() {
@@ -905,7 +922,7 @@ class FuzzyCSVTable implements Iterable<Record> {
             l.collect { d ->
                 if (d == null || d == '') return '-'
                 if (d instanceof FuzzyCSVTable) return d.toStringFormatted()
-                return d.toString().replace('\t','    ')
+                return d.toString().replace('\t', '    ')
             }
         }
     }
@@ -1004,14 +1021,18 @@ class FuzzyCSVTable implements Iterable<Record> {
 
 
     FuzzyCSVTable dbExport(Connection connection, ExportParams params) {
-        new FuzzyCSVDbExporter(connection)
-                .dbExport(this, params)
+        dbExportAndGetResult(connection, params)
         this
+    }
+
+    FuzzyCSVDbExporter.ExportResult dbExportAndGetResult(Connection connection, ExportParams params) {
+        return new FuzzyCSVDbExporter(connection)
+                .dbExport(this, params)
     }
 
     FuzzyCSVTable dbUpdate(Connection connection, ExportParams params, String... identifiers) {
         new FuzzyCSVDbExporter(connection)
-                .updateData(this,params, identifiers)
+                .updateData(this, params, identifiers)
         this
     }
 

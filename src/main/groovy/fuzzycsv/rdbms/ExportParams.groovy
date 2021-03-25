@@ -7,10 +7,21 @@ import groovy.transform.builder.SimpleStrategy
 class ExportParams {
     int pageSize = 10
     List<String> primaryKeys = []
+    List<String> autoIncrement = []
     Set<DbExportFlags> exportFlags = Collections.emptySet()
 
 
     private ExportParams() {}
+
+    ExportParams autoIncrement(String key, String... otherKeys) {
+        if (autoIncrement == null) autoIncrement = []
+
+        autoIncrement.add(key)
+
+        if (otherKeys) autoIncrement.addAll(otherKeys)
+
+        return this
+    }
 
     ExportParams withPrimaryKeys(String key, String... otherKeys) {
         if (primaryKeys == null) primaryKeys = []
@@ -33,5 +44,9 @@ class ExportParams {
         return new ExportParams().withExportFlags(flags)
     }
 
+
+    static ExportParams defaultParams(){
+        return new ExportParams()
+    }
 
 }

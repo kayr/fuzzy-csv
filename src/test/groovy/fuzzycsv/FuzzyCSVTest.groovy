@@ -122,7 +122,7 @@ class FuzzyCSVTest {
     @Test
     void test_TableShouldMergeNullCsv() {
         def a = tbl([['a'], ['r1']])
-        def b = tbl((List)null)
+        def b = tbl((List) null)
 
         assert a.union(b).csv == [['a'],
                                   ['r1']]
@@ -208,6 +208,38 @@ class FuzzyCSVTest {
         //fuzzy csv table
         join = tbl(csv2).join(tbl(csv1), 'Name').csv
         assertEquals join.toString(), expected.toString()
+    }
+
+
+    @Test
+    void tesJoinOnIdx() {
+
+        def csv1 = tbl(getCSV('/csv2.csv'))
+        def csv2 = tbl(getCSV('/csv1.csv'))
+
+        assert csv1.joinOnIdx(csv2).csv ==
+                [['Name', 'Subject', 'Mark', 'Name', 'Sex', 'Age', 'Location'],
+                 ['Ronald', 'Math', '50', 'Ronald', 'Male', '3', 'Bweyos'],
+                 ['Sara', 'English', '50', 'Sara', 'Female', '4', 'Muyenga']]
+
+
+        assert csv1.lefJoinOnIdx(csv2).csv == [['Name', 'Subject', 'Mark', 'Name', 'Sex', 'Age', 'Location'],
+                                               ['Ronald', 'Math', '50', 'Ronald', 'Male', '3', 'Bweyos'],
+                                               ['Sara', 'English', '50', 'Sara', 'Female', '4', 'Muyenga'],
+                                               ['Betty', 'Biology', '80', 'Betty', null, null, null]]
+
+
+        assert csv1.rightJoinOnIdx(csv2).csv == [['Name', 'Subject', 'Mark', 'Name', 'Sex', 'Age', 'Location'],
+                                                 ['Ronald', 'Math', '50', 'Ronald', 'Male', '3', 'Bweyos'],
+                                                 ['Sara', 'English', '50', 'Sara', 'Female', '4', 'Muyenga']]
+
+
+        assert csv2.rightJoinOnIdx(csv1).csv == [['Name', 'Sex', 'Age', 'Location', 'Name', 'Subject', 'Mark'],
+                                                 ['Ronald', 'Male', '3', 'Bweyos', 'Ronald', 'Math', '50'],
+                                                 ['Ronald', 'Female', '4', 'Muyenga', 'Ronald', 'English', '50'],
+                                                 ['Betty', null, null, null, 'Betty', 'Biology', '80']]
+
+
     }
 
     @Test
@@ -362,9 +394,7 @@ class FuzzyCSVTest {
     def getCSV(String path) {
 
 
-
-
-        def text = Data.csvs[path.replace('/','')]
+        def text = Data.csvs[path.replace('/', '')]
         return FuzzyCSV.toUnModifiableCSV(
                 FuzzyCSVTable.toListOfLists(
                         FuzzyCSVTable.parseCsv(text).csv).csv)
@@ -479,7 +509,6 @@ class FuzzyCSVTest {
                 ['Sara', 0],
                 ['Betty', 0]
         ]
-
 
 
         assert expected == newCSV
@@ -672,9 +701,8 @@ class FuzzyCSVTest {
 
 
         def actual = tbl(orig).transform(fx('dis') { "SC ${it.dis}" },
-                                         fx('qlt') { "$it.dis $it.qlt" }).csv
+                fx('qlt') { "$it.dis $it.qlt" }).csv
         assert actual == expected
-
 
 
     }
@@ -772,7 +800,7 @@ class FuzzyCSVTest {
         //test aliases on columns
         assert [['Identifier', 'Another ID'], [1, 1]] == FuzzyCSV.toCSV(sql, 'select id as "Identifier",id as "Another ID" from PERSON')
 
-        sql.query('select id as "Identifier",id as "Another ID" from PERSON'){ rs ->
+        sql.query('select id as "Identifier",id as "Another ID" from PERSON') { rs ->
             def v = FuzzyCSVTable.toCSV(rs);
 
             assert v.csv == [['Identifier', 'Another ID'], [1, 1]]
@@ -844,7 +872,7 @@ class FuzzyCSVTest {
         assert [['name', 'sex']] == FuzzyCSV.filter([['name', 'sex']], fx { it.name = '' })
 
 
-        assert [['name', 'sex'], ['k', 'm'], ['r', 'f']] == tbl(table).delete {it.name == 'v'}.csv
+        assert [['name', 'sex'], ['k', 'm'], ['r', 'f']] == tbl(table).delete { it.name == 'v' }.csv
 
     }
 
