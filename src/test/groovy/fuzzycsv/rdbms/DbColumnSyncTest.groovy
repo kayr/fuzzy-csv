@@ -62,7 +62,7 @@ class DbColumnSyncTest extends GroovyTestCase {
                 ['col1', 'varchar', 255, 0])
 
         d.adjust(record)
-        assert lastSql.contains('ALTER TABLE `mytable` MODIFY COLUMN `col1` varchar(987) ;')
+        assert lastSql.contains('ALTER TABLE `mytable` ALTER COLUMN `col1` varchar(987) ;')
     }
 
     void testVarcharToText() {
@@ -75,7 +75,7 @@ class DbColumnSyncTest extends GroovyTestCase {
                 ['col1', 'varchar', 255, 0])
 
         d.adjust(record)
-        assert lastSql.contains('ALTER TABLE `mytable` MODIFY COLUMN `col1` text ;')
+        assert lastSql.contains('ALTER TABLE `mytable` ALTER COLUMN `col1` text ;')
     }
     //endregion
 
@@ -90,7 +90,7 @@ class DbColumnSyncTest extends GroovyTestCase {
                 ['col1', 'decimal', 1, 2])
 
         d.adjust(record)
-        assert lastSql.contains('ALTER TABLE `mytable` MODIFY COLUMN `col1` decimal(5, 2) ;')
+        assert lastSql.contains('ALTER TABLE `mytable` ALTER COLUMN `col1` decimal(5, 2) ;')
     }
 
     void testDecimalNull() {

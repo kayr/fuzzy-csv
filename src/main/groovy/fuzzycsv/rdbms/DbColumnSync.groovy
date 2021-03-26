@@ -123,7 +123,7 @@ class DbColumnSync {
     }
 
     def modifyColumn(Column column) {
-        def ddl = "ALTER TABLE ${FuzzyCsvDbInserter.inTicks(tableName)} MODIFY COLUMN ${column.sqlString()};"
+        def ddl = "ALTER TABLE ${FuzzyCsvDbInserter.inTicks(tableName)} ALTER COLUMN ${column.sqlString()};"
         log.trace("adjusting column [$ddl]")
         gSql.execute(ddl as String)
 
