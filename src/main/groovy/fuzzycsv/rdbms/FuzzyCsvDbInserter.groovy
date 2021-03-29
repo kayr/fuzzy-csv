@@ -17,7 +17,7 @@ class FuzzyCsvDbInserter {
 
 
      static String inTicks(String s) {
-        if (s.contains("`")) {
+        if (s.contains('`' as CharSequence)) {
             throw new IllegalArgumentException("Header cannot contain backtick")
         }
         return '`' + s + '`'
