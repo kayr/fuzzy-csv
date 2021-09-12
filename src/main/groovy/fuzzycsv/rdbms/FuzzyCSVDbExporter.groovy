@@ -166,7 +166,7 @@ class FuzzyCSVDbExporter {
 
     List<List<Object>> doInsertData(FuzzyCSVTable table, int pageSize) {
 
-        def inserts = FuzzyCsvDbInserter.generateInserts(pageSize, table, table.tableName)
+        def inserts = FuzzyCsvDbInserter.generateInserts(sqlRenderer,pageSize, table, table.tableName)
 
         def rt = []
         for (Pair<String, List<Object>> q in inserts) {

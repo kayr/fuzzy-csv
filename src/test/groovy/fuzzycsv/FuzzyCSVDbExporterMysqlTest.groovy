@@ -2,6 +2,7 @@ package fuzzycsv
 
 import fuzzycsv.nav.Navigator
 import fuzzycsv.rdbms.*
+import fuzzycsv.rdbms.stmt.DefaultSqlRenderer
 import fuzzycsv.rdbms.stmt.SqlDialect
 import org.junit.Assume
 import org.junit.Test
@@ -116,7 +117,7 @@ class FuzzyCSVDbExporterMysqlTest extends GroovyTestCase {
         }
 
 
-        def insert = FuzzyCsvDbInserter.generateInsert(tbl, 'MYTABLE')
+        def insert = FuzzyCsvDbInserter.generateInsert(DefaultSqlRenderer.getInstance(),tbl, 'MYTABLE')
 
         //check the sql insert
         assert insert.left == '''INSERT INTO `MYTABLE`

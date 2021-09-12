@@ -24,9 +24,6 @@ class FuzzyCsvDbInserter {
         return '`' + s + '`'
     }
 
-    static String quoteName(String tableName) {
-        inTicks(tableName)
-    }
 
     static Pair<String, List<Object>> generateUpdate(SqlRenderer sqlRenderer,
                                                      Record r,
@@ -34,7 +31,7 @@ class FuzzyCsvDbInserter {
                                                      String... identifiers) {
 
 
-        String updateStart = "UPDATE " + quoteName(tableName) + "\n"
+        String updateStart = "UPDATE " + sqlRenderer.quoteName(tableName) + "\n"
 
         Collection<String> finalHeaders = r.getFinalHeaders().findAll { String h -> !identifiers.contains(h) }
 
@@ -43,7 +40,7 @@ class FuzzyCsvDbInserter {
 
         StringJoiner joiner = new StringJoiner(",\n", "SET\n", "\n")
         for (String h : finalHeaders) {
-            String s = "  " + quoteName(h) + " =  ?"
+            String s = "  " + sqlRenderer.quoteName(h) + " =  ?"
             joiner.add(s)
             valueParams.add(r.f(h))
         }
@@ -52,7 +49,7 @@ class FuzzyCsvDbInserter {
 
         StringJoiner result = new StringJoiner(" AND ")
         for (String i : identifiers) {
-            String s = quoteName(i) + " = ?"
+            String s = sqlRenderer.quoteName(i) + " = ?"
             result.add(s)
             valueParams.add(r.f(i))
         }
@@ -71,10 +68,10 @@ class FuzzyCsvDbInserter {
                 .collect { Record r -> generateUpdate(sqlRenderer,r, tableName, identifiers) }
     }
 
-    static Pair<String, List<Object>> generateInsert(FuzzyCSVTable table, String tableName) {
-        String insertInto = "INSERT INTO " + quoteName(tableName)
+    static Pair<String, List<Object>> generateInsert(SqlRenderer sqlRenderer,FuzzyCSVTable table, String tableName) {
+        String insertInto = "INSERT INTO " + sqlRenderer.quoteName(tableName)
 
-        String insertHeader = table.getHeader().collect { quoteName(it) }.join(", ")
+        String insertHeader = table.getHeader().collect { sqlRenderer.quoteName(it) }.join(", ")
 
         String valuePhrase = insertInto + "\n (" + insertHeader + ") \nVALUES\n"
 
@@ -94,11 +91,11 @@ class FuzzyCsvDbInserter {
     }
 
 
-    static List<Pair<String, List<Object>>> generateInserts(int pageSize, FuzzyCSVTable table, String tableName) {
+    static List<Pair<String, List<Object>>> generateInserts(SqlRenderer sqlRenderer, int pageSize, FuzzyCSVTable table, String tableName) {
 
         def tables = paginate(table, pageSize)
 
-        return tables.collect { generateInsert(it, tableName) }
+        return tables.collect { generateInsert(sqlRenderer,it, tableName) }
     }
 
 

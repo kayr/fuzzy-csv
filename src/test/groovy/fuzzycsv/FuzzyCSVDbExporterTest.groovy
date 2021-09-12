@@ -115,7 +115,7 @@ class FuzzyCSVDbExporterTest extends GroovyTestCase {
         }
 
 
-        def insert = FuzzyCsvDbInserter.generateInsert(tbl, 'MYTABLE')
+        def insert = FuzzyCsvDbInserter.generateInsert(DefaultSqlRenderer.getInstance(),tbl, 'MYTABLE')
 
         //check the sql insert
         assert insert.left == '''INSERT INTO `MYTABLE`

@@ -17,7 +17,7 @@ class FuzzyCsvInserterTest {
                 .addRecordArr(1.2, "2.2", "P.2")
                 .addRecordArr(1.3, "2.3", "P.3")
 
-        Pair<String, List<Object>> result = FuzzyCsvDbInserter.generateInsert(table, "my_table")
+        Pair<String, List<Object>> result = FuzzyCsvDbInserter.generateInsert(DefaultSqlRenderer.getInstance(),table, "my_table")
 
         Assert.assertEquals("INSERT INTO `my_table`\n" +
                 " (`h1`, `h2`, `h3`) \n" +
