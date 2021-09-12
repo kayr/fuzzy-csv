@@ -27,7 +27,6 @@ class FuzzyCSVDbExporterTest extends GroovyTestCase {
     void tearDown() {
 //        gsql.execute("SHUTDOWN")
         DDLUtils.allTables(gsql.connection)
-        .printTable()
                 .filter {it.TABLE_TYPE == 'TABLE'}
                 .each {
                     gsql.execute("drop table $it.TABLE_NAME" as String)

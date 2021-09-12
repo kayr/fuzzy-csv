@@ -71,7 +71,7 @@ class NavigatorTest extends GroovyTestCase {
 
     @Test
     void testNavigationOnBorder(){
-        def navigator = Navigator.start().table(tbl(data).printTable())
+        def navigator = Navigator.start().table(tbl(data))
 
         def corner = navigator.row(0).col(4)
 

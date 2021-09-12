@@ -767,7 +767,7 @@ p\tfema+le\t31'''
                               ['kay2', 1, 24],
                               ['ben', 10, 34]]
 
-        result = tbl(csv).copy().filter { it.up().name != 'sa' }.printTable()
+        result = tbl(csv).copy().filter { it.up().name != 'sa' }
 
         assert result.csv == [['name', 'age'],
                               ['kay', 1],
@@ -1112,7 +1112,7 @@ p\tfema+le\t31'''
 ║ sho       │ muj                                     ║
 ╚═══════════╧═════════════════════════════════════════╝'''.trim()
 
-        def formatted2 = FuzzyCSVTable.fromJsonText(json).asSimpleGrid().printTable().toStringFormatted()
+        def formatted2 = FuzzyCSVTable.fromJsonText(json).asSimpleGrid().toStringFormatted()
 
 
         Assert.assertEquals formatted2.trim(), '''
