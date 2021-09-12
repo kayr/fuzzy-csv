@@ -3,7 +3,11 @@ package fuzzycsv
 import fuzzycsv.nav.Navigator
 import fuzzycsv.rdbms.*
 import fuzzycsv.rdbms.stmt.SqlDialect
+import org.junit.Assume
 import org.junit.Test
+
+import java.nio.file.Files
+import java.nio.file.Paths
 
 import static fuzzycsv.FuzzyStaticApi.fx
 
@@ -17,6 +21,8 @@ class FuzzyCSVDbExporterMysqlTest extends GroovyTestCase {
 
     void setUp() {
 
+        //in future consider using test containers
+        Assume.assumeTrue(Files.exists(Paths.get("/home/kayr/")))
         FuzzyCSV.ACCURACY_THRESHOLD.set(1)
 
     }
