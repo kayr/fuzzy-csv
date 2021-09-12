@@ -1026,13 +1026,13 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVDbExporter.ExportResult dbExportAndGetResult(Connection connection, ExportParams params) {
-        return new FuzzyCSVDbExporter(connection)
-                .dbExport(this, params)
+        return new FuzzyCSVDbExporter(connection, params)
+                .dbExport(this)
     }
 
     FuzzyCSVTable dbUpdate(Connection connection, ExportParams params, String... identifiers) {
-        new FuzzyCSVDbExporter(connection)
-                .updateData(this, params, identifiers)
+        new FuzzyCSVDbExporter(connection, params)
+                .updateData(this,  identifiers)
         this
     }
 

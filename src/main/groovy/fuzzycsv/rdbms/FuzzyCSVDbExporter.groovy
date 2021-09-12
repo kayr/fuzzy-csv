@@ -2,6 +2,10 @@ package fuzzycsv.rdbms
 
 import fuzzycsv.FuzzyCSVTable
 import fuzzycsv.nav.Navigator
+import fuzzycsv.rdbms.stmt.DefaultSql
+import fuzzycsv.rdbms.stmt.MySql
+import fuzzycsv.rdbms.stmt.SqlDialect
+import fuzzycsv.rdbms.stmt.SqlRenderer
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import groovy.transform.ToString
@@ -21,32 +25,37 @@ class FuzzyCSVDbExporter {
     Connection connection
     int defaultDecimals = 6
 
-    FuzzyCSVDbExporter() {
+    SqlRenderer sqlRenderer
+    ExportParams exportParams
+
+    FuzzyCSVDbExporter(ExportParams params) {
+        this.exportParams = params
+        mayBeSetRenderer()
     }
 
-    FuzzyCSVDbExporter(Connection c) {
+    FuzzyCSVDbExporter(Connection c, ExportParams params) {
+        this(params)
         this.connection = c
-
     }
 
 
-    ExportResult dbExport(FuzzyCSVTable table, ExportParams params) {
+    ExportResult dbExport(FuzzyCSVTable table) {
         assert table.name() != null
 
-        ExportResult r = new ExportResult()
+        ExportResult r = new ExportResult(createdTable: false)
         r.exportedData = table
 
-        if (params.exportFlags.contains(DbExportFlags.CREATE)) {
-            createTable(table, params)
+        if (exportParams.exportFlags.contains(DbExportFlags.CREATE)) {
+            createTable(table)
             r.createdTable = true
         }
 
-        if (params.exportFlags.contains(DbExportFlags.CREATE_IF_NOT_EXISTS)) {
-            r.createdTable = createTableIfNotExists(table, params)
+        if (!r.createdTable && exportParams.exportFlags.contains(DbExportFlags.CREATE_IF_NOT_EXISTS)) {
+            r.createdTable = createTableIfNotExists(table)
         }
 
-        if (params.exportFlags.contains(DbExportFlags.INSERT)) {
-            def data = insertData(table, params)
+        if (exportParams.exportFlags.contains(DbExportFlags.INSERT)) {
+            def data = insertData(table)
             r.primaryKeys = data
         }
 
@@ -54,9 +63,13 @@ class FuzzyCSVDbExporter {
 
     }
 
-    FuzzyCSVTable insertData(FuzzyCSVTable table, ExportParams params) {
+    void mayBeSetRenderer() {
+        sqlRenderer = resolveSqlRenderer(exportParams)
+    }
 
-        def idList = doInsertData(table, params.pageSize, params)
+    FuzzyCSVTable insertData(FuzzyCSVTable table) {
+
+        def idList = doInsertData(table, exportParams.pageSize)
 
         return toPks(idList)
 
@@ -75,18 +88,18 @@ class FuzzyCSVDbExporter {
     }
 
 
-    boolean createTableIfNotExists(FuzzyCSVTable table, ExportParams primaryKeys) {
+    boolean createTableIfNotExists(FuzzyCSVTable table) {
         def exists = DDLUtils.tableExists(connection, table.tableName)
         if (!exists) {
-            createTable(table, primaryKeys)
+            createTable(table)
             return true
         }
         return false
     }
 
-    void createTable(FuzzyCSVTable table, ExportParams primaryKeys) {
+    void createTable(FuzzyCSVTable table) {
 
-        def ddl = createDDL(table, primaryKeys)
+        def ddl = createDDL(table)
 
         log.trace("creating table [$ddl]")
         sql().execute(ddl)
@@ -102,19 +115,18 @@ class FuzzyCSVDbExporter {
     }
 
 
-    String createDDL(FuzzyCSVTable table, ExportParams primaryKeys = ExportParams.defaultParams()) {
+    String createDDL(FuzzyCSVTable table) {
         def name = table.tableName
         assert name != null, "tables should contain name"
-        def columnString =
-                createColumns(table, primaryKeys)
-                        .collect { it.toString() }
-                        .join(',')
 
-        return "create table ${inTicks(table.tableName)}($columnString); "
+        def columns = createColumns(table)
+
+        return sqlRenderer.createTable(name, columns)
+
 
     }
 
-    List<Column> createColumns(FuzzyCSVTable table, ExportParams primaryKeys = ExportParams.defaultParams()) {
+    List<Column> createColumns(FuzzyCSVTable table) {
         def header = table.header
 
         def start = Navigator.atTopLeft(table)
@@ -123,12 +135,15 @@ class FuzzyCSVDbExporter {
             def firstValue = start.to(name).downIter().skip()
                     .find { it.value() != null }?.value()
 
+            if (exportParams.exportFlags.contains(DbExportFlags.USE_DECIMAL_FOR_INTS) && firstValue instanceof Number)
+                firstValue = firstValue as BigDecimal
+
             def column = resolveType(name, firstValue)
 
-            if (primaryKeys.primaryKeys?.contains(name))
+            if (exportParams.primaryKeys?.contains(name))
                 column.isPrimaryKey = true
 
-            if (primaryKeys.autoIncrement?.contains(name))
+            if (exportParams.autoIncrement?.contains(name))
                 column.autoIncrement = true
 
             return column
@@ -140,22 +155,22 @@ class FuzzyCSVDbExporter {
 
     def restructureTable(FuzzyCSVTable table) {
         def tableColumns = createColumns(table)
-        def restructurer = new DbColumnSync(columns: tableColumns,
-                gSql: sql(), tableName: table.tableName, table: table)
+        def structureSync = new DbColumnSync(columns: tableColumns,
+                gSql: sql(), tableName: table.tableName, table: table, sqlRenderer: sqlRenderer)
 
-        restructurer.sync()
+        structureSync.sync()
 
 
     }
 
 
-    List<List<Object>> doInsertData(FuzzyCSVTable table, int pageSize, ExportParams params) {
+    List<List<Object>> doInsertData(FuzzyCSVTable table, int pageSize) {
 
         def inserts = FuzzyCsvDbInserter.generateInserts(pageSize, table, table.tableName)
 
         def rt = []
         for (Pair<String, List<Object>> q in inserts) {
-            doWithRestructure(params, table) {
+            doWithRestructure(table) {
                 logQuery(q)
                 def insert = sql().executeInsert(q.left, q.right)
                 rt.addAll(insert)
@@ -171,11 +186,11 @@ class FuzzyCSVDbExporter {
     }
 
     @CompileStatic
-    def updateData(FuzzyCSVTable table, ExportParams params, String... identifiers) {
-        def queries = FuzzyCsvDbInserter.generateUpdate(table, table.name(), identifiers)
+    def updateData(FuzzyCSVTable table, String... identifiers) {
+        def queries = FuzzyCsvDbInserter.generateUpdate(sqlRenderer, table, table.name(), identifiers)
 
         for (q in queries) {
-            doWithRestructure(params, table) {
+            doWithRestructure(table) {
                 logQuery(q)
                 sql().executeUpdate(q.left, q.right)
             }
@@ -183,12 +198,12 @@ class FuzzyCSVDbExporter {
     }
 
     @CompileStatic
-    private <T> T doWithRestructure(ExportParams params, FuzzyCSVTable table, Callable<T> operation) {
+    private <T> T doWithRestructure(FuzzyCSVTable table, Callable<T> operation) {
 
         try {
             return operation.call()
         } catch (x) {
-            if (!params.exportFlags.contains(DbExportFlags.RESTRUCTURE)) throw x
+            if (!exportParams.exportFlags.contains(DbExportFlags.RESTRUCTURE)) throw x
 
             try {
                 log.warn("error while exporting [${table.name()}] trying to restructure: $x")
@@ -251,6 +266,20 @@ class FuzzyCSVDbExporter {
     static Map<String, Integer> bigDecimalScale(int wholeNumbers, int decimals) {
         def precision = wholeNumbers + decimals
         [precision: precision, scale: decimals]
+    }
+
+    @CompileStatic
+    SqlRenderer resolveSqlRenderer(ExportParams params) {
+        assert params.dialect || params.sqlRenderer, "a sql dialect or sql renderer should be set "
+
+        if (params.sqlRenderer) return params.sqlRenderer
+
+        switch (params.dialect) {
+            case SqlDialect.DEFAULT: return DefaultSql.instance
+            case SqlDialect.MYSQL: return MySql.instance
+            default: throw new UnsupportedOperationException("dialect $params.dialect not yet supported")
+        }
+
     }
 
     @ToString(includePackage = false)

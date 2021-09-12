@@ -1,5 +1,7 @@
 package fuzzycsv.rdbms
 
+import fuzzycsv.rdbms.stmt.SqlDialect
+import fuzzycsv.rdbms.stmt.SqlRenderer
 import groovy.transform.builder.Builder
 import groovy.transform.builder.SimpleStrategy
 
@@ -9,6 +11,8 @@ class ExportParams {
     List<String> primaryKeys = []
     List<String> autoIncrement = []
     Set<DbExportFlags> exportFlags = Collections.emptySet()
+    SqlRenderer sqlRenderer
+    SqlDialect dialect = SqlDialect.DEFAULT
 
 
     private ExportParams() {}

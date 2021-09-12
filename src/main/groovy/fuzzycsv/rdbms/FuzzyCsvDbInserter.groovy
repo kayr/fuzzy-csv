@@ -2,6 +2,7 @@ package fuzzycsv.rdbms
 
 import fuzzycsv.FuzzyCSVTable
 import fuzzycsv.Record
+import fuzzycsv.rdbms.stmt.SqlRenderer
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.tuple.Pair
 
@@ -16,17 +17,24 @@ class FuzzyCsvDbInserter {
     }
 
 
-     static String inTicks(String s) {
+    static String inTicks(String s) {
         if (s.contains('`' as CharSequence)) {
             throw new IllegalArgumentException("Header cannot contain backtick")
         }
         return '`' + s + '`'
     }
 
-    static Pair<String, List<Object>> generateUpdate(Record r, String tableName, String... identifiers) {
+    static String quoteName(String tableName) {
+        inTicks(tableName)
+    }
+
+    static Pair<String, List<Object>> generateUpdate(SqlRenderer sqlRenderer,
+                                                     Record r,
+                                                     String tableName,
+                                                     String... identifiers) {
 
 
-        String updateStart = "UPDATE " + inTicks(tableName) + "\n"
+        String updateStart = "UPDATE " + quoteName(tableName) + "\n"
 
         Collection<String> finalHeaders = r.getFinalHeaders().findAll { String h -> !identifiers.contains(h) }
 
@@ -35,7 +43,7 @@ class FuzzyCsvDbInserter {
 
         StringJoiner joiner = new StringJoiner(",\n", "SET\n", "\n")
         for (String h : finalHeaders) {
-            String s = "  " + inTicks(h) + " =  ?"
+            String s = "  " + quoteName(h) + " =  ?"
             joiner.add(s)
             valueParams.add(r.f(h))
         }
@@ -44,7 +52,7 @@ class FuzzyCsvDbInserter {
 
         StringJoiner result = new StringJoiner(" AND ")
         for (String i : identifiers) {
-            String s = inTicks(i) + " = ?"
+            String s = quoteName(i) + " = ?"
             result.add(s)
             valueParams.add(r.f(i))
         }
@@ -55,15 +63,18 @@ class FuzzyCsvDbInserter {
 
     }
 
-    static List<Pair<String, List<Object>>> generateUpdate(FuzzyCSVTable table, String tableName, String... identifiers) {
+    static List<Pair<String, List<Object>>> generateUpdate(SqlRenderer sqlRenderer,
+                                                           FuzzyCSVTable table,
+                                                           String tableName,
+                                                           String... identifiers) {
         return StreamSupport.stream(table.spliterator(), false)
-                .collect {Record r -> generateUpdate(r, tableName, identifiers) }
+                .collect { Record r -> generateUpdate(sqlRenderer,r, tableName, identifiers) }
     }
 
     static Pair<String, List<Object>> generateInsert(FuzzyCSVTable table, String tableName) {
-        String insertInto = "INSERT INTO " + inTicks(tableName)
+        String insertInto = "INSERT INTO " + quoteName(tableName)
 
-        String insertHeader = table.getHeader().collect { inTicks(it) }.join(", ")
+        String insertHeader = table.getHeader().collect { quoteName(it) }.join(", ")
 
         String valuePhrase = insertInto + "\n (" + insertHeader + ") \nVALUES\n"
 
@@ -81,6 +92,7 @@ class FuzzyCsvDbInserter {
 
         return Pair.of(valuePhrase + values.join(",\n"), params)
     }
+
 
     static List<Pair<String, List<Object>>> generateInserts(int pageSize, FuzzyCSVTable table, String tableName) {
 

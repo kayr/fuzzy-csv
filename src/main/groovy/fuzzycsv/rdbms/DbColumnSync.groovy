@@ -3,6 +3,7 @@ package fuzzycsv.rdbms
 import fuzzycsv.FuzzyCSVTable
 import fuzzycsv.Record
 import fuzzycsv.rdbms.FuzzyCSVDbExporter.Column
+import fuzzycsv.rdbms.stmt.SqlRenderer
 import groovy.sql.Sql
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -16,10 +17,12 @@ class DbColumnSync {
     Sql gSql
     String tableName
     FuzzyCSVTable table
-     int maxVarCharSize = 4000
+    int maxVarCharSize = 4000
+    SqlRenderer sqlRenderer
 
 
     def sync() {
+        assert sqlRenderer != null, "Sql renderer is not set"
         /*
         1. Fetch all columns
         2. Find the ones out of sync
@@ -33,7 +36,7 @@ class DbColumnSync {
                         .renameHeader('name', 'COLUMN_NAME')
 
 
-        getMissionColumns(receivedColumns.copy(), dbColumns.copy())
+        getMissingColumns(receivedColumns.copy(), dbColumns.copy())
                 .each { addColumn(it) }
 
 
@@ -93,7 +96,7 @@ class DbColumnSync {
 
         def length = max.toString().length()
 
-        if(r.COLUMN_SIZE >= length) {
+        if (r.COLUMN_SIZE >= length) {
             log.trace("no adjustment required for [${r.COLUMN_NAME}]")
             return null
         }
@@ -107,7 +110,7 @@ class DbColumnSync {
     }
 
 
-    private static List<Column> getMissionColumns(FuzzyCSVTable receivedColumns, FuzzyCSVTable dbColumns) {
+    private static List<Column> getMissingColumns(FuzzyCSVTable receivedColumns, FuzzyCSVTable dbColumns) {
         def joined = receivedColumns.leftJoin(dbColumns, 'COLUMN_NAME')
 
 
@@ -117,13 +120,13 @@ class DbColumnSync {
     }
 
     def addColumn(Column column) {
-        def ddl = "alter table ${FuzzyCsvDbInserter.inTicks(tableName)} add ${column.sqlString()}"
+        def ddl = sqlRenderer.addColumn(tableName, column)
         log.trace("adding column [$ddl]")
         gSql.execute(ddl as String)
     }
 
     def modifyColumn(Column column) {
-        def ddl = "ALTER TABLE ${FuzzyCsvDbInserter.inTicks(tableName)} ALTER COLUMN ${column.sqlString()};"
+        def ddl = sqlRenderer.modifyColumn(tableName, column)
         log.trace("adjusting column [$ddl]")
         gSql.execute(ddl as String)
 

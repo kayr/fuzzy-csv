@@ -2,37 +2,31 @@ package fuzzycsv
 
 import fuzzycsv.nav.Navigator
 import fuzzycsv.rdbms.*
-import fuzzycsv.rdbms.stmt.DefaultSql
 import fuzzycsv.rdbms.stmt.SqlDialect
-import groovy.sql.Sql
 import org.junit.Test
 
 import static fuzzycsv.FuzzyStaticApi.fx
 
-class FuzzyCSVDbExporterTest extends GroovyTestCase {
+class FuzzyCSVDbExporterMysqlTest extends GroovyTestCase {
 
 
-    public static final SqlDialect DIALECT = SqlDialect.DEFAULT
-    Sql gsql
-    FuzzyCSVDbExporter export
+    public static final SqlDialect DIALECT = SqlDialect.MYSQL
+    def gsql = H2DbHelper.mySqlConnection
+    def export = new FuzzyCSVDbExporter(gsql.connection, ExportParams.defaultParams())
 
 
     void setUp() {
-        gsql = H2DbHelper.connection
-        export = new FuzzyCSVDbExporter(gsql.connection,ExportParams.defaultParams())
+
         FuzzyCSV.ACCURACY_THRESHOLD.set(1)
+
     }
 
 
     void tearDown() {
-//        gsql.execute("SHUTDOWN")
         DDLUtils.allTables(gsql.connection)
-        .printTable()
-                .filter {it.TABLE_TYPE == 'TABLE'}
                 .each {
                     gsql.execute("drop table $it.TABLE_NAME" as String)
                 }
-        gsql.close()
         gsql.close()
     }
 
@@ -78,7 +72,7 @@ class FuzzyCSVDbExporterTest extends GroovyTestCase {
 
     void testCreateAndInsert() {
 
-        def sql = gsql
+        def sql = H2DbHelper.connection
 
         def tbl = FuzzyCSVTable.tbl(data)
 
@@ -161,7 +155,8 @@ VALUES
 
 
         def d = FuzzyCSVTable.toCSV(gsql, 'select * from XXX')
-        assert d.csv == [['STRING_COL', 'DEC_COL', 'INT_COL', 'BOOL_COL', 'ID'],
+        normalizeNumbers(d)
+        assert d.csv == [['string_col', 'dec_col', 'int_col', 'bool_col', 'id'],
                          ['Hakibale', 18.1, null, null, 1],
                          ['Hakibale', 19.0, null, null, 2],
                          ['Kisomoro', null, 1, true, 3]]
@@ -197,7 +192,7 @@ VALUES
 
 
         def d = FuzzyCSVTable.toCSV(gsql, 'select * from XXX1')
-        assert d.csv == [['STRING_COL', 'DEC_COL', 'INT_COL', 'BOOL_COL', 'ID'],
+        assert d.csv == [['string_col', 'dec_col', 'int_col', 'bool_col', 'id'],
                          ['Hakibale', 18.1, null, null, 1],
                          ['Hakibale', 19.0, null, null, 2],
                          ['Kisomoro', null, 1, true, 3]]
@@ -306,7 +301,8 @@ VALUES
 
 
         def d = FuzzyCSVTable.toCSV(gsql, 'select * from XXD')
-        assert d.csv == [['STRING_COL', 'DEC_COL', 'INT_COL', 'BOOL_COL', 'ID'],
+        normalizeNumbers(d)
+        assert d.csv == [['string_col', 'dec_col', 'int_col', 'bool_col', 'id'],
                          ['Hakibale', 18.1, null, null, 1],
                          ['Hakibale', 19.0, null, null, 2],
                          ['Kisomoro', null, 1, true, 3]]
@@ -321,7 +317,7 @@ VALUES
 
         def table2 = FuzzyCSVTable.fromMapList([[id: 2,
                                                  a : 11,
-                                                 b : 227.0,
+                                                 b : 227,//deliberately us an int here
                                                  c : 33,
                                                  d : 44,
                                                  a3: 'XXX' * 100]])
@@ -340,16 +336,20 @@ VALUES
                                 .withPageSize(2))
 
         table2
-                .transformHeader { it.toUpperCase() }
+                .transformHeader { it + '_n' }
                 .name('X1')
                 .dbExport(
                         gsql.connection,
                         ExportParams
-                                .of(DbExportFlags.withRestructure())
+                                .of(DbExportFlags.of(
+                                        DbExportFlags.CREATE_IF_NOT_EXISTS,
+                                        DbExportFlags.INSERT,
+                                        DbExportFlags.RESTRUCTURE,
+                                        DbExportFlags.USE_DECIMAL_FOR_INTS))
                                 .withPageSize(2))
 
         table3
-                .transformHeader { it.toUpperCase() }
+                .transformHeader { it + '_n' }
                 .name('X1')
                 .dbExport(
                         gsql.connection,
@@ -363,11 +363,10 @@ VALUES
         normalizeNumbers(fromDb)
 
 
-        def mergedResult = (table1.transformHeader { it.toUpperCase() } << table2 << table3).select(fromDb.header)
+        def mergedResult = (table1 << table2 << table3).select(fromDb.header)
         normalizeNumbers(mergedResult)
 
-//        assert mergedResult.csv == fromDb.csv
-        assertEquals(mergedResult.toStringFormatted(), fromDb.toStringFormatted())
+        assert mergedResult.csv == fromDb.csv
 
 
     }
@@ -414,50 +413,6 @@ VALUES
 
 
         table2.padAllRecords().dbUpdate(gsql.connection, ExportParams.of(DbExportFlags.RESTRUCTURE).withDialect(DIALECT).withPageSize(1), 'ID')
-
-        def v = FuzzyCSVTable.toCSV(gsql, 'select * from X2')
-
-        normalizeNumbers(v)
-        assert v.csv == [['ID', 'A', 'B', 'C', 'A3', 'D1', 'D'],
-                         [1, 12, 2.42, 32, 'XXX2', null, null],
-                         [2, 112, 2272, 332, 'BB2', 1.2, 44]]
-
-    }
-
-    void testUpdateDataWithCustomDialect() {
-        def table1 = FuzzyCSVTable
-                .fromMapList([[id: 1, a: 1, b: 2.4, c: 3, a3: 'XXX', d1: 1.2],
-                              [id: 2, a: 11, b: 227, c: 33, d: 44, a3: 'BB']])
-                .name('X2')
-                .transformHeader { it.toUpperCase() }
-
-        def table2 = FuzzyCSVTable
-                .fromMapList([[id: 1, a: 12, b: 2.42, c: 32, a3: 'XXX2'],
-                              [id: 2, a: 112, b: 2272, c: 332, d: 44, a3: 'BB2', d1: 1.2]])
-                .name('X2')
-                .transformHeader { it.toUpperCase() }
-
-
-        table1.padAllRecords().dbExport(gsql.connection, ExportParams.of(DbExportFlags.CREATE,
-                DbExportFlags.INSERT,
-                DbExportFlags.RESTRUCTURE)
-                .withDialect(SqlDialect.MYSQL)
-                .withSqlRenderer(DefaultSql.getInstance())
-        )
-
-        //make sure data is inserted
-        def inserted = FuzzyCSVTable.toCSV(gsql, 'select * from X2')
-        normalizeNumbers(inserted)
-        assert inserted.csv == [['ID', 'A', 'B', 'C', 'A3', 'D1', 'D'],
-                                [1, 1, 2.4, 3, 'XXX', 1.2, null],
-                                [2, 11, 227, 33, 'BB', null, 44]]
-
-
-        table2.padAllRecords().dbUpdate(gsql.connection,
-                ExportParams.of(DbExportFlags.RESTRUCTURE)
-                        .withDialect(SqlDialect.MYSQL)
-                        .withSqlRenderer(DefaultSql.getInstance())
-                        .withPageSize(1), 'ID')
 
         def v = FuzzyCSVTable.toCSV(gsql, 'select * from X2')
 

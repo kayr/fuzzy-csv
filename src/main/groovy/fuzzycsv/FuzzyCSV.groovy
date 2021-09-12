@@ -1039,10 +1039,10 @@ class FuzzyCSV {
             Closure rt
             switch (s) {
                 case Closure:
-                    rt = { List r -> s.asType(Closure).call(Record.getRecord(header, r, csv)) }
+                    rt = { List r -> (s as Closure).call(Record.getRecord(header, r, csv)) }
                     break
                 case RecordFx:
-                    rt = { List r -> s.asType(RecordFx).getValue(Record.getRecord(header, r, csv)) }
+                    rt = { List r -> (s as RecordFx).getValue(Record.getRecord(header, r, csv)) }
 
                     break
                 default:
