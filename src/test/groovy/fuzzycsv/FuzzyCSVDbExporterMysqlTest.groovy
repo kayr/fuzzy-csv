@@ -12,7 +12,7 @@ import java.nio.file.Paths
 
 import static fuzzycsv.FuzzyStaticApi.fx
 
-class FuzzyCSVDbExporterMysqlTest extends GroovyTestCase {
+class FuzzyCSVDbExporterMysqlTestOff extends GroovyTestCase {
 
 
     public static final SqlDialect DIALECT = SqlDialect.MYSQL
