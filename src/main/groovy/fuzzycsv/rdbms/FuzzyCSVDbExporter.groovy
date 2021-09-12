@@ -2,8 +2,8 @@ package fuzzycsv.rdbms
 
 import fuzzycsv.FuzzyCSVTable
 import fuzzycsv.nav.Navigator
-import fuzzycsv.rdbms.stmt.DefaultSql
-import fuzzycsv.rdbms.stmt.MySql
+import fuzzycsv.rdbms.stmt.DefaultSqlRenderer
+import fuzzycsv.rdbms.stmt.MySqlRenderer
 import fuzzycsv.rdbms.stmt.SqlDialect
 import fuzzycsv.rdbms.stmt.SqlRenderer
 import groovy.sql.Sql
@@ -275,8 +275,8 @@ class FuzzyCSVDbExporter {
         if (params.sqlRenderer) return params.sqlRenderer
 
         switch (params.dialect) {
-            case SqlDialect.DEFAULT: return DefaultSql.instance
-            case SqlDialect.MYSQL: return MySql.instance
+            case SqlDialect.DEFAULT: return DefaultSqlRenderer.instance
+            case SqlDialect.MYSQL: return MySqlRenderer.instance
             default: throw new UnsupportedOperationException("dialect $params.dialect not yet supported")
         }
 

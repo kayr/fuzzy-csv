@@ -4,7 +4,7 @@ import fuzzycsv.FuzzyCSV
 import fuzzycsv.FuzzyCSVTable
 import fuzzycsv.H2DbHelper
 import fuzzycsv.Record
-import fuzzycsv.rdbms.stmt.DefaultSql
+import fuzzycsv.rdbms.stmt.DefaultSqlRenderer
 import groovy.sql.Sql
 
 import java.sql.SQLException
@@ -23,7 +23,7 @@ class DbColumnSyncTest extends GroovyTestCase {
         }
     }
 
-    DbColumnSync d = new DbColumnSync(gSql: sql, tableName: 'mytable',sqlRenderer: DefaultSql.instance)
+    DbColumnSync d = new DbColumnSync(gSql: sql, tableName: 'mytable',sqlRenderer: DefaultSqlRenderer.instance)
 
     //region VARCHAR TESTS
     void testAdjustVarChar() {

@@ -3,13 +3,13 @@ package fuzzycsv.rdbms.stmt
 import fuzzycsv.rdbms.FuzzyCSVDbExporter
 
 
-class DefaultSql implements SqlRenderer {
+class DefaultSqlRenderer implements SqlRenderer {
 
     private static SqlRenderer instance;
 
     static SqlRenderer getInstance() {
         if (instance == null)// don't care about synchronization
-            instance = new DefaultSql()
+            instance = new DefaultSqlRenderer()
         return instance
     }
 

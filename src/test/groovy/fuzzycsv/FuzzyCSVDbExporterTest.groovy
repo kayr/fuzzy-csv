@@ -2,7 +2,7 @@ package fuzzycsv
 
 import fuzzycsv.nav.Navigator
 import fuzzycsv.rdbms.*
-import fuzzycsv.rdbms.stmt.DefaultSql
+import fuzzycsv.rdbms.stmt.DefaultSqlRenderer
 import fuzzycsv.rdbms.stmt.SqlDialect
 import groovy.sql.Sql
 import org.junit.Test
@@ -442,7 +442,7 @@ VALUES
                 DbExportFlags.INSERT,
                 DbExportFlags.RESTRUCTURE)
                 .withDialect(SqlDialect.MYSQL)
-                .withSqlRenderer(DefaultSql.getInstance())
+                .withSqlRenderer(DefaultSqlRenderer.getInstance())
         )
 
         //make sure data is inserted
@@ -456,7 +456,7 @@ VALUES
         table2.padAllRecords().dbUpdate(gsql.connection,
                 ExportParams.of(DbExportFlags.RESTRUCTURE)
                         .withDialect(SqlDialect.MYSQL)
-                        .withSqlRenderer(DefaultSql.getInstance())
+                        .withSqlRenderer(DefaultSqlRenderer.getInstance())
                         .withPageSize(1), 'ID')
 
         def v = FuzzyCSVTable.toCSV(gsql, 'select * from X2')

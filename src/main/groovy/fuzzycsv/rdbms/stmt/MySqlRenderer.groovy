@@ -5,14 +5,14 @@ import org.codehaus.groovy.runtime.InvokerHelper
 
 import static fuzzycsv.rdbms.FuzzyCsvDbInserter.inTicks
 
-class MySql extends DefaultSql {
+class MySqlRenderer extends DefaultSqlRenderer {
 
 
     private static SqlRenderer instance;
 
     static SqlRenderer getInstance() {
         if (instance == null)// don't care about synchronization
-            instance = new MySql()
+            instance = new MySqlRenderer()
         return instance
     }
 

@@ -1,7 +1,7 @@
 package fuzzycsv.rdbms
 
 import fuzzycsv.FuzzyCSVTable
-import fuzzycsv.rdbms.stmt.DefaultSql
+import fuzzycsv.rdbms.stmt.DefaultSqlRenderer
 import org.apache.commons.lang3.tuple.Pair
 import org.codehaus.groovy.runtime.DefaultGroovyMethods
 import org.junit.Assert
@@ -38,7 +38,7 @@ class FuzzyCsvInserterTest {
                 .addRecordArr(1.2, "2.2", "P.2")
                 .addRecordArr(1.3, "2.3", "P.3")
 
-        List<Pair<String, List<Object>>> pairs = FuzzyCsvDbInserter.generateUpdate(DefaultSql.instance,table, "my_table", "h1")
+        List<Pair<String, List<Object>>> pairs = FuzzyCsvDbInserter.generateUpdate(DefaultSqlRenderer.instance,table, "my_table", "h1")
 
 
         pairs.each { p ->
@@ -65,7 +65,7 @@ class FuzzyCsvInserterTest {
                 .addRecordArr(1.2, "2.2", "P.2")
                 .addRecordArr(1.3, "2.3", "P.3")
 
-        List<Pair<String, List<Object>>> pairs = FuzzyCsvDbInserter.generateUpdate(DefaultSql.instance,table, "my_table", "h1", "h3")
+        List<Pair<String, List<Object>>> pairs = FuzzyCsvDbInserter.generateUpdate(DefaultSqlRenderer.instance,table, "my_table", "h1", "h3")
 
 
         pairs.each { p ->
