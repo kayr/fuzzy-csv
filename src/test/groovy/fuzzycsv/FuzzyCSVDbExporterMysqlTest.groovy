@@ -8,13 +8,12 @@ import groovy.sql.Sql
 import org.junit.After
 import org.junit.Assume
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
-
-import java.nio.file.Files
-import java.nio.file.Paths
 
 import static fuzzycsv.FuzzyStaticApi.fx
 
+@Ignore
 class FuzzyCSVDbExporterMysqlTest {
 
 
@@ -27,7 +26,7 @@ class FuzzyCSVDbExporterMysqlTest {
     void setUp() {
 
         //in future consider using test containers
-        Assume.assumeTrue(Files.exists(Paths.get("/home/kayr/")))
+        Assume.assumeTrue(("/home/kayr2/" as File).exists())
         gsql = H2DbHelper.mySqlConnection
         export = new FuzzyCSVDbExporter(gsql.connection, ExportParams.defaultParams())
         FuzzyCSV.ACCURACY_THRESHOLD.set(1)
