@@ -4,7 +4,9 @@ import fuzzycsv.nav.Navigator
 import fuzzycsv.rdbms.*
 import fuzzycsv.rdbms.stmt.DefaultSqlRenderer
 import fuzzycsv.rdbms.stmt.SqlDialect
+import org.junit.After
 import org.junit.Assume
+import org.junit.Before
 import org.junit.Test
 
 import java.nio.file.Files
@@ -12,7 +14,7 @@ import java.nio.file.Paths
 
 import static fuzzycsv.FuzzyStaticApi.fx
 
-class FuzzyCSVDbExporterMysqlTestOff extends GroovyTestCase {
+class FuzzyCSVDbExporterMysqlTest  {
 
 
     public static final SqlDialect DIALECT = SqlDialect.MYSQL
@@ -20,6 +22,7 @@ class FuzzyCSVDbExporterMysqlTestOff extends GroovyTestCase {
     def export = new FuzzyCSVDbExporter(gsql.connection, ExportParams.defaultParams())
 
 
+    @Before
     void setUp() {
 
         //in future consider using test containers
@@ -29,6 +32,7 @@ class FuzzyCSVDbExporterMysqlTestOff extends GroovyTestCase {
     }
 
 
+    @After
     void tearDown() {
         DDLUtils.allTables(gsql.connection)
                 .each {
@@ -45,6 +49,7 @@ class FuzzyCSVDbExporterMysqlTestOff extends GroovyTestCase {
     ]
 
 
+    @Test
     void testCreateColumn() {
 
 
@@ -77,6 +82,7 @@ class FuzzyCSVDbExporterMysqlTestOff extends GroovyTestCase {
 
     }
 
+    @Test
     void testCreateAndInsert() {
 
         def sql = H2DbHelper.connection
@@ -143,7 +149,7 @@ VALUES
 
     }
 
-
+    @Test
     void testWithInsertWithPaginate() {
 
         def table = FuzzyCSVTable.tbl(data)
@@ -172,6 +178,8 @@ VALUES
         assert !DDLUtils.tableExists(gsql.connection, 'XXX2')
     }
 
+
+    @Test
     void testWithInsertWithPaginateGeneratePKS() {
 
         def table = FuzzyCSVTable.tbl(data)
@@ -209,6 +217,7 @@ VALUES
     }
 
 
+    @Test
     void testPaginate() {
 
         def table =
@@ -236,6 +245,7 @@ VALUES
 
     }
 
+    @Test
     void testPaginateEven() {
 
         def table =
@@ -264,6 +274,7 @@ VALUES
 
     }
 
+    @Test
     void testPaginateBigPage() {
 
         def table =
@@ -296,6 +307,7 @@ VALUES
         }
     }
 
+    @Test
     void testExportIfTableDoesNotExist() {
         def t = FuzzyCSVTable.tbl(data)
                 .addColumn('id') { it.idx() }
@@ -393,6 +405,7 @@ VALUES
         return fromDb
     }
 
+    @Test
     void testUpdateData() {
         def table1 = FuzzyCSVTable
                 .fromMapList([[id: 1, a: 1, b: 2.4, c: 3, a3: 'XXX', d1: 1.2],
