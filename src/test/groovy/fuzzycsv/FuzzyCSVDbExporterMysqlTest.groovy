@@ -4,6 +4,7 @@ import fuzzycsv.nav.Navigator
 import fuzzycsv.rdbms.*
 import fuzzycsv.rdbms.stmt.DefaultSqlRenderer
 import fuzzycsv.rdbms.stmt.SqlDialect
+import groovy.sql.Sql
 import org.junit.After
 import org.junit.Assume
 import org.junit.Before
@@ -14,12 +15,12 @@ import java.nio.file.Paths
 
 import static fuzzycsv.FuzzyStaticApi.fx
 
-class FuzzyCSVDbExporterMysqlTest  {
+class FuzzyCSVDbExporterMysqlTest {
 
 
     public static final SqlDialect DIALECT = SqlDialect.MYSQL
-    def gsql = H2DbHelper.mySqlConnection
-    def export = new FuzzyCSVDbExporter(gsql.connection, ExportParams.defaultParams())
+    Sql gsql
+    FuzzyCSVDbExporter export
 
 
     @Before
@@ -27,6 +28,8 @@ class FuzzyCSVDbExporterMysqlTest  {
 
         //in future consider using test containers
         Assume.assumeTrue(Files.exists(Paths.get("/home/kayr/")))
+        gsql = H2DbHelper.mySqlConnection
+        export = new FuzzyCSVDbExporter(gsql.connection, ExportParams.defaultParams())
         FuzzyCSV.ACCURACY_THRESHOLD.set(1)
 
     }
