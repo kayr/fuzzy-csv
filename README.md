@@ -1,8 +1,7 @@
 # FuzzyCSV is a simple light weight groovy data processing library to help you merge/append/query/ or manipulate CSV files or any tabular data.
 
-![Release](https://jitpack.io/v/kayr/fuzzy-csv.svg)
-(https://jitpack.io/#kayr/fuzzy-csv)
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.kayr/fuzzy-csv/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/io.github.kayr/fuzzy-csv) 
 ![Java CI](https://github.com/kayr/fuzzy-csv/workflows/Java%20CI/badge.svg)
 
 ### Use Cases
@@ -64,31 +63,20 @@ FuzzyCSV is a lightweigt groovy data processing library that helps in shaping an
 
 
 ## Dependency
-![Release](https://jitpack.io/v/kayr/fuzzy-csv.svg)
-(https://jitpack.io/#kayr/fuzzy-csv)
-#### Maven
+
+#### Maven From Maven Central [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.kayr/fuzzy-csv/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/io.github.kayr/fuzzy-csv)
+
 ```xml
 <dependency>
-     <groupId>com.github.kayr</groupId>
+     <groupId>io.github.kayr</groupId>
      <artifactId>fuzzy-csv</artifactId>
      <version>${version}</version>
 </dependency>
 ```
 #### Gradle
-` compile 'com.github.kayr:fuzzy-csv:${version}'`
+` compile 'io.github.kayr:fuzzy-csv:${version}'`
 
-
-#### Repositories
-```xml
-<repositories>
-   <repository>
-            <name>JitPack.io</name>
-            <id>JitPack</id>
-            <url>https://jitpack.io</url>
-    </repository>
-</repositories>
-```
-
+Or you can use JITPACK ![Release](https://jitpack.io/v/kayr/fuzzy-csv.svg) (https://jitpack.io/#kayr/fuzzy-csv)
 
 ## Features
  * Merging using Fuzzy Matching with the help of the SecondString project(useful when you have misspelled column names in the different CSV files)
