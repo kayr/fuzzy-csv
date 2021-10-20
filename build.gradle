@@ -9,6 +9,7 @@ group = 'fuzzy-csv'
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'groovy'
+apply plugin: 'signing'
 
 // Using a setter method
 project.buildDir = 'target'
@@ -26,14 +27,11 @@ release {
 repositories {
     // First check local cache before accessing central repository
     // mavenRepo name:'Local', urls: "file://" + System.properties['user.home'] + "/.m2/repository"
-    mavenLocal()
     mavenCentral()
-    maven { url 'https://jitpack.io' }
-    maven { url "http://repo.maven.apache.org/maven2" }
 }
 dependencies {
     compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.3.8'
-    compile group: 'com.github.kayr', name: 'phrase-matcher', version: '0.1.6'
+    compile group: 'io.github.kayr', name: 'phrase-matcher', version: '0.1.7'
     compile group: 'com.opencsv', name: 'opencsv', version: '3.8'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 
@@ -66,13 +64,64 @@ dependencies {
     deployerJars 'org.apache.maven.wagon:wagon-ssh:2.12'
 }
 
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
 uploadArchives {
     repositories {
         mavenDeployer {
-            configuration = configurations.deployerJars
-            String repo = version.endsWith('SNAPSHOT') ? 'scp://omnitech.co.ug/home/maven/m2repo/snapshots' : 'scp://omnitech.co.ug/home/maven/m2repo/releases'
-            repository(url: repo) {
-                authentication(userName: project.findProperty('deployU') ?: "", password: project.findProperty('deployP') ?: "")
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'Fuzzy CSV'
+                packaging 'jar'
+                // optionally artifactId can be defined here
+                description 'FuzzyCSV is a simple light weight groovy data processing library to help you merge,append,query or manipulate any tabular data( like CSV or Sql Result Sets)'
+                url 'https://github.com/kayr/fuzzy-csv/'
+
+                scm {
+                    connection 'scm:git:https://github.com/kayr/fuzzy-csv.git'
+                    developerConnection 'scm:git:https://github.com/kayr/fuzzy-csv.git'
+                    url 'https://github.com/kayr/fuzzy-csv.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'kayr'
+                        name 'Ronald Kayondo'
+                        email 'noryak1234@gmail.com'
+                    }
+                }
             }
         }
     }
