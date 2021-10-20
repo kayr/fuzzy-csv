@@ -3,13 +3,16 @@ plugins {
 }
 
 
-group = 'fuzzy-csv'
-
-
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'groovy'
 apply plugin: 'signing'
+
+group = 'io.github.kayr'
+archivesBaseName = 'fuzzy-csv'
+description = 'A groovy/java tabular Data (from CSV,SQL,JSON) processing library ' +
+        'that supports fuzzy column matching,tranformations/merging/querying etc'
+
 
 // Using a setter method
 project.buildDir = 'target'
@@ -99,7 +102,8 @@ uploadArchives {
                 name 'Fuzzy CSV'
                 packaging 'jar'
                 // optionally artifactId can be defined here
-                description 'FuzzyCSV is a simple light weight groovy data processing library to help you merge,append,query or manipulate any tabular data( like CSV or Sql Result Sets)'
+                description 'A groovy/java tabular Data (from CSV,SQL,JSON) processing library ' +
+                        'that supports fuzzy column matching,tranformations/merging/querying etc'
                 url 'https://github.com/kayr/fuzzy-csv/'
 
                 scm {
