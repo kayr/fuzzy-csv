@@ -14,11 +14,10 @@ FuzzyCSV is a lightweigt groovy data processing library that helps in shaping an
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
 - [Dependency](#dependency)
-    - [Maven](#maven)
+    - [From Maven Central *](#from-maven-central-)
     - [Gradle](#gradle)
-    - [Repositories](#repositories)
+    - [Jitpack (For unpublished artifacts)](#jitpack-for-unpublished-artifacts)
 - [Features](#features)
   - [Illustrations:](#illustrations)
     - [Loading data into fuzzyCSV](#loading-data-into-fuzzycsv)
@@ -64,7 +63,7 @@ FuzzyCSV is a lightweigt groovy data processing library that helps in shaping an
 
 ## Dependency
 
-#### Maven From Maven Central [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.kayr/fuzzy-csv/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/io.github.kayr/fuzzy-csv)
+#### From Maven Central [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.kayr/fuzzy-csv/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/io.github.kayr/fuzzy-csv)
 
 ```xml
 <dependency>
@@ -76,7 +75,25 @@ FuzzyCSV is a lightweigt groovy data processing library that helps in shaping an
 #### Gradle
 ` compile 'io.github.kayr:fuzzy-csv:${version}'`
 
-Or you can use JITPACK ![Release](https://jitpack.io/v/kayr/fuzzy-csv.svg) (https://jitpack.io/#kayr/fuzzy-csv)
+#### Jitpack (For unpublished artifacts)
+If you want to get the very latest version you can use JITPACK ![Release](https://jitpack.io/v/kayr/fuzzy-csv.svg) (https://jitpack.io/#kayr/fuzzy-csv)
+```xml
+<!-- Coordinate from JITPACK-->
+<dependency>
+     <groupId>com.github.kayr</groupId>
+     <artifactId>fuzzy-csv</artifactId>
+     <version>${version}</version>
+</dependency>
+
+<!-- Repository -->
+<repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+
 
 ## Features
  * Merging using Fuzzy Matching with the help of the SecondString project(useful when you have misspelled column names in the different CSV files)
