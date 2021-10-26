@@ -2,6 +2,7 @@
 
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.kayr/fuzzy-csv/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/io.github.kayr/fuzzy-csv) 
+![Release](https://jitpack.io/v/kayr/fuzzy-csv.svg)
 ![Java CI](https://github.com/kayr/fuzzy-csv/workflows/Java%20CI/badge.svg)
 
 ### Use Cases
@@ -76,7 +77,11 @@ FuzzyCSV is a lightweigt groovy data processing library that helps in shaping an
 ` compile 'io.github.kayr:fuzzy-csv:${version}'`
 
 #### Jitpack (For unpublished artifacts)
-If you want to get the very latest version you can use JITPACK ![Release](https://jitpack.io/v/kayr/fuzzy-csv.svg) (https://jitpack.io/#kayr/fuzzy-csv)
+If you want to get a version that is not yest published to maven central then you can use JITPACK ![Release](https://jitpack.io/v/kayr/fuzzy-csv.svg) (https://jitpack.io/#kayr/fuzzy-csv)
+notice that the `io.github.kayr` is repleaced with `com.github.kayr`.
+```
+compile 'com.github.kayr:fuzzy-csv:${version}'`
+```
 ```xml
 <!-- Coordinate from JITPACK-->
 <dependency>
