@@ -9,7 +9,7 @@ FuzzyCSV is a lightweigt groovy data processing library that helps in shaping an
 FuzzyCsv is published to both maven central and jitpack.io.
 Starting from 1.7.1 all versions of FuzzyCSV will be published to maven central
 
-=== Get FuzzyCsv Maven Central
+=== Get FuzzyCsv from Maven Central
 
 For maven add the dependency to your pom file like this
 
@@ -31,7 +31,7 @@ Gradle:
  compile 'io.github.kayr:fuzzy-csv:${version}'
 ----
 
-=== Get FuzzyCsv jitpack.io
+=== Get FuzzyCsv from jitpack.io
 
 The to get artefacts from jipack the name space changes from `io.github.kayr` to `com.github.kayr`.
 
@@ -156,4 +156,81 @@ Output
 ----
 
 
-Notice how it merged ***[first name]*** and ***[ferts nama]***
+Notice how it merged *_[first name]_* and *_[ferts nama]_*
+
+=== Joins
+
+==== Inner join
+
+[source,groovy]
+----
+include::samples/join-inner.groovy[tag=code]
+----
+Output
+[source]
+----
+╔══════╤══════╤═════╤════════╗
+║ name │ sex  │ age │ hobby  ║
+╠══════╪══════╪═════╪════════╣
+║ alex │ male │ 21  │ biking ║
+╚══════╧══════╧═════╧════════╝
+----
+
+
+==== Left Join
+
+[source,groovy]
+----
+include::samples/join-left.groovy[tag=code]
+----
+Output
+[source]
+----
+╔══════╤════════╤═════╤════════╗
+║ name │ sex    │ age │ hobby  ║
+╠══════╪════════╪═════╪════════╣
+║ alex │ male   │ 21  │ biking ║
+╟──────┼────────┼─────┼────────╢
+║ sara │ female │ -   │ -      ║
+╚══════╧════════╧═════╧════════╝
+----
+
+
+==== Right Join
+
+[source,groovy]
+----
+include::samples/join-right.groovy[tag=code]
+----
+Output
+[source]
+----
+╔═══════╤══════╤═════╤══════════╗
+║ name  │ sex  │ age │ hobby    ║
+╠═══════╪══════╪═════╪══════════╣
+║ alex  │ male │ 21  │ biking   ║
+╟───────┼──────┼─────┼──────────╢
+║ peter │ -    │ 21  │ swimming ║
+╚═══════╧══════╧═════╧══════════╝
+----
+
+
+==== Full Join
+
+[source,groovy]
+----
+include::samples/join-full.groovy[tag=code]
+----
+Output
+[source]
+----
+╔═══════╤════════╤═════╤══════════╗
+║ name  │ sex    │ age │ hobby    ║
+╠═══════╪════════╪═════╪══════════╣
+║ alex  │ male   │ 21  │ biking   ║
+╟───────┼────────┼─────┼──────────╢
+║ sara  │ female │ -   │ -        ║
+╟───────┼────────┼─────┼──────────╢
+║ peter │ -      │ 21  │ swimming ║
+╚═══════╧════════╧═════╧══════════╝
+----

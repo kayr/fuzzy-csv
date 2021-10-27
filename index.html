@@ -536,13 +536,21 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <ul class="sectlevel1">
 <li><a href="#_get_fuzzycsv">Get FuzzyCsv</a>
 <ul class="sectlevel2">
-<li><a href="#_get_fuzzycsv_maven_central">Get FuzzyCsv Maven Central</a></li>
-<li><a href="#_get_fuzzycsv_jitpack_io">Get FuzzyCsv jitpack.io</a></li>
+<li><a href="#_get_fuzzycsv_from_maven_central">Get FuzzyCsv from Maven Central</a></li>
+<li><a href="#_get_fuzzycsv_from_jitpack_io">Get FuzzyCsv from jitpack.io</a></li>
 <li><a href="#_illustrations">Illustrations</a>
 <ul class="sectlevel3">
 <li><a href="#_loading_data_into_fuzzy_csv">Loading Data into Fuzzy-CSV</a></li>
 <li><a href="#_visualize_json_data_in_a_console_grid_table">Visualize json data in a console grid table</a></li>
 <li><a href="#_merging_with_a_fuzzy_match">Merging with a fuzzy match</a></li>
+</ul>
+</li>
+<li><a href="#_joins">Joins</a>
+<ul class="sectlevel3">
+<li><a href="#_inner_join">Inner join</a></li>
+<li><a href="#_left_join">Left Join</a></li>
+<li><a href="#_right_join">Right Join</a></li>
+<li><a href="#_full_join">Full Join</a></li>
 </ul>
 </li>
 </ul>
@@ -559,7 +567,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 Starting from 1.7.1 all versions of FuzzyCSV will be published to maven central</p>
 </div>
 <div class="sect2">
-<h3 id="_get_fuzzycsv_maven_central">Get FuzzyCsv Maven Central</h3>
+<h3 id="_get_fuzzycsv_from_maven_central">Get FuzzyCsv from Maven Central</h3>
 <div class="paragraph">
 <p>For maven add the dependency to your pom file like this</p>
 </div>
@@ -585,7 +593,7 @@ Starting from 1.7.1 all versions of FuzzyCSV will be published to maven central<
 </div>
 </div>
 <div class="sect2">
-<h3 id="_get_fuzzycsv_jitpack_io">Get FuzzyCsv jitpack.io</h3>
+<h3 id="_get_fuzzycsv_from_jitpack_io">Get FuzzyCsv from jitpack.io</h3>
 <div class="paragraph">
 <p>The to get artefacts from jipack the name space changes from <code>io.github.kayr</code> to <code>com.github.kayr</code>.</p>
 </div>
@@ -781,7 +789,162 @@ FuzzyCSVTable.tbl(csv1)
 </div>
 </div>
 <div class="paragraph">
-<p>Notice how it merged <strong><strong>[first name]</strong></strong> and <strong><strong>[ferts nama]</strong></strong></p>
+<p>Notice how it merged <strong><em>[first name]</em></strong> and <strong><em>[ferts nama]</em></strong></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_joins">Joins</h3>
+<div class="sect3">
+<h4 id="_inner_join">Inner join</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyCSVTable.tbl</span>
+
+<span class="keyword">def</span> csv1 = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">sex</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">male</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">sara</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">female</span><span class="delimiter">'</span></span>]
+]
+
+<span class="keyword">def</span> csv2 = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">hobby</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>]
+]
+
+tbl(csv1)
+        .join(csv2, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
+        .printTable()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>╔══════╤══════╤═════╤════════╗
+║ name │ sex  │ age │ hobby  ║
+╠══════╪══════╪═════╪════════╣
+║ alex │ male │ 21  │ biking ║
+╚══════╧══════╧═════╧════════╝</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_left_join">Left Join</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyCSVTable.tbl</span>
+
+<span class="keyword">def</span> csv1 = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">sex</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">male</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">sara</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">female</span><span class="delimiter">'</span></span>]
+]
+
+<span class="keyword">def</span> csv2 = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">hobby</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>]
+]
+
+tbl(csv1)
+        .leftJoin(csv2, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
+        .printTable()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>╔══════╤════════╤═════╤════════╗
+║ name │ sex    │ age │ hobby  ║
+╠══════╪════════╪═════╪════════╣
+║ alex │ male   │ 21  │ biking ║
+╟──────┼────────┼─────┼────────╢
+║ sara │ female │ -   │ -      ║
+╚══════╧════════╧═════╧════════╝</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_right_join">Right Join</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyCSVTable.tbl</span>
+
+<span class="keyword">def</span> csv1 = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">sex</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">male</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">sara</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">female</span><span class="delimiter">'</span></span>]
+]
+
+<span class="keyword">def</span> csv2 = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">hobby</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>]
+]
+
+tbl(csv1)
+        .rightJoin(csv2, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
+        .printTable()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>╔═══════╤══════╤═════╤══════════╗
+║ name  │ sex  │ age │ hobby    ║
+╠═══════╪══════╪═════╪══════════╣
+║ alex  │ male │ 21  │ biking   ║
+╟───────┼──────┼─────┼──────────╢
+║ peter │ -    │ 21  │ swimming ║
+╚═══════╧══════╧═════╧══════════╝</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_full_join">Full Join</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyCSVTable.tbl</span>
+
+<span class="keyword">def</span> csv1 = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">sex</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">male</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">sara</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">female</span><span class="delimiter">'</span></span>]
+]
+
+<span class="keyword">def</span> csv2 = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">hobby</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>]
+]
+
+tbl(csv1)
+        .fullJoin(csv2, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
+        .printTable()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>╔═══════╤════════╤═════╤══════════╗
+║ name  │ sex    │ age │ hobby    ║
+╠═══════╪════════╪═════╪══════════╣
+║ alex  │ male   │ 21  │ biking   ║
+╟───────┼────────┼─────┼──────────╢
+║ sara  │ female │ -   │ -        ║
+╟───────┼────────┼─────┼──────────╢
+║ peter │ -      │ 21  │ swimming ║
+╚═══════╧════════╧═════╧══════════╝</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -790,7 +953,7 @@ FuzzyCSVTable.tbl(csv1)
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-10-27 21:22:41 UTC
+Last updated 2021-10-27 21:50:50 UTC
 </div>
 </div>
 </body>

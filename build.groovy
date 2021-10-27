@@ -3,7 +3,7 @@ import fuzzycsv.FuzzyCSVTable
 
 def file = 'index.adoc' as File
 
-def pattern = $///\[out:[a-zA-Z]+\]/$
+def pattern = $///\[out:[a-zA-Z-]+\]/$
 
 
 def finalText = file.text.replaceAll(pattern) {
