@@ -1,1 +1,78 @@
-*Fuzzy CSV*
+= Fuzzy-CSV
+:toc: left
+:source-highlighter: coderay
+:toclevels: 4
+FuzzyCSV is a lightweigt groovy data processing library that helps in shaping and cleaning your dataset before its consumed by another service.
+
+== Get FuzzyCsv
+
+FuzzyCsv is published to both maven central and jitpack.io.
+Starting from 1.7.1 all versions of FuzzyCSV will be published to maven central
+
+=== Get FuzzyCsv Maven Central
+
+For maven add the dependency to your pom file like this
+
+Maven
+
+[source,xml]
+----
+<dependency>
+     <groupId>io.github.kayr</groupId>
+     <artifactId>fuzzy-csv</artifactId>
+     <version>${version}</version>
+</dependency>
+----
+
+Gradle:
+
+[source,groovy]
+----
+ compile 'io.github.kayr:fuzzy-csv:${version}'
+----
+
+=== Get FuzzyCsv jitpack.io
+
+The to get artefacts from jipack the name space changes from `io.github.kayr` to `com.github.kayr`.
+
+For Maven
+
+[source,xml]
+-----
+
+    ...
+    <!-- Add this Repository -->
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+    ...
+    <dependency>
+            <groupId>com.github.kayr</groupId>
+            <artifactId>fuzzy-csv</artifactId>
+            <version>${version}</version>
+    </dependency>
+    ...
+-----
+
+For Gradle
+
+[source,groovy]
+-----
+repositories {
+    /* Add this repository */
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies{
+    ...
+    compile 'com.github.kayr:fuzzy-csv:${version}'
+    ...
+}
+-----
+
+== Illustrations
+
+include::Joins.adoc[]

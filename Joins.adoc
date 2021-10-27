@@ -1,0 +1,7 @@
+=== Joins
+
+==== FUll Join
+[source,groovy]
+----
+include::samples/Join.groovy[]
+----
