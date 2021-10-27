@@ -1,0 +1,159 @@
+= Fuzzy-CSV
+:toc: left
+:source-highlighter: coderay
+:toclevels: 4
+FuzzyCSV is a lightweigt groovy data processing library that helps in shaping and cleaning your dataset before its consumed by another service.
+
+== Get FuzzyCsv
+
+FuzzyCsv is published to both maven central and jitpack.io.
+Starting from 1.7.1 all versions of FuzzyCSV will be published to maven central
+
+=== Get FuzzyCsv Maven Central
+
+For maven add the dependency to your pom file like this
+
+Maven
+
+[source,xml]
+----
+<dependency>
+     <groupId>io.github.kayr</groupId>
+     <artifactId>fuzzy-csv</artifactId>
+     <version>${version}</version>
+</dependency>
+----
+
+Gradle:
+
+[source,groovy]
+----
+ compile 'io.github.kayr:fuzzy-csv:${version}'
+----
+
+=== Get FuzzyCsv jitpack.io
+
+The to get artefacts from jipack the name space changes from `io.github.kayr` to `com.github.kayr`.
+
+For Maven
+
+[source,xml]
+-----
+
+    ...
+    <!-- Add this Repository -->
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+    ...
+    <dependency>
+            <groupId>com.github.kayr</groupId>
+            <artifactId>fuzzy-csv</artifactId>
+            <version>${version}</version>
+    </dependency>
+    ...
+-----
+
+For Gradle
+
+[source,groovy]
+-----
+repositories {
+    /* Add this repository */
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies{
+    ...
+    compile 'com.github.kayr:fuzzy-csv:${version}'
+    ...
+}
+-----
+
+=== Illustrations
+
+==== Loading Data into Fuzzy-CSV
+
+[source,groovy]
+----
+include::samples/loading.groovy[tag=code]
+----
+
+==== Visualize json data in a console grid table
+
+You can convert json text to a grid console table.
+
+[source,groovy]
+----
+include::samples/gridify.groovy[tag=code]
+----
+Output
+[source]
+----
+╔═════════╤═══════════════════════════════════════════╗
+║ key     │ value                                     ║
+╠═════════╪═══════════════════════════════════════════╣
+║ id      │ 0001                                      ║
+╟─────────┼───────────────────────────────────────────╢
+║ type    │ donut                                     ║
+╟─────────┼───────────────────────────────────────────╢
+║ name    │ Cake                                      ║
+╟─────────┼───────────────────────────────────────────╢
+║ ppu     │ 0.55                                      ║
+╟─────────┼───────────────────────────────────────────╢
+║ batters │ ╔════════╤══════════════════════════════╗ ║
+║         │ ║ key    │ value                        ║ ║
+║         │ ╠════════╪══════════════════════════════╣ ║
+║         │ ║ batter │ ╔══════╤═══════════╤═══════╗ ║ ║
+║         │ ║        │ ║ id   │ type      │ color ║ ║ ║
+║         │ ║        │ ╠══════╪═══════════╪═══════╣ ║ ║
+║         │ ║        │ ║ 1001 │ Regular   │ -     ║ ║ ║
+║         │ ║        │ ╟──────┼───────────┼───────╢ ║ ║
+║         │ ║        │ ║ 1002 │ Chocolate │ Brown ║ ║ ║
+║         │ ║        │ ╚══════╧═══════════╧═══════╝ ║ ║
+║         │ ╚════════╧══════════════════════════════╝ ║
+╟─────────┼───────────────────────────────────────────╢
+║ topping │ ╔══════╤════════╤═══════╗                 ║
+║         │ ║ id   │ type   │ color ║                 ║
+║         │ ╠══════╪════════╪═══════╣                 ║
+║         │ ║ 5001 │ None   │ -     ║                 ║
+║         │ ╟──────┼────────┼───────╢                 ║
+║         │ ║ 5002 │ Glazed │ -     ║                 ║
+║         │ ╟──────┼────────┼───────╢                 ║
+║         │ ║ 5005 │ Sugar  │ Brown ║                 ║
+║         │ ╚══════╧════════╧═══════╝                 ║
+╚═════════╧═══════════════════════════════════════════╝
+----
+
+
+==== Merging with a fuzzy match
+
+1. Set the accuracy threshold to 75%
+2. Merge using code below
+
+[source,groovy]
+----
+include::samples/merging.groovy[tag=code]
+----
+
+Output
+[source]
+----
+╔════════════╤════════╤═════╗
+║ first name │ sex    │ age ║
+╠════════════╪════════╪═════╣
+║ alex       │ male   │ -   ║
+╟────────────┼────────┼─────╢
+║ sara       │ female │ -   ║
+╟────────────┼────────┼─────╢
+║ alex       │ male   │ 21  ║
+╟────────────┼────────┼─────╢
+║ peter      │ male   │ 21  ║
+╚════════════╧════════╧═════╝
+----
+
+
+Notice how it merged ***[first name]*** and ***[ferts nama]***

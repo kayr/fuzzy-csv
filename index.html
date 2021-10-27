@@ -538,13 +538,11 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <ul class="sectlevel2">
 <li><a href="#_get_fuzzycsv_maven_central">Get FuzzyCsv Maven Central</a></li>
 <li><a href="#_get_fuzzycsv_jitpack_io">Get FuzzyCsv jitpack.io</a></li>
-</ul>
-</li>
 <li><a href="#_illustrations">Illustrations</a>
-<ul class="sectlevel2">
-<li><a href="#_joins">Joins</a>
 <ul class="sectlevel3">
-<li><a href="#_full_join">FUll Join</a></li>
+<li><a href="#_loading_data_into_fuzzy_csv">Loading Data into Fuzzy-CSV</a></li>
+<li><a href="#_visualize_json_data_in_a_console_grid_table">Visualize json data in a console grid table</a></li>
+<li><a href="#_merging_with_a_fuzzy_match">Merging with a fuzzy match</a></li>
 </ul>
 </li>
 </ul>
@@ -631,22 +629,159 @@ dependencies{
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_illustrations">Illustrations</h2>
-<div class="sectionbody">
 <div class="sect2">
-<h3 id="_joins">Joins</h3>
+<h3 id="_illustrations">Illustrations</h3>
 <div class="sect3">
-<h4 id="_full_join">FUll Join</h4>
+<h4 id="_loading_data_into_fuzzy_csv">Loading Data into Fuzzy-CSV</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@Grapes</span>(
-        <span class="annotation">@Grab</span>(group=<span class="string"><span class="delimiter">'</span><span class="content">io.github.kayr</span><span class="delimiter">'</span></span>, module=<span class="string"><span class="delimiter">'</span><span class="content">fuzzy-csv</span><span class="delimiter">'</span></span>, version=<span class="string"><span class="delimiter">'</span><span class="content">1.7.1</span><span class="delimiter">'</span></span>)
-)
-<span class="keyword">import</span> <span class="include">fuzzycsv.FuzzyCSVTable</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">FuzzyCSVTable.toCSV(sqlResultSet)
+FuzzyCSVTable.toCSV(groovySql, <span class="string"><span class="delimiter">&quot;</span><span class="content">select * from table</span><span class="delimiter">&quot;</span></span>)
+FuzzyCSVTable.toCSV(listMap)<span class="comment">//List&lt;Map&gt;</span>
+FuzzyCSVTable.tbl(listOfLists)<span class="comment">//List&lt;List&gt;</span>
+FuzzyCSVTable.fromJsonText(<span class="string"><span class="delimiter">'''</span><span class="content">[[&quot;colum&quot;],[&quot;value1&quot;]]</span><span class="delimiter">'''</span></span>)
+<span class="comment">//parse</span>
+FuzzyCSVTable.parseCsv(csvString)
+FuzzyCSVTable.parseCsv(reader)
+<span class="comment">//if you wish to customise the parsing you can provide more options</span>
+FuzzyCSVTable.parseCsv(csvString, separator<span class="comment">/* , */</span>, quoteChar <span class="comment">/* &quot; */</span>, escapeChar <span class="comment">/* \ */</span>)</code></pre>
 </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_visualize_json_data_in_a_console_grid_table">Visualize json data in a console grid table</h4>
+<div class="paragraph">
+<p>You can convert json text to a grid console table.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">fuzzycsv.FuzzyCSVTable</span>
+
+<span class="keyword">def</span> jsonText = <span class="string"><span class="delimiter">'''</span><span class="content">
+{
+  &quot;id&quot;: &quot;0001&quot;,
+  &quot;type&quot;: &quot;donut&quot;,
+  &quot;name&quot;: &quot;Cake&quot;,
+  &quot;ppu&quot;: 0.55,
+  &quot;batters&quot;:
+  {
+    &quot;batter&quot;:
+    [
+      { &quot;id&quot;: &quot;1001&quot;, &quot;type&quot;: &quot;Regular&quot; },
+      { &quot;id&quot;: &quot;1002&quot;, &quot;type&quot;: &quot;Chocolate&quot;,&quot;color&quot;: &quot;Brown&quot; }
+    ]
+  },
+  &quot;topping&quot;:
+  [
+    { &quot;id&quot;: &quot;5001&quot;, &quot;type&quot;: &quot;None&quot; },
+    { &quot;id&quot;: &quot;5002&quot;, &quot;type&quot;: &quot;Glazed&quot; },
+    { &quot;id&quot;: &quot;5005&quot;, &quot;type&quot;: &quot;Sugar&quot; ,&quot;color&quot;: &quot;Brown&quot;}
+  ]
+}</span><span class="delimiter">'''</span></span>
+
+FuzzyCSVTable.fromJsonText(jsonText)
+        .asListGrid()
+        .printTable()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>╔═════════╤═══════════════════════════════════════════╗
+║ key     │ value                                     ║
+╠═════════╪═══════════════════════════════════════════╣
+║ id      │ 0001                                      ║
+╟─────────┼───────────────────────────────────────────╢
+║ type    │ donut                                     ║
+╟─────────┼───────────────────────────────────────────╢
+║ name    │ Cake                                      ║
+╟─────────┼───────────────────────────────────────────╢
+║ ppu     │ 0.55                                      ║
+╟─────────┼───────────────────────────────────────────╢
+║ batters │ ╔════════╤══════════════════════════════╗ ║
+║         │ ║ key    │ value                        ║ ║
+║         │ ╠════════╪══════════════════════════════╣ ║
+║         │ ║ batter │ ╔══════╤═══════════╤═══════╗ ║ ║
+║         │ ║        │ ║ id   │ type      │ color ║ ║ ║
+║         │ ║        │ ╠══════╪═══════════╪═══════╣ ║ ║
+║         │ ║        │ ║ 1001 │ Regular   │ -     ║ ║ ║
+║         │ ║        │ ╟──────┼───────────┼───────╢ ║ ║
+║         │ ║        │ ║ 1002 │ Chocolate │ Brown ║ ║ ║
+║         │ ║        │ ╚══════╧═══════════╧═══════╝ ║ ║
+║         │ ╚════════╧══════════════════════════════╝ ║
+╟─────────┼───────────────────────────────────────────╢
+║ topping │ ╔══════╤════════╤═══════╗                 ║
+║         │ ║ id   │ type   │ color ║                 ║
+║         │ ╠══════╪════════╪═══════╣                 ║
+║         │ ║ 5001 │ None   │ -     ║                 ║
+║         │ ╟──────┼────────┼───────╢                 ║
+║         │ ║ 5002 │ Glazed │ -     ║                 ║
+║         │ ╟──────┼────────┼───────╢                 ║
+║         │ ║ 5005 │ Sugar  │ Brown ║                 ║
+║         │ ╚══════╧════════╧═══════╝                 ║
+╚═════════╧═══════════════════════════════════════════╝</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_merging_with_a_fuzzy_match">Merging with a fuzzy match</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Set the accuracy threshold to 75%</p>
+</li>
+<li>
+<p>Merge using code below</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">fuzzycsv.FuzzyCSV</span>
+<span class="keyword">import</span> <span class="include">fuzzycsv.FuzzyCSVTable</span>
+
+<span class="keyword">def</span> csv1 = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">first name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">sex</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">male</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">sara</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">female</span><span class="delimiter">'</span></span>]
+]
+
+<span class="keyword">def</span> csv2 = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">ferts nama</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">sex</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">male</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">male</span><span class="delimiter">'</span></span>]
+]
+
+<span class="comment">//set accuracy threshold</span>
+FuzzyCSV.ACCURACY_THRESHOLD.set(<span class="float">0.75</span>)
+
+FuzzyCSVTable.tbl(csv1)
+        .mergeByColumn(csv2)
+        .printTable()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>╔════════════╤════════╤═════╗
+║ first name │ sex    │ age ║
+╠════════════╪════════╪═════╣
+║ alex       │ male   │ -   ║
+╟────────────┼────────┼─────╢
+║ sara       │ female │ -   ║
+╟────────────┼────────┼─────╢
+║ alex       │ male   │ 21  ║
+╟────────────┼────────┼─────╢
+║ peter      │ male   │ 21  ║
+╚════════════╧════════╧═════╝</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice how it merged <strong><strong>[first name]</strong></strong> and <strong><strong>[ferts nama]</strong></strong></p>
 </div>
 </div>
 </div>
@@ -655,7 +790,7 @@ dependencies{
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-10-27 17:38:29 UTC
+Last updated 2021-10-27 21:22:41 UTC
 </div>
 </div>
 </body>

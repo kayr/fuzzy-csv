@@ -3,5 +3,5 @@
 ==== FUll Join
 [source,groovy]
 ----
-include::samples/Join.groovy[]
+include::samples/join.groovy[]
 ----

@@ -73,6 +73,35 @@ dependencies{
 }
 -----
 
-== Illustrations
+=== Illustrations
 
-include::Joins.adoc[]
+==== Loading Data into Fuzzy-CSV
+
+[source,groovy]
+----
+include::samples/loading.groovy[tag=code]
+----
+
+==== Visualize json data in a console grid table
+
+You can convert json text to a grid console table.
+
+[source,groovy]
+----
+include::samples/gridify.groovy[tag=code]
+----
+//[out:gridify]
+
+==== Merging with a fuzzy match
+
+1. Set the accuracy threshold to 75%
+2. Merge using code below
+
+[source,groovy]
+----
+include::samples/merging.groovy[tag=code]
+----
+
+//[out:merging]
+
+Notice how it merged ***[first name]*** and ***[ferts nama]***
