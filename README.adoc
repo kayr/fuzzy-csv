@@ -1,0 +1,6 @@
+= Documentation repo for fuzzy-csv
+
+== How to build
+Install groovy and asciidoctorj using sdkman
+
+execute `groovy build.groovy`

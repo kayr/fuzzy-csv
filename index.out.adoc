@@ -89,9 +89,6 @@ You can convert json text to a grid console table.
 [source,groovy]
 ----
 include::samples/gridify.groovy[tag=code]
-
-//Notice how it merged [first name] and [ferts nama]
-//-----------------
 /*output
 ╔═════════╤═══════════════════════════════════════════╗
 ║ key     │ value                                     ║
@@ -140,6 +137,8 @@ include::samples/gridify.groovy[tag=code]
 ----
 include::samples/merging.groovy[tag=code]
 
+
+//Notice how it merged [first name] and [ferts nama]
 /*output
 ╔════════════╤════════╤═════╗
 ║ first name │ sex    │ age ║
@@ -402,6 +401,7 @@ include::samples/filters.groovy[]
 ----
 
 ==== Delete Records
+
 [source,groovy]
 ----
 include::samples/delete-rows.groovy[]
@@ -414,3 +414,127 @@ include::samples/delete-rows.groovy[]
 */
 
 ----
+
+==== Distinct by column
+
+[source,groovy]
+----
+include::samples/distinct-by-column.groovy[]
+/*output
+╔═════════╤═════╤══════════╤══════════╗
+║ name    │ age │ hobby    │ category ║
+╠═════════╪═════╪══════════╪══════════╣
+║ alex    │ 21  │ biking   │ A        ║
+╟─────────┼─────┼──────────┼──────────╢
+║ peter   │ 21  │ swimming │ S        ║
+╟─────────┼─────┼──────────┼──────────╢
+║ barbara │ 23  │ swimming │ S        ║
+╚═════════╧═════╧══════════╧══════════╝
+*/
+
+----
+
+==== Adding Records
+
+[source,groovy]
+----
+include::samples/adding-records.groovy[]
+/*output
+╔══════════╤════════╗
+║ name     │ number ║
+╠══════════╪════════╣
+║ john     │ 1.1    ║
+╟──────────┼────────╢
+║ JB       │ 455    ║
+╟──────────┼────────╢
+║ JLis     │ 767    ║
+╟──────────┼────────╢
+║ MName    │ 90     ║
+╟──────────┼────────╢
+║ -        │ -      ║
+╟──────────┼────────╢
+║ MNameEmp │ -      ║
+╚══════════╧════════╝
+*/
+
+----
+
+==== Sorting
+
+[source,groovy]
+----
+include::samples/sorting.groovy[tag=code]
+/*output
+---- SORTED WITH COLUMN NAMES
+╔════════╤═════╤══════════╗
+║ name   │ age │ hobby    ║
+╠════════╪═════╪══════════╣
+║ alex   │ 21  │ biking   ║
+╟────────┼─────┼──────────╢
+║ peter  │ 21  │ swimming ║
+╟────────┼─────┼──────────╢
+║ dan    │ 25  │ swimming ║
+╟────────┼─────┼──────────╢
+║ martin │ 40  │ swimming ║
+╚════════╧═════╧══════════╝
+ 
+
+---- SORTED WITH CLOSURE
+╔════════╤═════╤══════════╗
+║ name   │ age │ hobby    ║
+╠════════╪═════╪══════════╣
+║ alex   │ 21  │ biking   ║
+╟────────┼─────┼──────────╢
+║ peter  │ 21  │ swimming ║
+╟────────┼─────┼──────────╢
+║ dan    │ 25  │ swimming ║
+╟────────┼─────┼──────────╢
+║ martin │ 40  │ swimming ║
+╚════════╧═════╧══════════╝
+ 
+*/
+
+----
+==== Ranges
+Ranges help slice the table data. e.g. selecting last 2, top 2,  3rd to 2nd last record
+
+[source,groovy]
+----
+include::samples/ranges.groovy[tag=code]
+/*output
+---- TOP 2
+╔════════╤═════╤══════════╗
+║ name   │ age │ hobby    ║
+╠════════╪═════╪══════════╣
+║ alex   │ 21  │ biking   ║
+╟────────┼─────┼──────────╢
+║ martin │ 40  │ swimming ║
+╚════════╧═════╧══════════╝
+ 
+
+---- LAST 2
+╔═══════╤═════╤══════════╗
+║ name  │ age │ hobby    ║
+╠═══════╪═════╪══════════╣
+║ peter │ 21  │ swimming ║
+╟───────┼─────┼──────────╢
+║ dan   │ 25  │ swimming ║
+╚═══════╧═════╧══════════╝
+
+
+---- MIDDLE 2
+╔════════╤═════╤══════════╗
+║ name   │ age │ hobby    ║
+╠════════╪═════╪══════════╣
+║ martin │ 40  │ swimming ║
+╟────────┼─────┼──────────╢
+║ dan    │ 25  │ swimming ║
+╚════════╧═════╧══════════╝
+ 
+*/
+
+----
+
+=== Navigation
+
+To be continued..

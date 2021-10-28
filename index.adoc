@@ -89,9 +89,6 @@ You can convert json text to a grid console table.
 [source,groovy]
 ----
 include::samples/gridify.groovy[tag=code]
-
-//Notice how it merged [first name] and [ferts nama]
-//-----------------
 //[raw:gridify]
 ----
 
@@ -105,6 +102,8 @@ include::samples/gridify.groovy[tag=code]
 ----
 include::samples/merging.groovy[tag=code]
 
+
+//Notice how it merged [first name] and [ferts nama]
 //[raw:merging]
 ----
 
@@ -254,8 +253,45 @@ include::samples/filters.groovy[]
 ----
 
 ==== Delete Records
+
 [source,groovy]
 ----
 include::samples/delete-rows.groovy[]
 //[raw:delete-rows]
 ----
+
+==== Distinct by column
+
+[source,groovy]
+----
+include::samples/distinct-by-column.groovy[]
+//[raw:distinct-by-column]
+----
+
+==== Adding Records
+
+[source,groovy]
+----
+include::samples/adding-records.groovy[]
+//[raw:adding-records]
+----
+
+==== Sorting
+
+[source,groovy]
+----
+include::samples/sorting.groovy[tag=code]
+//[raw:sorting]
+----
+==== Ranges
+Ranges help slice the table data. e.g. selecting last 2, top 2,  3rd to 2nd last record
+
+[source,groovy]
+----
+include::samples/ranges.groovy[tag=code]
+//[raw:ranges]
+----
+
+=== Navigation
+
+To be continued...
