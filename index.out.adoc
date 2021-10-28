@@ -89,10 +89,10 @@ You can convert json text to a grid console table.
 [source,groovy]
 ----
 include::samples/gridify.groovy[tag=code]
-----
-Output
-[source]
-----
+
+//Notice how it merged [first name] and [ferts nama]
+//-----------------
+/*output
 ╔═════════╤═══════════════════════════════════════════╗
 ║ key     │ value                                     ║
 ╠═════════╪═══════════════════════════════════════════╣
@@ -126,6 +126,8 @@ Output
 ║         │ ║ 5005 │ Sugar  │ Brown ║                 ║
 ║         │ ╚══════╧════════╧═══════╝                 ║
 ╚═════════╧═══════════════════════════════════════════╝
+*/
+
 ----
 
 
@@ -137,11 +139,8 @@ Output
 [source,groovy]
 ----
 include::samples/merging.groovy[tag=code]
-----
 
-Output
-[source]
-----
+/*output
 ╔════════════╤════════╤═════╗
 ║ first name │ sex    │ age ║
 ╠════════════╪════════╪═════╣
@@ -153,7 +152,10 @@ Output
 ╟────────────┼────────┼─────╢
 ║ peter      │ male   │ 21  ║
 ╚════════════╧════════╧═════╝
+*/
+
 ----
+
 
 
 Notice how it merged *_[first name]_* and *_[ferts nama]_*
@@ -165,15 +167,15 @@ Notice how it merged *_[first name]_* and *_[ferts nama]_*
 [source,groovy]
 ----
 include::samples/join-inner.groovy[tag=code]
-----
-Output
-[source]
-----
+
+/*output
 ╔══════╤══════╤═════╤════════╗
 ║ name │ sex  │ age │ hobby  ║
 ╠══════╪══════╪═════╪════════╣
 ║ alex │ male │ 21  │ biking ║
 ╚══════╧══════╧═════╧════════╝
+*/
+
 ----
 
 
@@ -182,10 +184,8 @@ Output
 [source,groovy]
 ----
 include::samples/join-left.groovy[tag=code]
-----
-Output
-[source]
-----
+
+/*output
 ╔══════╤════════╤═════╤════════╗
 ║ name │ sex    │ age │ hobby  ║
 ╠══════╪════════╪═════╪════════╣
@@ -193,6 +193,8 @@ Output
 ╟──────┼────────┼─────┼────────╢
 ║ sara │ female │ -   │ -      ║
 ╚══════╧════════╧═════╧════════╝
+*/
+
 ----
 
 
@@ -201,10 +203,8 @@ Output
 [source,groovy]
 ----
 include::samples/join-right.groovy[tag=code]
-----
-Output
-[source]
-----
+
+/*output
 ╔═══════╤══════╤═════╤══════════╗
 ║ name  │ sex  │ age │ hobby    ║
 ╠═══════╪══════╪═════╪══════════╣
@@ -212,6 +212,8 @@ Output
 ╟───────┼──────┼─────┼──────────╢
 ║ peter │ -    │ 21  │ swimming ║
 ╚═══════╧══════╧═════╧══════════╝
+*/
+
 ----
 
 
@@ -220,10 +222,8 @@ Output
 [source,groovy]
 ----
 include::samples/join-full.groovy[tag=code]
-----
-Output
-[source]
-----
+
+/*output
 ╔═══════╤════════╤═════╤══════════╗
 ║ name  │ sex    │ age │ hobby    ║
 ╠═══════╪════════╪═════╪══════════╣
@@ -233,4 +233,65 @@ Output
 ╟───────┼────────┼─────┼──────────╢
 ║ peter │ -      │ 21  │ swimming ║
 ╚═══════╧════════╧═════╧══════════╝
+*/
+
+----
+==== Join With Custom Function
+[source,groovy]
+----
+include::samples/join-customfunction.groovy[tag=code]
+
+/*output
+╔═══════╤════════╤═══════╤═════╤══════════╗
+║ name  │ sex    │ name  │ age │ hobby    ║
+╠═══════╪════════╪═══════╪═════╪══════════╣
+║ alex  │ male   │ alex  │ 21  │ biking   ║
+╟───────┼────────┼───────┼─────┼──────────╢
+║ sara  │ female │ sara  │ -   │ -        ║
+╟───────┼────────┼───────┼─────┼──────────╢
+║ peter │ -      │ peter │ 21  │ swimming ║
+╚═══════╧════════╧═══════╧═════╧══════════╝
+*/
+
+----
+
+=== Record Functions
+
+These Help you write expression or functions for a record. E.g A function multiplying price by quantity. The record function run in two modes:
+
+- One with type coercion which can be created using `RecordFx.fn{}`.This mode is lenient and does not throw most exceptions. This mode supports division of nulls(`null/2`), zero(`2/0`) division and type coercion(`"2"/2 or Object/null`) . This mode adds extra overhead and is much slower if your are dealing with lots of records.
+- Another mode is `RecordFx.fx{}` which uses the default groovy evaluator. This mode is much faster if you are working with lots of records. However, this mode is not lenient and hence can throw `java.lang.ArithmeticException: Division by zero`. If you want to enable leniency but still want to use the faster `RecordFx.fx{}` you can wrap your code in the `fuzzycsv.FxExtensions` category(e.g `use(FxExtensions){ ...code here.. }`) So the category is registered only once as compared to the former where the category is reqistered on each and every evaluation.
+
+
+==== Doing a Select with a calculated field
+
+To shoe the difference of how `Record.fx` and `Record.fn`  observe the output of the following code snippet
+[source,groovy]
+----
+include::samples/select-with-function.groovy[tag=code]
+
+/*output
+
+--- USING FN FUNCTION
+╔═══════╤══════════╤═══════╗
+║ price │ quantity │ total ║
+╠═══════╪══════════╪═══════╣
+║ 2     │ 5        │ 10    ║
+╟───────┼──────────┼───────╢
+║ 3     │ 4        │ 12    ║
+╚═══════╧══════════╧═══════╝
+
+
+--- USING FX FUNTION
+╔═══════╤══════════╤═══════╗
+║ price │ quantity │ total ║
+╠═══════╪══════════╪═══════╣
+║ 2     │ 5        │ 22222 ║
+╟───────┼──────────┼───────╢
+║ 3     │ 4        │ 3333  ║
+╚═══════╧══════════╧═══════╝
+
+
+*/
+
 ----

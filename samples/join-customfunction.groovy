@@ -3,8 +3,8 @@
 import static fuzzycsv.FuzzyStaticApi.*
 
 /*
-FULL JOIN EXAMPLE
- */
+JOIN WITH CUSTOM FUNCTION EXAMPLE
+*/
 
 def csv1 = [
         ['name', 'sex'],
@@ -19,6 +19,6 @@ def csv2 = [
 ]
 
 tbl(csv1)
-        .fullJoin(csv2, 'name')
+        .fullJoin(csv2) { it.left('name') == it.right('name') }
         .printTable()
 //end::code[]

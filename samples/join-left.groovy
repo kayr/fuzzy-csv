@@ -1,8 +1,11 @@
 @Grab(group = 'io.github.kayr', module = 'fuzzy-csv', version = '1.7.1')
 //tag::code[]
 
-import static fuzzycsv.FuzzyCSVTable.tbl
+import static fuzzycsv.FuzzyStaticApi.*
 
+/*
+LEFT JOIN EXAMPLE
+*/
 def csv1 = [
         ['name', 'sex'],
         ['alex', 'male'],

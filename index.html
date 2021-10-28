@@ -551,6 +551,12 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#_left_join">Left Join</a></li>
 <li><a href="#_right_join">Right Join</a></li>
 <li><a href="#_full_join">Full Join</a></li>
+<li><a href="#_join_with_custom_function">Join With Custom Function</a></li>
+</ul>
+</li>
+<li><a href="#_record_functions">Record Functions</a>
+<ul class="sectlevel3">
+<li><a href="#_doing_a_select_with_a_calculated_field">Doing a Select with a calculated field</a></li>
 </ul>
 </li>
 </ul>
@@ -689,15 +695,12 @@ FuzzyCSVTable.parseCsv(csvString, separator<span class="comment">/* , */</span>,
 
 FuzzyCSVTable.fromJsonText(jsonText)
         .asListGrid()
-        .printTable()</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Output</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code>╔═════════╤═══════════════════════════════════════════╗
+        .printTable()
+
+<span class="comment">//Notice how it merged [first name] and [ferts nama]</span>
+<span class="comment">//-----------------</span>
+<span class="comment">/*output
+╔═════════╤═══════════════════════════════════════════╗
 ║ key     │ value                                     ║
 ╠═════════╪═══════════════════════════════════════════╣
 ║ id      │ 0001                                      ║
@@ -729,7 +732,8 @@ FuzzyCSVTable.fromJsonText(jsonText)
 ║         │ ╟──────┼────────┼───────╢                 ║
 ║         │ ║ 5005 │ Sugar  │ Brown ║                 ║
 ║         │ ╚══════╧════════╧═══════╝                 ║
-╚═════════╧═══════════════════════════════════════════╝</code></pre>
+╚═════════╧═══════════════════════════════════════════╝
+*/</span></code></pre>
 </div>
 </div>
 </div>
@@ -767,15 +771,10 @@ FuzzyCSV.ACCURACY_THRESHOLD.set(<span class="float">0.75</span>)
 
 FuzzyCSVTable.tbl(csv1)
         .mergeByColumn(csv2)
-        .printTable()</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Output</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code>╔════════════╤════════╤═════╗
+        .printTable()
+
+<span class="comment">/*output
+╔════════════╤════════╤═════╗
 ║ first name │ sex    │ age ║
 ╠════════════╪════════╪═════╣
 ║ alex       │ male   │ -   ║
@@ -785,7 +784,8 @@ FuzzyCSVTable.tbl(csv1)
 ║ alex       │ male   │ 21  ║
 ╟────────────┼────────┼─────╢
 ║ peter      │ male   │ 21  ║
-╚════════════╧════════╧═════╝</code></pre>
+╚════════════╧════════╧═════╝
+*/</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -799,7 +799,10 @@ FuzzyCSVTable.tbl(csv1)
 <h4 id="_inner_join">Inner join</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyCSVTable.tbl</span>
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyStaticApi.*</span>
+<span class="comment">/*
+INNER JOIN EXAMPLE
+*/</span>
 
 <span class="keyword">def</span> csv1 = [
         [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">sex</span><span class="delimiter">'</span></span>],
@@ -815,19 +818,15 @@ FuzzyCSVTable.tbl(csv1)
 
 tbl(csv1)
         .join(csv2, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
-        .printTable()</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Output</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code>╔══════╤══════╤═════╤════════╗
+        .printTable()
+
+<span class="comment">/*output
+╔══════╤══════╤═════╤════════╗
 ║ name │ sex  │ age │ hobby  ║
 ╠══════╪══════╪═════╪════════╣
 ║ alex │ male │ 21  │ biking ║
-╚══════╧══════╧═════╧════════╝</code></pre>
+╚══════╧══════╧═════╧════════╝
+*/</span></code></pre>
 </div>
 </div>
 </div>
@@ -835,8 +834,11 @@ tbl(csv1)
 <h4 id="_left_join">Left Join</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyCSVTable.tbl</span>
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyStaticApi.*</span>
 
+<span class="comment">/*
+LEFT JOIN EXAMPLE
+*/</span>
 <span class="keyword">def</span> csv1 = [
         [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">sex</span><span class="delimiter">'</span></span>],
         [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">male</span><span class="delimiter">'</span></span>],
@@ -851,21 +853,17 @@ tbl(csv1)
 
 tbl(csv1)
         .leftJoin(csv2, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
-        .printTable()</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Output</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code>╔══════╤════════╤═════╤════════╗
+        .printTable()
+
+<span class="comment">/*output
+╔══════╤════════╤═════╤════════╗
 ║ name │ sex    │ age │ hobby  ║
 ╠══════╪════════╪═════╪════════╣
 ║ alex │ male   │ 21  │ biking ║
 ╟──────┼────────┼─────┼────────╢
 ║ sara │ female │ -   │ -      ║
-╚══════╧════════╧═════╧════════╝</code></pre>
+╚══════╧════════╧═════╧════════╝
+*/</span></code></pre>
 </div>
 </div>
 </div>
@@ -873,7 +871,11 @@ tbl(csv1)
 <h4 id="_right_join">Right Join</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyCSVTable.tbl</span>
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyStaticApi.*</span>
+
+<span class="comment">/*
+RIGHT JOIN EXAMPLE
+*/</span>
 
 <span class="keyword">def</span> csv1 = [
         [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">sex</span><span class="delimiter">'</span></span>],
@@ -889,21 +891,17 @@ tbl(csv1)
 
 tbl(csv1)
         .rightJoin(csv2, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
-        .printTable()</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Output</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code>╔═══════╤══════╤═════╤══════════╗
+        .printTable()
+
+<span class="comment">/*output
+╔═══════╤══════╤═════╤══════════╗
 ║ name  │ sex  │ age │ hobby    ║
 ╠═══════╪══════╪═════╪══════════╣
 ║ alex  │ male │ 21  │ biking   ║
 ╟───────┼──────┼─────┼──────────╢
 ║ peter │ -    │ 21  │ swimming ║
-╚═══════╧══════╧═════╧══════════╝</code></pre>
+╚═══════╧══════╧═════╧══════════╝
+*/</span></code></pre>
 </div>
 </div>
 </div>
@@ -911,7 +909,11 @@ tbl(csv1)
 <h4 id="_full_join">Full Join</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyCSVTable.tbl</span>
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyStaticApi.*</span>
+
+<span class="comment">/*
+FULL JOIN EXAMPLE
+ */</span>
 
 <span class="keyword">def</span> csv1 = [
         [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">sex</span><span class="delimiter">'</span></span>],
@@ -927,15 +929,10 @@ tbl(csv1)
 
 tbl(csv1)
         .fullJoin(csv2, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
-        .printTable()</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Output</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code>╔═══════╤════════╤═════╤══════════╗
+        .printTable()
+
+<span class="comment">/*output
+╔═══════╤════════╤═════╤══════════╗
 ║ name  │ sex    │ age │ hobby    ║
 ╠═══════╪════════╪═════╪══════════╣
 ║ alex  │ male   │ 21  │ biking   ║
@@ -943,7 +940,120 @@ tbl(csv1)
 ║ sara  │ female │ -   │ -        ║
 ╟───────┼────────┼─────┼──────────╢
 ║ peter │ -      │ 21  │ swimming ║
-╚═══════╧════════╧═════╧══════════╝</code></pre>
+╚═══════╧════════╧═════╧══════════╝
+*/</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_join_with_custom_function">Join With Custom Function</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyStaticApi.*</span>
+
+<span class="comment">/*
+JOIN WITH CUSTOM FUNCTION EXAMPLE
+*/</span>
+
+<span class="keyword">def</span> csv1 = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">sex</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">male</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">sara</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">female</span><span class="delimiter">'</span></span>]
+]
+
+<span class="keyword">def</span> csv2 = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">hobby</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>]
+]
+
+tbl(csv1)
+        .fullJoin(csv2) { <span class="local-variable">it</span>.left(<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>) == <span class="local-variable">it</span>.right(<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>) }
+        .printTable()
+
+<span class="comment">/*output
+╔═══════╤════════╤═══════╤═════╤══════════╗
+║ name  │ sex    │ name  │ age │ hobby    ║
+╠═══════╪════════╪═══════╪═════╪══════════╣
+║ alex  │ male   │ alex  │ 21  │ biking   ║
+╟───────┼────────┼───────┼─────┼──────────╢
+║ sara  │ female │ sara  │ -   │ -        ║
+╟───────┼────────┼───────┼─────┼──────────╢
+║ peter │ -      │ peter │ 21  │ swimming ║
+╚═══════╧════════╧═══════╧═════╧══════════╝
+*/</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_record_functions">Record Functions</h3>
+<div class="paragraph">
+<p>These Help you write expression or functions for a record. E.g A function multiplying price by quantity. The record function run in two modes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>One with type coercion which can be created using <code>RecordFx.fn{}</code>.This mode is lenient and does not throw most exceptions. This mode supports division of nulls(<code>null/2</code>), zero(<code>2/0</code>) division and type coercion(<code>"2"/2 or Object/null</code>) . This mode adds extra overhead and is much slower if your are dealing with lots of records.</p>
+</li>
+<li>
+<p>Another mode is <code>RecordFx.fx{}</code> which uses the default groovy evaluator. This mode is much faster if you are working with lots of records. However, this mode is not lenient and hence can throw <code>java.lang.ArithmeticException: Division by zero</code>. If you want to enable leniency but still want to use the faster <code>RecordFx.fx{}</code> you can wrap your code in the <code>fuzzycsv.FxExtensions</code> category(e.g <code>use(FxExtensions){ &#8230;&#8203;code here.. }</code>) So the category is registered only once as compared to the former where the category is reqistered on each and every evaluation.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_doing_a_select_with_a_calculated_field">Doing a Select with a calculated field</h4>
+<div class="paragraph">
+<p>To shoe the difference of how <code>Record.fx</code> and <code>Record.fn</code>  observe the output of the following code snippet</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyStaticApi.*</span>
+
+
+<span class="comment">/*
+SELECT WITH FUNCTION
+ */</span>
+
+<span class="keyword">def</span> csv2 = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">price</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">quantity</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">2</span><span class="delimiter">'</span></span>, <span class="integer">5</span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">3</span><span class="delimiter">'</span></span>, <span class="integer">4</span>]
+]
+
+<span class="comment">//using the fn functions demonstrates how you can do arithmetic on strings and will get a valid result</span>
+<span class="keyword">def</span> r1 = tbl(csv2)
+        .select(<span class="string"><span class="delimiter">'</span><span class="content">price</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">quantity</span><span class="delimiter">'</span></span>, fn(<span class="string"><span class="delimiter">'</span><span class="content">total</span><span class="delimiter">'</span></span>) { <span class="local-variable">it</span>.price * <span class="local-variable">it</span>.quantity })
+        .printTable()
+
+<span class="comment">// here we will use the fx function notice the output will be a repeated string.</span>
+<span class="keyword">def</span> r2 = tbl(csv2)
+        .select(<span class="string"><span class="delimiter">'</span><span class="content">price</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">quantity</span><span class="delimiter">'</span></span>, fx(<span class="string"><span class="delimiter">'</span><span class="content">total</span><span class="delimiter">'</span></span>) { <span class="local-variable">it</span>.price * <span class="local-variable">it</span>.quantity })
+        .printTable()
+
+<span class="comment">/*output
+
+--- USING FN FUNCTION
+╔═══════╤══════════╤═══════╗
+║ price │ quantity │ total ║
+╠═══════╪══════════╪═══════╣
+║ 2     │ 5        │ 10    ║
+╟───────┼──────────┼───────╢
+║ 3     │ 4        │ 12    ║
+╚═══════╧══════════╧═══════╝
+
+
+--- USING FX FUNTION
+╔═══════╤══════════╤═══════╗
+║ price │ quantity │ total ║
+╠═══════╪══════════╪═══════╣
+║ 2     │ 5        │ 22222 ║
+╟───────┼──────────┼───────╢
+║ 3     │ 4        │ 3333  ║
+╚═══════╧══════════╧═══════╝
+
+
+*/</span></code></pre>
 </div>
 </div>
 </div>
@@ -953,7 +1063,7 @@ tbl(csv1)
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-10-27 21:50:50 UTC
+Last updated 2021-10-28 06:19:04 UTC
 </div>
 </div>
 </body>

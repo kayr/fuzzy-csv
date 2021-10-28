@@ -3,15 +3,25 @@ import fuzzycsv.FuzzyCSVTable
 
 def file = 'index.adoc' as File
 
-def pattern = $///\[out:[a-zA-Z-]+\]/$
+def pattern = $///\[(out|raw):[a-zA-Z-]+\]/$
 
 
 def finalText = file.text.replaceAll(pattern) {
-    return 'Output\n' +
-            '[source]\n' +
-            '----\n' +
-            runForCode(it) +
-            '----\n'
+    def phrase = it[0]
+    def code = runForCode(phrase)
+
+    if (phrase.contains('raw:')) {
+        return '/*output\n' +
+                code +
+                '*/\n'
+    } else {
+
+        return 'Output\n' +
+                '[source]\n' +
+                '----\n' +
+                code +
+                '----\n'
+    }
 }
 
 
@@ -28,7 +38,10 @@ void exec(String... commands) {
 }
 
 String runForCode(String pattern) {
+
+
     def fileName = pattern.replace('//[out:', '')
+            .replace('//[raw:', '')
             .replace(']', '') + '.groovy'
 
     def absPath = 'samples/' + fileName
@@ -37,7 +50,7 @@ String runForCode(String pattern) {
 
     def result = evalFileInNewWorkingDir(theGroovyFile)
     if (result instanceof FuzzyCSVTable) return result.toStringFormatted()
-    return result
+    return result.toString()
 }
 
 
