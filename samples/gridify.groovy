@@ -1,4 +1,4 @@
-@Grab(group = 'io.github.kayr', module = 'fuzzy-csv', version = '1.7.1')
+@Grab('io.github.kayr:fuzzy-csv:1.7.1')
 //tag::code[]
 import fuzzycsv.FuzzyCSVTable
 

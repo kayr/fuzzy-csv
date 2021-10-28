@@ -237,6 +237,7 @@ include::samples/join-full.groovy[tag=code]
 
 ----
 ==== Join With Custom Function
+
 [source,groovy]
 ----
 include::samples/join-customfunction.groovy[tag=code]
@@ -257,15 +258,16 @@ include::samples/join-customfunction.groovy[tag=code]
 
 === Record Functions
 
-These Help you write expression or functions for a record. E.g A function multiplying price by quantity. The record function run in two modes:
+These Help you write expression or functions for a record.E.g A function multiplying price by quantity.The record function run in two modes:
 
-- One with type coercion which can be created using `RecordFx.fn{}`.This mode is lenient and does not throw most exceptions. This mode supports division of nulls(`null/2`), zero(`2/0`) division and type coercion(`"2"/2 or Object/null`) . This mode adds extra overhead and is much slower if your are dealing with lots of records.
-- Another mode is `RecordFx.fx{}` which uses the default groovy evaluator. This mode is much faster if you are working with lots of records. However, this mode is not lenient and hence can throw `java.lang.ArithmeticException: Division by zero`. If you want to enable leniency but still want to use the faster `RecordFx.fx{}` you can wrap your code in the `fuzzycsv.FxExtensions` category(e.g `use(FxExtensions){ ...code here.. }`) So the category is registered only once as compared to the former where the category is reqistered on each and every evaluation.
+- One with type coercion which can be created using `RecordFx.fn{}`.This mode is lenient and does not throw most exceptions.This mode supports division of nulls(`null/2`), zero(`2/0`) division and type coercion(`"2"/2 or Object/null`) . This mode adds extra overhead and is much slower if your are dealing with lots of records.
+- Another mode is `RecordFx.fx{}` which uses the default groovy evaluator.This mode is much faster if you are working with lots of records.However, this mode is not lenient and hence can throw `java.lang.ArithmeticException: Division by zero`.If you want to enable leniency but still want to use the faster `RecordFx.fx{}` you can wrap your code in the `fuzzycsv.FxExtensions` category(e.g `use(FxExtensions){ ...code here.. }`) So the category is registered only once as compared to the former where the category is reqistered on each and every evaluation.
 
 
 ==== Doing a Select with a calculated field
 
 To shoe the difference of how `Record.fx` and `Record.fn`  observe the output of the following code snippet
+
 [source,groovy]
 ----
 include::samples/select-with-function.groovy[tag=code]
@@ -292,6 +294,123 @@ include::samples/select-with-function.groovy[tag=code]
 ╚═══════╧══════════╧═══════╝
 
 
+*/
+
+----
+
+=== Data Manipulation Functions
+
+==== Iterating over records
+
+You can use any of the groovy methods to iterate of a `FuzzyCSVTable` since it implements Iterable.
+
+[source,groovy]
+-----
+include::samples/iterating.groovy[tag=code]
+/*output
+alex
+peter*/
+
+-----
+
+==== Get Cell Value or First Value
+
+[source,groovy]
+----
+include::samples/get-cell-value.groovy[]
+----
+
+==== Delete Column
+
+[source,groovy]
+----
+include::samples/delete-column.groovy[]
+
+/*output
+╔══════════╗
+║ hobby    ║
+╠══════════╣
+║ biking   ║
+╟──────────╢
+║ swimming ║
+╚══════════╝
+*/
+
+----
+
+==== CSV To MapList
+
+[source,groovy]
+----
+include::samples/csv-to-map.groovy[]
+
+/*output
+[[name:alex, age:21, hobby:biking], [name:peter, age:21, hobby:swimming]]*/
+
+----
+
+==== CSV To POJO List
+
+[source,groovy]
+----
+include::samples/csv-to-pojo.groovy[]
+----
+
+==== Sql To CSV
+
+[source,groovy]
+----
+import java.sql.ResultSet
+import groovy.sql.Sql
+import fuzzycsv.FuzzyCSVTable
+
+Sql groovySql = null//...
+FuzzyCSVTable.toCSV(groovySql,"select * from PERSON")
+//or
+ResultSet resultSet = null//..
+FuzzyCSVTable.toCSV(resultSet)
+----
+
+==== Add Column
+[source,groovy]
+----
+include::samples/add-column.groovy[]
+/*output
+╔═══════╤═════╤══════════╤════════════╗
+║ name  │ age │ hobby    │ Double Age ║
+╠═══════╪═════╪══════════╪════════════╣
+║ alex  │ 21  │ biking   │ 42         ║
+╟───────┼─────┼──────────┼────────────╢
+║ peter │ 13  │ swimming │ 26         ║
+╚═══════╧═════╧══════════╧════════════╝
+*/
+
+----
+
+==== Filter Records
+[source,groovy]
+----
+include::samples/filters.groovy[]
+/*output
+╔══════╤═════╤════════╗
+║ name │ age │ hobby  ║
+╠══════╪═════╪════════╣
+║ alex │ 21  │ biking ║
+╚══════╧═════╧════════╝
+*/
+
+----
+
+==== Delete Records
+[source,groovy]
+----
+include::samples/delete-rows.groovy[]
+/*output
+╔═════════╤═════╤══════════╤══════════╗
+║ name    │ age │ hobby    │ category ║
+╠═════════╪═════╪══════════╪══════════╣
+║ barbara │ 23  │ swimming │ S        ║
+╚═════════╧═════╧══════════╧══════════╝
 */
 
 ----

@@ -31,7 +31,7 @@ exec('asciidoctorj', 'index.out.adoc', '-o', 'index.html')
 exec('firefox', 'index.html')
 
 void exec(String... commands) {
-    println("  > $commands")
+    println("  > ${commands.join(' ')}")
     def execute = commands.execute()
     execute.consumeProcessOutput(System.out, System.err)
     execute.waitFor()
