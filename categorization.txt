@@ -1,0 +1,25 @@
+data initializaion
+
+querying
+	navigation
+	select
+
+DML - Update data within table
+-transform
+-deduplication
+-randges
+-adding records
+-
+
+Join or data merging . join, merge, merge by column
+
+Export functions
+formmated text
+csv
+database
+excel
+
+
+Aggregation
+
+Reshaping pivot,addcolulum, delete colomn, transpose,spread,unwind,move colum

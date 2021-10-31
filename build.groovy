@@ -22,7 +22,8 @@ def finalText = file.text.replaceAll(pattern) {
                 code +
                 '\n....\n'
     } else if (phrase.contains('full:')) {
-        return """[source,groovy]
+        return """
+[source,groovy]
 ----
 include::samples/${r.file.name}[tag=code]
 ----

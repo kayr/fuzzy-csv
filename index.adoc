@@ -4,12 +4,12 @@
 :toclevels: 4
 FuzzyCSV is a lightweigt groovy data processing library that helps in shaping and cleaning your dataset before its consumed by another service.
 
-== Get FuzzyCsv
+== GET FuzzyCsv
 
 FuzzyCsv is published to both maven central and jitpack.io.
 Starting from 1.7.1 all versions of FuzzyCSV will be published to maven central
 
-=== Get FuzzyCsv from Maven Central
+=== GET FUZZYCSV FROM MAVEN CENTRAL
 
 For maven add the dependency to your pom file like this
 
@@ -31,7 +31,7 @@ Gradle:
  compile 'io.github.kayr:fuzzy-csv:${version}'
 ----
 
-=== Get FuzzyCsv from jitpack.io
+=== GET FUZZYCSV FROM JITPACK.IO
 
 The to get artefacts from jipack the name space changes from `io.github.kayr` to `com.github.kayr`.
 
@@ -73,7 +73,9 @@ dependencies{
 }
 -----
 
-=== Illustrations
+== USAGE
+
+=== DATA INITIALIZATION
 
 ==== Loading Data into Fuzzy-CSV
 
@@ -92,76 +94,87 @@ include::samples/gridify.groovy[tag=code]
 ----
 //[pre:gridify]
 
-
-
-==== Merging with a fuzzy match
-
-1. Set the accuracy threshold to 75%
-2. Merge using code below
-
-[source,groovy]
-----
-include::samples/merging.groovy[tag=code]
-
-
-----
-//[pre:merging]
-Notice how it merged *[first name]* and *[ferts nama]*
-
-=== Joins
-
-==== Inner join
-
-[source,groovy]
-----
-include::samples/join-inner.groovy[tag=code]
-----
-//[pre:join-inner]
-
-
-==== Left Join
-
-[source,groovy]
-----
-include::samples/join-left.groovy[tag=code]
-----
-//[pre:join-left]
-
-
-==== Right Join
-
-[source,groovy]
-----
-include::samples/join-right.groovy[tag=code]
-----
-//[pre:join-right]
-
-
-==== Full Join
-
-[source,groovy]
-----
-include::samples/join-full.groovy[tag=code]
-----
-//[pre:join-full]
-
-==== Join With Custom Function
-
-[source,groovy]
-----
-include::samples/join-customfunction.groovy[tag=code]
-----
-//[pre:join-customfunction]
-
-=== Record Functions
+=== RECORD FUNCTIONS
 
 These Help you write expression or functions for a record.E.g A function multiplying price by quantity.The record function run in two modes:
 
 - One with type coercion which can be created using `RecordFx.fn{}`.This mode is lenient and does not throw most exceptions.This mode supports division of nulls(`null/2`), zero(`2/0`) division and type coercion(`"2"/2 or Object/null`) . This mode adds extra overhead and is much slower if your are dealing with lots of records.
 - Another mode is `RecordFx.fx{}` which uses the default groovy evaluator.This mode is much faster if you are working with lots of records.However, this mode is not lenient and hence can throw `java.lang.ArithmeticException: Division by zero`.If you want to enable leniency but still want to use the faster `RecordFx.fx{}` you can wrap your code in the `fuzzycsv.FxExtensions` category(e.g `use(FxExtensions){ ...code here.. }`) So the category is registered only once as compared to the former where the category is reqistered on each and every evaluation.
 
+=== DATA MERGING
 
-==== Doing a Select with a calculated field
+==== Merging with a fuzzy match
+
+1. Set the accuracy threshold to 75%
+2. Merge using code below
+//[full:merging]
+Notice how it merged *[first name]* and *[ferts nama]*
+
+==== Joins
+
+===== Inner join
+//[full:join-inner]
+
+===== Left Join
+//[full:join-left]
+
+===== Right Join
+//[full:join-right]
+
+===== Full Join
+//[full:join-full]
+
+===== Join With Custom Function
+//[full:join-customfunction]
+
+=== DATA QUERYING
+
+==== Iterating over records
+
+You can use any of the groovy methods to iterate of a `FuzzyCSVTable` since it implements Iterable.
+//[full:iterating]
+
+==== Get Cell Value or First Value
+
+[source,groovy]
+----
+include::samples/get-cell-value.groovy[tag=code]
+----
+
+==== Filter Records
+//[full:filters]
+
+==== Sorting
+//[full:sorting]
+
+==== Ranges
+
+Ranges help slice the table data. e.g. selecting last 2, top 2, 3rd to 2nd last record
+//[full:ranges]
+
+
+==== Record Navigation
+
+Example showing running sum
+//[full:navigation-running-sum]
+
+Or sum bottom value with current value
+
+[source,groovy]
+----
+tbl(csv).addColumn(fx("bottom_up") { (it.down().age ?: 0) + it.age }).printTable()
+----
+
+==== Cell Navigation
+
+Navigators help move through the table cells easily.You can look above,below, right or left of a cell.
+
+[source,groovy]
+----
+include::samples/navigation.groovy[tag=code]
+----
+
+==== Select function
 
 To shoe the difference of how `Record.fx` and `Record.fn`  observe the output of the following code snippet
 
@@ -172,32 +185,67 @@ include::samples/select-with-function.groovy[tag=code]
 //[pre:select-with-function]
 
 
-=== Data Manipulation Functions
 
-==== Iterating over records
+=== DATA MANIPULATION FUNCTIONS
 
-You can use any of the groovy methods to iterate of a `FuzzyCSVTable` since it implements Iterable.
+==== Delete Records
+//[full:delete-rows]
 
-[source,groovy]
------
-include::samples/iterating.groovy[tag=code]
------
-//[pre:iterating]
+==== Deduplicate by column
+//[full:distinct-by-column]
 
-==== Get Cell Value or First Value
+==== Adding Records
+//[full:adding-records]
 
-[source,groovy]
-----
-include::samples/get-cell-value.groovy[tag=code]
-----
+==== Update values with where clause
+//[full:update-where]
+
+==== Transform each cell record
+//[full:transform-each]
+
+=== DATA RESHAPING FUNCTIONS (COLUMN MANIPULATION)
 
 ==== Delete Column
+//[full:delete-column]
 
-[source,groovy]
-----
-include::samples/delete-column.groovy[tag=code]
-----
-//[pre:delete-column]
+==== Add Column
+//[full:add-column]
+
+==== Transposing
+//[full:transpose]
+
+==== Unwinding a column
+
+This is kind can be used to unwind a column which has nested lists or collections
+//[full:unwind-list]
+
+==== Spreading a column
+
+Expand outwards a column which contains list items
+//[full:spread-list]
+
+Spread out a column with maps
+//[full:spread-map]
+
+Spread with custom column names
+//[full:spread-map-custom]
+
+==== Move column
+//[full:move-column]
+
+
+=== AGGREGATION FUNCTIONS
+
+==== Simplistic Aggregations
+
+In the example below we find the average age in each hobby by making use of sum count and group by functions
+//[full:aggregation-simple]
+
+==== Custom Aggregation
+//[full:aggregation-custom]
+
+
+=== EXPORT FUNCTIONS
 
 ==== CSV To MapList
 
@@ -230,112 +278,8 @@ ResultSet resultSet = null//..
 FuzzyCSVTable.toCSV(resultSet)
 ----
 
-==== Add Column
+=== EXCEL UTILITY CLASSES
 
-[source,groovy]
-----
-include::samples/add-column.groovy[tag=code]
-----
-//[pre:add-column]
-==== Filter Records
-
-[source,groovy]
-----
-include::samples/filters.groovy[tag=code]
-----
-//[pre:filters]
-
-==== Delete Records
-
-[source,groovy]
-----
-include::samples/delete-rows.groovy[tag=code]
-----
-//[pre:delete-rows]
-
-==== Distinct by column
-
-[source,groovy]
-----
-include::samples/distinct-by-column.groovy[tag=code]
-----
-//[pre:distinct-by-column]
-
-==== Adding Records
-
-[source,groovy]
-----
-include::samples/adding-records.groovy[tag=code]
-----
-//[pre:adding-records]
-
-==== Sorting
-
-[source,groovy]
-----
-include::samples/sorting.groovy[tag=code]
-----
-//[pre:sorting]
-
-==== Ranges
-
-Ranges help slice the table data. e.g. selecting last 2, top 2, 3rd to 2nd last record
-//[full:ranges]
-
-==== Navigation
-
-Example showing running sum
-//[full:navigation-running-sum]
-
-Or sum bottom value with current value
-
-[source,groovy]
-----
-tbl(csv).addColumn(fx("bottom_up") { (it.down().age ?: 0) + it.age }).printTable()
-----
-
-==== Update values with where clause
-//[full:update-where]
-
-==== Transform each cell record
-//[full:transform-each]
-
-==== Transposing
-//[full:transpose]
-==== Simplistic Aggregations
-
-In the example below we find the average age in each hobby by making use of sum count and group by functions
-//[full:aggregation-simple]
-
-==== Custom Aggregation
-//[full:aggregation-custom]
-
-==== Unwinding a column
-This is kind can be used to unwind a column which has nested lists or collections
-//[full:unwind-list]
-
-==== Spreading a column
-Expand outwards a column which contains list items
-//[full:spread-list]
-
-Spread out a column with maps
-//[full:spread-map]
-
-Spread with custom column names
-//[full:spread-map-custom]
-
-==== Move column
-//[full:move-column]
-
-==== Navigation
-
-Navigators help move through the table cells easily.You can look above,below, right or left of a cell.
-[source,groovy]
-----
-include::samples/navigation.groovy[tag=code]
-----
-
-==== Excel utility classes
 To use the Excel utilities you have to add the poi dependency to your classpath
 
 If you are using gradle add this.
@@ -355,6 +299,7 @@ After this you can use the Excel utilities to convert excel sheets to and from F
 There are mainly two classes that help with this which include `fuzzycsv.Excel2Csv` and `fuzzycsv.CSVToExcel`
 
 == Note:
+
 This library has not been tested with very large(700,000 records plus) CSV files.So performance might be a concern.
 
 More example can be seen here

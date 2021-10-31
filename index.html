@@ -534,19 +534,26 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_get_fuzzycsv">Get FuzzyCsv</a>
+<li><a href="#_get_fuzzycsv">GET FuzzyCsv</a>
 <ul class="sectlevel2">
-<li><a href="#_get_fuzzycsv_from_maven_central">Get FuzzyCsv from Maven Central</a></li>
-<li><a href="#_get_fuzzycsv_from_jitpack_io">Get FuzzyCsv from jitpack.io</a></li>
-<li><a href="#_illustrations">Illustrations</a>
+<li><a href="#_get_fuzzycsv_from_maven_central">GET FUZZYCSV FROM MAVEN CENTRAL</a></li>
+<li><a href="#_get_fuzzycsv_from_jitpack_io">GET FUZZYCSV FROM JITPACK.IO</a></li>
+</ul>
+</li>
+<li><a href="#_usage">USAGE</a>
+<ul class="sectlevel2">
+<li><a href="#_data_initialization">DATA INITIALIZATION</a>
 <ul class="sectlevel3">
 <li><a href="#_loading_data_into_fuzzy_csv">Loading Data into Fuzzy-CSV</a></li>
 <li><a href="#_visualize_json_data_in_a_console_grid_table">Visualize json data in a console grid table</a></li>
-<li><a href="#_merging_with_a_fuzzy_match">Merging with a fuzzy match</a></li>
 </ul>
 </li>
-<li><a href="#_joins">Joins</a>
+<li><a href="#_record_functions">RECORD FUNCTIONS</a></li>
+<li><a href="#_data_merging">DATA MERGING</a>
 <ul class="sectlevel3">
+<li><a href="#_merging_with_a_fuzzy_match">Merging with a fuzzy match</a></li>
+<li><a href="#_joins">Joins</a>
+<ul class="sectlevel4">
 <li><a href="#_inner_join">Inner join</a></li>
 <li><a href="#_left_join">Left Join</a></li>
 <li><a href="#_right_join">Right Join</a></li>
@@ -554,39 +561,53 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#_join_with_custom_function">Join With Custom Function</a></li>
 </ul>
 </li>
-<li><a href="#_record_functions">Record Functions</a>
-<ul class="sectlevel3">
-<li><a href="#_doing_a_select_with_a_calculated_field">Doing a Select with a calculated field</a></li>
 </ul>
 </li>
-<li><a href="#_data_manipulation_functions">Data Manipulation Functions</a>
+<li><a href="#_data_querying">DATA QUERYING</a>
 <ul class="sectlevel3">
 <li><a href="#_iterating_over_records">Iterating over records</a></li>
 <li><a href="#_get_cell_value_or_first_value">Get Cell Value or First Value</a></li>
-<li><a href="#_delete_column">Delete Column</a></li>
-<li><a href="#_csv_to_maplist">CSV To MapList</a></li>
-<li><a href="#_csv_to_pojo_list">CSV To POJO List</a></li>
-<li><a href="#_sql_to_csv">Sql To CSV</a></li>
-<li><a href="#_add_column">Add Column</a></li>
 <li><a href="#_filter_records">Filter Records</a></li>
-<li><a href="#_delete_records">Delete Records</a></li>
-<li><a href="#_distinct_by_column">Distinct by column</a></li>
-<li><a href="#_adding_records">Adding Records</a></li>
 <li><a href="#_sorting">Sorting</a></li>
 <li><a href="#_ranges">Ranges</a></li>
-<li><a href="#_navigation">Navigation</a></li>
+<li><a href="#_record_navigation">Record Navigation</a></li>
+<li><a href="#_cell_navigation">Cell Navigation</a></li>
+<li><a href="#_select_function">Select function</a></li>
+</ul>
+</li>
+<li><a href="#_data_manipulation_functions">DATA MANIPULATION FUNCTIONS</a>
+<ul class="sectlevel3">
+<li><a href="#_delete_records">Delete Records</a></li>
+<li><a href="#_deduplicate_by_column">Deduplicate by column</a></li>
+<li><a href="#_adding_records">Adding Records</a></li>
 <li><a href="#_update_values_with_where_clause">Update values with where clause</a></li>
 <li><a href="#_transform_each_cell_record">Transform each cell record</a></li>
+</ul>
+</li>
+<li><a href="#_data_reshaping_functions_column_manipulation">DATA RESHAPING FUNCTIONS (COLUMN MANIPULATION)</a>
+<ul class="sectlevel3">
+<li><a href="#_delete_column">Delete Column</a></li>
+<li><a href="#_add_column">Add Column</a></li>
 <li><a href="#_transposing">Transposing</a></li>
-<li><a href="#_simplistic_aggregations">Simplistic Aggregations</a></li>
-<li><a href="#_custom_aggregation">Custom Aggregation</a></li>
 <li><a href="#_unwinding_a_column">Unwinding a column</a></li>
 <li><a href="#_spreading_a_column">Spreading a column</a></li>
 <li><a href="#_move_column">Move column</a></li>
-<li><a href="#_navigation_2">Navigation</a></li>
-<li><a href="#_excel_utility_classes">Excel utility classes</a></li>
 </ul>
 </li>
+<li><a href="#_aggregation_functions">AGGREGATION FUNCTIONS</a>
+<ul class="sectlevel3">
+<li><a href="#_simplistic_aggregations">Simplistic Aggregations</a></li>
+<li><a href="#_custom_aggregation">Custom Aggregation</a></li>
+</ul>
+</li>
+<li><a href="#_export_functions">EXPORT FUNCTIONS</a>
+<ul class="sectlevel3">
+<li><a href="#_csv_to_maplist">CSV To MapList</a></li>
+<li><a href="#_csv_to_pojo_list">CSV To POJO List</a></li>
+<li><a href="#_sql_to_csv">Sql To CSV</a></li>
+</ul>
+</li>
+<li><a href="#_excel_utility_classes">EXCEL UTILITY CLASSES</a></li>
 </ul>
 </li>
 <li><a href="#_note">Note:</a></li>
@@ -595,14 +616,14 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_get_fuzzycsv">Get FuzzyCsv</h2>
+<h2 id="_get_fuzzycsv">GET FuzzyCsv</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>FuzzyCsv is published to both maven central and jitpack.io.
 Starting from 1.7.1 all versions of FuzzyCSV will be published to maven central</p>
 </div>
 <div class="sect2">
-<h3 id="_get_fuzzycsv_from_maven_central">Get FuzzyCsv from Maven Central</h3>
+<h3 id="_get_fuzzycsv_from_maven_central">GET FUZZYCSV FROM MAVEN CENTRAL</h3>
 <div class="paragraph">
 <p>For maven add the dependency to your pom file like this</p>
 </div>
@@ -628,7 +649,7 @@ Starting from 1.7.1 all versions of FuzzyCSV will be published to maven central<
 </div>
 </div>
 <div class="sect2">
-<h3 id="_get_fuzzycsv_from_jitpack_io">Get FuzzyCsv from jitpack.io</h3>
+<h3 id="_get_fuzzycsv_from_jitpack_io">GET FUZZYCSV FROM JITPACK.IO</h3>
 <div class="paragraph">
 <p>The to get artefacts from jipack the name space changes from <code>io.github.kayr</code> to <code>com.github.kayr</code>.</p>
 </div>
@@ -672,8 +693,13 @@ dependencies{
 </div>
 </div>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usage">USAGE</h2>
+<div class="sectionbody">
 <div class="sect2">
-<h3 id="_illustrations">Illustrations</h3>
+<h3 id="_data_initialization">DATA INITIALIZATION</h3>
 <div class="sect3">
 <h4 id="_loading_data_into_fuzzy_csv">Loading Data into Fuzzy-CSV</h4>
 <div class="listingblock">
@@ -768,6 +794,25 @@ FuzzyCSVTable.fromJsonText(jsonText)
 </div>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_record_functions">RECORD FUNCTIONS</h3>
+<div class="paragraph">
+<p>These Help you write expression or functions for a record.E.g A function multiplying price by quantity.The record function run in two modes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>One with type coercion which can be created using <code>RecordFx.fn{}</code>.This mode is lenient and does not throw most exceptions.This mode supports division of nulls(<code>null/2</code>), zero(<code>2/0</code>) division and type coercion(<code>"2"/2 or Object/null</code>) . This mode adds extra overhead and is much slower if your are dealing with lots of records.</p>
+</li>
+<li>
+<p>Another mode is <code>RecordFx.fx{}</code> which uses the default groovy evaluator.This mode is much faster if you are working with lots of records.However, this mode is not lenient and hence can throw <code>java.lang.ArithmeticException: Division by zero</code>.If you want to enable leniency but still want to use the faster <code>RecordFx.fx{}</code> you can wrap your code in the <code>fuzzycsv.FxExtensions</code> category(e.g <code>use(FxExtensions){ &#8230;&#8203;code here.. }</code>) So the category is registered only once as compared to the former where the category is reqistered on each and every evaluation.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_data_merging">DATA MERGING</h3>
 <div class="sect3">
 <h4 id="_merging_with_a_fuzzy_match">Merging with a fuzzy match</h4>
 <div class="olist arabic">
@@ -827,11 +872,10 @@ FuzzyCSVTable.tbl(csv1)
 <p>Notice how it merged <strong>[first name]</strong> and <strong>[ferts nama]</strong></p>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_joins">Joins</h3>
 <div class="sect3">
-<h4 id="_inner_join">Inner join</h4>
+<h4 id="_joins">Joins</h4>
+<div class="sect4">
+<h5 id="_inner_join">Inner join</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">tbl(csv1).join(csv2, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
@@ -851,8 +895,8 @@ FuzzyCSVTable.tbl(csv1)
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_left_join">Left Join</h4>
+<div class="sect4">
+<h5 id="_left_join">Left Join</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">tbl(csv1).leftJoin(csv2, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
@@ -874,8 +918,8 @@ FuzzyCSVTable.tbl(csv1)
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_right_join">Right Join</h4>
+<div class="sect4">
+<h5 id="_right_join">Right Join</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">tbl(csv1).rightJoin(csv2, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
@@ -897,8 +941,8 @@ FuzzyCSVTable.tbl(csv1)
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_full_join">Full Join</h4>
+<div class="sect4">
+<h5 id="_full_join">Full Join</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">tbl(csv1).fullJoin(csv2, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>)
@@ -922,8 +966,8 @@ FuzzyCSVTable.tbl(csv1)
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_join_with_custom_function">Join With Custom Function</h4>
+<div class="sect4">
+<h5 id="_join_with_custom_function">Join With Custom Function</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">tbl(csv1).fullJoin(csv2) { <span class="local-variable">it</span>.left(<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>) == <span class="local-variable">it</span>.right(<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>) }
@@ -948,74 +992,9 @@ FuzzyCSVTable.tbl(csv1)
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_record_functions">Record Functions</h3>
-<div class="paragraph">
-<p>These Help you write expression or functions for a record.E.g A function multiplying price by quantity.The record function run in two modes:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>One with type coercion which can be created using <code>RecordFx.fn{}</code>.This mode is lenient and does not throw most exceptions.This mode supports division of nulls(<code>null/2</code>), zero(<code>2/0</code>) division and type coercion(<code>"2"/2 or Object/null</code>) . This mode adds extra overhead and is much slower if your are dealing with lots of records.</p>
-</li>
-<li>
-<p>Another mode is <code>RecordFx.fx{}</code> which uses the default groovy evaluator.This mode is much faster if you are working with lots of records.However, this mode is not lenient and hence can throw <code>java.lang.ArithmeticException: Division by zero</code>.If you want to enable leniency but still want to use the faster <code>RecordFx.fx{}</code> you can wrap your code in the <code>fuzzycsv.FxExtensions</code> category(e.g <code>use(FxExtensions){ &#8230;&#8203;code here.. }</code>) So the category is registered only once as compared to the former where the category is reqistered on each and every evaluation.</p>
-</li>
-</ul>
-</div>
-<div class="sect3">
-<h4 id="_doing_a_select_with_a_calculated_field">Doing a Select with a calculated field</h4>
-<div class="paragraph">
-<p>To shoe the difference of how <code>Record.fx</code> and <code>Record.fn</code>  observe the output of the following code snippet</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> csv2 = [
-        [<span class="string"><span class="delimiter">'</span><span class="content">price</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">quantity</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">2</span><span class="delimiter">'</span></span>, <span class="integer">5</span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">3</span><span class="delimiter">'</span></span>, <span class="integer">4</span>]
-]
-
-<span class="comment">//using the fn functions demonstrates how you can do arithmetic on strings and will get a valid result</span>
-<span class="keyword">def</span> r1 = tbl(csv2)
-        .select(<span class="string"><span class="delimiter">'</span><span class="content">price</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">quantity</span><span class="delimiter">'</span></span>, fn(<span class="string"><span class="delimiter">'</span><span class="content">total</span><span class="delimiter">'</span></span>) { <span class="local-variable">it</span>.price * <span class="local-variable">it</span>.quantity })
-        .printTable()
-
-<span class="comment">// here we will use the fx function notice the output will be a repeated string.</span>
-<span class="keyword">def</span> r2 = tbl(csv2)
-        .select(<span class="string"><span class="delimiter">'</span><span class="content">price</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">quantity</span><span class="delimiter">'</span></span>, fx(<span class="string"><span class="delimiter">'</span><span class="content">total</span><span class="delimiter">'</span></span>) { <span class="local-variable">it</span>.price * <span class="local-variable">it</span>.quantity })
-        .printTable()</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><em>Output</em></p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>--- USING FN FUNCTION
-╔═══════╤══════════╤═══════╗
-║ price │ quantity │ total ║
-╠═══════╪══════════╪═══════╣
-║ 2     │ 5        │ 10    ║
-╟───────┼──────────┼───────╢
-║ 3     │ 4        │ 12    ║
-╚═══════╧══════════╧═══════╝
-
-
---- USING FX FUNTION
-╔═══════╤══════════╤═══════╗
-║ price │ quantity │ total ║
-╠═══════╪══════════╪═══════╣
-║ 2     │ 5        │ 22222 ║
-╟───────┼──────────┼───────╢
-║ 3     │ 4        │ 3333  ║
-╚═══════╧══════════╧═══════╝</pre>
-</div>
-</div>
-</div>
 </div>
 <div class="sect2">
-<h3 id="_data_manipulation_functions">Data Manipulation Functions</h3>
+<h3 id="_data_querying">DATA QUERYING</h3>
 <div class="sect3">
 <h4 id="_iterating_over_records">Iterating over records</h4>
 <div class="paragraph">
@@ -1058,111 +1037,6 @@ peter</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_delete_column">Delete Column</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">tbl(csv2).delete(<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>).printTable()</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><em>Output</em></p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>╔══════════╗
-║ hobby    ║
-╠══════════╣
-║ biking   ║
-╟──────────╢
-║ swimming ║
-╚══════════╝</pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_csv_to_maplist">CSV To MapList</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">tbl(csv).toMapList()</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><em>Output</em></p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>[[name:alex, age:21, hobby:biking], [name:peter, age:21, hobby:swimming]]</pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_csv_to_pojo_list">CSV To POJO List</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">io.github.kayr:fuzzy-csv:1.7.1</span><span class="delimiter">'</span></span>)
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyCSVTable.tbl</span>
-
-<span class="keyword">def</span> csv = [
-        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">hobby</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>]]
-
-<span class="type">class</span> <span class="class">Person</span> {
-    <span class="predefined-type">String</span> name
-    <span class="predefined-type">Integer</span> age
-    <span class="predefined-type">String</span> hobby
-}
-
-<span class="predefined-type">List</span>&lt;Person&gt; people = tbl(csv).toPojoList(Person.class)
-
-<span class="keyword">assert</span> people.size() == <span class="integer">3</span>
-<span class="keyword">assert</span> people.first().name == <span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>
-<span class="keyword">assert</span> people.first().age == <span class="integer">21</span></code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_sql_to_csv">Sql To CSV</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">groovy.sql.Sql groovySql = <span class="predefined-constant">null</span><span class="comment">//...</span>
-FuzzyCSVTable.toCSV(groovySql,<span class="string"><span class="delimiter">&quot;</span><span class="content">select * from PERSON</span><span class="delimiter">&quot;</span></span>)</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>OR</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="predefined-type">ResultSet</span> resultSet = <span class="predefined-constant">null</span><span class="comment">//..</span>
-FuzzyCSVTable.toCSV(resultSet)</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_add_column">Add Column</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">tbl(csv).addColumn(fx(<span class="string"><span class="delimiter">'</span><span class="content">Double Age</span><span class="delimiter">'</span></span>) { <span class="local-variable">it</span>.age * <span class="integer">2</span> })
-        .printTable()</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><em>Output</em></p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>╔═══════╤═════╤══════════╤════════════╗
-║ name  │ age │ hobby    │ Double Age ║
-╠═══════╪═════╪══════════╪════════════╣
-║ alex  │ 21  │ biking   │ 42         ║
-╟───────┼─────┼──────────┼────────────╢
-║ peter │ 13  │ swimming │ 26         ║
-╚═══════╧═════╧══════════╧════════════╝</pre>
-</div>
-</div>
-</div>
-<div class="sect3">
 <h4 id="_filter_records">Filter Records</h4>
 <div class="listingblock">
 <div class="content">
@@ -1185,105 +1059,6 @@ tbl(csv).filter { <span class="local-variable">it</span>.name == <span class="st
 ╠══════╪═════╪════════╣
 ║ alex │ 21  │ biking ║
 ╚══════╧═════╧════════╝</pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_delete_records">Delete Records</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> csv = [
-        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">hobby</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">category</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">A</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">charles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">barbara</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">23</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>]]
-
-tbl(csv).delete { <span class="local-variable">it</span>.age == <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span> }
-        .printTable()</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><em>Output</em></p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>╔═════════╤═════╤══════════╤══════════╗
-║ name    │ age │ hobby    │ category ║
-╠═════════╪═════╪══════════╪══════════╣
-║ barbara │ 23  │ swimming │ S        ║
-╚═════════╧═════╧══════════╧══════════╝</pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_distinct_by_column">Distinct by column</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> csv = [
-        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">hobby</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">category</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">A</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">charles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">barbara</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">23</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>]]
-
-tbl(csv).distinctBy(<span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">category</span><span class="delimiter">'</span></span>)
-        .printTable()</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><em>Output</em></p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>╔═════════╤═════╤══════════╤══════════╗
-║ name    │ age │ hobby    │ category ║
-╠═════════╪═════╪══════════╪══════════╣
-║ alex    │ 21  │ biking   │ A        ║
-╟─────────┼─────┼──────────┼──────────╢
-║ peter   │ 21  │ swimming │ S        ║
-╟─────────┼─────┼──────────┼──────────╢
-║ barbara │ 23  │ swimming │ S        ║
-╚═════════╧═════╧══════════╧══════════╝</pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_adding_records">Adding Records</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> csv = tbl([
-        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">number</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">join</span><span class="delimiter">'</span></span>, <span class="float">1.1</span>]])
-
-csv.addRecordArr(<span class="string"><span class="delimiter">&quot;</span><span class="content">JB</span><span class="delimiter">&quot;</span></span>, <span class="integer">455</span>)
-        .addRecord([<span class="string"><span class="delimiter">&quot;</span><span class="content">JLis</span><span class="delimiter">&quot;</span></span>, <span class="integer">767</span>])
-        .addRecordMap([<span class="key">name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">MName</span><span class="delimiter">&quot;</span></span>, <span class="key">number</span>: <span class="integer">90</span>])
-        .addRecordArr()
-        .addRecordMap([<span class="key">name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">MNameEmp</span><span class="delimiter">&quot;</span></span>])
-        .printTable()</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><em>Output</em></p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>╔══════════╤════════╗
-║ name     │ number ║
-╠══════════╪════════╣
-║ join     │ 1.1    ║
-╟──────────┼────────╢
-║ JB       │ 455    ║
-╟──────────┼────────╢
-║ JLis     │ 767    ║
-╟──────────┼────────╢
-║ MName    │ 90     ║
-╟──────────┼────────╢
-║ -        │ -      ║
-╟──────────┼────────╢
-║ MNameEmp │ -      ║
-╚══════════╧════════╝</pre>
 </div>
 </div>
 </div>
@@ -1402,7 +1177,7 @@ csv.addRecordArr(<span class="string"><span class="delimiter">&quot;</span><span
 </div>
 </div>
 <div class="sect3">
-<h4 id="_navigation">Navigation</h4>
+<h4 id="_record_navigation">Record Navigation</h4>
 <div class="paragraph">
 <p>Example showing running sum</p>
 </div>
@@ -1448,6 +1223,202 @@ tbl(csv).addColumn(fx(<span class="string"><span class="delimiter">&quot;</span>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">tbl(csv).addColumn(fx(<span class="string"><span class="delimiter">&quot;</span><span class="content">bottom_up</span><span class="delimiter">&quot;</span></span>) { (<span class="local-variable">it</span>.down().age ?: <span class="integer">0</span>) + <span class="local-variable">it</span>.age }).printTable()</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_cell_navigation">Cell Navigation</h4>
+<div class="paragraph">
+<p>Navigators help move through the table cells easily.You can look above,below, right or left of a cell.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">fuzzycsv.nav.Navigator</span>
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyStaticApi.tbl</span>
+
+<span class="keyword">def</span> csv = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">hobby</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">category</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">A</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">charles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">barbara</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">23</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>]
+]
+
+<span class="keyword">def</span> navigator = <span class="keyword">new</span> Navigator(<span class="integer">0</span>, <span class="integer">0</span>, tbl(csv))
+
+
+<span class="keyword">assert</span> navigator.down().down().value() == <span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>
+<span class="keyword">assert</span> navigator.right().value() == <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>
+<span class="keyword">assert</span> navigator.right().left().value() == <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>
+<span class="keyword">assert</span> navigator.down().up().value() == <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>
+
+<span class="comment">// Move down</span>
+<span class="keyword">assert</span> navigator.downIter().collect { <span class="local-variable">it</span>.value() } == [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">charles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">barbara</span><span class="delimiter">'</span></span>]
+
+<span class="comment">// MoveRight</span>
+<span class="keyword">assert</span> navigator.rightIter().collect { <span class="local-variable">it</span>.value() } == [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">hobby</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">category</span><span class="delimiter">'</span></span>]
+
+<span class="comment">//move through all</span>
+<span class="keyword">assert</span> navigator.allIter().collect { <span class="local-variable">it</span>.value() } == [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">hobby</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">category</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">A</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>,
+                                                      <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">charles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">barbara</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">23</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>]
+<span class="comment">//move through all bounded</span>
+<span class="keyword">assert</span> navigator.allBoundedIter(<span class="integer">1</span>, <span class="integer">2</span>).collect { <span class="local-variable">it</span>.value() } == [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>]
+
+<span class="comment">//move up</span>
+<span class="keyword">assert</span> <span class="keyword">new</span> Navigator(<span class="integer">0</span>, <span class="integer">4</span>, tbl(csv)).upIter().collect { <span class="local-variable">it</span>.value() } == [<span class="string"><span class="delimiter">'</span><span class="content">barbara</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">charles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_select_function">Select function</h4>
+<div class="paragraph">
+<p>To shoe the difference of how <code>Record.fx</code> and <code>Record.fn</code>  observe the output of the following code snippet</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> csv2 = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">price</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">quantity</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">2</span><span class="delimiter">'</span></span>, <span class="integer">5</span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">3</span><span class="delimiter">'</span></span>, <span class="integer">4</span>]
+]
+
+<span class="comment">//using the fn functions demonstrates how you can do arithmetic on strings and will get a valid result</span>
+<span class="keyword">def</span> r1 = tbl(csv2)
+        .select(<span class="string"><span class="delimiter">'</span><span class="content">price</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">quantity</span><span class="delimiter">'</span></span>, fn(<span class="string"><span class="delimiter">'</span><span class="content">total</span><span class="delimiter">'</span></span>) { <span class="local-variable">it</span>.price * <span class="local-variable">it</span>.quantity })
+        .printTable()
+
+<span class="comment">// here we will use the fx function notice the output will be a repeated string.</span>
+<span class="keyword">def</span> r2 = tbl(csv2)
+        .select(<span class="string"><span class="delimiter">'</span><span class="content">price</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">quantity</span><span class="delimiter">'</span></span>, fx(<span class="string"><span class="delimiter">'</span><span class="content">total</span><span class="delimiter">'</span></span>) { <span class="local-variable">it</span>.price * <span class="local-variable">it</span>.quantity })
+        .printTable()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Output</em></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>--- USING FN FUNCTION
+╔═══════╤══════════╤═══════╗
+║ price │ quantity │ total ║
+╠═══════╪══════════╪═══════╣
+║ 2     │ 5        │ 10    ║
+╟───────┼──────────┼───────╢
+║ 3     │ 4        │ 12    ║
+╚═══════╧══════════╧═══════╝
+
+
+--- USING FX FUNTION
+╔═══════╤══════════╤═══════╗
+║ price │ quantity │ total ║
+╠═══════╪══════════╪═══════╣
+║ 2     │ 5        │ 22222 ║
+╟───────┼──────────┼───────╢
+║ 3     │ 4        │ 3333  ║
+╚═══════╧══════════╧═══════╝</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_data_manipulation_functions">DATA MANIPULATION FUNCTIONS</h3>
+<div class="sect3">
+<h4 id="_delete_records">Delete Records</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> csv = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">hobby</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">category</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">A</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">charles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">barbara</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">23</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>]]
+
+tbl(csv).delete { <span class="local-variable">it</span>.age == <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span> }
+        .printTable()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Output</em></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>╔═════════╤═════╤══════════╤══════════╗
+║ name    │ age │ hobby    │ category ║
+╠═════════╪═════╪══════════╪══════════╣
+║ barbara │ 23  │ swimming │ S        ║
+╚═════════╧═════╧══════════╧══════════╝</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_deduplicate_by_column">Deduplicate by column</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> csv = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">hobby</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">category</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">A</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">charles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">barbara</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">23</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>]]
+
+tbl(csv).distinctBy(<span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">category</span><span class="delimiter">'</span></span>)
+        .printTable()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Output</em></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>╔═════════╤═════╤══════════╤══════════╗
+║ name    │ age │ hobby    │ category ║
+╠═════════╪═════╪══════════╪══════════╣
+║ alex    │ 21  │ biking   │ A        ║
+╟─────────┼─────┼──────────┼──────────╢
+║ peter   │ 21  │ swimming │ S        ║
+╟─────────┼─────┼──────────┼──────────╢
+║ barbara │ 23  │ swimming │ S        ║
+╚═════════╧═════╧══════════╧══════════╝</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_adding_records">Adding Records</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> csv = tbl([
+        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">number</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">join</span><span class="delimiter">'</span></span>, <span class="float">1.1</span>]])
+
+csv.addRecordArr(<span class="string"><span class="delimiter">&quot;</span><span class="content">JB</span><span class="delimiter">&quot;</span></span>, <span class="integer">455</span>)
+        .addRecord([<span class="string"><span class="delimiter">&quot;</span><span class="content">JLis</span><span class="delimiter">&quot;</span></span>, <span class="integer">767</span>])
+        .addRecordMap([<span class="key">name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">MName</span><span class="delimiter">&quot;</span></span>, <span class="key">number</span>: <span class="integer">90</span>])
+        .addRecordArr()
+        .addRecordMap([<span class="key">name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">MNameEmp</span><span class="delimiter">&quot;</span></span>])
+        .printTable()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Output</em></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>╔══════════╤════════╗
+║ name     │ number ║
+╠══════════╪════════╣
+║ join     │ 1.1    ║
+╟──────────┼────────╢
+║ JB       │ 455    ║
+╟──────────┼────────╢
+║ JLis     │ 767    ║
+╟──────────┼────────╢
+║ MName    │ 90     ║
+╟──────────┼────────╢
+║ -        │ -      ║
+╟──────────┼────────╢
+║ MNameEmp │ -      ║
+╚══════════╧════════╝</pre>
 </div>
 </div>
 </div>
@@ -1526,6 +1497,54 @@ table.transform { <span class="local-variable">it</span>.padRight(<span class="i
 </div>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_data_reshaping_functions_column_manipulation">DATA RESHAPING FUNCTIONS (COLUMN MANIPULATION)</h3>
+<div class="sect3">
+<h4 id="_delete_column">Delete Column</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">tbl(csv2).delete(<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>).printTable()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Output</em></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>╔══════════╗
+║ hobby    ║
+╠══════════╣
+║ biking   ║
+╟──────────╢
+║ swimming ║
+╚══════════╝</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_add_column">Add Column</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">tbl(csv).addColumn(fx(<span class="string"><span class="delimiter">'</span><span class="content">Double Age</span><span class="delimiter">'</span></span>) { <span class="local-variable">it</span>.age * <span class="integer">2</span> })
+        .printTable()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Output</em></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>╔═══════╤═════╤══════════╤════════════╗
+║ name  │ age │ hobby    │ Double Age ║
+╠═══════╪═════╪══════════╪════════════╣
+║ alex  │ 21  │ biking   │ 42         ║
+╟───────┼─────┼──────────┼────────────╢
+║ peter │ 13  │ swimming │ 26         ║
+╚═══════╧═════╧══════════╧════════════╝</pre>
+</div>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_transposing">Transposing</h4>
 <div class="listingblock">
@@ -1546,74 +1565,6 @@ table.transform { <span class="local-variable">it</span>.padRight(<span class="i
 ╟───────┼────────┼──────────┼──────────┼──────────╢
 ║ hobby │ biking │ swimming │ swimming │ swimming ║
 ╚═══════╧════════╧══════════╧══════════╧══════════╝</pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_simplistic_aggregations">Simplistic Aggregations</h4>
-<div class="paragraph">
-<p>In the example below we find the average age in each hobby by making use of sum count and group by functions</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyStaticApi.*</span>
-
-<span class="keyword">def</span> csv2 = [
-        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Hobby</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">davie</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">15</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">sam</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">16</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>],
-]
-
-
-tbl(csv2).summarize(
-
-        <span class="string"><span class="delimiter">'</span><span class="content">Hobby</span><span class="delimiter">'</span></span>,
-
-        sum(<span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>).az(<span class="string"><span class="delimiter">'</span><span class="content">TT.Age</span><span class="delimiter">'</span></span>),
-
-        count(<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>).az(<span class="string"><span class="delimiter">'</span><span class="content">TT.Count</span><span class="delimiter">'</span></span>)
-).printTable()</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><em>Output</em></p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>╔══════════╤════════╤══════════╗
-║ Hobby    │ TT.Age │ TT.Count ║
-╠══════════╪════════╪══════════╣
-║ biking   │ 37     │ 2        ║
-╟──────────┼────────┼──────────╢
-║ swimming │ 36     │ 2        ║
-╚══════════╧════════╧══════════╝</pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_custom_aggregation">Custom Aggregation</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">tbl(csv2).summarize(
-        <span class="string"><span class="delimiter">'</span><span class="content">Hobby</span><span class="delimiter">'</span></span>,
-        reduce { group -&gt; group[<span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>] }.az(<span class="string"><span class="delimiter">'</span><span class="content">AgeList</span><span class="delimiter">'</span></span>)
-).printTable()</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><em>Output</em></p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>╔══════════╤══════════╗
-║ Hobby    │ AgeList  ║
-╠══════════╪══════════╣
-║ biking   │ [21, 16] ║
-╟──────────┼──────────╢
-║ swimming │ [21, 15] ║
-╚══════════╧══════════╝</pre>
 </div>
 </div>
 </div>
@@ -1787,52 +1738,143 @@ tbl(csv).moveCol(<span class="string"><span class="delimiter">&quot;</span><span
 </div>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_aggregation_functions">AGGREGATION FUNCTIONS</h3>
 <div class="sect3">
-<h4 id="_navigation_2">Navigation</h4>
+<h4 id="_simplistic_aggregations">Simplistic Aggregations</h4>
 <div class="paragraph">
-<p>Navigators help move through the table cells easily.You can look above,below, right or left of a cell.</p>
+<p>In the example below we find the average age in each hobby by making use of sum count and group by functions</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">fuzzycsv.nav.Navigator</span>
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyStaticApi.*</span>
 
-<span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyStaticApi.tbl</span>
-
-<span class="keyword">def</span> csv = [
-        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">hobby</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">category</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">A</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">charles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>],
-        [<span class="string"><span class="delimiter">'</span><span class="content">barbara</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">23</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>]
+<span class="keyword">def</span> csv2 = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">Hobby</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">davie</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">15</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">sam</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">16</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>],
 ]
 
-<span class="keyword">def</span> navigator = <span class="keyword">new</span> Navigator(<span class="integer">0</span>, <span class="integer">0</span>, tbl(csv))
 
+tbl(csv2).summarize(
 
-<span class="keyword">assert</span> navigator.down().down().value() == <span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>
-<span class="keyword">assert</span> navigator.right().value() == <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>
-<span class="keyword">assert</span> navigator.right().left().value() == <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>
-<span class="keyword">assert</span> navigator.down().up().value() == <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>
+        <span class="string"><span class="delimiter">'</span><span class="content">Hobby</span><span class="delimiter">'</span></span>,
 
-<span class="comment">// Move down</span>
-<span class="keyword">assert</span> navigator.downIter().collect { <span class="local-variable">it</span>.value() } == [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">charles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">barbara</span><span class="delimiter">'</span></span>]
+        sum(<span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>).az(<span class="string"><span class="delimiter">'</span><span class="content">TT.Age</span><span class="delimiter">'</span></span>),
 
-<span class="comment">// MoveRight</span>
-<span class="keyword">assert</span> navigator.rightIter().collect { <span class="local-variable">it</span>.value() } == [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">hobby</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">category</span><span class="delimiter">'</span></span>]
-
-<span class="comment">//move through all</span>
-<span class="keyword">assert</span> navigator.allIter().collect { <span class="local-variable">it</span>.value() } == [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">hobby</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">category</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">A</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>,
-                                                      <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">charles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">barbara</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">23</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">S</span><span class="delimiter">'</span></span>]
-<span class="comment">//move through all bounded</span>
-<span class="keyword">assert</span> navigator.allBoundedIter(<span class="integer">1</span>, <span class="integer">2</span>).collect { <span class="local-variable">it</span>.value() } == [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>]
-
-<span class="comment">//move up</span>
-<span class="keyword">assert</span> <span class="keyword">new</span> Navigator(<span class="integer">0</span>, <span class="integer">4</span>, tbl(csv)).upIter().collect { <span class="local-variable">it</span>.value() } == [<span class="string"><span class="delimiter">'</span><span class="content">barbara</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">charles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>]</code></pre>
+        count(<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>).az(<span class="string"><span class="delimiter">'</span><span class="content">TT.Count</span><span class="delimiter">'</span></span>)
+).printTable()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Output</em></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>╔══════════╤════════╤══════════╗
+║ Hobby    │ TT.Age │ TT.Count ║
+╠══════════╪════════╪══════════╣
+║ biking   │ 37     │ 2        ║
+╟──────────┼────────┼──────────╢
+║ swimming │ 36     │ 2        ║
+╚══════════╧════════╧══════════╝</pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_excel_utility_classes">Excel utility classes</h4>
+<h4 id="_custom_aggregation">Custom Aggregation</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">tbl(csv2).summarize(
+        <span class="string"><span class="delimiter">'</span><span class="content">Hobby</span><span class="delimiter">'</span></span>,
+        reduce { group -&gt; group[<span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>] }.az(<span class="string"><span class="delimiter">'</span><span class="content">AgeList</span><span class="delimiter">'</span></span>)
+).printTable()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Output</em></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>╔══════════╤══════════╗
+║ Hobby    │ AgeList  ║
+╠══════════╪══════════╣
+║ biking   │ [21, 16] ║
+╟──────────┼──────────╢
+║ swimming │ [21, 15] ║
+╚══════════╧══════════╝</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_export_functions">EXPORT FUNCTIONS</h3>
+<div class="sect3">
+<h4 id="_csv_to_maplist">CSV To MapList</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">tbl(csv).toMapList()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Output</em></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>[[name:alex, age:21, hobby:biking], [name:peter, age:21, hobby:swimming]]</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_csv_to_pojo_list">CSV To POJO List</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">io.github.kayr:fuzzy-csv:1.7.1</span><span class="delimiter">'</span></span>)
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyCSVTable.tbl</span>
+
+<span class="keyword">def</span> csv = [
+        [<span class="string"><span class="delimiter">'</span><span class="content">name</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">age</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">hobby</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">biking</span><span class="delimiter">'</span></span>],
+        [<span class="string"><span class="delimiter">'</span><span class="content">peter</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">21</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">swimming</span><span class="delimiter">'</span></span>]]
+
+<span class="type">class</span> <span class="class">Person</span> {
+    <span class="predefined-type">String</span> name
+    <span class="predefined-type">Integer</span> age
+    <span class="predefined-type">String</span> hobby
+}
+
+<span class="predefined-type">List</span>&lt;Person&gt; people = tbl(csv).toPojoList(Person.class)
+
+<span class="keyword">assert</span> people.size() == <span class="integer">3</span>
+<span class="keyword">assert</span> people.first().name == <span class="string"><span class="delimiter">'</span><span class="content">alex</span><span class="delimiter">'</span></span>
+<span class="keyword">assert</span> people.first().age == <span class="integer">21</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_sql_to_csv">Sql To CSV</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">groovy.sql.Sql groovySql = <span class="predefined-constant">null</span><span class="comment">//...</span>
+FuzzyCSVTable.toCSV(groovySql,<span class="string"><span class="delimiter">&quot;</span><span class="content">select * from PERSON</span><span class="delimiter">&quot;</span></span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>OR</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="predefined-type">ResultSet</span> resultSet = <span class="predefined-constant">null</span><span class="comment">//..</span>
+FuzzyCSVTable.toCSV(resultSet)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_excel_utility_classes">EXCEL UTILITY CLASSES</h3>
 <div class="paragraph">
 <p>To use the Excel utilities you have to add the poi dependency to your classpath</p>
 </div>
@@ -1841,12 +1883,12 @@ tbl(csv).moveCol(<span class="string"><span class="delimiter">&quot;</span><span
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">     compile <span class="string"><span class="delimiter">'</span><span class="content">org.apache.poi:poi-ooxml:3.16</span><span class="delimiter">'</span></span>, {
-         exclude <span class="key">group</span>: <span class="string"><span class="delimiter">'</span><span class="content">stax</span><span class="delimiter">'</span></span>, <span class="key">module</span>: <span class="string"><span class="delimiter">'</span><span class="content">stax-api</span><span class="delimiter">'</span></span>
-     }
-     compile <span class="string"><span class="delimiter">'</span><span class="content">org.apache.poi:ooxml-schemas:1.3</span><span class="delimiter">'</span></span>, {
-         exclude <span class="key">group</span>: <span class="string"><span class="delimiter">'</span><span class="content">stax</span><span class="delimiter">'</span></span>, <span class="key">module</span>: <span class="string"><span class="delimiter">'</span><span class="content">stax-api</span><span class="delimiter">'</span></span>
-     }</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy"> compile <span class="string"><span class="delimiter">'</span><span class="content">org.apache.poi:poi-ooxml:3.16</span><span class="delimiter">'</span></span>, {
+     exclude <span class="key">group</span>: <span class="string"><span class="delimiter">'</span><span class="content">stax</span><span class="delimiter">'</span></span>, <span class="key">module</span>: <span class="string"><span class="delimiter">'</span><span class="content">stax-api</span><span class="delimiter">'</span></span>
+ }
+ compile <span class="string"><span class="delimiter">'</span><span class="content">org.apache.poi:ooxml-schemas:1.3</span><span class="delimiter">'</span></span>, {
+     exclude <span class="key">group</span>: <span class="string"><span class="delimiter">'</span><span class="content">stax</span><span class="delimiter">'</span></span>, <span class="key">module</span>: <span class="string"><span class="delimiter">'</span><span class="content">stax-api</span><span class="delimiter">'</span></span>
+ }</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1854,7 +1896,6 @@ tbl(csv).moveCol(<span class="string"><span class="delimiter">&quot;</span><span
 </div>
 <div class="paragraph">
 <p>There are mainly two classes that help with this which include <code>fuzzycsv.Excel2Csv</code> and <code>fuzzycsv.CSVToExcel</code></p>
-</div>
 </div>
 </div>
 </div>
@@ -1882,7 +1923,7 @@ tbl(csv).moveCol(<span class="string"><span class="delimiter">&quot;</span><span
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-10-31 09:19:01 UTC
+Last updated 2021-10-31 10:20:49 UTC
 </div>
 </div>
 </body>
