@@ -120,16 +120,16 @@ Using the following as examples:
 
 #### Loading data into fuzzyCSV
 ```groovy
-FuzzyCSVTable.toCSV(sqlResultSet)
-FuzzyCSVTable.toCSV(groovySql,"select * from table")
-FuzzyCSVTable.toCSV(List<Map>)
-FuzzyCSVTable.tbl(List<List>)
-FuzzyCSVTable.fromJsonText('''[["colum"],["value1"]]''' )
-//parse 
-FuzzyCSVTable.parseCsv(String csvString)
-FuzzyCSVTable.parseCsv(Reader csvString)
+FuzzyCSVTable.fromResultSet(sqlResultSet)
+FuzzyCSVTable.fromSqlQuery(groovySql, "select * from table")
+FuzzyCSVTable.fromListList(listMap)
+FuzzyCSVTable.fromMapList(listOfLists)
+FuzzyCSVTable.fromJsonText('''[["colum"],["value1"]]''')
+//parse
+FuzzyCSVTable.fromCsvString(csvString)
+FuzzyCSVTable.fromCsvReader(reader)
 //if you wish to customise the parsing you can provide more options
-FuzzyCSVTable.parseCsv(String csvString, separator/* , */, quoteChar /* " */, escapeChar /* \ */)
+FuzzyCSVTable.fromCsvString(csvString, separator/* , */, quoteChar /* " */, escapeChar /* \ */)
 ```
 
 #### Visualize json data in a console grid table
