@@ -704,16 +704,16 @@ dependencies{
 <h4 id="_loading_data_into_fuzzy_csv">Loading Data into Fuzzy-CSV</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">FuzzyCSVTable.toCSV(sqlResultSet)
-FuzzyCSVTable.toCSV(groovySql, <span class="string"><span class="delimiter">&quot;</span><span class="content">select * from table</span><span class="delimiter">&quot;</span></span>)
-FuzzyCSVTable.toCSV(listMap)<span class="comment">//List&lt;Map&gt;</span>
-FuzzyCSVTable.tbl(listOfLists)<span class="comment">//List&lt;List&gt;</span>
+<pre class="CodeRay highlight"><code data-lang="groovy">FuzzyCSVTable.fromResultSet(sqlResultSet)
+FuzzyCSVTable.fromSqlQuery(groovySql, <span class="string"><span class="delimiter">&quot;</span><span class="content">select * from table</span><span class="delimiter">&quot;</span></span>)
+FuzzyCSVTable.fromListList(listMap)
+FuzzyCSVTable.fromMapList(listOfLists)
 FuzzyCSVTable.fromJsonText(<span class="string"><span class="delimiter">'''</span><span class="content">[[&quot;colum&quot;],[&quot;value1&quot;]]</span><span class="delimiter">'''</span></span>)
 <span class="comment">//parse</span>
-FuzzyCSVTable.parseCsv(csvString)
-FuzzyCSVTable.parseCsv(reader)
+FuzzyCSVTable.fromCsvString(csvString)
+FuzzyCSVTable.fromCsvReader(reader)
 <span class="comment">//if you wish to customise the parsing you can provide more options</span>
-FuzzyCSVTable.parseCsv(csvString, separator<span class="comment">/* , */</span>, quoteChar <span class="comment">/* &quot; */</span>, escapeChar <span class="comment">/* \ */</span>)</code></pre>
+FuzzyCSVTable.fromCsvString(csvString, separator<span class="comment">/* , */</span>, quoteChar <span class="comment">/* &quot; */</span>, escapeChar <span class="comment">/* \ */</span>)</code></pre>
 </div>
 </div>
 </div>
@@ -1183,7 +1183,7 @@ tbl(csv).filter { <span class="local-variable">it</span>.name == <span class="st
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">io.github.kayr:fuzzy-csv:1.7.1</span><span class="delimiter">'</span></span>)
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">io.github.kayr:fuzzy-csv:1.7.2</span><span class="delimiter">'</span></span>)
 <span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyStaticApi.*</span>
 
 <span class="keyword">def</span> csv = [[<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">age</span><span class="delimiter">&quot;</span></span>],
@@ -1832,7 +1832,7 @@ tbl(csv2).summarize(
 <h4 id="_csv_to_pojo_list">CSV To POJO List</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">io.github.kayr:fuzzy-csv:1.7.1</span><span class="delimiter">'</span></span>)
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">io.github.kayr:fuzzy-csv:1.7.2</span><span class="delimiter">'</span></span>)
 <span class="keyword">import</span> <span class="include">static</span> <span class="include">fuzzycsv.FuzzyCSVTable.tbl</span>
 
 <span class="keyword">def</span> csv = [
@@ -1923,7 +1923,7 @@ FuzzyCSVTable.toCSV(resultSet)</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-10-31 10:20:49 UTC
+Last updated 2021-10-31 17:06:52 UTC
 </div>
 </div>
 </body>
