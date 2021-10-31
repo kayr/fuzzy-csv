@@ -19,8 +19,8 @@ FuzzyCSV is a lightweigt groovy data processing library that helps in shaping an
     - [From Maven Central *](#from-maven-central-)
     - [Gradle](#gradle)
     - [Jitpack (For unpublished artifacts)](#jitpack-for-unpublished-artifacts)
-- [Features](#features)
   - [Examples of Real World Applications](#examples-of-real-world-applications)
+- [Features](#features)
   - [Illustrations:](#illustrations)
     - [Loading data into fuzzyCSV](#loading-data-into-fuzzycsv)
     - [Visualize json data in a console grid table](#visualize-json-data-in-a-console-grid-table)
@@ -99,7 +99,11 @@ compile 'com.github.kayr:fuzzy-csv:${version}'`
     </repository>
 </repositories>
 ```
+### Examples of Real World Applications
 
+Visit the following page to view examples of how to use fuzzyCSV for real world applications.
+
+http://kayr.github.io/fuzzy-csv/fuzzy-csv-examples.html
 
 ## Features
  * Merging using Fuzzy Matching with the help of the SecondString project(useful when you have misspelled column names in the different CSV files)
@@ -115,11 +119,7 @@ compile 'com.github.kayr:fuzzy-csv:${version}'`
  * Pivoting
  * and some extra utilities
 
-### Examples of Real World Applications
 
-Visit the following page to view examples of how to use fuzzyCSV for real world applications.
-
-http://kayr.github.io/fuzzy-csv/fuzzy-csv-examples.html
 
 
 ### Illustrations:
