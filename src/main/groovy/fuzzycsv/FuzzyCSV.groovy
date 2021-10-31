@@ -952,7 +952,7 @@ class FuzzyCSV {
     }
 
     @CompileStatic
-    static List<List> toCSVFromRecordList(List<Record> list) {
+    static List<List> toCSVFromRecordList(Collection<Record> list) {
         def cols = list[0].finalHeaders
         def columnSize = cols.size()
 

@@ -248,11 +248,6 @@ class FuzzyCSVTable implements Iterable<Record> {
         return csv?.size() <= 1
     }
 
-    @Deprecated
-    static FuzzyCSVTable get(List<List> csv) {
-        return tbl(csv)
-    }
-
 
     List getAt(String columnName) {
         return getAt(Fuzzy.findPosition(header, columnName))
@@ -282,37 +277,6 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     FuzzyCSVTable getAt(IntRange range) {
         return tbl(FuzzyCSV.getAt(csv, range))
-    }
-
-    static FuzzyCSVTable tbl(List<? extends List> csv = [[]]) {
-        tbl(null, csv)
-    }
-
-    static FuzzyCSVTable tbl(Map<Object, Object> kv) {
-        List<List<Object>> head = [["key", "value"]]
-        kv.each { k, v -> head.add([k, v]) }
-        return tbl(head)
-    }
-
-    static FuzzyCSVTable fromPojo(Object kv) {
-        return tbl(kv.properties)
-    }
-
-    static FuzzyCSVTable tbl(String name, List<? extends List> csv = [[]]) {
-
-
-        def table = new FuzzyCSVTable(csv)
-
-        table.tableName = name
-        return table
-    }
-
-    static FuzzyCSVTable withHeader(String... headers) {
-        return withHeader(headers as List)
-    }
-
-    static FuzzyCSVTable withHeader(List<String> headers) {
-        return tbl([headers])
     }
 
     FuzzyCSVTable join(FuzzyCSVTable tbl, String[] joinColumns) {
@@ -725,69 +689,6 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    static FuzzyCSVTable parseCsv(String csvString,
-                                  char separator = CSVParser.DEFAULT_SEPARATOR,
-                                  char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
-                                  char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
-        toListOfLists(FuzzyCSV.parseCsv(csvString, separator, quoteChar, escapeChar))
-    }
-
-    static FuzzyCSVTable parseCsv(Reader reader,
-                                  char separator = CSVParser.DEFAULT_SEPARATOR,
-                                  char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
-                                  char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
-        toListOfLists(FuzzyCSV.parseCsv(reader, separator, quoteChar, escapeChar))
-    }
-
-    static FuzzyCSVTable toCSV(List<? extends Map> listOfMaps, String[] cols) {
-        tbl(FuzzyCSV.toCSV(listOfMaps, cols))
-    }
-
-    static FuzzyCSVTable fromMapList(Collection<? extends Map> listOfMaps) {
-        tbl(FuzzyCSV.toCSVLenient(listOfMaps as List))
-    }
-
-    static FuzzyCSVTable fromPojoList(Collection<Object> pojoList) {
-        def listOfMaps = pojoList.collect { FuzzyCSVUtils.toProperties(it) }
-        return fromMapList(listOfMaps)
-    }
-
-    static FuzzyCSVTable toCSV(Sql sql, String query) {
-        tbl(FuzzyCSV.toCSV(sql, query))
-    }
-
-    static FuzzyCSVTable toCSV(ResultSet resultSet) {
-        tbl(FuzzyCSV.toCSV(resultSet))
-    }
-
-    static FuzzyCSVTable toListOfLists(Collection<?> Collection0) {
-        tbl(FuzzyCSV.toListOfLists(Collection0))
-    }
-
-    static FuzzyCSVTable toCSVFromRecordList(Collection<Record> Collection0) {
-        tbl(FuzzyCSV.toCSVFromRecordList(Collection0))
-    }
-
-    static FuzzyCSVTable fromJsonText(String text) {
-        return coerceFromObj(FuzzyCSV.fromJsonText(text))
-    }
-
-    static FuzzyCSVTable fromJson(File file) {
-        return coerceFromObj(FuzzyCSV.fromJson(file))
-    }
-
-    static FuzzyCSVTable fromJson(Reader r) {
-        return coerceFromObj(FuzzyCSV.fromJson(r))
-    }
-
-    private static FuzzyCSVTable coerceFromObj(json) {
-        def cell = gridifyCell(json, EnumSet.of(GridOptions.SHALLOW_MODE))
-        if (cell instanceof FuzzyCSVTable)
-            return cell
-        throw new UnsupportedOperationException("could not convert to table : $json")
-    }
-
-
     String toString() {
         if (csv == null)
             return 'null'
@@ -1032,9 +933,161 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     FuzzyCSVTable dbUpdate(Connection connection, ExportParams params, String... identifiers) {
         new FuzzyCSVDbExporter(connection, params)
-                .updateData(this,  identifiers)
+                .updateData(this, identifiers)
         this
     }
+
+    //region Static initializers
+
+    static FuzzyCSVTable parseCsv(String csvString,
+                                  char separator = CSVParser.DEFAULT_SEPARATOR,
+                                  char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
+                                  char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
+        toListOfLists(FuzzyCSV.parseCsv(csvString, separator, quoteChar, escapeChar))
+    }
+
+    static FuzzyCSVTable parseCsv(Reader reader,
+                                  char separator = CSVParser.DEFAULT_SEPARATOR,
+                                  char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
+                                  char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
+        toListOfLists(FuzzyCSV.parseCsv(reader, separator, quoteChar, escapeChar))
+    }
+
+    static FuzzyCSVTable toCSV(List<? extends Map> listOfMaps, String[] cols) {
+        tbl(FuzzyCSV.toCSV(listOfMaps, cols))
+    }
+
+
+    static FuzzyCSVTable toListOfLists(Collection<?> Collection0) {
+        tbl(FuzzyCSV.toListOfLists(Collection0))
+    }
+
+
+    private static FuzzyCSVTable coerceFromObj(json) {
+        def cell = gridifyCell(json, EnumSet.of(GridOptions.SHALLOW_MODE))
+        if (cell instanceof FuzzyCSVTable)
+            return cell
+        throw new UnsupportedOperationException("could not convert to table : $json")
+    }
+
+
+    static FuzzyCSVTable tbl(List<? extends List> csv = [[]]) {
+        tbl(null, csv)
+    }
+
+    static FuzzyCSVTable tbl(Map<Object, Object> kv) {
+        List<List<Object>> head = [["key", "value"]]
+        kv.each { k, v -> head.add([k, v]) }
+        return tbl(head)
+    }
+
+
+    static FuzzyCSVTable tbl(String name, List<? extends List> csv = [[]]) {
+
+
+        def table = new FuzzyCSVTable(csv)
+
+        table.tableName = name
+        return table
+    }
+
+    static FuzzyCSVTable withHeader(String... headers) {
+        return withHeader(headers as List)
+    }
+
+    static FuzzyCSVTable withHeader(List<String> headers) {
+        return tbl([headers])
+    }
+
+
+    @Deprecated
+    static FuzzyCSVTable toCSV(Sql sql, String query) {
+        fromSqlQuery(sql, query)
+    }
+
+    @Deprecated
+    static FuzzyCSVTable toCSV(ResultSet resultSet) {
+        fromResultSet(resultSet)
+    }
+
+    @Deprecated
+    static FuzzyCSVTable toCSVFromRecordList(Collection<Record> Collection0) {
+        tbl(FuzzyCSV.toCSVFromRecordList(Collection0))
+    }
+
+    @Deprecated
+    static FuzzyCSVTable get(List<List> csv) {
+        return tbl(csv)
+    }
+
+    //endregion
+
+    //region static initializer with from
+
+    static FuzzyCSVTable fromCsvString(String csvString,
+                                       char separator = CSVParser.DEFAULT_SEPARATOR,
+                                       char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
+                                       char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
+        return parseCsv(csvString, separator, quoteChar, escapeChar)
+    }
+
+    static FuzzyCSVTable fromCsvReader(Reader csvString,
+                                       char separator = CSVParser.DEFAULT_SEPARATOR,
+                                       char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
+                                       char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
+        return parseCsv(csvString, separator, quoteChar, escapeChar)
+    }
+
+    static FuzzyCSVTable fromListList(List<List> csv) {
+        return tbl(csv)
+    }
+
+    static FuzzyCSVTable fromInspection(Object obj) {
+        return coerceFromObj(obj)
+    }
+
+    static FuzzyCSVTable fromRecordList(Collection<Record> records) {
+        tbl(FuzzyCSV.toCSVFromRecordList(records))
+    }
+
+    static FuzzyCSVTable fromSqlQuery(Sql sql, String query) {
+        tbl(FuzzyCSV.toCSV(sql, query))
+    }
+
+    static FuzzyCSVTable fromResultSet(ResultSet resultSet) {
+        tbl(FuzzyCSV.toCSV(resultSet))
+    }
+
+    static FuzzyCSVTable fromMapList(Collection<? extends Map> listOfMaps) {
+        tbl(FuzzyCSV.toCSVLenient(listOfMaps as List))
+    }
+
+    static FuzzyCSVTable fromPojoList(Collection<Object> pojoList) {
+        def listOfMaps = pojoList.collect { FuzzyCSVUtils.toProperties(it) }
+        return fromMapList(listOfMaps)
+    }
+
+    static FuzzyCSVTable fromJsonText(String text) {
+        return coerceFromObj(FuzzyCSV.fromJsonText(text))
+    }
+
+    static FuzzyCSVTable fromJson(File file) {
+        return coerceFromObj(FuzzyCSV.fromJson(file))
+    }
+
+    static FuzzyCSVTable fromJson(Reader r) {
+        return coerceFromObj(FuzzyCSV.fromJson(r))
+    }
+
+    static FuzzyCSVTable fromPojo(Object kv) {
+        return tbl(kv.properties)
+    }
+
+    static FuzzyCSVTable fromMap(Map kv) {
+        return tbl(kv)
+    }
+
+    //endregion
 
 }
 
