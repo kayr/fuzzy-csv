@@ -1,4 +1,4 @@
-@Grab('io.github.kayr:fuzzy-csv:1.7.1')
+@Grab('io.github.kayr:fuzzy-csv:1.7.2')
 //tag::code[]
 import static fuzzycsv.FuzzyStaticApi.tbl
 

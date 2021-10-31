@@ -1,15 +1,15 @@
-@Grab('io.github.kayr:fuzzy-csv:1.7.1')
+@Grab('io.github.kayr:fuzzy-csv:1.7.2')
 import fuzzycsv.FuzzyCSVTable
 
 //tag::code[]
-FuzzyCSVTable.toCSV(sqlResultSet)
-FuzzyCSVTable.toCSV(groovySql, "select * from table")
-FuzzyCSVTable.toCSV(listMap)//List<Map>
-FuzzyCSVTable.tbl(listOfLists)//List<List>
+FuzzyCSVTable.fromResultSet(sqlResultSet)
+FuzzyCSVTable.fromSqlQuery(groovySql, "select * from table")
+FuzzyCSVTable.fromListList(listMap)
+FuzzyCSVTable.fromMapList(listOfLists)
 FuzzyCSVTable.fromJsonText('''[["colum"],["value1"]]''')
 //parse
-FuzzyCSVTable.parseCsv(csvString)
-FuzzyCSVTable.parseCsv(reader)
+FuzzyCSVTable.fromCsvString(csvString)
+FuzzyCSVTable.fromCsvReader(reader)
 //if you wish to customise the parsing you can provide more options
-FuzzyCSVTable.parseCsv(csvString, separator/* , */, quoteChar /* " */, escapeChar /* \ */)
+FuzzyCSVTable.fromCsvString(csvString, separator/* , */, quoteChar /* " */, escapeChar /* \ */)
 // end::code[]
