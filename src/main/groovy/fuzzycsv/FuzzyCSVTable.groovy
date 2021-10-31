@@ -976,9 +976,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     static FuzzyCSVTable tbl(Map<Object, Object> kv) {
-        List<List<Object>> head = [["key", "value"]]
-        kv.each { k, v -> head.add([k, v]) }
-        return tbl(head)
+        return fromMap(kv)
     }
 
 
@@ -1080,11 +1078,13 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     static FuzzyCSVTable fromPojo(Object kv) {
-        return tbl(kv.properties)
+        return fromMap(FuzzyCSVUtils.toProperties(kv.properties))
     }
 
     static FuzzyCSVTable fromMap(Map kv) {
-        return tbl(kv)
+        List<List<Object>> head = [["key", "value"]]
+        kv.each { k, v -> head.add([k, v]) }
+        return tbl(head)
     }
 
     //endregion
