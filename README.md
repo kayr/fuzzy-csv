@@ -20,6 +20,7 @@ FuzzyCSV is a lightweigt groovy data processing library that helps in shaping an
     - [Gradle](#gradle)
     - [Jitpack (For unpublished artifacts)](#jitpack-for-unpublished-artifacts)
 - [Features](#features)
+  - [Examples of Real Would Applications](#examples-of-real-would-applications)
   - [Illustrations:](#illustrations)
     - [Loading data into fuzzyCSV](#loading-data-into-fuzzycsv)
     - [Visualize json data in a console grid table](#visualize-json-data-in-a-console-grid-table)
@@ -113,6 +114,12 @@ compile 'com.github.kayr:fuzzy-csv:${version}'`
  * Lenient arithmetic operations i.e strings are coerced to numbers
  * Pivoting
  * and some extra utilities
+
+### Examples of Real Would Applications
+
+Visit the following page to view examples of how to use fuzzyCSV for real world applications.
+http://kayr.github.io/fuzzy-csv/fuzzy-csv-examples.html
+
 
 ### Illustrations:
 
