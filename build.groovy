@@ -1,5 +1,6 @@
 @Grab(group = 'io.github.kayr', module = 'fuzzy-csv', version = '1.7.1')
 import fuzzycsv.FuzzyCSVTable
+import groovy.io.FileType
 
 def file = 'index.adoc' as File
 
@@ -49,6 +50,16 @@ $code
 new File('index.out.adoc').text = finalText
 
 exec('asciidoctorj', 'index.out.adoc', '-o', 'index.html')
+
+def toBuild = []
+def workingDir = new File('.')
+workingDir.eachFileRecurse(FileType.FILES) {
+    if (it.name.endsWith('.adoc') && it.name !in ['index.out.adoc', 'index.adoc'])
+        toBuild << it.absolutePath
+}
+
+exec(*['asciidoctorj', *toBuild])
+
 //exec('firefox', 'index.html')
 
 void exec(String... commands) {

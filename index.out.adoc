@@ -75,6 +75,9 @@ dependencies{
 
 == USAGE
 
+=== EXAMPLES
+xref:fuzzy-csv-examples.adoc[Goto Examples showing usages of FuzzyCSV]
+
 === DATA INITIALIZATION
 
 ==== Loading Data into Fuzzy-CSV

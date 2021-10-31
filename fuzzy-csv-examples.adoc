@@ -1,0 +1,6 @@
+= Example of illustrating use of FuzzyCsv
+
+xref:index.adoc[Go Back to the Documentation Page]
+
+[square]
+ * xref:samples/funcases/timetable.adoc[Generating A Multiplication Table]
