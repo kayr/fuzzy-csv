@@ -25,7 +25,7 @@ class FuzzyCSVDbExporterMysqlTest {
     void setUp() {
 
         //in future consider using test containers
-        Assume.assumeTrue(("/home/kayr/" as File).exists())
+        Assume.assumeTrue(("/home/kayr/.bash_kayr" as File).exists())
         gsql = H2DbHelper.mySqlConnection
         export = new FuzzyCSVDbExporter(gsql.connection, ExportParams.defaultParams())
         FuzzyCSV.ACCURACY_THRESHOLD.set(1)
