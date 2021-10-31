@@ -1,14 +1,16 @@
 @Grab('io.github.kayr:fuzzy-csv:1.7.1')
 import static fuzzycsv.FuzzyStaticApi.*
 
-def csv = [
+def csv2 = [
         ['name', 'age', 'hobby'],
         ['alex', '21', 'biking'],
-        ['peter', '21', 'swimming']
+        ['martin', '40', 'swimming'],
+        ['dan', '25', 'swimming'],
+        ['peter', '21', 'swimming'],
 ]
-
 //tag::code[]
-assert tbl(csv)['name'][0] == 'alex'
-assert tbl(csv)['name'][1] == 'peter'
-assert tbl(csv).firstCell() == 'alex'
+tbl(csv2).transpose()
+        .printTable()
 //end::code[]
+
+

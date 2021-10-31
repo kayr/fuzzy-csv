@@ -1,5 +1,4 @@
 @Grab('io.github.kayr:fuzzy-csv:1.7.1')
-//tag::code[]
 import static fuzzycsv.FuzzyStaticApi.*
 
 
@@ -7,6 +6,7 @@ import static fuzzycsv.FuzzyStaticApi.*
 SELECT WITH FUNCTION
  */
 
+//tag::code[]
 def csv2 = [
         ['price', 'quantity'],
         ['2', 5],

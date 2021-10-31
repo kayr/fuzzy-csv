@@ -3,24 +3,44 @@ import fuzzycsv.FuzzyCSVTable
 
 def file = 'index.adoc' as File
 
-def pattern = $///\[(out|raw):[a-zA-Z-]+\]/$
+def pattern = $///\[(out|raw|pre|full):[a-zA-Z-]+\]/$
 
 
 def finalText = file.text.replaceAll(pattern) {
     def phrase = it[0]
-    def code = runForCode(phrase)
+    def r = runForCode(phrase)
+
+    def code = r.code
 
     if (phrase.contains('raw:')) {
         return '/*output\n' +
                 code +
                 '*/\n'
+    } else if (phrase.contains('pre:')) {
+        return '_Output_\n' +
+                '....\n' +
+                code +
+                '\n....\n'
+    } else if (phrase.contains('full:')) {
+        return """[source,groovy]
+----
+include::samples/${r.file.name}[tag=code]
+----
+_Output_
+....
+$code
+....
+"""
     } else {
 
-        return 'Output\n' +
+        return '.#Output#\n' +
+                '[%collapsible]\n' +
+                '====\n' +
                 '[source]\n' +
                 '----\n' +
                 code +
-                '----\n'
+                '----\n' +
+                '====\n'
     }
 }
 
@@ -28,7 +48,7 @@ def finalText = file.text.replaceAll(pattern) {
 new File('index.out.adoc').text = finalText
 
 exec('asciidoctorj', 'index.out.adoc', '-o', 'index.html')
-exec('firefox', 'index.html')
+//exec('firefox', 'index.html')
 
 void exec(String... commands) {
     println("  > ${commands.join(' ')}")
@@ -37,11 +57,13 @@ void exec(String... commands) {
     execute.waitFor()
 }
 
-String runForCode(String pattern) {
+Map runForCode(String pattern) {
 
 
     def fileName = pattern.replace('//[out:', '')
             .replace('//[raw:', '')
+            .replace('//[pre:', '')
+            .replace('//[full:', '')
             .replace(']', '') + '.groovy'
 
     def absPath = 'samples/' + fileName
@@ -49,8 +71,8 @@ String runForCode(String pattern) {
     def theGroovyFile = (absPath as File).absoluteFile
 
     def result = evalFileInNewWorkingDir(theGroovyFile)
-    if (result instanceof FuzzyCSVTable) return result.toStringFormatted()
-    return result.toString()
+    if (result instanceof FuzzyCSVTable) return [code: result.toStringFormatted(), file: theGroovyFile]
+    return [code: result.toString(), file: theGroovyFile]
 }
 
 

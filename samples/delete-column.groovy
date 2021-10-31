@@ -2,10 +2,11 @@
 import static fuzzycsv.FuzzyStaticApi.*
 
 def csv2 = [
-['name'      , 'age' , 'hobby'    ]  ,
-['alex'      , '21'  , 'biking'   ]  ,
-['peter'     , '21'  , 'swimming' ]  ]
+        ['name', 'age', 'hobby'],
+        ['alex', '21', 'biking'],
+        ['peter', '21', 'swimming']]
 
 
-
-tbl(csv2).delete('name','age').printTable()
+//tag::code[]
+tbl(csv2).delete('name', 'age').printTable()
+//end::code[]

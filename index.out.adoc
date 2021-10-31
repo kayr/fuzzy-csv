@@ -89,7 +89,9 @@ You can convert json text to a grid console table.
 [source,groovy]
 ----
 include::samples/gridify.groovy[tag=code]
-/*output
+----
+_Output_
+....
 ╔═════════╤═══════════════════════════════════════════╗
 ║ key     │ value                                     ║
 ╠═════════╪═══════════════════════════════════════════╣
@@ -123,9 +125,10 @@ include::samples/gridify.groovy[tag=code]
 ║         │ ║ 5005 │ Sugar  │ Brown ║                 ║
 ║         │ ╚══════╧════════╧═══════╝                 ║
 ╚═════════╧═══════════════════════════════════════════╝
-*/
 
-----
+....
+
+
 
 
 ==== Merging with a fuzzy match
@@ -138,8 +141,9 @@ include::samples/gridify.groovy[tag=code]
 include::samples/merging.groovy[tag=code]
 
 
-//Notice how it merged [first name] and [ferts nama]
-/*output
+----
+_Output_
+....
 ╔════════════╤════════╤═════╗
 ║ first name │ sex    │ age ║
 ╠════════════╪════════╪═════╣
@@ -151,13 +155,10 @@ include::samples/merging.groovy[tag=code]
 ╟────────────┼────────┼─────╢
 ║ peter      │ male   │ 21  ║
 ╚════════════╧════════╧═════╝
-*/
 
-----
+....
 
-
-
-Notice how it merged *_[first name]_* and *_[ferts nama]_*
+Notice how it merged *[first name]* and *[ferts nama]*
 
 === Joins
 
@@ -166,16 +167,17 @@ Notice how it merged *_[first name]_* and *_[ferts nama]_*
 [source,groovy]
 ----
 include::samples/join-inner.groovy[tag=code]
-
-/*output
+----
+_Output_
+....
 ╔══════╤══════╤═════╤════════╗
 ║ name │ sex  │ age │ hobby  ║
 ╠══════╪══════╪═════╪════════╣
 ║ alex │ male │ 21  │ biking ║
 ╚══════╧══════╧═════╧════════╝
-*/
 
-----
+....
+
 
 
 ==== Left Join
@@ -183,8 +185,9 @@ include::samples/join-inner.groovy[tag=code]
 [source,groovy]
 ----
 include::samples/join-left.groovy[tag=code]
-
-/*output
+----
+_Output_
+....
 ╔══════╤════════╤═════╤════════╗
 ║ name │ sex    │ age │ hobby  ║
 ╠══════╪════════╪═════╪════════╣
@@ -192,9 +195,9 @@ include::samples/join-left.groovy[tag=code]
 ╟──────┼────────┼─────┼────────╢
 ║ sara │ female │ -   │ -      ║
 ╚══════╧════════╧═════╧════════╝
-*/
 
-----
+....
+
 
 
 ==== Right Join
@@ -202,8 +205,9 @@ include::samples/join-left.groovy[tag=code]
 [source,groovy]
 ----
 include::samples/join-right.groovy[tag=code]
-
-/*output
+----
+_Output_
+....
 ╔═══════╤══════╤═════╤══════════╗
 ║ name  │ sex  │ age │ hobby    ║
 ╠═══════╪══════╪═════╪══════════╣
@@ -211,9 +215,9 @@ include::samples/join-right.groovy[tag=code]
 ╟───────┼──────┼─────┼──────────╢
 ║ peter │ -    │ 21  │ swimming ║
 ╚═══════╧══════╧═════╧══════════╝
-*/
 
-----
+....
+
 
 
 ==== Full Join
@@ -221,8 +225,9 @@ include::samples/join-right.groovy[tag=code]
 [source,groovy]
 ----
 include::samples/join-full.groovy[tag=code]
-
-/*output
+----
+_Output_
+....
 ╔═══════╤════════╤═════╤══════════╗
 ║ name  │ sex    │ age │ hobby    ║
 ╠═══════╪════════╪═════╪══════════╣
@@ -232,16 +237,18 @@ include::samples/join-full.groovy[tag=code]
 ╟───────┼────────┼─────┼──────────╢
 ║ peter │ -      │ 21  │ swimming ║
 ╚═══════╧════════╧═════╧══════════╝
-*/
 
-----
+....
+
+
 ==== Join With Custom Function
 
 [source,groovy]
 ----
 include::samples/join-customfunction.groovy[tag=code]
-
-/*output
+----
+_Output_
+....
 ╔═══════╤════════╤═══════╤═════╤══════════╗
 ║ name  │ sex    │ name  │ age │ hobby    ║
 ╠═══════╪════════╪═══════╪═════╪══════════╣
@@ -251,9 +258,9 @@ include::samples/join-customfunction.groovy[tag=code]
 ╟───────┼────────┼───────┼─────┼──────────╢
 ║ peter │ -      │ peter │ 21  │ swimming ║
 ╚═══════╧════════╧═══════╧═════╧══════════╝
-*/
 
-----
+....
+
 
 === Record Functions
 
@@ -270,8 +277,9 @@ To shoe the difference of how `Record.fx` and `Record.fn`  observe the output of
 [source,groovy]
 ----
 include::samples/select-with-function.groovy[tag=code]
-
-/*output
+----
+_Output_
+....
 
 --- USING FN FUNCTION
 ╔═══════╤══════════╤═══════╗
@@ -293,9 +301,10 @@ include::samples/select-with-function.groovy[tag=code]
 ╚═══════╧══════════╧═══════╝
 
 
-*/
 
-----
+....
+
+
 
 === Data Manipulation Functions
 
@@ -306,26 +315,29 @@ You can use any of the groovy methods to iterate of a `FuzzyCSVTable` since it i
 [source,groovy]
 -----
 include::samples/iterating.groovy[tag=code]
-/*output
-alex
-peter*/
-
 -----
+_Output_
+....
+alex
+peter
+....
+
 
 ==== Get Cell Value or First Value
 
 [source,groovy]
 ----
-include::samples/get-cell-value.groovy[]
+include::samples/get-cell-value.groovy[tag=code]
 ----
 
 ==== Delete Column
 
 [source,groovy]
 ----
-include::samples/delete-column.groovy[]
-
-/*output
+include::samples/delete-column.groovy[tag=code]
+----
+_Output_
+....
 ╔══════════╗
 ║ hobby    ║
 ╠══════════╣
@@ -333,20 +345,21 @@ include::samples/delete-column.groovy[]
 ╟──────────╢
 ║ swimming ║
 ╚══════════╝
-*/
 
-----
+....
+
 
 ==== CSV To MapList
 
 [source,groovy]
 ----
-include::samples/csv-to-map.groovy[]
-
-/*output
-[[name:alex, age:21, hobby:biking], [name:peter, age:21, hobby:swimming]]*/
-
+include::samples/csv-to-map.groovy[tag=code]
 ----
+_Output_
+....
+[[name:alex, age:21, hobby:biking], [name:peter, age:21, hobby:swimming]]
+....
+
 
 ==== CSV To POJO List
 
@@ -359,22 +372,26 @@ include::samples/csv-to-pojo.groovy[]
 
 [source,groovy]
 ----
-import java.sql.ResultSet
-import groovy.sql.Sql
-import fuzzycsv.FuzzyCSVTable
-
-Sql groovySql = null//...
+groovy.sql.Sql groovySql = null//...
 FuzzyCSVTable.toCSV(groovySql,"select * from PERSON")
-//or
+----
+
+OR
+
+[source,groovy]
+----
 ResultSet resultSet = null//..
 FuzzyCSVTable.toCSV(resultSet)
 ----
 
 ==== Add Column
+
 [source,groovy]
 ----
-include::samples/add-column.groovy[]
-/*output
+include::samples/add-column.groovy[tag=code]
+----
+_Output_
+....
 ╔═══════╤═════╤══════════╤════════════╗
 ║ name  │ age │ hobby    │ Double Age ║
 ╠═══════╪═════╪══════════╪════════════╣
@@ -382,45 +399,51 @@ include::samples/add-column.groovy[]
 ╟───────┼─────┼──────────┼────────────╢
 ║ peter │ 13  │ swimming │ 26         ║
 ╚═══════╧═════╧══════════╧════════════╝
-*/
 
-----
+....
 
 ==== Filter Records
+
 [source,groovy]
 ----
-include::samples/filters.groovy[]
-/*output
+include::samples/filters.groovy[tag=code]
+----
+_Output_
+....
 ╔══════╤═════╤════════╗
 ║ name │ age │ hobby  ║
 ╠══════╪═════╪════════╣
 ║ alex │ 21  │ biking ║
 ╚══════╧═════╧════════╝
-*/
 
-----
+....
+
 
 ==== Delete Records
 
 [source,groovy]
 ----
-include::samples/delete-rows.groovy[]
-/*output
+include::samples/delete-rows.groovy[tag=code]
+----
+_Output_
+....
 ╔═════════╤═════╤══════════╤══════════╗
 ║ name    │ age │ hobby    │ category ║
 ╠═════════╪═════╪══════════╪══════════╣
 ║ barbara │ 23  │ swimming │ S        ║
 ╚═════════╧═════╧══════════╧══════════╝
-*/
 
-----
+....
+
 
 ==== Distinct by column
 
 [source,groovy]
 ----
-include::samples/distinct-by-column.groovy[]
-/*output
+include::samples/distinct-by-column.groovy[tag=code]
+----
+_Output_
+....
 ╔═════════╤═════╤══════════╤══════════╗
 ║ name    │ age │ hobby    │ category ║
 ╠═════════╪═════╪══════════╪══════════╣
@@ -430,20 +453,22 @@ include::samples/distinct-by-column.groovy[]
 ╟─────────┼─────┼──────────┼──────────╢
 ║ barbara │ 23  │ swimming │ S        ║
 ╚═════════╧═════╧══════════╧══════════╝
-*/
 
-----
+....
+
 
 ==== Adding Records
 
 [source,groovy]
 ----
-include::samples/adding-records.groovy[]
-/*output
+include::samples/adding-records.groovy[tag=code]
+----
+_Output_
+....
 ╔══════════╤════════╗
 ║ name     │ number ║
 ╠══════════╪════════╣
-║ john     │ 1.1    ║
+║ join     │ 1.1    ║
 ╟──────────┼────────╢
 ║ JB       │ 455    ║
 ╟──────────┼────────╢
@@ -455,16 +480,18 @@ include::samples/adding-records.groovy[]
 ╟──────────┼────────╢
 ║ MNameEmp │ -      ║
 ╚══════════╧════════╝
-*/
 
-----
+....
+
 
 ==== Sorting
 
 [source,groovy]
 ----
 include::samples/sorting.groovy[tag=code]
-/*output
+----
+_Output_
+....
 ---- SORTED WITH COLUMN NAMES
 ╔════════╤═════╤══════════╗
 ║ name   │ age │ hobby    ║
@@ -492,16 +519,19 @@ include::samples/sorting.groovy[tag=code]
 ║ martin │ 40  │ swimming ║
 ╚════════╧═════╧══════════╝
  
-*/
 
-----
+....
+
+
 ==== Ranges
-Ranges help slice the table data. e.g. selecting last 2, top 2,  3rd to 2nd last record
 
+Ranges help slice the table data. e.g. selecting last 2, top 2, 3rd to 2nd last record
 [source,groovy]
 ----
 include::samples/ranges.groovy[tag=code]
-/*output
+----
+_Output_
+....
 ---- TOP 2
 ╔════════╤═════╤══════════╗
 ║ name   │ age │ hobby    ║
@@ -531,10 +561,274 @@ include::samples/ranges.groovy[tag=code]
 ║ dan    │ 25  │ swimming ║
 ╚════════╧═════╧══════════╝
  
-*/
 
+....
+
+
+==== Navigation
+
+Example showing running sum
+[source,groovy]
+----
+include::samples/navigation-running-sum.groovy[tag=code]
+----
+_Output_
+....
+╔══════╤═════╤═════════════╗
+║ name │ age │ running_sum ║
+╠══════╪═════╪═════════════╣
+║ kay  │ 1   │ 1           ║
+╟──────┼─────┼─────────────╢
+║ sa   │ 22  │ 23          ║
+╟──────┼─────┼─────────────╢
+║ kay2 │ 1   │ 24          ║
+╟──────┼─────┼─────────────╢
+║ ben  │ 10  │ 34          ║
+╚══════╧═════╧═════════════╝
+
+....
+
+
+Or sum bottom value with current value
+
+[source,groovy]
+----
+tbl(csv).addColumn(fx("bottom_up") { (it.down().age ?: 0) + it.age }).printTable()
 ----
 
-=== Navigation
+==== Update values with where clause
+[source,groovy]
+----
+include::samples/update-where.groovy[tag=code]
+----
+_Output_
+....
+╔════════╤═════╤══════════╗
+║ name   │ age │ hobby    ║
+╠════════╪═════╪══════════╣
+║ alex   │ 900 │ running  ║
+╟────────┼─────┼──────────╢
+║ martin │ 40  │ swimming ║
+╟────────┼─────┼──────────╢
+║ dan    │ 900 │ running  ║
+╟────────┼─────┼──────────╢
+║ peter  │ 21  │ swimming ║
+╚════════╧═════╧══════════╝
 
-To be continued..
+....
+
+
+==== Transform each cell record
+[source,groovy]
+----
+include::samples/transform-each.groovy[tag=code]
+----
+_Output_
+....
+╔════════════╤════════════╤════════════╗
+║ name       │ age        │ hobby      ║
+╠════════════╪════════════╪════════════╣
+║ alex------ │ 21-------- │ biking---- ║
+╟────────────┼────────────┼────────────╢
+║ martin---- │ 40-------- │ swimming-- ║
+╟────────────┼────────────┼────────────╢
+║ dan------- │ 25-------- │ swimming-- ║
+╟────────────┼────────────┼────────────╢
+║ peter----- │ 21-------- │ swimming-- ║
+╚════════════╧════════════╧════════════╝
+
+....
+
+
+==== Transposing
+[source,groovy]
+----
+include::samples/transpose.groovy[tag=code]
+----
+_Output_
+....
+╔═══════╤════════╤══════════╤══════════╤══════════╗
+║ name  │ alex   │ martin   │ dan      │ peter    ║
+╠═══════╪════════╪══════════╪══════════╪══════════╣
+║ age   │ 21     │ 40       │ 25       │ 21       ║
+╟───────┼────────┼──────────┼──────────┼──────────╢
+║ hobby │ biking │ swimming │ swimming │ swimming ║
+╚═══════╧════════╧══════════╧══════════╧══════════╝
+
+....
+
+==== Simplistic Aggregations
+
+In the example below we find the average age in each hobby by making use of sum count and group by functions
+[source,groovy]
+----
+include::samples/aggregation-simple.groovy[tag=code]
+----
+_Output_
+....
+╔══════════╤════════╤══════════╗
+║ Hobby    │ TT.Age │ TT.Count ║
+╠══════════╪════════╪══════════╣
+║ biking   │ 37     │ 2        ║
+╟──────────┼────────┼──────────╢
+║ swimming │ 36     │ 2        ║
+╚══════════╧════════╧══════════╝
+
+....
+
+
+==== Custom Aggregation
+[source,groovy]
+----
+include::samples/aggregation-custom.groovy[tag=code]
+----
+_Output_
+....
+╔══════════╤══════════╗
+║ Hobby    │ AgeList  ║
+╠══════════╪══════════╣
+║ biking   │ [21, 16] ║
+╟──────────┼──────────╢
+║ swimming │ [21, 15] ║
+╚══════════╧══════════╝
+
+....
+
+
+==== Unwinding a column
+This is kind can be used to unwind a column which has nested lists or collections
+[source,groovy]
+----
+include::samples/unwind-list.groovy[tag=code]
+----
+_Output_
+....
+╔══════════╤═════════╗
+║ name     │ AgeList ║
+╠══════════╪═════════╣
+║ biking   │ 21      ║
+╟──────────┼─────────╢
+║ biking   │ 16      ║
+╟──────────┼─────────╢
+║ swimming │ 21      ║
+╟──────────┼─────────╢
+║ swimming │ 15      ║
+╚══════════╧═════════╝
+
+....
+
+
+==== Spreading a column
+Expand outwards a column which contains list items
+[source,groovy]
+----
+include::samples/spread-list.groovy[tag=code]
+----
+_Output_
+....
+╔══════════╤═══════════╤═══════════╗
+║ name     │ AgeList_1 │ AgeList_2 ║
+╠══════════╪═══════════╪═══════════╣
+║ biking   │ 21        │ 16        ║
+╟──────────┼───────────┼───────────╢
+║ swimming │ 21        │ 15        ║
+╚══════════╧═══════════╧═══════════╝
+
+....
+
+
+Spread out a column with maps
+[source,groovy]
+----
+include::samples/spread-map.groovy[tag=code]
+----
+_Output_
+....
+╔══════════╤═════════╤════════════╗
+║ name     │ Age_age │ Age_height ║
+╠══════════╪═════════╪════════════╣
+║ biking   │ 21      │ 16         ║
+╟──────────┼─────────┼────────────╢
+║ swimming │ 21      │ 15         ║
+╚══════════╧═════════╧════════════╝
+
+....
+
+
+Spread with custom column names
+[source,groovy]
+----
+include::samples/spread-map-custom.groovy[tag=code]
+----
+_Output_
+....
+╔══════════╤════════════════╤═══════════════════╗
+║ name     │ MyColName: age │ MyColName: height ║
+╠══════════╪════════════════╪═══════════════════╣
+║ biking   │ 21             │ 16                ║
+╟──────────┼────────────────┼───────────────────╢
+║ swimming │ 21             │ 15                ║
+╚══════════╧════════════════╧═══════════════════╝
+
+....
+
+
+==== Move column
+[source,groovy]
+----
+include::samples/move-column.groovy[tag=code]
+----
+_Output_
+....
+╔═════════╤══════════╤══════════╤═════╗
+║ name    │ hobby    │ category │ age ║
+╠═════════╪══════════╪══════════╪═════╣
+║ alex    │ biking   │ A        │ 21  ║
+╟─────────┼──────────┼──────────┼─────╢
+║ peter   │ swimming │ S        │ 21  ║
+╟─────────┼──────────┼──────────┼─────╢
+║ charles │ swimming │ S        │ 21  ║
+╟─────────┼──────────┼──────────┼─────╢
+║ barbara │ swimming │ S        │ 23  ║
+╚═════════╧══════════╧══════════╧═════╝
+
+....
+
+
+==== Navigation
+
+Navigators help move through the table cells easily.You can look above,below, right or left of a cell.
+[source,groovy]
+----
+include::samples/navigation.groovy[tag=code]
+----
+
+==== Excel utility classes
+To use the Excel utilities you have to add the poi dependency to your classpath
+
+If you are using gradle add this.
+
+[source,groovy]
+----
+     compile 'org.apache.poi:poi-ooxml:3.16', {
+         exclude group: 'stax', module: 'stax-api'
+     }
+     compile 'org.apache.poi:ooxml-schemas:1.3', {
+         exclude group: 'stax', module: 'stax-api'
+     }
+----
+
+After this you can use the Excel utilities to convert excel sheets to and from FuzzyCSVTables.
+
+There are mainly two classes that help with this which include `fuzzycsv.Excel2Csv` and `fuzzycsv.CSVToExcel`
+
+== Note:
+This library has not been tested with very large(700,000 records plus) CSV files.So performance might be a concern.
+
+More example can be seen here
+
+https://github.com/kayr/fuzzy-csv/blob/master/src/test/groovy/fuzzycsv/FuzzyCSVTest.groovy
+
+and
+
+https://github.com/kayr/fuzzy-csv/blob/master/src/test/groovy/fuzzycsv/FuzzyCSVTableTest.groovy

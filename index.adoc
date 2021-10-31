@@ -89,8 +89,9 @@ You can convert json text to a grid console table.
 [source,groovy]
 ----
 include::samples/gridify.groovy[tag=code]
-//[raw:gridify]
 ----
+//[pre:gridify]
+
 
 
 ==== Merging with a fuzzy match
@@ -103,13 +104,9 @@ include::samples/gridify.groovy[tag=code]
 include::samples/merging.groovy[tag=code]
 
 
-//Notice how it merged [first name] and [ferts nama]
-//[raw:merging]
 ----
-
-
-
-Notice how it merged *_[first name]_* and *_[ferts nama]_*
+//[pre:merging]
+Notice how it merged *[first name]* and *[ferts nama]*
 
 === Joins
 
@@ -118,9 +115,8 @@ Notice how it merged *_[first name]_* and *_[ferts nama]_*
 [source,groovy]
 ----
 include::samples/join-inner.groovy[tag=code]
-
-//[raw:join-inner]
 ----
+//[pre:join-inner]
 
 
 ==== Left Join
@@ -128,9 +124,8 @@ include::samples/join-inner.groovy[tag=code]
 [source,groovy]
 ----
 include::samples/join-left.groovy[tag=code]
-
-//[raw:join-left]
 ----
+//[pre:join-left]
 
 
 ==== Right Join
@@ -138,9 +133,8 @@ include::samples/join-left.groovy[tag=code]
 [source,groovy]
 ----
 include::samples/join-right.groovy[tag=code]
-
-//[raw:join-right]
 ----
+//[pre:join-right]
 
 
 ==== Full Join
@@ -148,17 +142,16 @@ include::samples/join-right.groovy[tag=code]
 [source,groovy]
 ----
 include::samples/join-full.groovy[tag=code]
-
-//[raw:join-full]
 ----
+//[pre:join-full]
+
 ==== Join With Custom Function
 
 [source,groovy]
 ----
 include::samples/join-customfunction.groovy[tag=code]
-
-//[raw:join-customfunction]
 ----
+//[pre:join-customfunction]
 
 === Record Functions
 
@@ -175,9 +168,9 @@ To shoe the difference of how `Record.fx` and `Record.fn`  observe the output of
 [source,groovy]
 ----
 include::samples/select-with-function.groovy[tag=code]
-
-//[raw:select-with-function]
 ----
+//[pre:select-with-function]
+
 
 === Data Manipulation Functions
 
@@ -188,33 +181,31 @@ You can use any of the groovy methods to iterate of a `FuzzyCSVTable` since it i
 [source,groovy]
 -----
 include::samples/iterating.groovy[tag=code]
-//[raw:iterating]
 -----
+//[pre:iterating]
 
 ==== Get Cell Value or First Value
 
 [source,groovy]
 ----
-include::samples/get-cell-value.groovy[]
+include::samples/get-cell-value.groovy[tag=code]
 ----
 
 ==== Delete Column
 
 [source,groovy]
 ----
-include::samples/delete-column.groovy[]
-
-//[raw:delete-column]
+include::samples/delete-column.groovy[tag=code]
 ----
+//[pre:delete-column]
 
 ==== CSV To MapList
 
 [source,groovy]
 ----
-include::samples/csv-to-map.groovy[]
-
-//[raw:csv-to-map]
+include::samples/csv-to-map.groovy[tag=code]
 ----
+//[pre:csv-to-map]
 
 ==== CSV To POJO List
 
@@ -227,71 +218,149 @@ include::samples/csv-to-pojo.groovy[]
 
 [source,groovy]
 ----
-import java.sql.ResultSet
-import groovy.sql.Sql
-import fuzzycsv.FuzzyCSVTable
-
-Sql groovySql = null//...
+groovy.sql.Sql groovySql = null//...
 FuzzyCSVTable.toCSV(groovySql,"select * from PERSON")
-//or
+----
+
+OR
+
+[source,groovy]
+----
 ResultSet resultSet = null//..
 FuzzyCSVTable.toCSV(resultSet)
 ----
 
 ==== Add Column
-[source,groovy]
-----
-include::samples/add-column.groovy[]
-//[raw:add-column]
-----
 
-==== Filter Records
 [source,groovy]
 ----
-include::samples/filters.groovy[]
-//[raw:filters]
+include::samples/add-column.groovy[tag=code]
 ----
+//[pre:add-column]
+==== Filter Records
+
+[source,groovy]
+----
+include::samples/filters.groovy[tag=code]
+----
+//[pre:filters]
 
 ==== Delete Records
 
 [source,groovy]
 ----
-include::samples/delete-rows.groovy[]
-//[raw:delete-rows]
+include::samples/delete-rows.groovy[tag=code]
 ----
+//[pre:delete-rows]
 
 ==== Distinct by column
 
 [source,groovy]
 ----
-include::samples/distinct-by-column.groovy[]
-//[raw:distinct-by-column]
+include::samples/distinct-by-column.groovy[tag=code]
 ----
+//[pre:distinct-by-column]
 
 ==== Adding Records
 
 [source,groovy]
 ----
-include::samples/adding-records.groovy[]
-//[raw:adding-records]
+include::samples/adding-records.groovy[tag=code]
 ----
+//[pre:adding-records]
 
 ==== Sorting
 
 [source,groovy]
 ----
 include::samples/sorting.groovy[tag=code]
-//[raw:sorting]
 ----
+//[pre:sorting]
+
 ==== Ranges
-Ranges help slice the table data. e.g. selecting last 2, top 2,  3rd to 2nd last record
+
+Ranges help slice the table data. e.g. selecting last 2, top 2, 3rd to 2nd last record
+//[full:ranges]
+
+==== Navigation
+
+Example showing running sum
+//[full:navigation-running-sum]
+
+Or sum bottom value with current value
 
 [source,groovy]
 ----
-include::samples/ranges.groovy[tag=code]
-//[raw:ranges]
+tbl(csv).addColumn(fx("bottom_up") { (it.down().age ?: 0) + it.age }).printTable()
 ----
 
-=== Navigation
+==== Update values with where clause
+//[full:update-where]
 
-To be continued...
+==== Transform each cell record
+//[full:transform-each]
+
+==== Transposing
+//[full:transpose]
+==== Simplistic Aggregations
+
+In the example below we find the average age in each hobby by making use of sum count and group by functions
+//[full:aggregation-simple]
+
+==== Custom Aggregation
+//[full:aggregation-custom]
+
+==== Unwinding a column
+This is kind can be used to unwind a column which has nested lists or collections
+//[full:unwind-list]
+
+==== Spreading a column
+Expand outwards a column which contains list items
+//[full:spread-list]
+
+Spread out a column with maps
+//[full:spread-map]
+
+Spread with custom column names
+//[full:spread-map-custom]
+
+==== Move column
+//[full:move-column]
+
+==== Navigation
+
+Navigators help move through the table cells easily.You can look above,below, right or left of a cell.
+[source,groovy]
+----
+include::samples/navigation.groovy[tag=code]
+----
+
+==== Excel utility classes
+To use the Excel utilities you have to add the poi dependency to your classpath
+
+If you are using gradle add this.
+
+[source,groovy]
+----
+ compile 'org.apache.poi:poi-ooxml:3.16', {
+     exclude group: 'stax', module: 'stax-api'
+ }
+ compile 'org.apache.poi:ooxml-schemas:1.3', {
+     exclude group: 'stax', module: 'stax-api'
+ }
+----
+
+After this you can use the Excel utilities to convert excel sheets to and from FuzzyCSVTables.
+
+There are mainly two classes that help with this which include `fuzzycsv.Excel2Csv` and `fuzzycsv.CSVToExcel`
+
+== Note:
+This library has not been tested with very large(700,000 records plus) CSV files.So performance might be a concern.
+
+More example can be seen here
+
+https://github.com/kayr/fuzzy-csv/blob/master/src/test/groovy/fuzzycsv/FuzzyCSVTest.groovy
+
+and
+
+https://github.com/kayr/fuzzy-csv/blob/master/src/test/groovy/fuzzycsv/FuzzyCSVTableTest.groovy

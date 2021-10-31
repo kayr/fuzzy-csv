@@ -10,16 +10,15 @@ def csv2 = [
         ['peter', '21', 'swimming'],
 ]
 
-def sorted1 = tbl(csv2).sort('age', 'name').printTable()
-
-//or sort using closure
-def sorted2 = tbl(csv2).sort { "$it.age $it.name" }.printTable()
+tbl(csv2).modify {
+    set {
+        it.hobby = "running"
+        it.age  = '900'
+    }
+    where {
+        it.name in ['dan', 'alex']
+    }
+}.printTable()
 //end::code[]
 
-"""---- SORTED WITH COLUMN NAMES
-${sorted1.toStringFormatted()} 
-
----- SORTED WITH CLOSURE
-${sorted2.toStringFormatted()} 
-"""
 

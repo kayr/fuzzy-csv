@@ -1,9 +1,10 @@
 @Grab('io.github.kayr:fuzzy-csv:1.7.1')
-import fuzzycsv.FuzzyCSVTable
+import static fuzzycsv.FuzzyStaticApi.tbl
 
-def t = '''[["name","number"],["john",1.1]]'''
-
-def csv = FuzzyCSVTable.fromJsonText(t)
+//tag::code[]
+def csv = tbl([
+        ['name', 'number'],
+        ['join', 1.1]])
 
 csv.addRecordArr("JB", 455)
         .addRecord(["JLis", 767])
@@ -11,3 +12,4 @@ csv.addRecordArr("JB", 455)
         .addRecordArr()
         .addRecordMap([name: "MNameEmp"])
         .printTable()
+//end::code[]

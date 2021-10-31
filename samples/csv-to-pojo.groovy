@@ -2,9 +2,9 @@
 import static fuzzycsv.FuzzyCSVTable.tbl
 
 def csv = [
-['name'     , 'age' , 'hobby'    ] , 
-['alex'     , '21'  , 'biking'   ] , 
-['peter'    , '21'  , 'swimming' ] ] 
+        ['name', 'age', 'hobby'],
+        ['alex', '21', 'biking'],
+        ['peter', '21', 'swimming']]
 
 class Person {
     String name

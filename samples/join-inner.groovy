@@ -1,7 +1,6 @@
 @Grab('io.github.kayr:fuzzy-csv:1.7.1')
-//tag::code[]
-
 import static fuzzycsv.FuzzyStaticApi.*
+
 /*
 INNER JOIN EXAMPLE
 */
@@ -18,7 +17,7 @@ def csv2 = [
         ['peter', '21', 'swimming']
 ]
 
-tbl(csv1)
-        .join(csv2, 'name')
+//tag::code[]
+tbl(csv1).join(csv2, 'name')
         .printTable()
 //end::code[]
