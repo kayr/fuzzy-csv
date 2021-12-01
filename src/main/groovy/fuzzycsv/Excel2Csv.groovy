@@ -1,9 +1,9 @@
 package fuzzycsv
 
+import fuzzycsv.FuzzyCSVTable
 import groovy.transform.CompileStatic
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.*
-import org.apache.poi.xssf.streaming.SXSSFWorkbook
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -35,13 +35,13 @@ class Excel2Csv {
 
     static Map<String, FuzzyCSVTable> toCsv(File file, int startRow = 0, int endRow = Integer.MAX_VALUE) {
 
-        Workbook wb = null;
+        Workbook wb = null
         if (file.name.endsWith(".xls")) {
             file.withInputStream {
                 wb = new HSSFWorkbook(it)
             }
         } else {
-            wb = new XSSFWorkbook(file);
+            wb = new XSSFWorkbook(file)
         }
         return allSheetsToCsv(wb, startRow, endRow)
 
@@ -77,12 +77,25 @@ class Excel2Csv {
             if (row == null || index++ < startRow) {
                 continue
             }
-            def csvRow = row.collect { Cell cell -> getCellValue(fe, cell) }
+            List<Object> csvRow = rowToList(row, fe)
             result.add(csvRow)
 
             if (index > endRow) break
         }
-        return FuzzyCSVTable.tbl(result)
+        return FuzzyCSVTable.tbl(result).padAllRecords()
+    }
+
+    static List<Object> rowToList(Row row, FormulaEvaluator fe) {
+        def result = []
+        short minColIx = row.getFirstCellNum()
+        short maxColIx = row.getLastCellNum()
+        for (short colIx = minColIx; colIx < maxColIx; colIx++) {
+            Cell cell = row.getCell(colIx)
+            def value = getCellValue(fe, cell)
+            result.add(value)
+        }
+        return result
+
     }
 
     static def getCellValue(FormulaEvaluator fe, Cell cell) {
@@ -92,11 +105,16 @@ class Excel2Csv {
         if (cell.getCellTypeEnum() == CellType.FORMULA) {
             cell = fe.evaluateInCell(cell)
         }
+
+
         switch (cell.cellTypeEnum) {
             case CellType.BOOLEAN:
                 return cell.booleanCellValue
             case CellType.NUMERIC:
-                return cell.numericCellValue
+                if (DateUtil.isCellDateFormatted(cell))
+                    return cell.getDateCellValue()
+                else
+                    return cell.numericCellValue
             case CellType.STRING:
                 return cell.stringCellValue
             case CellType.BLANK:
