@@ -5,6 +5,7 @@ import groovy.transform.CompileStatic
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.FirstParam
 import groovy.transform.stc.FromString
+import groovy.transform.stc.SimpleType
 
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -64,7 +65,7 @@ class NavIterator implements ExIterator<Navigator, NavIterator> {
         return new NavIterator(curr: curr.table(table), table: table)
     }
 
-    NavIterator withStopper(@ClosureParams(value = FromString, options = ["fuzzycsv.FuzzyCSVTable", "fuzzycsv.Navigator"]) Closure<Boolean> stopper) {
+    NavIterator withStopper(@ClosureParams(value = SimpleType, options = ["fuzzycsv.FuzzyCSVTable", "fuzzycsv.nav.Navigator"]) Closure<Boolean> stopper) {
         this.stopper = stopper
         return this
     }

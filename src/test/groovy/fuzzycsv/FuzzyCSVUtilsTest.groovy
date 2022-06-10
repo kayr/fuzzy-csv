@@ -1,9 +1,12 @@
 package fuzzycsv
 
+import org.junit.Test
+
 import static fuzzycsv.FuzzyCSVUtils.move
 import static fuzzycsv.FuzzyCSVUtils.moveElems
 
-class FuzzyCSVUtilsTest extends GroovyTestCase {
+class FuzzyCSVUtilsTest  {
+    @Test
     void testMove() {
 
 

@@ -403,7 +403,7 @@ class FuzzyCSV {
         Closure<List<Record>> c = { Record r, RecordFx mOnFunction, List<? extends List> mRCsv ->
             def idx = r.idx()
             def get = FuzzyCSVUtils.safeGet(mRCsv, idx)
-            List returnValues = []
+            List<Record> returnValues = []
 
             if (get != null)
                 returnValues.add(Record.getRecord(mRCsv[0], (List) get, mRCsv, idx))
@@ -603,7 +603,7 @@ class FuzzyCSV {
         List<List> newCsv = cloneEmpty(csv, headers)
 
         //prepare aggregators and turn them into record functions
-        headers = headers.collect { header ->
+        headers = (headers as Iterable).collect { header ->
             if (header instanceof Aggregator) {
                 return toRecordFx(header as Aggregator)
             } else {
@@ -660,11 +660,11 @@ class FuzzyCSV {
 
     @CompileStatic
     static List<List> unwind(List<? extends List> csv, String... columns) {
-        List<List> newCsv = csv
+        List<? extends List> newCsv = csv
         for (unwindColumn in columns) {
             newCsv = _unwind(newCsv, unwindColumn)
         }
-        return newCsv
+        return  (List<List>)newCsv
     }
 
     @CompileStatic

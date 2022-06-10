@@ -733,15 +733,15 @@ class FuzzyCSVTable implements Iterable<Record> {
 
             def recordMap = it.toMap()
 
-            def spreadMap = [:]
+            Map<?, ?> spreadMap = [:]
             if (val instanceof Collection) {
                 val.eachWithIndex { Object entry, int i ->
                     def name = config.createName(i + 1)
                     spreadMap.put(name.toString(), entry)
                 }
             } else if (val instanceof Map) {
-                spreadMap = val.collectEntries { k, v ->
-                    [config.createName(k), v]
+                val.each { k, v ->
+                    spreadMap.put(config.createName(k), v)
                 }
             } else {
                 spreadMap = [(config.createName("1")): val]

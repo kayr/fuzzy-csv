@@ -9,7 +9,7 @@ import groovy.sql.Sql
 
 import java.sql.SQLException
 
-class DbColumnSyncTest extends GroovyTestCase {
+class DbColumnSyncTest  {
     {
         FuzzyCSV.ACCURACY_THRESHOLD.set(1)
     }

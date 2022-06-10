@@ -1,9 +1,12 @@
 package fuzzycsv
 
+import groovy.test.GroovyAssert
 import org.junit.Test
 
+import static groovy.test.GroovyAssert.shouldFail
 
-class CountTest extends GroovyTestCase {
+
+class CountTest  {
 
     @Test
     void testGetValue() {
@@ -20,7 +23,7 @@ class CountTest extends GroovyTestCase {
         count = new Count(null, Data.csv)
         assert count.value == 5
 
-        shouldFail(IllegalArgumentException) {
+        shouldFail (IllegalArgumentException) {
             new Count(['dsd'], Data.csv).value
         }
 

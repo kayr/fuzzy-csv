@@ -13,8 +13,8 @@ class DDLUtils {
 
 
 
-    static FuzzyCSVTable allTables(Connection connection) {
-        def tables = connection.metaData.getTables(null, null, null)
+    static FuzzyCSVTable allTables(Connection connection, catalog = null,schemaPattern = null) {
+        def tables = connection.metaData.getTables(catalog, schemaPattern, null)
         return toTable(tables)
 
     }

@@ -61,14 +61,15 @@ class Count extends AbstractAggregator {
 
     @Override
     String getColumnName() {
-        if (!super.columnName) {
+        if (!super.@columnName) {
+            def columnNames = columns.collect {it.toString()}.join(',')
             if (unique)
-                return "countunique(${columns*.toString().join(',')})"
+                return "countunique(${ columnNames})"
             else
-                return "count(${columns*.toString().join(',')})"
+                return "count(${columnNames})"
         }
         else {
-            return super.getColumnName()
+            return super.@columnName
         }
     }
 

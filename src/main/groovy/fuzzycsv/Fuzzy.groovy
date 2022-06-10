@@ -3,6 +3,7 @@ package fuzzycsv
 import com.github.kayr.phrasematcher.PhraseMatcher
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
+import org.codehaus.groovy.runtime.DefaultGroovyMethods
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -11,7 +12,8 @@ class Fuzzy {
     private static Logger log = LoggerFactory.getLogger(Fuzzy)
 
     static int findBestPosition(def phrases, String header, double minScore) {
-        phrases = phrases as List
+
+        phrases = DefaultGroovyMethods.asType(phrases,List) // groovy 4 no longer supports phrases as List
         def csvColIdx = findPosition(phrases, header)
         if (csvColIdx == -1 && minScore < 1.0) {
             csvColIdx = findClosestPosition(phrases, header, minScore)
@@ -20,7 +22,7 @@ class Fuzzy {
     }
 
     static int findClosestPosition(def phrases, String phrase, double minScore) {
-        phrases = phrases as List
+        phrases = DefaultGroovyMethods.asType(phrases,List)
         def ph = PhraseMatcher.train(phrases as List)
         def newName = ph.bestHit(phrase, minScore)
 

@@ -4,6 +4,8 @@ package fuzzycsv
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.junit.Test
 
+import java.text.DateFormat
+
 class Excel2CsvTest {
 
     @Test

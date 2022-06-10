@@ -5,11 +5,13 @@ import fuzzycsv.rdbms.*
 import fuzzycsv.rdbms.stmt.DefaultSqlRenderer
 import fuzzycsv.rdbms.stmt.SqlDialect
 import groovy.sql.Sql
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 
 import static fuzzycsv.FuzzyStaticApi.fx
 
-class FuzzyCSVDbExporterTest extends GroovyTestCase {
+class FuzzyCSVDbExporterTest {
 
 
     public static final SqlDialect DIALECT = SqlDialect.DEFAULT
@@ -17,17 +19,19 @@ class FuzzyCSVDbExporterTest extends GroovyTestCase {
     FuzzyCSVDbExporter export
 
 
+    @Before
     void setUp() {
         gsql = H2DbHelper.connection
-        export = new FuzzyCSVDbExporter(gsql.connection,ExportParams.defaultParams())
+        export = new FuzzyCSVDbExporter(gsql.connection, ExportParams.defaultParams())
         FuzzyCSV.ACCURACY_THRESHOLD.set(1)
     }
 
 
+    @After
     void tearDown() {
 //        gsql.execute("SHUTDOWN")
-        DDLUtils.allTables(gsql.connection)
-                .filter {it.TABLE_TYPE == 'TABLE'}
+        DDLUtils.allTables(gsql.connection, null)
+                .filter { it.TABLE_TYPE == 'TABLE' }
                 .each {
                     gsql.execute("drop table $it.TABLE_NAME" as String)
                 }
@@ -43,6 +47,7 @@ class FuzzyCSVDbExporterTest extends GroovyTestCase {
     ]
 
 
+    @Test
     void testCreateColumn() {
 
 
@@ -74,6 +79,8 @@ class FuzzyCSVDbExporterTest extends GroovyTestCase {
         }
 
     }
+
+    @Test
 
     void testCreateAndInsert() {
 
@@ -115,7 +122,7 @@ class FuzzyCSVDbExporterTest extends GroovyTestCase {
         }
 
 
-        def insert = FuzzyCsvDbInserter.generateInsert(DefaultSqlRenderer.getInstance(),tbl, 'MYTABLE')
+        def insert = FuzzyCsvDbInserter.generateInsert(DefaultSqlRenderer.getInstance(), tbl, 'MYTABLE')
 
         //check the sql insert
         assert insert.left == '''INSERT INTO `MYTABLE`
@@ -141,6 +148,7 @@ VALUES
 
     }
 
+    @Test
 
     void testWithInsertWithPaginate() {
 
@@ -168,6 +176,8 @@ VALUES
         assert DDLUtils.tableExists(gsql.connection, 'XXX')
         assert !DDLUtils.tableExists(gsql.connection, 'XXX2')
     }
+
+    @Test
 
     void testWithInsertWithPaginateGeneratePKS() {
 
@@ -205,6 +215,7 @@ VALUES
         assert !DDLUtils.tableExists(gsql.connection, 'XXX2')
     }
 
+    @Test
 
     void testPaginate() {
 
@@ -233,6 +244,8 @@ VALUES
 
     }
 
+    @Test
+
     void testPaginateEven() {
 
         def table =
@@ -260,6 +273,7 @@ VALUES
         assert counter == 9 //8+1
 
     }
+    @Test
 
     void testPaginateBigPage() {
 
@@ -292,6 +306,7 @@ VALUES
 
         }
     }
+    @Test
 
     void testExportIfTableDoesNotExist() {
         def t = FuzzyCSVTable.tbl(data)
@@ -366,7 +381,7 @@ VALUES
         normalizeNumbers(mergedResult)
 
 //        assert mergedResult.csv == fromDb.csv
-        assertEquals(mergedResult.toStringFormatted(), fromDb.toStringFormatted())
+        assert mergedResult.toStringFormatted() == fromDb.toStringFormatted()
 
 
     }
@@ -385,6 +400,7 @@ VALUES
 
         return fromDb
     }
+    @Test
 
     void testUpdateData() {
         def table1 = FuzzyCSVTable
@@ -422,6 +438,7 @@ VALUES
                          [2, 112, 2272, 332, 'BB2', 1.2, 44]]
 
     }
+    @Test
 
     void testUpdateDataWithCustomDialect() {
         def table1 = FuzzyCSVTable

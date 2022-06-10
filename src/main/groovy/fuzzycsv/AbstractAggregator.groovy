@@ -9,7 +9,7 @@ import static fuzzycsv.FuzzyCSVTable.tbl
 abstract class AbstractAggregator<T> implements Aggregator<T> {
 
     FuzzyCSVTable data
-    String columnName
+    protected String columnName
 
 
     List<List> getData(List<?> columns) {
@@ -34,5 +34,11 @@ abstract class AbstractAggregator<T> implements Aggregator<T> {
         columnName = name; this
     }
 
+    String getColumnName() {
+        return columnName
+    }
 
+    void setColumnName(String columnName) {
+        this.columnName = columnName
+    }
 }

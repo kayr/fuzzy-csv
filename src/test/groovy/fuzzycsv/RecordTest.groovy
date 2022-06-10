@@ -1,9 +1,12 @@
 package fuzzycsv
 
+import groovy.test.GroovyAssert
 import org.junit.Before
 import org.junit.Test
 
-class RecordTest extends GroovyTestCase {
+import static groovy.test.GroovyAssert.shouldFail
+
+class RecordTest  {
 
     def sourceHeader = ['name', 'sex']
     def sourceRecord = ['kay', 'male']
@@ -28,7 +31,7 @@ class RecordTest extends GroovyTestCase {
         assert record.sex == 'male'
         assert record.'@sex' == 'male'
 
-        shouldFail(IllegalArgumentException) {
+        shouldFail (IllegalArgumentException) {
             record.blah
         }
 
@@ -40,7 +43,7 @@ class RecordTest extends GroovyTestCase {
         record.leftHeaders = sourceHeader
         record.leftRecord = sourceRecord
 
-        shouldFail(IllegalArgumentException) { record.value('blah') }
+        shouldFail (IllegalArgumentException) { record.value('blah') }
         assert record.value('name') == 'ron'
         assert record.value('age', false) == null
         shouldFail(IllegalStateException) { record.value('age') == null }

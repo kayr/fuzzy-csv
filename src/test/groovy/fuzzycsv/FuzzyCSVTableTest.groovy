@@ -883,7 +883,7 @@ p\tfema+le\t31'''
     void testFromJsonMap() {
         def t = '''{"name":"joe","lname":"lasty","data":[["name","number"],["john",1.1]]}'''
 
-        def c = FuzzyCSVTable.fromJsonText(t)
+        def c = FuzzyCSVTable.fromJsonText(t).sort ('key')
 
 
         Assert.assertEquals '''
@@ -1012,7 +1012,7 @@ p\tfema+le\t31'''
 
         def json = '{\n  "name": "kate",\n  "sho": "muj",\n  "list": [\n    "dsd",\n    "sdsd"\n  ],\n  "csv": [\n    [\n      "dsd",\n      "sdsd",\n      null\n    ],\n    [\n      "sdsd",\n      1\n    ],\n    "hanging cell",\n    [\n      "sd",\n      [\n        2,\n        3,\n        4,\n        {\n          "a": 3,\n          "b": 6\n        }\n      ]\n    ],\n    [\n      {\n        "a": 3,\n        "b": 6\n      },\n      "b",\n      "c"\n    ]\n  ],\n  "full name": {\n    "fname": "fu",\n    "lname": "last"\n  },\n  "data": [\n    {\n      "r1c1-col": "r1c1",\n      "r1c2-col": "r1c2"\n    },\n    {\n      "r2c1-col": "r2c1"\n    }\n  ]\n}'
 
-        def formatted = FuzzyCSVTable.fromJsonText(json).asListGrid().toStringFormatted()
+        def formatted = FuzzyCSVTable.fromJsonText(json).asListGrid().sort ('key').toStringFormatted()
 
 
         Assert.assertEquals formatted.trim(), '''
@@ -1112,7 +1112,7 @@ p\tfema+le\t31'''
 ║ sho       │ muj                                     ║
 ╚═══════════╧═════════════════════════════════════════╝'''.trim()
 
-        def formatted2 = FuzzyCSVTable.fromJsonText(json).asSimpleGrid().toStringFormatted()
+        def formatted2 = FuzzyCSVTable.fromJsonText(json).asSimpleGrid().sort('key').toStringFormatted()
 
 
         Assert.assertEquals formatted2.trim(), '''
@@ -1163,15 +1163,15 @@ p\tfema+le\t31'''
     }
 ]'''
 
-        def text = FuzzyCSVTable.fromJsonText(json)
+        def text = FuzzyCSVTable.fromJsonText(json).select('amount','chargeOwner','type','dsd')
         Assert.assertEquals '''
-╔════════╤═════════════╤═══════════╤══════╗
-║ amount │ chargeOwner │ type      │ dsd  ║
-╠════════╪═════════════╪═══════════╪══════╣
-║ 10000  │ -           │ DEPOSIT   │ -    ║
-╟────────┼─────────────┼───────────┼──────╢
-║ 2000   │ CLIENT      │ AD_CHARGE │ nnot ║
-╚════════╧═════════════╧═══════════╧══════╝'''.trim(), text.toStringFormatted().trim()
+╔══════════╤═════════════╤═══════════╤══════╗
+║ amount   │ chargeOwner │ type      │ dsd  ║
+╠══════════╪═════════════╪═══════════╪══════╣
+║ 10000.00 │ -           │ DEPOSIT   │ -    ║
+╟──────────┼─────────────┼───────────┼──────╢
+║ 2000.00  │ CLIENT      │ AD_CHARGE │ nnot ║
+╚══════════╧═════════════╧═══════════╧══════╝'''.trim(), text.toStringFormatted().trim()
 
     }
 

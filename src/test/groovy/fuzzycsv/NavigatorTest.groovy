@@ -2,11 +2,13 @@ package fuzzycsv
 
 
 import fuzzycsv.nav.Navigator
+import groovy.test.GroovyAssert
 import org.junit.Test
 
 import static fuzzycsv.FuzzyCSVTable.tbl
+import static groovy.test.GroovyAssert.shouldFail
 
-class NavigatorTest extends GroovyTestCase {
+class NavigatorTest  {
     def data = [['1', '2', '3', '4', '5'],
                 [6, 7, 8, 9, 10],
                 [11, 12, 13, 14, 15]
@@ -19,11 +21,11 @@ class NavigatorTest extends GroovyTestCase {
 
         assert navigator.down().to('3').value() == 8
 
-        def message = shouldFail {
+        def t = shouldFail {
             assert navigator.down().to('31').value() == 8
         }
 
-        assert message == 'column[31] not found'
+        assert t.message == 'column[31] not found'
 
         assert navigator.down().to('3').value() == 8
 
