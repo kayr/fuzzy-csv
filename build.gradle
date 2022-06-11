@@ -1,18 +1,30 @@
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.20.0'
+    }
+}
+
 plugins {
     id 'net.researchgate.release' version '2.8.1'
-    id 'maven-publish'
     id 'signing'
     id 'java-library'
+    id 'com.vanniktech.maven.publish'
+    id 'groovy'
 }
+
 
 def variant = findProperty('variant') ?: '4'
 
-println("Building for Variant for Groovy=$variant")
+version  = variant == '4' ? "${findProperty('version')}-groovy4" : "${findProperty('version')}-groovy3"
+//set the groovy version on the release version
+VERSION_NAME = version
 
-//apply plugin: 'java'
-//apply plugin: 'maven'
-apply plugin: 'groovy'
-//apply plugin: 'signing'
+println("Building for Variant for Groovy=$variant [$version]")
+
 
 group = 'io.github.kayr'
 archivesBaseName = 'fuzzy-csv'
@@ -78,135 +90,8 @@ dependencies {
     }
 }
 
-//afterReleaseBuild.dependsOn uploadArchives
-
 test {
     testLogging {
         events "passed", "skipped", "failed", "standardOut", "standardError"
     }
 }
-
-configurations { deployerJars }
-
-dependencies {
-    deployerJars 'org.apache.maven.wagon:wagon-ssh:2.12'
-}
-
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives javadocJar, sourcesJar
-}
-
-signing {
-    sign configurations.archives
-}
-
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = 'fuzzy-csv'
-            from components.java
-
-            versionMapping {
-                usage('java-api') {
-                    fromResolutionOf('runtimeClasspath')
-                }
-                usage('java-runtime') {
-                    fromResolutionResult()
-                }
-            }
-
-            pom {
-                name = 'Fuzzy CSV'
-//                packaging 'jar'
-                // optionally artifactId can be defined here
-                description = 'A groovy/java tabular Data (from CSV,SQL,JSON) processing library ' +
-                        'that supports fuzzy column matching,tranformations/merging/querying etc'
-                url =  'https://github.com/kayr/fuzzy-csv/'
-
-                scm {
-                    connection = 'scm:git:https://github.com/kayr/fuzzy-csv.git'
-                    developerConnection = 'scm:git:https://github.com/kayr/fuzzy-csv.git'
-                    url = 'https://github.com/kayr/fuzzy-csv.git'
-                }
-
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-
-                developers {
-                    developer {
-                        id = 'kayr'
-                        name = 'Ronald Kayondo'
-                        email = 'noryak1234@gmail.com'
-                    }
-                }
-
-            }
-        }
-    }
-}
-
-/*
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            pom.project {
-                name 'Fuzzy CSV'
-                packaging 'jar'
-                // optionally artifactId can be defined here
-                description 'A groovy/java tabular Data (from CSV,SQL,JSON) processing library ' +
-                        'that supports fuzzy column matching,tranformations/merging/querying etc'
-                url 'https://github.com/kayr/fuzzy-csv/'
-
-                scm {
-                    connection 'scm:git:https://github.com/kayr/fuzzy-csv.git'
-                    developerConnection 'scm:git:https://github.com/kayr/fuzzy-csv.git'
-                    url 'https://github.com/kayr/fuzzy-csv.git'
-                }
-
-                licenses {
-                    license {
-                        name 'The Apache License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-
-                developers {
-                    developer {
-                        id 'kayr'
-                        name 'Ronald Kayondo'
-                        email 'noryak1234@gmail.com'
-                    }
-                }
-            }
-        }
-    }
-}*/
