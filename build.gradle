@@ -12,10 +12,11 @@ plugins {
     id 'net.researchgate.release' version '2.8.1'
     id 'signing'
     id 'java-library'
-    id 'com.vanniktech.maven.publish'
+
     id 'groovy'
 }
 
+apply plugin: 'com.vanniktech.maven.publish'
 
 def variant = findProperty('variant') ?: '4'
 
@@ -35,7 +36,6 @@ description = 'A groovy/java tabular Data (from CSV,SQL,JSON) processing library
 // Using a setter method
 project.buildDir = 'target'
 
-description = """"""
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
