@@ -95,3 +95,9 @@ test {
         events "passed", "skipped", "failed", "standardOut", "standardError"
     }
 }
+
+
+release{
+    failOnCommitNeeded = false
+    versionProperties = ['VERSION_NAME']
+}
