@@ -1,1 +1,16 @@
+Previously using the research gate gradle release plugin..since we support now to variant and no time to play around with scripts we will just release manually
+
 gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=1.0.0 -Prelease.newVersion=1.1.0-SNAPSHOT
+
+
+RELEASE MANUALLY.
+1. Set the version name in the gradle.properties file
+
+2. > gradle clean build publish -Pvariant=4 --no-daemon
+3. > gradle closeAndReleaseRepository
+
+2. > gradle clean build publish -Pvariant=3 --no-daemon
+3. > gradle closeAndReleaseRepository
+
+
+gradle clean build publish -Pvariant=3 --no-daemon
