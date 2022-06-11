@@ -1163,15 +1163,18 @@ p\tfema+le\t31'''
     }
 ]'''
 
-        def text = FuzzyCSVTable.fromJsonText(json).select('amount','chargeOwner','type','dsd')
+
+        def text = FuzzyCSVTable.fromJsonText(json)
+                .transform {it instanceof BigDecimal ? it.stripTrailingZeros().toPlainString() : it}
+                .select('amount','chargeOwner','type','dsd')
         Assert.assertEquals '''
-╔══════════╤═════════════╤═══════════╤══════╗
-║ amount   │ chargeOwner │ type      │ dsd  ║
-╠══════════╪═════════════╪═══════════╪══════╣
-║ 10000.00 │ -           │ DEPOSIT   │ -    ║
-╟──────────┼─────────────┼───────────┼──────╢
-║ 2000.00  │ CLIENT      │ AD_CHARGE │ nnot ║
-╚══════════╧═════════════╧═══════════╧══════╝'''.trim(), text.toStringFormatted().trim()
+╔════════╤═════════════╤═══════════╤══════╗
+║ amount │ chargeOwner │ type      │ dsd  ║
+╠════════╪═════════════╪═══════════╪══════╣
+║ 10000  │ -           │ DEPOSIT   │ -    ║
+╟────────┼─────────────┼───────────┼──────╢
+║ 2000   │ CLIENT      │ AD_CHARGE │ nnot ║
+╚════════╧═════════════╧═══════════╧══════╝'''.trim(), text.toStringFormatted().trim()
 
     }
 

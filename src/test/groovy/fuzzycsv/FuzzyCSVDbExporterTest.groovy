@@ -33,10 +33,11 @@ class FuzzyCSVDbExporterTest {
         DDLUtils.allTables(gsql.connection, null)
                 .filter { it.TABLE_TYPE == 'TABLE' }
                 .each {
+                    println("Dropping******** $it.TABLE_NAME")
                     gsql.execute("drop table $it.TABLE_NAME" as String)
                 }
         gsql.close()
-        gsql.close()
+//        gsql.close()
     }
 
     def data = [
@@ -94,7 +95,7 @@ class FuzzyCSVDbExporterTest {
         sql.execute(ddl)
 
 
-        def columns = FuzzyCSVTable.toCSV(sql.connection.metaData.getColumns(null, null, 'MYTABLE', null))
+        def columns = FuzzyCSVTable.fromResultSet(sql.connection.metaData.getColumns(null, null, 'MYTABLE', null))
 
 
         columns.find { it.COLUMN_NAME == 'STRING_COL' }.with {

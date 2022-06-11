@@ -8,11 +8,12 @@ import groovy.sql.Sql
 import org.junit.After
 import org.junit.Assume
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
 import static fuzzycsv.FuzzyStaticApi.fx
 
-//@Ignore
+@Ignore
 class FuzzyCSVDbExporterMysqlTest {
 
 

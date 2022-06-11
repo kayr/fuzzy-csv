@@ -740,8 +740,8 @@ class FuzzyCSVTable implements Iterable<Record> {
                     spreadMap.put(name.toString(), entry)
                 }
             } else if (val instanceof Map) {
-                val.each { k, v ->
-                    spreadMap.put(config.createName(k), v)
+                val.each { Map.Entry<Object,Object> k->
+                    spreadMap.put(config.createName(k.key), k.value)
                 }
             } else {
                 spreadMap = [(config.createName("1")): val]
