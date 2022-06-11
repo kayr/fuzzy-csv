@@ -2,7 +2,8 @@
 
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.kayr/fuzzy-csv/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/io.github.kayr/fuzzy-csv) 
-[![Release](https://jitpack.io/v/kayr/fuzzy-csv.svg)](https://jitpack.io/#kayr/fuzzy-csv)
+
+[//]: # ([![Release]&#40;https://jitpack.io/v/kayr/fuzzy-csv.svg&#41;]&#40;https://jitpack.io/#kayr/fuzzy-csv&#41;)
 ![Java CI](https://github.com/kayr/fuzzy-csv/workflows/Java%20CI/badge.svg)
 
 ### Use Cases
