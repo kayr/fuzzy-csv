@@ -62,11 +62,12 @@ dependencies {
         testImplementation 'org.apache.groovy:groovy-dateutil:4.0.2'
     } else {
         println "setting groovy 2 dependencies"
-        api 'org.codehaus.groovy:groovy:2.3.8'
-        api 'org.codehaus.groovy:groovy-sql:2.3.8'
-        api 'org.codehaus.groovy:groovy-json:2.3.8'
-        testImplementation 'org.codehaus.groovy:groovy-test:2.3.8'
-        testImplementation 'org.codehaus.groovy:groovy-datetime:2.3.8'
+        api 'org.codehaus.groovy:groovy:2.5.19'
+        api 'org.codehaus.groovy:groovy-sql:2.5.19'
+        api 'org.codehaus.groovy:groovy-json:2.5.19'
+        testImplementation 'org.codehaus.groovy:groovy-test:2.5.19'
+        testImplementation 'org.codehaus.groovy:groovy-datetime:2.5.19'
+        testImplementation 'org.codehaus.groovy:groovy-dateutil:2.5.19'
 
     }
 

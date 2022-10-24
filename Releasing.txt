@@ -1,4 +1,4 @@
-Previously using the research gate gradle release plugin..since we support now to variant and no time to play around with scripts we will just release manually
+Previously using the research gate gradle release plugin..since we now support variants and no time to play around with scripts we will just release manually
 
 gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=1.0.0 -Prelease.newVersion=1.1.0-SNAPSHOT
 
