@@ -3,6 +3,18 @@
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.kayr/fuzzy-csv/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/io.github.kayr/fuzzy-csv) 
 
+There are two jars avaaible one compatible with groovy3  and lower and another compatible with groovy4
+
+If using groovy3 and lower then use:
+```
+implementation io.github.kayr:fuzzy-csv:<version>-groovy3
+```
+If using groovy 4 then use
+```
+implementation io.github.kayr:fuzzy-csv:<version>-groovy4
+```
+
+
 [//]: # ([![Release]&#40;https://jitpack.io/v/kayr/fuzzy-csv.svg&#41;]&#40;https://jitpack.io/#kayr/fuzzy-csv&#41;)
 ![Java CI](https://github.com/kayr/fuzzy-csv/workflows/Java%20CI/badge.svg)
 
