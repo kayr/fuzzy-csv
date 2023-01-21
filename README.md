@@ -3,7 +3,7 @@
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.kayr/fuzzy-csv/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/io.github.kayr/fuzzy-csv) 
 
-There are two jars avaible one compatible with groovy3  and lower and another compatible with groovy4
+There are two jars available one compatible with groovy3  and lower and another compatible with groovy4
 
 If using groovy3 and lower then use:
 ```
