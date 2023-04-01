@@ -104,17 +104,17 @@ class FuzzyCSVUtils {
 
     //added cause groovy 3 multiply now uses charsequence
     private static String repeat(String self, Number factor) {
-        int size = factor.intValue();
+        int size = factor.intValue()
         if (size == 0)
-            return "";
+            return ""
         else if (size < 0) {
-            throw new IllegalArgumentException("multiply() should be called with a number of 0 or greater not: " + size);
+            throw new IllegalArgumentException("multiply() should be called with a number of 0 or greater not: " + size)
         }
-        StringBuilder answer = new StringBuilder(self);
+        StringBuilder answer = new StringBuilder(self)
         for (int i = 1; i < size; i++) {
-            answer.append(self);
+            answer.append(self)
         }
-        return answer.toString();
+        return answer.toString()
     }
 
     static void closeQuietly(Closeable c) {

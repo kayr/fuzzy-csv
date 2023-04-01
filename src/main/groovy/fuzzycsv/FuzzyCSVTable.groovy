@@ -2,6 +2,7 @@ package fuzzycsv
 
 import com.jakewharton.fliptables.FlipTable
 import com.opencsv.CSVParser
+import fuzzycsv.javaly.JFuzzyCSVTable
 import fuzzycsv.nav.Navigator
 import fuzzycsv.rdbms.ExportParams
 import fuzzycsv.rdbms.FuzzyCSVDbExporter
@@ -24,7 +25,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     private static Logger log = LoggerFactory.getLogger(FuzzyCSVTable)
 
     final List<List> csv
-    String tableName
+    private String tableName
 
     FuzzyCSVTable(List<? extends List> csv) {
         if (csv == null || csv.isEmpty()) {
@@ -264,6 +265,14 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     Record row(int idx) {
         return Record.getRecord(csv, idx);
+    }
+
+    def <T> T get(int row, int col) {
+        return csv[row][col]
+    }
+
+    def <T> T get(int rowIdx, String colName) {
+        return row(rowIdx).val(colName)
     }
 
     def value(Navigator navigator) {
@@ -635,8 +644,10 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable addRecords(int idx = size() + 1, List... item) {
+        int nextIdx = idx
         for (it in item) {
-            csv.add(idx, it as List)
+            csv.add(nextIdx, it as List)
+            nextIdx++
         }
         return this
     }
@@ -740,7 +751,7 @@ class FuzzyCSVTable implements Iterable<Record> {
                     spreadMap.put(name.toString(), entry)
                 }
             } else if (val instanceof Map) {
-                val.each { Map.Entry<Object,Object> k->
+                val.each { Map.Entry<Object, Object> k ->
                     spreadMap.put(config.createName(k.key), k.value)
                 }
             } else {
@@ -899,6 +910,9 @@ class FuzzyCSVTable implements Iterable<Record> {
         return this
     }
 
+    JFuzzyCSVTable javaApi() {
+        return new JFuzzyCSVTable(this)
+    }
 
     @Override
     Iterator<Record> iterator() {
@@ -1038,6 +1052,10 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     static FuzzyCSVTable fromListList(List<List> csv) {
         return tbl(csv)
+    }
+
+    static FuzzyCSVTable fromRows(List... rows) {
+        return tbl(rows.toList())
     }
 
     static FuzzyCSVTable fromInspection(Object obj) {
