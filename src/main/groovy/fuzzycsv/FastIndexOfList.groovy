@@ -8,6 +8,10 @@ import java.util.function.UnaryOperator
 @CompileStatic
 class FastIndexOfList<E> extends ArrayList<E> implements List<E> {
 
+    private Map<Object, Integer> indexCache = new HashMap<>()
+
+    private int lastVisited = 0
+
     FastIndexOfList() {
 
     }
@@ -16,12 +20,10 @@ class FastIndexOfList<E> extends ArrayList<E> implements List<E> {
         super(var1)
     }
 
+
     FastIndexOfList(int var1) {
         super(var1)
     }
-
-    Map<Object, Integer> indexCache = new HashMap<>()
-
 
     int indexOf(Object o) {
 
@@ -32,13 +34,13 @@ class FastIndexOfList<E> extends ArrayList<E> implements List<E> {
 
         def size = size()
         if (o == null) {
-            for (int i = lastVisted; i < size; i++) {
+            for (int i = lastVisited; i < size; i++) {
                 def e = get(i)
                 mayBeCacheIdx(nullObjIfNull(e), i)
                 if (e == null) i
             }
         } else {
-            for (int i = lastVisted; i < size; i++) {
+            for (int i = lastVisited; i < size; i++) {
                 def e = get(i)
                 mayBeCacheIdx(nullObjIfNull(e), i)
                 if (o == e) return i
@@ -47,12 +49,10 @@ class FastIndexOfList<E> extends ArrayList<E> implements List<E> {
         return -1
     }
 
-    private int lastVisted = 0
-
     private int mayBeCacheIdx(e, int i) {
-        if (i > lastVisted || lastVisted == 0) {
+        if (i > lastVisited || lastVisited == 0) {
             if (!indexCache.containsKey(e)) indexCache.put(e, i)
-            lastVisted = i
+            lastVisited = i
         }
         return i
     }
@@ -72,7 +72,7 @@ class FastIndexOfList<E> extends ArrayList<E> implements List<E> {
 
     void clearCache() {
         indexCache.clear()
-        lastVisted = 0
+        lastVisited = 0
     }
 
     @Override
