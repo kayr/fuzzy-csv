@@ -4,7 +4,6 @@ import fuzzycsv.FuzzyCSVTable
 import groovy.transform.CompileStatic
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.FirstParam
-import groovy.transform.stc.FromString
 import groovy.transform.stc.SimpleType
 
 import java.util.concurrent.atomic.AtomicInteger
@@ -83,9 +82,10 @@ class NavIterator implements ExIterator<Navigator, NavIterator> {
 
     @Override
     boolean hasNext() {
-        if(!selfFinished && curr.inBounds(table)) return true
+        if (!selfFinished && curr.inBounds(table)) return true
         return stopper(table, curr)
     }
+
     @Override
     Navigator next() {
 

@@ -91,19 +91,19 @@ class Navigator {
         return new Navigator(col + steps, row, table)
     }
 
-    Navigator toTopLeft(FuzzyCSVTable t = table){
+    Navigator toTopLeft(FuzzyCSVTable t = table) {
         return atTopLeft(t)
     }
 
-    Navigator toToRight(FuzzyCSVTable t = table){
+    Navigator toToRight(FuzzyCSVTable t = table) {
         return atTopRight(t)
     }
 
-    Navigator toBottomLeft(FuzzyCSVTable t = table){
+    Navigator toBottomLeft(FuzzyCSVTable t = table) {
         return atBottomLeft(t)
     }
 
-    Navigator toBottomRight(FuzzyCSVTable t = table){
+    Navigator toBottomRight(FuzzyCSVTable t = table) {
         return atBottomRight(t)
     }
 

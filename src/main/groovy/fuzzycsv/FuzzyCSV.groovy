@@ -269,7 +269,7 @@ class FuzzyCSV {
 
     private static List<List> toListofList(Object object) {
         if (object instanceof List) {
-            return object;
+            return object
         }
         throw new IllegalArgumentException("Json is not a valid csv")
     }
@@ -664,7 +664,7 @@ class FuzzyCSV {
         for (unwindColumn in columns) {
             newCsv = _unwind(newCsv, unwindColumn)
         }
-        return  (List<List>)newCsv
+        return (List<List>) newCsv
     }
 
     @CompileStatic

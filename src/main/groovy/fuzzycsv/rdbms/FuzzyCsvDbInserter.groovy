@@ -65,10 +65,10 @@ class FuzzyCsvDbInserter {
                                                            String tableName,
                                                            String... identifiers) {
         return StreamSupport.stream(table.spliterator(), false)
-                .collect { Record r -> generateUpdate(sqlRenderer,r, tableName, identifiers) }
+                .collect { Record r -> generateUpdate(sqlRenderer, r, tableName, identifiers) }
     }
 
-    static Pair<String, List<Object>> generateInsert(SqlRenderer sqlRenderer,FuzzyCSVTable table, String tableName) {
+    static Pair<String, List<Object>> generateInsert(SqlRenderer sqlRenderer, FuzzyCSVTable table, String tableName) {
         String insertInto = "INSERT INTO " + sqlRenderer.quoteName(tableName)
 
         String insertHeader = table.getHeader().collect { sqlRenderer.quoteName(it) }.join(", ")
@@ -95,7 +95,7 @@ class FuzzyCsvDbInserter {
 
         def tables = paginate(table, pageSize)
 
-        return tables.collect { generateInsert(sqlRenderer,it, tableName) }
+        return tables.collect { generateInsert(sqlRenderer, it, tableName) }
     }
 
 

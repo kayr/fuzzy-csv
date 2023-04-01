@@ -1,11 +1,7 @@
 package fuzzycsv
 
 import groovy.transform.CompileStatic
-import org.apache.poi.ss.usermodel.Cell
-import org.apache.poi.ss.usermodel.CellStyle
-import org.apache.poi.ss.usermodel.Row
-import org.apache.poi.ss.usermodel.Sheet
-import org.apache.poi.ss.usermodel.Workbook
+import org.apache.poi.ss.usermodel.*
 import org.apache.poi.xssf.streaming.SXSSFWorkbook
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

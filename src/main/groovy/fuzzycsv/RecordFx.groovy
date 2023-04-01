@@ -4,7 +4,7 @@ import groovy.transform.CompileStatic
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.SimpleType
 
-class RecordFx<RT> {
+class RecordFx {
 
     String name
     Closure c
@@ -21,14 +21,13 @@ class RecordFx<RT> {
     }
 
     @CompileStatic
-    RT getValue(Record record) {
+    Object getValue(Record record) {
         if (record.isHeader() && !headerEnabled)
             return null
 
         if (resolutionStrategy != null)
             record.resolutionStrategy = resolutionStrategy
 
-        record.useFuzzy = useFuzzy
         def rt
         if (useCoercion) {
             rt = getValueWithCoercion(record)
@@ -36,7 +35,7 @@ class RecordFx<RT> {
             rt = c.call(record)
         }
 
-        return (RT) rt
+        return rt
     }
 
 

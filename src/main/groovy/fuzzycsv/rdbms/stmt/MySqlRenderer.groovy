@@ -8,7 +8,7 @@ import static fuzzycsv.rdbms.FuzzyCsvDbInserter.inTicks
 class MySqlRenderer extends DefaultSqlRenderer {
 
 
-    private static SqlRenderer instance;
+    private static SqlRenderer instance
 
     static SqlRenderer getInstance() {
         if (instance == null)// don't care about synchronization

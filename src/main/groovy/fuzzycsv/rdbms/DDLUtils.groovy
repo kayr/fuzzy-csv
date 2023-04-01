@@ -12,12 +12,12 @@ import java.sql.ResultSet
 class DDLUtils {
 
 
-
-    static FuzzyCSVTable allTables(Connection connection, catalog = null,schemaPattern = null) {
+    static FuzzyCSVTable allTables(Connection connection, catalog = null, schemaPattern = null) {
         def tables = connection.metaData.getTables(catalog, schemaPattern, null)
         return toTable(tables)
 
     }
+
     static boolean tableExists(Connection connection, String tableName) {
         def tables = connection.metaData.getTables(null, null, tableName)
 

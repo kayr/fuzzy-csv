@@ -38,8 +38,7 @@ class Sum extends AbstractAggregator<Number> {
     String getColumnName() {
         if (!super.columnName) {
             return "sum(${columns*.toString().join(',')})"
-        }
-        else {
+        } else {
             return super.getColumnName()
         }
     }

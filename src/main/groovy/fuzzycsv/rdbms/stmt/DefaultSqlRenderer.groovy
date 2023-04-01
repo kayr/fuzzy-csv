@@ -5,7 +5,7 @@ import fuzzycsv.rdbms.FuzzyCSVDbExporter
 
 class DefaultSqlRenderer implements SqlRenderer {
 
-    private static SqlRenderer instance;
+    private static SqlRenderer instance
 
     static SqlRenderer getInstance() {
         if (instance == null)// don't care about synchronization

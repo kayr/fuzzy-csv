@@ -1,6 +1,6 @@
 package fuzzycsv
 
-import fuzzycsv.FuzzyCSVTable
+
 import groovy.transform.CompileStatic
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.*

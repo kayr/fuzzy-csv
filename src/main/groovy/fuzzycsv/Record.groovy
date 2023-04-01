@@ -1,5 +1,6 @@
 package fuzzycsv
 
+import fuzzycsv.javaly.Dynamic
 import groovy.transform.CompileStatic
 
 import static fuzzycsv.ResolutionStrategy.*
@@ -19,8 +20,7 @@ class Record {
     List rightRecord
     FuzzyCSVTable rightTable
 
-    boolean useFuzzy = false
-    boolean throwExceptionOnNullColumn = true
+    private boolean throwExceptionOnNullColumn = true
     private boolean useDefaultSilentMode = true
 
     int recordIdx = -1
@@ -47,17 +47,17 @@ class Record {
         return resolveValue(finalHeaders, finalRecord, name)
     }
 
-    //convenience method for left
+    /**convenience method for left*/
     def l(String name) {
         return left(name)
     }
 
-    //convenience method for right
+    /**convenience method for right*/
     def r(String name) {
         return right(name)
     }
 
-    //convenience method for final
+    /**convenience method for final*/
     def f(String name) {
         return 'final'(name)
     }
@@ -357,20 +357,32 @@ class Record {
         }
     }
 
-    //todo add a try finally block
+    /**
+     * Get value wrapped in a dynamic object
+     */
+    Dynamic d(String name) {
+        return Dynamic.of(val(name))
+    }
+
     def withSilentMode(Closure c) {
-        silentModeOn()
-        c.delegate = this
-        def value = c.call()
-        silentModeDefault()
-        return value
+        try {
+            silentModeOn()
+            c.delegate = this
+            def value = c.call()
+            return value
+        } finally {
+            silentModeDefault()
+        }
     }
 
     def silentVal(def c) {
-        silentModeOn()
-        def value = val(c)
-        silentModeDefault()
-        return value
+        try {
+            silentModeOn()
+            def value = val(c)
+            return value
+        } finally {
+            silentModeDefault()
+        }
     }
 
 }
