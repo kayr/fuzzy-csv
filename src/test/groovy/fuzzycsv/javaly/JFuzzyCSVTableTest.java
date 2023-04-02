@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static fuzzycsv.javaly.FxUtils.recordFx;
 import static fuzzycsv.javaly.TestUtils.kv;
 import static fuzzycsv.javaly.TestUtils.mapOf;
 import static java.util.Arrays.asList;
@@ -204,15 +205,14 @@ class JFuzzyCSVTableTest {
     }
 
     @Test
-    void testTableName(){
+    void testTableName() {
         JFuzzyCSVTable test = inputCsv.copy().name("test");
         assertEquals("test", test.name());
     }
 
     @Test
-    void testNormalizeHeader(){
+    void testNormalizeHeader() {
         JFuzzyCSVTable tableWithDuplicateColumn = inputCsv.copy().addColumn("color", r -> "xxxx");
-
 
 
         JFuzzyCSVTable normalized = tableWithDuplicateColumn.normalizeHeaders();
@@ -247,6 +247,62 @@ class JFuzzyCSVTableTest {
         assertEquals(expected, normalized);
     }
 
+    @Test
+    void testNormalizeWithPrefix() {
+        JFuzzyCSVTable tableWithDuplicateColumn = inputCsv.copy().addColumn("color", r -> "xxxx");
+
+        JFuzzyCSVTable normalized = tableWithDuplicateColumn.normalizeHeaders("prefix_");
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("color", "matching", "prefix_2_color"),
+          asList("Red", "Black", "xxxx"),
+          asList("Purple", "Black", "xxxx"),
+          asList("Green", "Beige", "xxxx"),
+          asList("Blue", "Gray", "xxxx")
+        );
+
+        assertEquals(expected, normalized);
+
+    }
+
+    @Test
+    void testPutInColumn() {
+        JFuzzyCSVTable result = inputCsv.putInColumn(0, recordFx("New Name", r -> "Yellow"));
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("New Name", "matching"),
+          asList("Yellow", "Black"),
+          asList("Yellow", "Black"),
+          asList("Yellow", "Beige"),
+          asList("Yellow", "Gray")
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testPutInColumnWithSourceTable() {
+        //create a radom table of players
+        JFuzzyCSVTable players = JFuzzyCSVTable.fromRows(
+          asList("name", "team"),
+          asList("John", "Red"),
+          asList("Mike", "Blue"),
+          asList("Bob", "Green"),
+          asList("Jack", "Yellow")
+        );
+
+        JFuzzyCSVTable result = inputCsv.putInColumn(0, recordFx("New Name", r -> r.left("name") + " " + r.f("New Name")), players.unwrap());
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("New Name", "matching"),
+          asList("John Red", "Black"),
+          asList("Mike Purple", "Black"),
+          asList("Bob Green", "Beige"),
+          asList("Jack Blue", "Gray")
+        );
+
+        assertEquals(expected, result);
+    }
 
 
 }

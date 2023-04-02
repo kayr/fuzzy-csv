@@ -88,13 +88,13 @@ public class JFuzzyCSVTable {
     }
 
 
-    public JFuzzyCSVTable putInColumn(int colId, Fx1<Record, Object> func) {
-        return table.putInColumn(colId, FxUtils.toCls(func)).javaApi();
+    public JFuzzyCSVTable putInColumn(int colId, RecordFx recordFx) {
+        return table.putInColumn(colId,recordFx).javaApi();
 
     }
 
-    public JFuzzyCSVTable putInColumn(int colId, Fx1<Record, Object> func, FuzzyCSVTable sourceTable) {
-        return table.putInColumn(colId, FxUtils.toCls(func), sourceTable).javaApi();
+    public JFuzzyCSVTable putInColumn(int colId, RecordFx recordFx, FuzzyCSVTable sourceTable) {
+        return table.putInColumn(colId, recordFx, sourceTable).javaApi();
     }
 
 
