@@ -168,11 +168,11 @@ public class JFuzzyCSVTable {
         return table.isEmpty();
     }
 
-    public List getAt(String columnName) {
+    public List column(String columnName) {
         return table.getAt(columnName);
     }
 
-    public List getAt(Integer colIdx) {
+    public List column(Integer colIdx) {
         return table.getAt(colIdx);
     }
 
@@ -308,13 +308,6 @@ public class JFuzzyCSVTable {
         return table.transpose().javaApi();
     }
 
-    public JFuzzyCSVTable leftShift(FuzzyCSVTable other) {
-        return table.leftShift(other).javaApi();
-    }
-
-    public JFuzzyCSVTable leftShift(List<? extends List> other) {
-        return table.leftShift(other).javaApi();
-    }
 
     public JFuzzyCSVTable mergeByColumn(List<? extends List> otherCsv) {
         return table.mergeByColumn(otherCsv).javaApi();
@@ -348,14 +341,6 @@ public class JFuzzyCSVTable {
 
     public JFuzzyCSVTable union(FuzzyCSVTable tbl) {
         return table.union(tbl).javaApi();
-    }
-
-    public JFuzzyCSVTable plus(FuzzyCSVTable tbl) {
-        return table.plus(tbl).javaApi();
-    }
-
-    public JFuzzyCSVTable plus(List<? extends List> csv) {
-        return table.plus(csv).javaApi();
     }
 
     public JFuzzyCSVTable addColumn(RecordFx... fnz) {
