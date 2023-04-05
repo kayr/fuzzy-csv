@@ -89,7 +89,7 @@ public class JFuzzyCSVTable {
 
 
     public JFuzzyCSVTable putInColumn(int colId, RecordFx recordFx) {
-        return table.putInColumn(colId,recordFx).javaApi();
+        return table.putInColumn(colId, recordFx).javaApi();
 
     }
 
@@ -160,8 +160,13 @@ public class JFuzzyCSVTable {
         return table.distinctBy(columns).javaApi();
     }
 
+    /**
+     * @return key to FuzyCSVTable. A avoid unnecessary copying of data, the returned table is of type FuzzyCSVTable. If you need a JFuzzyCSVTable, use {@link FuzzyCSVTable#javaApi()} }
+     */
     public Map<Object, FuzzyCSVTable> groupBy(Fx1<Record, Object> groupFx) {
         return table.groupBy(FxUtils.toCls(groupFx));
+
+
     }
 
     public boolean isEmpty() {
@@ -180,20 +185,22 @@ public class JFuzzyCSVTable {
         return table.row(idx);
     }
 
-    public <T> T get(int rowIdx, int colIdx) {
+    public <T> T value(int rowIdx, int colIdx) {
         return table.get(rowIdx, colIdx);
     }
 
-    public <T> T get(int rowIdx, String colName) {
+    public <T> T value(int rowIdx, String colName) {
         return table.get(rowIdx, colName);
     }
 
-    public Object value(Navigator navigator) {
-        return table.value(navigator);
+    @SuppressWarnings("unchecked")
+    public <T> T value(Navigator navigator) {
+        return  (T)table.value(navigator);
     }
 
-    public Object firstCell() {
-        return table.firstCell();
+    @SuppressWarnings("unchecked")
+    public <T> T firstCell() {
+        return (T)table.firstCell();
     }
 
     public JFuzzyCSVTable getAt(IntRange range) {

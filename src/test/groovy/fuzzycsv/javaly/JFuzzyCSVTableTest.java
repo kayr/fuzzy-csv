@@ -1,14 +1,22 @@
 package fuzzycsv.javaly;
 
+import fuzzycsv.FuzzyCSVTable;
+import fuzzycsv.Record;
+import fuzzycsv.nav.Navigator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import static fuzzycsv.FuzzyStaticApi.count;
 import static fuzzycsv.javaly.FxUtils.recordFx;
 import static fuzzycsv.javaly.TestUtils.kv;
 import static fuzzycsv.javaly.TestUtils.mapOf;
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class JFuzzyCSVTableTest {
 
@@ -140,7 +148,7 @@ class JFuzzyCSVTableTest {
           asList("Purple", "Black"),
           asList("Green", "Beige"),
           asList("Blue", "Gray"),
-          asList("", "")
+          asList(null, null)
         );
 
         //then
@@ -303,6 +311,274 @@ class JFuzzyCSVTableTest {
 
         assertEquals(expected, result);
     }
+
+    FuzzyCSVTable mock;
+    JFuzzyCSVTable jFuzzyCSVTable;
+
+    @BeforeEach
+    void setUp() {
+        mock = Mockito.mock(FuzzyCSVTable.class);
+        jFuzzyCSVTable = new JFuzzyCSVTable(mock);
+    }
+
+    @Test
+    void toPojoList() {
+
+        ArrayList<Object> returnValue = new ArrayList<>();
+        Mockito.when(mock.toPojoList(Object.class)).thenReturn(returnValue);
+        List<Object> result = jFuzzyCSVTable.toPojoList(Object.class);
+
+        Mockito.verify(mock).toPojoList(Object.class);
+        assertSame(returnValue, result);
+
+    }
+
+    @Test
+    void testToPojoListWithStrictFlag() {
+        ArrayList<Object> returnValue = new ArrayList<>();
+        Class<Object> mapClass = Object.class;
+        Mockito.when(mock.toPojoList(mapClass, true)).thenReturn(returnValue);
+
+        List<Object> result = jFuzzyCSVTable.toPojoList(mapClass, true);
+
+        Mockito.verify(mock).toPojoList(mapClass, true);
+        assertSame(returnValue, result);
+    }
+
+    @Test
+    void testRenameHeader() {
+        JFuzzyCSVTable result = inputCsv.renameHeader("color", "New Name");
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("New Name", "matching"),
+          asList("Red", "Black"),
+          asList("Purple", "Black"),
+          asList("Green", "Beige"),
+          asList("Blue", "Gray")
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testRenameHeaderWithMap() {
+        JFuzzyCSVTable result = inputCsv.renameHeader(mapOf(
+          kv("color", "New Name"),
+          kv("matching", "New Matching")
+        ));
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("New Name", "New Matching"),
+          asList("Red", "Black"),
+          asList("Purple", "Black"),
+          asList("Green", "Beige"),
+          asList("Blue", "Gray")
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testTransformHeader() {
+        JFuzzyCSVTable result = inputCsv.transformHeader(h -> h + "X");
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("colorX", "matchingX"),
+          asList("Red", "Black"),
+          asList("Purple", "Black"),
+          asList("Green", "Beige"),
+          asList("Blue", "Gray")
+        );
+
+        assertEquals(expected, result);
+
+    }
+
+    @Test
+    void testRenameHeaderWithIndex() {
+        JFuzzyCSVTable result = inputCsv.renameHeader(0, "New Name");
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("New Name", "matching"),
+          asList("Red", "Black"),
+          asList("Purple", "Black"),
+          asList("Green", "Beige"),
+          asList("Blue", "Gray")
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testMovColumn_String_to_Index() {
+        JFuzzyCSVTable result = inputCsv.moveCol("color", 1);
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("matching", "color"),
+          asList("Black", "Red"),
+          asList("Black", "Purple"),
+          asList("Beige", "Green"),
+          asList("Gray", "Blue")
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testMoveColumn_String_to_String() {
+        JFuzzyCSVTable result = inputCsv.moveCol("color", "matching");
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("matching", "color"),
+          asList("Black", "Red"),
+          asList("Black", "Purple"),
+          asList("Beige", "Green"),
+          asList("Gray", "Blue")
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testMoveColumn_Index_to_Index() {
+        JFuzzyCSVTable result = inputCsv.moveCol(0, 1);
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("matching", "color"),
+          asList("Black", "Red"),
+          asList("Black", "Purple"),
+          asList("Beige", "Green"),
+          asList("Gray", "Blue")
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testSummarize() {
+        JFuzzyCSVTable result = inputCsv.summarize("matching", count().az("count"));
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("matching", "count"),
+          asList("Black", 2),
+          asList("Beige", 1),
+          asList("Gray", 1)
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testDistinct() {
+        JFuzzyCSVTable result = inputCsv.select("matching").distinct();
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("matching"),
+          asList("Black"),
+          asList("Beige"),
+          asList("Gray")
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testDistinctBy() {
+        JFuzzyCSVTable result = inputCsv.distinctBy("matching");
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("color", "matching"),
+          asList("Red", "Black"),
+          asList("Green", "Beige"),
+          asList("Blue", "Gray")
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testGroupBy() {
+        Map<Object, FuzzyCSVTable> result = inputCsv.groupBy(r -> r.value("matching"));
+
+        Map<Object, FuzzyCSVTable> expected = mapOf(
+          kv("Black", FuzzyCSVTable.fromRows(
+            asList("color", "matching"),
+            asList("Red", "Black"),
+            asList("Purple", "Black")
+          )),
+          kv("Beige", FuzzyCSVTable.fromRows(
+            asList("color", "matching"),
+            asList("Green", "Beige")
+          )),
+          kv("Gray", FuzzyCSVTable.fromRows(
+            asList("color", "matching"),
+            asList("Blue", "Gray")
+          ))
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testIsEmpty() {
+        assertTrue(FuzzyCSVTable.tbl().javaApi().isEmpty());
+        assertFalse(inputCsv.isEmpty());
+    }
+
+    @Test
+    void testColumn(){
+        List<String> result = inputCsv.column("color");
+        List<String> expected = asList("Red", "Purple", "Green", "Blue");
+        assertEquals(expected, result);
+    }
+
+
+    @Test
+    void testColumWithIndex(){
+        List<String> result = inputCsv.column(0);
+        List<String> expected = asList("Red", "Purple", "Green", "Blue");
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testRow(){
+        Record result = inputCsv.row(1);
+
+        Object color = result.value("color");
+        Object matching = result.value("matching");
+
+        assertEquals("Red", color);
+        assertEquals("Black  ", matching);
+
+    }
+
+    @Test
+    void testGetCellValues(){
+        Object result = inputCsv.value(1, 0);
+        assertEquals("Red", result);
+    }
+
+    @Test
+    void testGetCellValuesWithColumnName(){
+        Object result = inputCsv.value(1, "color");
+        assertEquals("Red", result);
+    }
+
+
+    @Test
+    void testWithNavigator(){
+        Navigator nav = Navigator.start().table(inputCsv.unwrap()).down();
+        Object result = inputCsv.value(nav);
+        assertEquals("Red", result);
+    }
+
+
+    @Test
+    void testFistCell(){
+        String result = inputCsv.firstCell();
+        assertEquals("color", result);
+    }
+
 
 
 }

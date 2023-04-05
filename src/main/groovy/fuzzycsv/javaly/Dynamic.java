@@ -1,5 +1,7 @@
 package fuzzycsv.javaly;
 
+import java.util.Objects;
+
 public class Dynamic {
 
     private final Object obj;
@@ -41,6 +43,19 @@ public class Dynamic {
     @Override
     public String toString() {
         return obj + "";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Dynamic dynamic = (Dynamic) o;
+        return Objects.equals(obj, dynamic.obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(obj);
     }
 }
 
