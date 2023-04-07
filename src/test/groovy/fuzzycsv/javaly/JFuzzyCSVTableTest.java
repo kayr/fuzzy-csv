@@ -731,4 +731,36 @@ class JFuzzyCSVTableTest {
         assertEquals(expected, inputCsv.rightJoinOnIdx(inputCsv2.unwrap()));
     }
 
+    @Test
+    void testFullJoinWithIndexInputToInput2() {
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("color", "matching", "color", "in-french"),
+          asList("Red", "Black", "Red", "Rouge"),
+          asList("Purple", "Black", "Purple", "Violet"),
+          asList("Green", "Beige", "Blue", "Bleu"),
+          asList("Blue", "Gray", "Orange", "Orange"),
+          asList(null, null, "Yellow", "Jaune")
+        );
+
+        assertEquals(expected, inputCsv.fullJoinOnIdx(inputCsv2));
+        assertEquals(expected, inputCsv.fullJoinOnIdx(inputCsv2.unwrap()));
+    }
+
+    @Test
+    void testFullJoinWithIndexInput2ToInput() {
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+            asList("color","in-french","color","matching"),
+            asList("Red","Rouge","Red","Black"),
+            asList("Purple","Violet","Purple","Black"),
+            asList("Blue","Bleu","Green","Beige"),
+            asList("Orange","Orange","Blue","Gray"),
+            asList("Yellow","Jaune",null,null)
+        );
+
+        assertEquals(expected, inputCsv2.fullJoinOnIdx(inputCsv));
+        assertEquals(expected, inputCsv2.fullJoinOnIdx(inputCsv.unwrap()));
+    }
+
 }

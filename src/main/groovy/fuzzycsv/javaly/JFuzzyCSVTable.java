@@ -325,6 +325,10 @@ public class JFuzzyCSVTable {
         return table.rightJoinOnIdx(data).javaApi();
     }
 
+    public JFuzzyCSVTable fullJoinOnIdx(JFuzzyCSVTable data) {
+        return fullJoinOnIdx(data.table);
+    }
+
     public JFuzzyCSVTable fullJoinOnIdx(FuzzyCSVTable data) {
         return table.fullJoinOnIdx(data).javaApi();
     }
