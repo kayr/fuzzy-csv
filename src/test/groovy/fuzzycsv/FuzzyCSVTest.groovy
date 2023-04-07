@@ -6,6 +6,7 @@ import org.junit.Before
 import org.junit.Test
 
 import static fuzzycsv.FuzzyCSVTable.tbl
+import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.RecordFx.fn
 import static fuzzycsv.RecordFx.fx
 import static org.junit.Assert.*
@@ -177,10 +178,10 @@ class FuzzyCSVTest {
     @Test
     void testJoinColumn() {
 
-        def csv1 = getCSV('/csv2.csv')
-        def csv2 = getCSV('/csv1.csv')
+        def csv1 = getCSV('/csv1.csv')
+        def csv2 = getCSV('/csv2.csv')
 
-        def join = FuzzyCSV.join(csv2, csv1, 'Name')
+        def join = FuzzyCSV.join(csv1, csv2, 'Name')
 
 
         def expected = [
@@ -190,23 +191,23 @@ class FuzzyCSVTest {
         ]
         assertEquals tbl(join).toStringFormatted(), tbl(expected).toStringFormatted()
 
-        join = FuzzyCSV.join(csv1, csv2, fx {
+        join = FuzzyCSV.join(csv2, csv1, fx {
             it.Name == it.'@Name'
         }, 'Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
         assertEquals join.toString(), expected.toString()
 
         //fuzzy csv table
-        join = tbl(csv1).join(tbl(csv2), fx {
+        join = tbl(csv2).join(tbl(csv1), fx {
             it.Name == it.'@Name'
         }).select('Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
         assertEquals expected.toString(), join.csv.toString()
 
         //fuzzy csv table
-        join = tbl(csv2).join(csv1, 'Name').csv
+        join = tbl(csv1).join(csv2, 'Name').csv
         assertEquals join.toString(), expected.toString()
 
         //fuzzy csv table
-        join = tbl(csv2).join(tbl(csv1), 'Name').csv
+        join = tbl(csv1).join(tbl(csv2), 'Name').csv
         assertEquals join.toString(), expected.toString()
     }
 
@@ -214,30 +215,30 @@ class FuzzyCSVTest {
     @Test
     void tesJoinOnIdx() {
 
-        def csv1 = tbl(getCSV('/csv2.csv'))
-        def csv2 = tbl(getCSV('/csv1.csv'))
+        def csv1 = tbl(getCSV('/csv1.csv'))
+        def csv2 = tbl(getCSV('/csv2.csv'))
 
-        assert csv1.joinOnIdx(csv2).csv ==
-                [['Name', 'Subject', 'Mark', 'Name', 'Sex', 'Age', 'Location'],
-                 ['Ronald', 'Math', '50', 'Ronald', 'Male', '3', 'Bweyos'],
-                 ['Sara', 'English', '50', 'Sara', 'Female', '4', 'Muyenga']]
+        assertEquals(
+                tbl([['Name', 'Subject', 'Mark', 'Name', 'Sex', 'Age', 'Location'],
+                     ['Ronald', 'Math', '50', 'Ronald', 'Male', '3', 'Bweyos'],
+                     ['Ronald', 'English', '50', 'Sara', 'Female', '4', 'Muyenga']]), csv2.joinOnIdx(csv1))
 
 
-        assert csv1.lefJoinOnIdx(csv2).csv == [['Name', 'Subject', 'Mark', 'Name', 'Sex', 'Age', 'Location'],
+        assert csv2.lefJoinOnIdx(csv1).csv == [['Name', 'Subject', 'Mark', 'Name', 'Sex', 'Age', 'Location'],
                                                ['Ronald', 'Math', '50', 'Ronald', 'Male', '3', 'Bweyos'],
-                                               ['Sara', 'English', '50', 'Sara', 'Female', '4', 'Muyenga'],
-                                               ['Betty', 'Biology', '80', 'Betty', null, null, null]]
+                                               ['Ronald', 'English', '50', 'Sara', 'Female', '4', 'Muyenga'],
+                                               ['Betty', 'Biology', '80', null, null, null, null]]
 
 
-        assert csv1.rightJoinOnIdx(csv2).csv == [['Name', 'Subject', 'Mark', 'Name', 'Sex', 'Age', 'Location'],
+        assert csv2.rightJoinOnIdx(csv1).csv == [['Name', 'Subject', 'Mark', 'Name', 'Sex', 'Age', 'Location'],
                                                  ['Ronald', 'Math', '50', 'Ronald', 'Male', '3', 'Bweyos'],
-                                                 ['Sara', 'English', '50', 'Sara', 'Female', '4', 'Muyenga']]
+                                                 ['Ronald', 'English', '50', 'Sara', 'Female', '4', 'Muyenga']]
 
 
-        assert csv2.rightJoinOnIdx(csv1).csv == [['Name', 'Sex', 'Age', 'Location', 'Name', 'Subject', 'Mark'],
+        assert csv1.rightJoinOnIdx(csv2).csv == [['Name', 'Sex', 'Age', 'Location', 'Name', 'Subject', 'Mark'],
                                                  ['Ronald', 'Male', '3', 'Bweyos', 'Ronald', 'Math', '50'],
-                                                 ['Ronald', 'Female', '4', 'Muyenga', 'Ronald', 'English', '50'],
-                                                 ['Betty', null, null, null, 'Betty', 'Biology', '80']]
+                                                 ['Sara', 'Female', '4', 'Muyenga', 'Ronald', 'English', '50'],
+                                                 [null, null, null, null, 'Betty', 'Biology', '80']]
 
 
     }
@@ -290,7 +291,6 @@ class FuzzyCSVTest {
         def csv_2 = getCSV('/csv2.csv')
         def csv_1 = getCSV('/csv1.csv')
 
-        def join = FuzzyCSV.rightJoin(csv_1, csv_2, 'Name')
 
 
         def expected = [
@@ -299,6 +299,8 @@ class FuzzyCSVTest {
                 ['Ronald', 'Male', 3, 'Bweyos', 'English', 50],
                 ['Betty', null, null, null, 'Biology', 80]
         ]
+
+        def join = FuzzyCSV.rightJoin(csv_1, csv_2, 'Name')
         assertEquals join.toString(), expected.toString()
 
         join = FuzzyCSV.rightJoin(csv_1, csv_2, fx {
@@ -309,7 +311,7 @@ class FuzzyCSVTest {
         //fuzzy csv table
         join = tbl(csv_1).rightJoin(tbl(csv_2), fx {
             it.Name == it.'@Name'
-        }).select('Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
+        }).select(4, 'Sex', 'Age', 'Location', 'Subject', 'Mark')//use index of 4 since there will be a null value in the first column of `name`
         assertEquals expected.toString(), join.csv.toString()
 
         //fuzzy csv table
@@ -347,7 +349,7 @@ class FuzzyCSVTest {
         //fuzzy csv table
         join = tbl(csv_1).fullJoin(tbl(csv_2), fx {
             it.Name == it.'@Name'
-        }).select('Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
+        }).select(fx { it[0] ?: it[4] }.az('Name'), 'Sex', 'Age', 'Location', 'Subject', 'Mark')//use index of 4 since there will be a null value in the first column of `name`
         assertEquals expected.toString(), join.csv.toString()
 
         //fuzzy csv table
@@ -364,9 +366,9 @@ class FuzzyCSVTest {
     void testFullJoinMultiColumn() {
 
         def csv_1 = getCSV('/csv1.csv')
-        def csv_2 = getCSV('/csv1_4.csv')
+        def csv_1_4 = getCSV('/csv1_4.csv')
 
-        def join = FuzzyCSV.fullJoin(csv_1, csv_2, 'Name', 'Sex')
+        def join = FuzzyCSV.fullJoin(csv_1, csv_1_4, 'Name', 'Sex')
 
         def expected = [
                 ['Name', 'Sex', 'Age', 'Location', 'Age2', 'Hobby'],
@@ -376,17 +378,17 @@ class FuzzyCSVTest {
         ]
         assertEquals tbl(expected).toString(), tbl(join).toString()
 
-        join = FuzzyCSV.fullJoin(csv_1, csv_2, fx {
+        join = FuzzyCSV.fullJoin(csv_1, csv_1_4, fx {
             it.Name == it.'@Name' && it.Sex == it.'@Sex'
         }, 'Name', 'Sex', 'Age', 'Location', 'Age2', 'Hobby')
+        assertEquals FuzzyCSVTable.tbl(join).toStringFormatted(), FuzzyCSVTable.tbl(expected).toStringFormatted()
+
+        //fuzzy csv table
+        join = tbl(csv_1).fullJoin(csv_1_4, 'Name', 'Sex').csv
         assertEquals join.toString(), expected.toString()
 
         //fuzzy csv table
-        join = tbl(csv_1).fullJoin(csv_2, 'Name', 'Sex').csv
-        assertEquals join.toString(), expected.toString()
-
-        //fuzzy csv table
-        join = tbl(csv_1).fullJoin(tbl(csv_2), 'Name', 'Sex').csv
+        join = tbl(csv_1).fullJoin(tbl(csv_1_4), 'Name', 'Sex').csv
         assertEquals join.toString(), expected.toString()
 
     }
@@ -544,7 +546,7 @@ class FuzzyCSVTest {
 
         def expected = [
                 ['sub', 'perc', '43', 'perc', 'ppp'],
-                ['toro', 100, null, 100, null]   //todo *this should be ['toro', null, null, 100, null]
+                ['toro', null, null, 100, null]
         ]
 
         assertEquals expected, tbl(one).fullJoin(two, 'sub').csv

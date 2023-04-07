@@ -302,19 +302,19 @@ class FuzzyCSV {
         return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), NULL_ON_FUNCTION, true, true, hpRightRecordFinder(joinColumns))
     }
 
-    static List<List> join(List<? extends List> csv1, List<? extends List> csv2, RecordFx onExpression, String[] selectColumns) {
+    static List<List> join(List<? extends List> csv1, List<? extends List> csv2, RecordFx onExpression, Object[] selectColumns) {
         return superJoin(csv1, csv2, selectColumns as List, onExpression, false, false)
     }
 
-    static List<List> leftJoin(List<? extends List> csv1, List<? extends List> csv2, RecordFx onExpression, String[] selectColumns) {
+    static List<List> leftJoin(List<? extends List> csv1, List<? extends List> csv2, RecordFx onExpression, Object[] selectColumns) {
         return superJoin(csv1, csv2, selectColumns as List, onExpression, true, false)
     }
 
-    static List<List> rightJoin(List<? extends List> csv1, List<? extends List> csv2, RecordFx onExpression, String[] selectColumns) {
+    static List<List> rightJoin(List<? extends List> csv1, List<? extends List> csv2, RecordFx onExpression, Object[] selectColumns) {
         return superJoin(csv1, csv2, selectColumns as List, onExpression, false, true)
     }
 
-    static List<List> fullJoin(List<? extends List> csv1, List<? extends List> csv2, RecordFx onExpression, String[] selectColumns) {
+    static List<List> fullJoin(List<? extends List> csv1, List<? extends List> csv2, RecordFx onExpression, Object[] selectColumns) {
         return superJoin(csv1, csv2, selectColumns as List, onExpression, true, true)
     }
 
@@ -425,7 +425,7 @@ class FuzzyCSV {
 
         //container to keep track the matchedCSV2 records
         def matchedRightRecordIndices = new HashSet()
-        def finalCSV = [selectColumns]
+        def finalCSV = [selectColumns.collect { it instanceof RecordFx ? it.name : it }]
 
         Record recObj = new Record(leftHeaders: leftCsv[0], rightHeaders: rightCsv[0], recordIdx: -1, leftCsv: leftCsv, rightCsv: rightCsv, finalCsv: finalCSV)
 
@@ -505,8 +505,34 @@ class FuzzyCSV {
     }
 
 
+    @CompileStatic
     static List selectAllHeaders(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
-        List derivedHeader = csv1[0] + (csv2[0] - (joinColumns as List))
+
+        def leftHeader = csv1[0]
+        def rightHeader = (csv2[0] - (joinColumns as List))
+
+
+        //the items on the left side are in the join columns
+        def leftFunctions = leftHeader.collect {
+
+            if (it instanceof String) {
+                return it in joinColumns ?
+                        fx { r ->
+                            r.tryLeftFinalRight(it)
+                        }.az(it) :
+                        fx { r -> r.left(it) }.az(it)
+            }
+            return it
+        }
+
+        //the items on the right side are not in the join columns
+        def rightFunctions = rightHeader.collect { Object h ->
+            if (h instanceof String) {
+                return RecordFx.fx { r -> r.right(h) }.az(h)
+            }
+            return h
+        }
+        List derivedHeader = leftFunctions + rightFunctions
         return derivedHeader
     }
 

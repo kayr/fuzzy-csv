@@ -330,12 +330,12 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable join(List<? extends List> csv2,
-                       @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure joinColumns) {
-        return join(csv2, fx(joinColumns))
+                       @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure joinCondition) {
+        return join(csv2, fx(joinCondition))
     }
 
     FuzzyCSVTable join(List<? extends List> csv2, RecordFx joinColumns) {
-        return tbl(FuzzyCSV.join(csv, csv2, joinColumns, FuzzyCSV.selectAllHeaders(csv, csv2) as String[]))
+        return tbl(FuzzyCSV.join(csv, csv2, joinColumns, FuzzyCSV.selectAllHeaders(csv, csv2) as Object[]))
     }
 
     FuzzyCSVTable leftJoin(FuzzyCSVTable tbl,
@@ -353,7 +353,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable leftJoin(List<? extends List> csv2, RecordFx fx) {
-        return tbl(FuzzyCSV.leftJoin(csv, csv2, fx, FuzzyCSV.selectAllHeaders(csv, csv2) as String[]))
+        return tbl(FuzzyCSV.leftJoin(csv, csv2, fx, FuzzyCSV.selectAllHeaders(csv, csv2) as Object[]))
     }
 
     FuzzyCSVTable rightJoin(FuzzyCSVTable tbl,
@@ -371,7 +371,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable rightJoin(List<? extends List> csv2, RecordFx fx) {
-        return tbl(FuzzyCSV.rightJoin(csv, csv2, fx, FuzzyCSV.selectAllHeaders(csv, csv2) as String[]))
+        return tbl(FuzzyCSV.rightJoin(csv, csv2, fx, FuzzyCSV.selectAllHeaders(csv, csv2) as Object[]))
     }
 
     FuzzyCSVTable fullJoin(FuzzyCSVTable tbl,
@@ -389,7 +389,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable fullJoin(List<? extends List> csv2, RecordFx fx) {
-        return tbl(FuzzyCSV.fullJoin(csv, csv2, fx, FuzzyCSV.selectAllHeaders(csv, csv2) as String[]))
+        return tbl(FuzzyCSV.fullJoin(csv, csv2, fx, FuzzyCSV.selectAllHeaders(csv, csv2) as Object[]))
     }
 
 

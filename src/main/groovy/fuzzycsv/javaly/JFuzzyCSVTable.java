@@ -195,16 +195,22 @@ public class JFuzzyCSVTable {
 
     @SuppressWarnings("unchecked")
     public <T> T value(Navigator navigator) {
-        return  (T)table.value(navigator);
+        return (T) table.value(navigator);
     }
 
     @SuppressWarnings("unchecked")
     public <T> T firstCell() {
-        return (T)table.firstCell();
+        return (T) table.firstCell();
     }
 
-    public JFuzzyCSVTable getAt(IntRange range) {
-        return table.getAt(range).javaApi();
+    public JFuzzyCSVTable slice(int from, int to) {
+        IntRange groovyRange = new IntRange(from, to);
+        return table.getAt(groovyRange).javaApi();
+    }
+
+    //region Inner Join
+    public JFuzzyCSVTable join(JFuzzyCSVTable tbl, String... joinColumns) {
+        return join(tbl.table, joinColumns);
     }
 
     public JFuzzyCSVTable join(FuzzyCSVTable tbl, String... joinColumns) {
@@ -214,6 +220,12 @@ public class JFuzzyCSVTable {
     public JFuzzyCSVTable join(List<? extends List> csv2, String... joinColumns) {
         return table.join(csv2, joinColumns).javaApi();
     }
+    //endregion
+
+    //region Left Join
+    public JFuzzyCSVTable leftJoin(JFuzzyCSVTable tbl, String... joinColumns) {
+        return leftJoin(tbl.table, joinColumns);
+    }
 
     public JFuzzyCSVTable leftJoin(FuzzyCSVTable tbl, String... joinColumns) {
         return table.leftJoin(tbl, joinColumns).javaApi();
@@ -222,6 +234,13 @@ public class JFuzzyCSVTable {
     public JFuzzyCSVTable leftJoin(List<? extends List> csv2, String... joinColumns) {
         return table.leftJoin(csv2, joinColumns).javaApi();
     }
+    //endregion
+
+
+    //region Right Join
+    public JFuzzyCSVTable rightJoin(JFuzzyCSVTable tbl, String... joinColumns) {
+        return rightJoin(tbl.table, joinColumns);
+    }
 
     public JFuzzyCSVTable rightJoin(FuzzyCSVTable tbl, String... joinColumns) {
         return table.rightJoin(tbl, joinColumns).javaApi();
@@ -229,6 +248,13 @@ public class JFuzzyCSVTable {
 
     public JFuzzyCSVTable rightJoin(List<? extends List> csv2, String... joinColumns) {
         return table.rightJoin(csv2, joinColumns).javaApi();
+    }
+    //endregion
+
+
+    //region Full Join
+    public JFuzzyCSVTable fullJoin(JFuzzyCSVTable tbl, String... joinColumns) {
+        return fullJoin(tbl.table, joinColumns);
     }
 
     public JFuzzyCSVTable fullJoin(FuzzyCSVTable tbl, String... joinColumns) {
@@ -242,6 +268,7 @@ public class JFuzzyCSVTable {
     public JFuzzyCSVTable join(FuzzyCSVTable tbl, Fx1.Rec func) {
         return table.join(tbl, FxUtils.toCls(func)).javaApi();
     }
+    //endregion
 
     public JFuzzyCSVTable join(List<? extends List> csv2, Fx1.Rec joinColumns) {
         return table.join(csv2, FxUtils.toCls(joinColumns)).javaApi();
@@ -271,12 +298,27 @@ public class JFuzzyCSVTable {
         return table.fullJoin(csv2, FxUtils.toCls(func)).javaApi();
     }
 
+    public JFuzzyCSVTable joinOnIdx(JFuzzyCSVTable data) {
+        return joinOnIdx(data.table);
+    }
+
     public JFuzzyCSVTable joinOnIdx(FuzzyCSVTable data) {
         return table.joinOnIdx(data).javaApi();
     }
 
-    public JFuzzyCSVTable lefJoinOnIdx(FuzzyCSVTable data) {
+
+
+
+    public JFuzzyCSVTable leftJoinOnIdx(JFuzzyCSVTable data) {
+        return leftJoinOnIdx(data.table);
+    }
+
+    public JFuzzyCSVTable leftJoinOnIdx(FuzzyCSVTable data) {
         return table.lefJoinOnIdx(data).javaApi();
+    }
+
+    public JFuzzyCSVTable rightJoinOnIdx(JFuzzyCSVTable data) {
+        return rightJoinOnIdx(data.table);
     }
 
     public JFuzzyCSVTable rightJoinOnIdx(FuzzyCSVTable data) {
