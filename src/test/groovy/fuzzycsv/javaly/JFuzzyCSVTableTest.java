@@ -16,6 +16,7 @@ import static fuzzycsv.javaly.FxUtils.recordFx;
 import static fuzzycsv.javaly.TestUtils.kv;
 import static fuzzycsv.javaly.TestUtils.mapOf;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class JFuzzyCSVTableTest {
@@ -751,16 +752,101 @@ class JFuzzyCSVTableTest {
     void testFullJoinWithIndexInput2ToInput() {
 
         JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
-            asList("color","in-french","color","matching"),
-            asList("Red","Rouge","Red","Black"),
-            asList("Purple","Violet","Purple","Black"),
-            asList("Blue","Bleu","Green","Beige"),
-            asList("Orange","Orange","Blue","Gray"),
-            asList("Yellow","Jaune",null,null)
+          asList("color", "in-french", "color", "matching"),
+          asList("Red", "Rouge", "Red", "Black"),
+          asList("Purple", "Violet", "Purple", "Black"),
+          asList("Blue", "Bleu", "Green", "Beige"),
+          asList("Orange", "Orange", "Blue", "Gray"),
+          asList("Yellow", "Jaune", null, null)
         );
 
         assertEquals(expected, inputCsv2.fullJoinOnIdx(inputCsv));
         assertEquals(expected, inputCsv2.fullJoinOnIdx(inputCsv.unwrap()));
     }
+
+    @Test
+    void testUnwind() {
+        JFuzzyCSVTable date = JFuzzyCSVTable.fromRows(
+          asList("a", "b"),
+          asList("A", asList(1, 2)),
+          asList("B", asList(3, 4))
+        );
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("a", "b"),
+          asList("A", 1),
+          asList("A", 2),
+          asList("B", 3),
+          asList("B", 4)
+        );
+
+        assertEquals(expected, date.unwind("b"));
+        assertEquals(expected, date.unwind(singletonList("b")));
+
+    }
+
+    @Test
+    void testTranspose() {
+        JFuzzyCSVTable date = JFuzzyCSVTable.fromRows(
+          asList("a", "b", "c"),
+          asList(1, 2, 3),
+          asList(4, 5, 6)
+        );
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("color", "Red", "Purple", "Green", "Blue"),
+          asList("matching", "Black", "Black", "Beige", "Gray")
+        );
+
+        assertEquals(expected, inputCsv.transpose());
+    }
+
+    @Test
+    void testPivot() {
+        JFuzzyCSVTable date = JFuzzyCSVTable.fromRows(
+          asList("a", "b", "x"),
+          asList(1, 1, 1),
+          asList(1, 2, 2),
+          asList(1, 3, 3),
+          asList(2, 1, 2),
+          asList(2, 2, 4),
+          asList(2, 3, 6)
+
+        );
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("b", 1, 2),
+          asList(1, 1, 2),
+          asList(2, 2, 4),
+          asList(3, 3, 6)
+        );
+
+        assertEquals(expected, date.pivot("a", "x", "b").printTable());
+
+    }
+
+    @Test
+    void mergeByColumn() {
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("color", "matching", "in-french"),
+          asList("Red", "Black", null),
+          asList("Purple", "Black", null),
+          asList("Green", "Beige", null),
+          asList("Blue", "Gray", null),
+          asList("Red", null, "Rouge"),
+          asList("Purple", null, "Violet"),
+          asList("Blue", null, "Bleu"),
+          asList("Orange", null, "Orange"),
+          asList("Yellow", null, "Jaune")
+        );
+
+        assertEquals(expected, inputCsv.mergeByColumn(inputCsv2));
+        assertEquals(expected, inputCsv.mergeByColumn(inputCsv2.unwrap()));
+        assertEquals(expected, inputCsv.mergeByColumn(inputCsv2.getCsv()));
+
+
+    }
+
 
 }

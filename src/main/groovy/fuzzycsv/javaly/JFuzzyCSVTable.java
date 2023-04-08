@@ -349,9 +349,6 @@ public class JFuzzyCSVTable {
         return table.unwind(columns).javaApi();
     }
 
-    public JFuzzyCSVTable transpose(String columToBeHeader, String columnForCell, String... primaryKeys) {
-        return table.transpose(columToBeHeader, columnForCell, primaryKeys).javaApi();
-    }
 
     public JFuzzyCSVTable pivot(String columToBeHeader, String columnForCell, String... primaryKeys) {
         return table.pivot(columToBeHeader, columnForCell, primaryKeys).javaApi();
@@ -361,7 +358,9 @@ public class JFuzzyCSVTable {
         return table.transpose().javaApi();
     }
 
-
+    public JFuzzyCSVTable mergeByColumn(JFuzzyCSVTable tbl) {
+        return mergeByColumn(tbl.table);
+    }
     public JFuzzyCSVTable mergeByColumn(List<? extends List> otherCsv) {
         return table.mergeByColumn(otherCsv).javaApi();
     }
@@ -436,11 +435,11 @@ public class JFuzzyCSVTable {
         return table.transform(FxUtils.toCls(fx)).javaApi();
     }
 
-    public List<String> header() {
+    public List<String> getHeader() {
         return table.getHeader();
     }
 
-    public List<String> header(boolean copy) {
+    public List<String> getHeader(boolean copy) {
         return table.getHeader(copy);
     }
 
