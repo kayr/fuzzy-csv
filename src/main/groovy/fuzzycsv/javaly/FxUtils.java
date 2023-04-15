@@ -19,6 +19,11 @@ public class FxUtils {
                     return sneakyThrow(e);
                 }
             }
+
+            @Override
+            public int getMaximumNumberOfParameters() {
+                return 1;
+            }
         };
     }
 
@@ -32,6 +37,11 @@ public class FxUtils {
                     return sneakyThrow(e);
                 }
             }
+
+            @Override
+            public int getMaximumNumberOfParameters() {
+                return 2;
+            }
         };
     }
 
@@ -44,6 +54,11 @@ public class FxUtils {
                 } catch (Exception e) {
                     return sneakyThrow(e);
                 }
+            }
+
+            @Override
+            public int getMaximumNumberOfParameters() {
+                return 3;
             }
         };
     }

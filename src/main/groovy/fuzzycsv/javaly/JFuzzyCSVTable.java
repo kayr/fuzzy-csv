@@ -102,9 +102,6 @@ public class JFuzzyCSVTable {
         return table.toPojoList(aClass);
     }
 
-    public <T> List<T> toPojoList(Class<T> aClass, boolean strict) {
-        return table.toPojoList(aClass, strict);
-    }
 
     public String toStringFormatted() {
         return table.toStringFormatted();
@@ -377,16 +374,10 @@ public class JFuzzyCSVTable {
 
     }
 
-    @Deprecated
-    public JFuzzyCSVTable mergeByAppending(List<? extends List> otherCsv) {
-        return table.mergeByAppending(otherCsv).javaApi();
-    }
 
-    @Deprecated
-    public JFuzzyCSVTable mergeByAppending(FuzzyCSVTable tbl) {
-        return table.mergeByAppending(tbl).javaApi();
+    public JFuzzyCSVTable union(JFuzzyCSVTable tbl) {
+        return union(tbl.table);
     }
-
     public JFuzzyCSVTable union(List<? extends List> otherCsv) {
         return table.union(otherCsv).javaApi();
     }
@@ -407,13 +398,10 @@ public class JFuzzyCSVTable {
         return table.addColumnByCopy(fnz).javaApi();
     }
 
-    public JFuzzyCSVTable deleteColumns(Object... columnNames) {
+    public JFuzzyCSVTable dropColum(Object... columnNames) {
         return table.deleteColumns(columnNames).javaApi();
     }
 
-    public JFuzzyCSVTable delete(String[] columnNames) {
-        return table.delete(columnNames).javaApi();
-    }
 
     public JFuzzyCSVTable transform(String column, Fx1<Record, Object> func) {
         return table.transform(column, FxUtils.toCls(func)).javaApi();
@@ -471,11 +459,11 @@ public class JFuzzyCSVTable {
         return table.insertColumn(column, colIdx).javaApi();
     }
 
-    public JFuzzyCSVTable putInColumn(List colValues, int colIdx) {
+    public JFuzzyCSVTable putInColumn(List<?> colValues, int colIdx) {
         return table.putInColumn(colValues, colIdx).javaApi();
     }
 
-    public JFuzzyCSVTable cleanUpRepeats(String[] columns) {
+    public JFuzzyCSVTable cleanUpRepeats(String... columns) {
         return table.cleanUpRepeats(columns).javaApi();
     }
 
