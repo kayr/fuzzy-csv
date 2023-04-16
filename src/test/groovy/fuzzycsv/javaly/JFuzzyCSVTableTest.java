@@ -1,21 +1,30 @@
 package fuzzycsv.javaly;
 
 import fuzzycsv.FuzzyCSVTable;
+import fuzzycsv.H2DbHelper;
 import fuzzycsv.Record;
 import fuzzycsv.nav.Navigator;
+import fuzzycsv.rdbms.DbExportFlags;
+import fuzzycsv.rdbms.ExportParams;
+import fuzzycsv.rdbms.FuzzyCSVDbExporter;
 import groovy.lang.MissingPropertyException;
+import org.codehaus.groovy.runtime.ResourceGroovyMethods;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.sql.SQLException;
+import java.util.*;
 
 import static fuzzycsv.FuzzyStaticApi.count;
 import static fuzzycsv.javaly.FxUtils.recordFx;
+import static fuzzycsv.javaly.FxUtils.spreader;
 import static fuzzycsv.javaly.TestUtils.kv;
 import static fuzzycsv.javaly.TestUtils.mapOf;
 import static java.util.Arrays.asList;
@@ -1213,6 +1222,329 @@ class JFuzzyCSVTableTest {
         assertEquals("matching", columnName);
     }
 
+
+    @Nested
+    class Spread {
+        @Test
+        void testSpread() {
+            JFuzzyCSVTable data = JFuzzyCSVTable.fromRows(
+              asList("a", "b"),
+              asList(1, asList("one", "once")),
+              asList(2, asList("two", "twice")),
+              asList(3, asList("three", "thrice"))
+            );
+
+            JFuzzyCSVTable result = data.spread("b");
+
+            JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+              asList("a", "b_1", "b_2"),
+              asList(1, "one", "once"),
+              asList(2, "two", "twice"),
+              asList(3, "three", "thrice")
+            );
+
+            assertEquals(expected, result);
+        }
+
+        @Test
+        void testSpreadWithConfig() {
+            JFuzzyCSVTable data = JFuzzyCSVTable.fromRows(
+              asList("a", "b"),
+              asList(1, asList("one", "once")),
+              asList(2, asList("two", "twice")),
+              asList(3, asList("three", "thrice"))
+            );
+
+            JFuzzyCSVTable result = data.spread(spreader("b", (key, value) -> key + "_-_" + value));
+
+            JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+              asList("a", "b_-_1", "b_-_2"),
+              asList(1, "one", "once"),
+              asList(2, "two", "twice"),
+              asList(3, "three", "thrice")
+            );
+
+            assertEquals(expected, result);
+        }
+
+    }
+
+    @Test
+    void testSize() {
+        assertEquals(4, inputCsv.size());
+    }
+
+    @Nested
+    class Write {
+        @Test
+        void testWriteToFilePath() throws IOException {
+            File testFile = createTempFile();
+
+            inputCsv.write(testFile.getAbsolutePath());
+
+            JFuzzyCSVTable result = csvFromFile(testFile);
+
+            assertEquals(inputCsv, result);
+        }
+
+        @Test
+        void testWriteToFile() throws IOException {
+            File testFile = createTempFile();
+
+
+            inputCsv.write(testFile);
+
+
+            JFuzzyCSVTable result = csvFromFile(testFile);
+
+            assertEquals(inputCsv, result);
+        }
+
+        @Test
+        void testWriteToWriter() throws IOException {
+            File testFile = createTempFile();
+
+            try (Writer writer = new FileWriter(testFile)) {
+                inputCsv.write(writer);
+            }
+
+            JFuzzyCSVTable result = csvFromFile(testFile);
+
+            assertEquals(inputCsv, result);
+        }
+
+        @Test
+        void writeToJson() throws IOException {
+            File testFile = createTempFile();
+
+            inputCsv.writeToJson(testFile.getAbsolutePath());
+
+            JFuzzyCSVTable result = csvFromJsonFile(testFile);
+
+            assertEquals(inputCsv, result);
+        }
+
+        @Test
+        void writeToJsonFile() throws IOException {
+            File testFile = createTempFile();
+
+            inputCsv.writeToJson(testFile);
+
+            JFuzzyCSVTable result = csvFromJsonFile(testFile);
+
+            assertEquals(inputCsv, result);
+        }
+
+        @Test
+        void writeToJsonWriter() throws IOException {
+            File testFile = createTempFile();
+
+            try (Writer writer = new FileWriter(testFile)) {
+                inputCsv.writeToJson(writer);
+            }
+
+            JFuzzyCSVTable result = csvFromJsonFile(testFile);
+
+            assertEquals(inputCsv, result);
+        }
+
+        private JFuzzyCSVTable csvFromJsonFile(File testFile) throws IOException {
+            String textFromFile = ResourceGroovyMethods.getText(testFile);
+            return FuzzyCSVTable.fromJsonText(textFromFile).javaApi();
+        }
+
+        private JFuzzyCSVTable csvFromFile(File testFile) throws IOException {
+            String textFromFile = ResourceGroovyMethods.getText(testFile);
+            return FuzzyCSVTable.fromCsvString(textFromFile).javaApi();
+        }
+
+        private File createTempFile() throws IOException {
+            File testFile = Files.createTempDirectory("fuzzy-csv-test").resolve("test.csv").toFile();
+            testFile.deleteOnExit();
+            return testFile;
+        }
+    }
+
+    @Test
+    void toJsonText() {
+        String result = inputCsv.toJsonText();
+        String expected = "[[\"color\",\"matching\"]," +
+                            "[\"Red\",\"Black\"]," +
+                            "[\"Purple\",\"Black\"]," +
+                            "[\"Green\",\"Beige\"]," +
+                            "[\"Blue\",\"Gray\"]]";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void asListGrid() {
+        JFuzzyCSVTable data = JFuzzyCSVTable.fromRows(
+          asList("a", "b"),
+          asList(1, asList("one", "once")),
+          asList(2, asList("two", "twice")),
+          asList(3, asList("three", "thrice"))
+        );
+
+        JFuzzyCSVTable result = data.asListGrid();
+        JFuzzyCSVTable result2 = data.gridify(EnumSet.of(FuzzyCSVTable.GridOptions.LIST_AS_TABLE));
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("a", "b"),
+          asList(1, FuzzyCSVTable.fromRows(
+            asList("i", "v"),
+            asList(0, "one"),
+            asList(1, "once")
+          )),
+          asList(2, FuzzyCSVTable.fromRows(
+            asList("i", "v"),
+            asList(0, "two"),
+            asList(1, "twice")
+          )),
+          asList(3, FuzzyCSVTable.fromRows(
+            asList("i", "v"),
+            asList(0, "three"),
+            asList(1, "thrice")
+          ))
+        );
+
+        assertEquals(expected, result);
+        assertEquals(expected, result2);
+    }
+
+    @Test
+    void asListSipleGrid() {
+        JFuzzyCSVTable data = JFuzzyCSVTable.fromRows(
+          asList("a", "b"),
+          asList(1, asList("one", "once")),
+          asList(2, asList("two", "twice")),
+          asList(3, asList("three", "thrice"))
+        );
+
+        JFuzzyCSVTable result = data.asSimpleGrid();
+        JFuzzyCSVTable result2 = data.gridify(EnumSet.of(FuzzyCSVTable.GridOptions.LIST_AS_STRING));
+
+        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+          asList("a", "b"),
+          asList(1, asList("one", "once")),
+          asList(2, asList("two", "twice")),
+          asList(3, asList("three", "thrice"))
+        );
+
+
+        assertEquals(expected, result);
+        assertEquals(expected, result2);
+    }
+
+    @Test
+    void testUwrap() {
+        FuzzyCSVTable unwrapped = inputCsv.unwrap();
+        assertEquals(inputCsv, unwrapped.javaApi());
+    }
+
+    @Test
+    void testIterator() {
+        Iterator<Record> iterator = inputCsv.iterator();
+
+        Record next0 = iterator.next();
+        assertEquals(next0.value("color"), "Red");
+        assertEquals(next0.value("matching"), "Black");
+        assertEquals(inputCsv.row(1).value("color"), next0.value("color"));
+        assertEquals(inputCsv.row(1).value("matching"), next0.value("matching"));
+
+        Record next1 = iterator.next();
+        assertEquals(next1.value("color"), "Purple");
+        assertEquals(next1.value("matching"), "Black");
+        assertEquals(inputCsv.row(2).value("color"), next1.value("color"));
+        assertEquals(inputCsv.row(2).value("matching"), next1.value("matching"));
+
+        Record next2 = iterator.next();
+        assertEquals(next2.value("color"), "Green");
+        assertEquals(next2.value("matching"), "Beige");
+        assertEquals(inputCsv.row(3).value("color"), next2.value("color"));
+        assertEquals(inputCsv.row(3).value("matching"), next2.value("matching"));
+
+
+    }
+
+    @Nested
+    class DbOperations {
+
+        @Test
+        void dbExport() {
+            JFuzzyCSVTable source = inputCsv.copy().name("test_table1").dbExport(H2DbHelper.getConnection().getConnection(), ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT));
+
+            JFuzzyCSVTable fromTable = FuzzyCSVTable.fromSqlQuery(H2DbHelper.getConnection(), "select * from test_table1")
+                                         .javaApi()
+                                         .transformHeader(String::toLowerCase);
+
+            assertEquals(source, fromTable);
+        }
+
+        @Test
+        void dbExportAndGetResult() {
+            JFuzzyCSVTable testTable = inputCsv.copy().name("test_table2");
+
+            FuzzyCSVDbExporter.ExportResult result = testTable.dbExportAndGetResult(H2DbHelper.getConnection().getConnection(), ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT));
+
+            JFuzzyCSVTable insertResult = result.mergeKeys().javaApi();
+
+            JFuzzyCSVTable fromTable = FuzzyCSVTable.fromSqlQuery(H2DbHelper.getConnection(), "select * from test_table2")
+                                         .javaApi()
+                                         .addColumn("pk", arg -> null)//since we do not have Primary keys
+                                         .moveCol("pk", 0)
+                                         .transformHeader(String::toLowerCase);
+
+            assertEquals(insertResult, fromTable);
+        }
+
+        @Test
+        void dbExportAndGetResultWithPk() throws SQLException {
+            JFuzzyCSVTable testTable = inputCsv.copy().name("test_table3");
+
+            //create table that has a primary key
+            H2DbHelper.getConnection().execute("create table test_table3 (id int primary key auto_increment, color varchar(255), matching varchar(255))");
+
+            FuzzyCSVDbExporter.ExportResult result = testTable.dbExportAndGetResult(H2DbHelper.getConnection().getConnection(), ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT));
+
+            JFuzzyCSVTable insertResult = result.mergeKeys().javaApi().renameHeader("pk_0", "id");
+
+            JFuzzyCSVTable fromTable = FuzzyCSVTable.fromSqlQuery(H2DbHelper.getConnection(), "select * from test_table3")
+                                         .javaApi()
+                                         .transformHeader(String::toLowerCase);
+
+            JFuzzyCSVTable withManualPks = testTable.copy().addColumn("id", (Record record) -> record.idx()).moveCol("id", 0);
+
+
+            assertEquals(insertResult, fromTable);
+            assertEquals(withManualPks, fromTable);
+        }
+
+        @Test
+        void doUpdate() throws SQLException {
+            JFuzzyCSVTable testTable = inputCsv.copy().name("test_table4");
+
+            //create table that has a primary key
+            H2DbHelper.getConnection().execute("create table test_table4 (id int primary key auto_increment, color varchar(255), matching varchar(255))");
+
+            FuzzyCSVDbExporter.ExportResult result = testTable.dbExportAndGetResult(H2DbHelper.getConnection().getConnection(), ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT));
+
+            JFuzzyCSVTable insertResult = result.mergeKeys().javaApi().renameHeader("pk_0", "id");
+
+
+            JFuzzyCSVTable inserted = insertResult.modify(arg -> arg.set("color", "Blue"))
+                                        .update()
+                                        .name("test_table4")
+                                        .dbUpdate(H2DbHelper.getConnection().getConnection(), ExportParams.of(DbExportFlags.RESTRUCTURE), "id");
+
+            JFuzzyCSVTable fromDb = FuzzyCSVTable.fromSqlQuery(H2DbHelper.getConnection(), "select * from test_table4")
+                                      .javaApi()
+                                      .transformHeader(String::toLowerCase);
+
+            assertEquals(inserted, fromDb);
+
+            assertTrue(fromDb.column("color").stream().allMatch(arg -> arg.equals("Blue")));
+        }
+    }
 
     static class ColorMatching {
         String color;

@@ -321,7 +321,7 @@ class FuzzyCSVDbExporter {
         FuzzyCSVTable exportedData
 
         FuzzyCSVTable mergeKeys() {
-            primaryKeys.joinOnIdx(exportedData)
+            primaryKeys.fullJoinOnIdx(exportedData)
         }
     }
 

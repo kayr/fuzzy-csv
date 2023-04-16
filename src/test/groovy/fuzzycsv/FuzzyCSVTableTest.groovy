@@ -1149,6 +1149,8 @@ p\tfema+le\t31'''
 
     @Test
     void testGridifyMap() {
+
+        new File().getText()
         def json = '''[
     {
         "type": "DEPOSIT",
@@ -1185,6 +1187,7 @@ p\tfema+le\t31'''
                     ['r1', 'sex', [10, 20]],
                     ['r2', 'sex', [10]],
                     ['r3', 'sex', "Idle"],
+                    ['r3', 'sex', null],
                     ['r3', 'sex', [math: 20, sst: 40]],
                     ['r3', 'sex', [null, null, 50]]]
 
@@ -1194,6 +1197,7 @@ p\tfema+le\t31'''
                        ['r1', 'sex', 10, 20, null, null, null],
                        ['r2', 'sex', 10, null, null, null, null],
                        ['r3', 'sex', 'Idle', null, null, null, null],
+                       ['r3', 'sex', null, null, null, null, null],
                        ['r3', 'sex', null, null, 20, 40, null],
                        ['r3', 'sex', null, null, null, null, 50]]
 
@@ -1204,6 +1208,7 @@ p\tfema+le\t31'''
                          [10, 20, null, null, null, 'r1'],
                          [10, null, null, null, null, 'r2'],
                          ['Idle', null, null, null, null, 'r3'],
+                         [null, null, null, null, null, 'r3'],
                          [null, null, 20, 40, null, 'r3'],
                          [null, null, null, null, 50, 'r3']]
 
@@ -1214,6 +1219,7 @@ p\tfema+le\t31'''
                          [10, 20, null, null, null],
                          [10, null, null, null, null],
                          ['Idle', null, null, null, null],
+                         [null, null, null, null, null],
                          [null, null, 20, 40, null],
                          [null, null, null, null, 50]]
 
@@ -1223,6 +1229,7 @@ p\tfema+le\t31'''
                          ['r1', 'sex', 10, 20, null, null, null],
                          ['r2', 'sex', 10, null, null, null, null],
                          ['r3', 'sex', 'Idle', null, null, null, null],
+                         ['r3', 'sex', null, null, null, null, null],
                          ['r3', 'sex', null, null, 20, 40, null],
                          ['r3', 'sex', null, null, null, null, 50]]
 
@@ -1232,6 +1239,7 @@ p\tfema+le\t31'''
                 .csv == [['name', 'sex', 'ns_1', 'ns_2'],
                          ['r1', 'sex', 'r1', 'sex'],
                          ['r2', 'sex', 'r2', 'sex'],
+                         ['r3', 'sex', 'r3', 'sex'],
                          ['r3', 'sex', 'r3', 'sex'],
                          ['r3', 'sex', 'r3', 'sex'],
                          ['r3', 'sex', 'r3', 'sex']]

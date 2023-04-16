@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class JFuzzyCSVTable {
+public class JFuzzyCSVTable implements Iterable<Record> {
 
 
     private final FuzzyCSVTable table;
@@ -597,7 +597,9 @@ public class JFuzzyCSVTable {
     }
 
     public static class DataActionStep {
-        private Fx1<Record, Boolean> filter;
+
+        private static final Fx1<Record,Boolean>  TRUE = r -> true;
+        private Fx1<Record, Boolean> filter = TRUE;
         private Fx1<Record, ?> action;
 
         private JFuzzyCSVTable fuzzyCSVTable;
