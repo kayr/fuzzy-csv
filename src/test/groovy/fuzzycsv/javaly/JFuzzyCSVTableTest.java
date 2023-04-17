@@ -1530,7 +1530,7 @@ class JFuzzyCSVTableTest {
                                          .javaApi()
                                          .transformHeader(String::toLowerCase);
 
-            JFuzzyCSVTable withManualPks = testTable.copy().addColumn("id", (Record record) -> record.idx()).moveCol("id", 0);
+            JFuzzyCSVTable withManualPks = testTable.copy().addColumn("id", r-> r.idx()).moveCol("id", 0);
 
 
             assertEquals(insertResult, fromTable);

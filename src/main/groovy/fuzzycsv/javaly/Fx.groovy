@@ -1,9 +1,11 @@
 package fuzzycsv.javaly
 
+import fuzzycsv.Record
+
 interface Fx1<T, R> {
     R call(T arg) throws Exception;
 
-    interface Rec extends Fx1<fuzzycsv.Record, Object> {
+    interface Rec extends Fx1<Record, Object> {
     }
 }
 

@@ -304,8 +304,6 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
 
-
-
     public JFuzzyCSVTable leftJoinOnIdx(JFuzzyCSVTable data) {
         return leftJoinOnIdx(data.table);
     }
@@ -358,6 +356,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     public JFuzzyCSVTable mergeByColumn(JFuzzyCSVTable tbl) {
         return mergeByColumn(tbl.table);
     }
+
     public JFuzzyCSVTable mergeByColumn(List<? extends List> otherCsv) {
         return table.mergeByColumn(otherCsv).javaApi();
     }
@@ -378,6 +377,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     public JFuzzyCSVTable union(JFuzzyCSVTable tbl) {
         return union(tbl.table);
     }
+
     public JFuzzyCSVTable union(List<? extends List> otherCsv) {
         return table.union(otherCsv).javaApi();
     }
@@ -390,7 +390,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.addColumn(fnz).javaApi();
     }
 
-    public JFuzzyCSVTable addColumn(String name, Fx1.Rec func) {
+    public JFuzzyCSVTable addColumn(String name, Fx1<Record, ?> func) {
         return table.addColumn(name, FxUtils.toCls(func)).javaApi();
     }
 
@@ -598,7 +598,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
 
     public static class DataActionStep {
 
-        private static final Fx1<Record,Boolean>  TRUE = r -> true;
+        private static final Fx1<Record, Boolean> TRUE = r -> true;
         private Fx1<Record, Boolean> filter = TRUE;
         private Fx1<Record, ?> action;
 
