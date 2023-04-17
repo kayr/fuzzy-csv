@@ -1,5 +1,5 @@
 package fuzzycsv.rdbms.stmt
 
 enum SqlDialect {
-    MYSQL, DEFAULT
+    MYSQL, H2, DEFAULT
 }

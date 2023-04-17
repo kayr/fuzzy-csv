@@ -788,7 +788,7 @@ class FuzzyCSVTest {
         def table = "CREATE TABLE PERSON (ID INT PRIMARY KEY, FIRSTNAME VARCHAR(64), LASTNAME VARCHAR(64));"
         def insert = "insert into PERSON values (1,'kay','r')"
 
-        def sql = Sql.newInstance('jdbc:h2:mem:test')
+        def sql = H2DbHelper.connection
         sql.execute("DROP TABLE IF EXISTS PERSON")
         sql.execute(table)
 
@@ -808,6 +808,8 @@ class FuzzyCSVTest {
             assert v.csv == [['Identifier', 'Another ID'], [1, 1]]
         }
 
+        sql.close()
+
     }
 
     @Test
@@ -816,7 +818,7 @@ class FuzzyCSVTest {
         def insert = "insert into PERSON values (1,'kay','r')"
 
 
-        def sql = Sql.newInstance('jdbc:h2:mem:test')
+        def sql = H2DbHelper.connection
         sql.execute("DROP TABLE IF EXISTS PERSON")
         sql.execute(table)
 

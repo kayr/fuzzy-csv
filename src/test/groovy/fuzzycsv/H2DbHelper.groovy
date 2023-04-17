@@ -5,7 +5,7 @@ import groovy.sql.Sql
 class H2DbHelper {
 
     static Sql getConnection() {
-        Sql.newInstance('jdbc:h2:mem:test;DATABASE_TO_UPPER=false')
+        Sql.newInstance('jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false')
     }
 
     static Sql getMySqlConnection() {

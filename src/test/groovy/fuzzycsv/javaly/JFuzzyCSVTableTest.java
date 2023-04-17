@@ -1,14 +1,19 @@
 package fuzzycsv.javaly;
 
+import fuzzycsv.FuzzyCSV;
 import fuzzycsv.FuzzyCSVTable;
 import fuzzycsv.H2DbHelper;
 import fuzzycsv.Record;
 import fuzzycsv.nav.Navigator;
+import fuzzycsv.rdbms.DDLUtils;
 import fuzzycsv.rdbms.DbExportFlags;
 import fuzzycsv.rdbms.ExportParams;
 import fuzzycsv.rdbms.FuzzyCSVDbExporter;
+import fuzzycsv.rdbms.stmt.SqlDialect;
 import groovy.lang.MissingPropertyException;
+import groovy.sql.Sql;
 import org.codehaus.groovy.runtime.ResourceGroovyMethods;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -33,6 +38,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class JFuzzyCSVTableTest {
 
+
+
+    FuzzyCSVTable mock;
+    JFuzzyCSVTable jFuzzyCSVTable;
+
+    @BeforeEach
+    void setUp() {
+        FuzzyCSV.ACCURACY_THRESHOLD.set(1.0);
+    }
 
     private final JFuzzyCSVTable inputCsv = JFuzzyCSVTable.fromRows(
       asList("color", "matching"),
@@ -336,26 +350,7 @@ class JFuzzyCSVTableTest {
         assertEquals(expected, result);
     }
 
-    FuzzyCSVTable mock;
-    JFuzzyCSVTable jFuzzyCSVTable;
 
-    @BeforeEach
-    void setUp() {
-        mock = Mockito.mock(FuzzyCSVTable.class);
-        jFuzzyCSVTable = new JFuzzyCSVTable(mock);
-    }
-
-    @Test
-    void toPojoList() {
-
-        ArrayList<Object> returnValue = new ArrayList<>();
-        Mockito.when(mock.toPojoList(Object.class)).thenReturn(returnValue);
-        List<Object> result = jFuzzyCSVTable.toPojoList(Object.class);
-
-        Mockito.verify(mock).toPojoList(Object.class);
-        assertSame(returnValue, result);
-
-    }
 
 
     @Test
@@ -1469,11 +1464,34 @@ class JFuzzyCSVTableTest {
     @Nested
     class DbOperations {
 
+        private Sql gsql;
+
+        @BeforeEach
+        void setUp() {
+            gsql = H2DbHelper.getConnection();
+        }
+
+        @AfterEach
+        void tearDown() throws SQLException {
+            JFuzzyCSVTable data = DDLUtils.allTables(gsql.getConnection(), null)
+                                    .javaApi()
+                                    .filter(r -> r.d("TABLE_TYPE").eq("TABLE"))
+                                    .printTable();
+
+            for (Record it : data) {
+                Dynamic tableName = it.d("TABLE_NAME");
+                System.out.println("Dropping******** "+ tableName);
+                gsql.execute("drop table \"" + tableName+"\"");
+            }
+
+            gsql.close();
+        }
+
         @Test
         void dbExport() {
-            JFuzzyCSVTable source = inputCsv.copy().name("test_table1").dbExport(H2DbHelper.getConnection().getConnection(), ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT));
+            JFuzzyCSVTable source = inputCsv.copy().name("test_table1").dbExport(gsql.getConnection(), ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT));
 
-            JFuzzyCSVTable fromTable = FuzzyCSVTable.fromSqlQuery(H2DbHelper.getConnection(), "select * from test_table1")
+            JFuzzyCSVTable fromTable = FuzzyCSVTable.fromSqlQuery(gsql, "select * from test_table1")
                                          .javaApi()
                                          .transformHeader(String::toLowerCase);
 
@@ -1484,11 +1502,11 @@ class JFuzzyCSVTableTest {
         void dbExportAndGetResult() {
             JFuzzyCSVTable testTable = inputCsv.copy().name("test_table2");
 
-            FuzzyCSVDbExporter.ExportResult result = testTable.dbExportAndGetResult(H2DbHelper.getConnection().getConnection(), ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT));
+            FuzzyCSVDbExporter.ExportResult result = testTable.dbExportAndGetResult(gsql.getConnection(), ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT));
 
             JFuzzyCSVTable insertResult = result.mergeKeys().javaApi();
 
-            JFuzzyCSVTable fromTable = FuzzyCSVTable.fromSqlQuery(H2DbHelper.getConnection(), "select * from test_table2")
+            JFuzzyCSVTable fromTable = FuzzyCSVTable.fromSqlQuery(gsql, "select * from test_table2")
                                          .javaApi()
                                          .addColumn("pk", arg -> null)//since we do not have Primary keys
                                          .moveCol("pk", 0)
@@ -1502,13 +1520,13 @@ class JFuzzyCSVTableTest {
             JFuzzyCSVTable testTable = inputCsv.copy().name("test_table3");
 
             //create table that has a primary key
-            H2DbHelper.getConnection().execute("create table test_table3 (id int primary key auto_increment, color varchar(255), matching varchar(255))");
+            gsql.execute("create table \"test_table3\" (\"id\" int primary key auto_increment, \"color\" varchar(255), \"matching\" varchar(255))");
 
-            FuzzyCSVDbExporter.ExportResult result = testTable.dbExportAndGetResult(H2DbHelper.getConnection().getConnection(), ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT));
+            FuzzyCSVDbExporter.ExportResult result = testTable.dbExportAndGetResult(gsql.getConnection(), ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT).withDialect(SqlDialect.H2));
 
             JFuzzyCSVTable insertResult = result.mergeKeys().javaApi().renameHeader("pk_0", "id");
 
-            JFuzzyCSVTable fromTable = FuzzyCSVTable.fromSqlQuery(H2DbHelper.getConnection(), "select * from test_table3")
+            JFuzzyCSVTable fromTable = FuzzyCSVTable.fromSqlQuery(gsql, "select * from \"test_table3\"")
                                          .javaApi()
                                          .transformHeader(String::toLowerCase);
 
@@ -1524,9 +1542,9 @@ class JFuzzyCSVTableTest {
             JFuzzyCSVTable testTable = inputCsv.copy().name("test_table4");
 
             //create table that has a primary key
-            H2DbHelper.getConnection().execute("create table test_table4 (id int primary key auto_increment, color varchar(255), matching varchar(255))");
+            gsql.execute("create table \"test_table4\" (\"id\" int primary key auto_increment, \"color\" varchar(255), \"matching\" varchar(255))");
 
-            FuzzyCSVDbExporter.ExportResult result = testTable.dbExportAndGetResult(H2DbHelper.getConnection().getConnection(), ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT));
+            FuzzyCSVDbExporter.ExportResult result = testTable.dbExportAndGetResult(gsql.getConnection(), ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT).withDialect(SqlDialect.H2));
 
             JFuzzyCSVTable insertResult = result.mergeKeys().javaApi().renameHeader("pk_0", "id");
 
@@ -1534,9 +1552,9 @@ class JFuzzyCSVTableTest {
             JFuzzyCSVTable inserted = insertResult.modify(arg -> arg.set("color", "Blue"))
                                         .update()
                                         .name("test_table4")
-                                        .dbUpdate(H2DbHelper.getConnection().getConnection(), ExportParams.of(DbExportFlags.RESTRUCTURE), "id");
+                                        .dbUpdate(gsql.getConnection(), ExportParams.of(DbExportFlags.RESTRUCTURE).withDialect(SqlDialect.H2), "id");
 
-            JFuzzyCSVTable fromDb = FuzzyCSVTable.fromSqlQuery(H2DbHelper.getConnection(), "select * from test_table4")
+            JFuzzyCSVTable fromDb = FuzzyCSVTable.fromSqlQuery(gsql, "select * from \"test_table4\"")
                                       .javaApi()
                                       .transformHeader(String::toLowerCase);
 

@@ -3,6 +3,7 @@ package fuzzycsv.rdbms
 import fuzzycsv.FuzzyCSVTable
 import fuzzycsv.nav.Navigator
 import fuzzycsv.rdbms.stmt.DefaultSqlRenderer
+import fuzzycsv.rdbms.stmt.DumbH2Renderer
 import fuzzycsv.rdbms.stmt.MySqlRenderer
 import fuzzycsv.rdbms.stmt.SqlDialect
 import fuzzycsv.rdbms.stmt.SqlRenderer
@@ -277,6 +278,7 @@ class FuzzyCSVDbExporter {
         switch (params.dialect) {
             case SqlDialect.DEFAULT: return DefaultSqlRenderer.instance
             case SqlDialect.MYSQL: return MySqlRenderer.instance
+            case SqlDialect.H2: return DumbH2Renderer.instance
             default: throw new UnsupportedOperationException("dialect $params.dialect not yet supported")
         }
 

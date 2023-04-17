@@ -1150,7 +1150,6 @@ p\tfema+le\t31'''
     @Test
     void testGridifyMap() {
 
-        new File().getText()
         def json = '''[
     {
         "type": "DEPOSIT",
