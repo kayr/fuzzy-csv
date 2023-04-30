@@ -1,15 +1,19 @@
 package fuzzycsv.javaly;
 
+import org.apache.groovy.util.SystemUtil;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 public class Numb {
 
     private static final Numb NULL_NUMB = new Numb(null);
-    private final BigDecimal bigDecimal;
+    private final BigDecimal value;
 
-    private Numb(BigDecimal bigDecimal) {
-        this.bigDecimal = bigDecimal;
+    private Numb(BigDecimal value) {
+        this.value = value;
     }
 
 
@@ -64,15 +68,10 @@ public class Numb {
         }
 
         if (obj instanceof Numb) {
-            return ((Numb) obj).bigDecimal;
+            return ((Numb) obj).value;
         }
-
-
         throw new IllegalArgumentException("Cannot coerce to number: " + obj);
-
-
     }
-    //region boolean operations
 
     public boolean eq(Object other) {
         return compareTo(other) == 0;
@@ -101,32 +100,57 @@ public class Numb {
 
 
     public int compareTo(Object other) {
-        if (other instanceof Numb) return compareTo(((Numb) other).bigDecimal);
+        if (other instanceof Numb) return compareTo(((Numb) other).value);
         if (other == null && isNull()) return 0;
         if (other == null) return 1;
         if (isNull()) return -1;
-        return bigDecimal.compareTo(toBigDecimalStrict(other));
+        return value.compareTo(toBigDecimalStrict(other));
     }
 
     public boolean isNull() {
-        return bigDecimal == null;
+        return value == null;
     }
 
-
-    //endregion
-
-
-    //region math operations
 
     public Numb plus(Object other) {
-        if (isNull()) throw new IllegalArgumentException("Cannot add to null");
-
-        BigDecimal augend = extractValue(other);
-        if (augend == null) throw new IllegalArgumentException("Cannot add null");
-
-        return of(bigDecimal.add(augend));
+        BigDecimal augend = extractValueIfThisNotNull(other);
+        return of(value.add(augend));
     }
-    //endregion
+
+    public Numb minus(Object other) {
+        BigDecimal subtrahend = extractValueIfThisNotNull(other);
+        return of(value.subtract(subtrahend));
+    }
+
+    public Numb times(Object other) {
+        BigDecimal multiplicand = extractValueIfThisNotNull(other);
+        return of(value.multiply(multiplicand));
+    }
+
+    private static final int DIVISION_EXTRA_PRECISION = SystemUtil.getIntegerSafe("groovy.division.extra.precision", 10);
+    private static final int DIVISION_MIN_SCALE = SystemUtil.getIntegerSafe("groovy.division.min.scale", 10);
+
+    public Numb div(Object right) {
+        BigDecimal divisor = extractValueIfThisNotNull(right);
+        try {
+            return of(value.divide(divisor));
+        } catch (ArithmeticException e) {
+            //borrowed from groovy
+            int precision = Math.max(value.precision(), divisor.precision()) + DIVISION_EXTRA_PRECISION;
+            BigDecimal result = value.divide(divisor, new MathContext(precision));
+            int scale = Math.max(Math.max(value.scale(), divisor.scale()), DIVISION_MIN_SCALE);
+            if (result.scale() > scale) result = result.setScale(scale, RoundingMode.HALF_UP);
+            return of(result);
+
+        }
+    }
+
+    private BigDecimal extractValueIfThisNotNull(Object other) {
+        if (isNull()) throw new IllegalArgumentException("Cannot perform math operation on null");
+        BigDecimal operand = extractValue(other);
+        if (operand == null) throw new IllegalArgumentException("Cannot perform math operation with null");
+        return operand;
+    }
 
     private BigDecimal extractValue(Object other) {
         if (other instanceof Numb) {
@@ -135,13 +159,14 @@ public class Numb {
         return toBigDecimalStrict(other);
     }
 
-    public Numb minus(BigDecimal other) {
-        return of(bigDecimal.subtract(other));
-    }
 
     public BigDecimal unwrap() {
-        return bigDecimal;
+        return value;
     }
 
-
+    @Override
+    public String toString() {
+        //print formatted
+        return value == null ? "null" : value.toPlainString();
+    }
 }

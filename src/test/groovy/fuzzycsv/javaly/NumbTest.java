@@ -155,5 +155,57 @@ class NumbTest {
         assertThrows(IllegalArgumentException.class, () -> nullNumb.plus(nullNumb));
     }
 
+    @Test
+    void minus(){
+        Numb one = Numb.of(1);
+        Numb nullNumb = Numb.nullV();
+
+        assertEquals(-1, one.minus(2).unwrap().intValue());
+
+        //1.4 - 1.6 = -0.2
+        assertEquals(-0.2, Numb.of(1.4).minus(1.6).unwrap().doubleValue(), 0.0001);
+
+        //nulls throw exception
+        assertThrows(IllegalArgumentException.class, () -> nullNumb.minus(1));
+        assertThrows(IllegalArgumentException.class, () -> one.minus(null));
+        assertThrows(IllegalArgumentException.class, () -> nullNumb.minus(null));
+        assertThrows(IllegalArgumentException.class, () -> nullNumb.minus(nullNumb));
+    }
+
+    @Test
+    void times(){
+        Numb one = Numb.of(1);
+        Numb nullNumb = Numb.nullV();
+
+        assertEquals(2, one.times(2).unwrap().intValue());
+
+        //1.4 * 1.6 = 2.24
+        assertEquals(2.24, Numb.of(1.4).times(1.6).unwrap().doubleValue(), 0.0001);
+
+        //nulls throw exception
+        assertThrows(IllegalArgumentException.class, () -> nullNumb.times(1));
+        assertThrows(IllegalArgumentException.class, () -> one.times(null));
+        assertThrows(IllegalArgumentException.class, () -> nullNumb.times(null));
+        assertThrows(IllegalArgumentException.class, () -> nullNumb.times(nullNumb));
+    }
+
+    @Test
+    void div(){
+        Numb one = Numb.of(1);
+        Numb nullNumb = Numb.nullV();
+
+        assertEquals(0.5, one.div(2).unwrap().doubleValue(), 0.0001);
+        assertTrue(one.div(3).eq(Numb.of("0.3333333333")));
+
+        //1.4 / 1.6 = 0.875
+        assertEquals(0.875, Numb.of(1.4).div(1.6).unwrap().doubleValue(), 0.0001);
+
+        //nulls throw exception
+        assertThrows(IllegalArgumentException.class, () -> nullNumb.div(1));
+        assertThrows(IllegalArgumentException.class, () -> one.div(null));
+        assertThrows(IllegalArgumentException.class, () -> nullNumb.div(null));
+        assertThrows(IllegalArgumentException.class, () -> nullNumb.div(nullNumb));
+    }
+
 
 }
