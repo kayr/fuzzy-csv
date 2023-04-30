@@ -217,6 +217,14 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     public JFuzzyCSVTable join(List<? extends List> csv2, String... joinColumns) {
         return table.join(csv2, joinColumns).javaApi();
     }
+
+    public JFuzzyCSVTable join(FuzzyCSVTable tbl, Fx1.Rec func) {
+        return table.join(tbl, FxUtils.toCls(func)).javaApi();
+    }
+
+    public JFuzzyCSVTable join(JFuzzyCSVTable tbl, Fx1.Rec func) {
+        return table.join(tbl.unwrap(), FxUtils.toCls(func)).javaApi();
+    }
     //endregion
 
     //region Left Join
@@ -262,9 +270,6 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.fullJoin(csv2, joinColumns).javaApi();
     }
 
-    public JFuzzyCSVTable join(FuzzyCSVTable tbl, Fx1.Rec func) {
-        return table.join(tbl, FxUtils.toCls(func)).javaApi();
-    }
     //endregion
 
     public JFuzzyCSVTable join(List<? extends List> csv2, Fx1.Rec joinColumns) {

@@ -17,7 +17,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -37,7 +36,6 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class JFuzzyCSVTableTest {
-
 
 
     FuzzyCSVTable mock;
@@ -351,8 +349,6 @@ class JFuzzyCSVTableTest {
     }
 
 
-
-
     @Test
     void testRenameHeader() {
         JFuzzyCSVTable result = inputCsv.renameHeader("color", "New Name");
@@ -623,6 +619,8 @@ class JFuzzyCSVTableTest {
         assertEquals(expected, inputCsv.join(inputCsv2, "color"));
         assertEquals(expected, inputCsv.join(inputCsv2.unwrap(), "color"));
         assertEquals(expected, inputCsv.join(inputCsv2.getCsv(), "color"));
+        assertEquals(expected, inputCsv.join(inputCsv2, (r1) -> r1.dr("color").eq(r1.dl("color"))).dropColum(2));
+        assertEquals(expected, inputCsv.join(inputCsv2.unwrap(), (r1) -> r1.dr("color").eq(r1.dl("color"))).dropColum(2));
 
     }
 
@@ -1480,8 +1478,8 @@ class JFuzzyCSVTableTest {
 
             for (Record it : data) {
                 Dynamic tableName = it.d("TABLE_NAME");
-                System.out.println("Dropping******** "+ tableName);
-                gsql.execute("drop table \"" + tableName+"\"");
+                System.out.println("Dropping******** " + tableName);
+                gsql.execute("drop table \"" + tableName + "\"");
             }
 
             gsql.close();
@@ -1530,7 +1528,7 @@ class JFuzzyCSVTableTest {
                                          .javaApi()
                                          .transformHeader(String::toLowerCase);
 
-            JFuzzyCSVTable withManualPks = testTable.copy().addColumn("id", r-> r.idx()).moveCol("id", 0);
+            JFuzzyCSVTable withManualPks = testTable.copy().addColumn("id", r -> r.idx()).moveCol("id", 0);
 
 
             assertEquals(insertResult, fromTable);

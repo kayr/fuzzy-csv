@@ -364,6 +364,18 @@ class Record {
         return Dynamic.of(val(name))
     }
 
+    Dynamic dl(String name) {
+        return Dynamic.of(left(name))
+    }
+
+    Dynamic dr(String name) {
+        return Dynamic.of(right(name))
+    }
+
+    Dynamic df(String name) {
+        return Dynamic.of('final'(name))
+    }
+
     def withSilentMode(Closure c) {
         try {
             silentModeOn()

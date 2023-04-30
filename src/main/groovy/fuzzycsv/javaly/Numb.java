@@ -23,7 +23,7 @@ public class Numb {
     //region boolean operations
 
     public static boolean isNumber(Object object) {
-        return object instanceof Number;
+        return object instanceof Number || object instanceof Numb;
     }
 
     private static BigDecimal toBigDecimal(Object obj) {

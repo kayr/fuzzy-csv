@@ -33,12 +33,22 @@ public class Dynamic {
         return obj;
     }
 
-    public Boolean eq(Object johnDoe) {
-        if (Numb.isNumber(obj) && Numb.isNumber(johnDoe))
-            return Numb.of(obj).eq(Numb.of(johnDoe));
-        else
-            return obj.equals(johnDoe);
+    public Boolean eq(Object other) {
+
+        Object unwrapped = other instanceof Dynamic ? ((Dynamic) other).get() : other;
+
+        if (obj == null && unwrapped == null)
+            return true;
+
+        if (obj == null || unwrapped == null)
+            return false;
+
+        if (Numb.isNumber(obj) && Numb.isNumber(unwrapped))
+            return Numb.of(obj).eq(Numb.of(unwrapped));
+
+        return obj.equals(unwrapped);
     }
+
 
     @Override
     public String toString() {
