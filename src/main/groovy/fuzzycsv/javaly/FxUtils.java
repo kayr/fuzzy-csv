@@ -82,4 +82,12 @@ public class FxUtils {
     static <T extends Throwable, Any> Any sneakyThrow(Throwable t) throws T {
         throw (T) t;
     }
+
+    public <T> T cast(Object obj) {
+        return (T) obj;
+    }
+
+    public static <T> T cast(Object obj, Class<T> type) {
+        return (T) obj;
+    }
 }

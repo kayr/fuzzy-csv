@@ -1,5 +1,6 @@
 package fuzzycsv.javaly;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class Dynamic {
@@ -17,6 +18,24 @@ public class Dynamic {
 
     Numb numb() {
         return Numb.of(obj);
+    }
+
+    Map<?, ?> asMap() {
+        return (Map) obj;
+    }
+
+    /**
+     * Utility method to cast the object to the given type.
+     */
+    public <T> T cast() {
+        return (T) obj;
+    }
+
+    /**
+     * Utility method to cast the object to the given type.
+     */
+    public <T> T cast(Class<T> type) {
+        return (T) obj;
     }
 
     String str() {

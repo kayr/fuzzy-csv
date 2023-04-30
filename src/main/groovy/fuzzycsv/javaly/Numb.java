@@ -20,13 +20,31 @@ public class Numb {
     }
 
 
-    //region boolean operations
-
     public static boolean isNumber(Object object) {
         return object instanceof Number || object instanceof Numb;
     }
 
     private static BigDecimal toBigDecimal(Object obj) {
+
+
+        if (obj instanceof Dynamic)
+            return toBigDecimal(((Dynamic) obj).get());
+
+        if (obj instanceof String) {
+            return new BigDecimal(obj.toString());
+        }
+
+        return toBigDecimalStrict(obj);
+
+    }
+
+
+    private static BigDecimal toBigDecimalStrict(Object obj) {
+
+        if (obj == null) {
+            return null;
+        }
+
         if (obj instanceof BigDecimal) {
             return ((BigDecimal) obj);
         }
@@ -40,71 +58,61 @@ public class Numb {
         }
 
         if (obj instanceof Dynamic) {
-            return toBigDecimal(((Dynamic) obj).get());
+            return toBigDecimalStrict(((Dynamic) obj).get());
         }
 
         if (obj instanceof Numb) {
-            return toBigDecimal(((Numb) obj).bigDecimal);
-        }
-
-        if (obj instanceof String) {
-            return new BigDecimal(obj.toString());
+            return ((Numb) obj).bigDecimal;
         }
 
 
         throw new IllegalArgumentException("Cannot coerce to number: " + obj);
-    }
 
-    public boolean eq(BigDecimal other) {
-        return bigDecimal.compareTo(other) == 0;
+
     }
+    //region boolean operations
 
     public boolean eq(Object other) {
-        return eq(toBigDecimal(other));
+        return compareTo(other) == 0;
     }
 
-    public boolean ne(BigDecimal other) {
-        return bigDecimal.compareTo(other) != 0;
+    public boolean neq(Object bigDecimal) {
+        return !eq(bigDecimal);
     }
 
-    public boolean ne(Object other) {
-        return ne(toBigDecimal(other));
+
+    public boolean lt(Object other) {
+        return compareTo(other) < 0;
     }
 
-    public boolean gt(BigDecimal other) {
-        return bigDecimal.compareTo(other) > 0;
+    public boolean lte(Object other) {
+        return compareTo(other) <= 0;
     }
 
     public boolean gt(Object other) {
-        return gt(toBigDecimal(other));
-    }
-
-    public boolean lt(BigDecimal other) {
-        return bigDecimal.compareTo(other) < 0;
-    }
-
-    public boolean lt(Object other) {
-        return lt(toBigDecimal(other));
-    }
-
-    public boolean gte(BigDecimal other) {
-        return bigDecimal.compareTo(other) >= 0;
+        return compareTo(other) > 0;
     }
 
     public boolean gte(Object other) {
-        return gte(toBigDecimal(other));
+        return compareTo(other) >= 0;
+    }
+
+
+    public int compareTo(Object other) {
+        if (other == null && isNull()) return 0;
+        if (other == null) return 1;
+        if (isNull()) return -1;
+        if (other instanceof Numb) return compareTo(((Numb) other).bigDecimal);
+        return bigDecimal.compareTo(toBigDecimalStrict(other));
+    }
+
+    public boolean isNull() {
+        return bigDecimal == null;
     }
 
 
     //endregion
 
-    public boolean lte(BigDecimal other) {
-        return bigDecimal.compareTo(other) <= 0;
-    }
-
-    public boolean lte(Object other) {
-        return lte(toBigDecimal(other));
-    }
 
     //region math operations
     public Numb plus(BigDecimal other) {
@@ -124,7 +132,7 @@ public class Numb {
         return of(bigDecimal.subtract(other));
     }
 
-    public BigDecimal get() {
+    public BigDecimal unwrap() {
         return bigDecimal;
     }
 
