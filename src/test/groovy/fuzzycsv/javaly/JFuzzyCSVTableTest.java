@@ -638,6 +638,8 @@ class JFuzzyCSVTableTest {
         assertEquals(expected, inputCsv.leftJoin(inputCsv2, "color"));
         assertEquals(expected, inputCsv.leftJoin(inputCsv2.unwrap(), "color"));
         assertEquals(expected, inputCsv.leftJoin(inputCsv2.getCsv(), "color"));
+        assertEquals(expected, inputCsv.leftJoin(inputCsv2, (r1) -> r1.dr("color").eq(r1.dl("color"))).dropColum(2));
+        assertEquals(expected, inputCsv.leftJoin(inputCsv2.unwrap(), (r1) -> r1.dr("color").eq(r1.dl("color"))).dropColum(2));
 
     }
 
@@ -657,11 +659,13 @@ class JFuzzyCSVTableTest {
         assertEquals(expected, inputCsv.rightJoin(inputCsv2, "color"));
         assertEquals(expected, inputCsv.rightJoin(inputCsv2.unwrap(), "color"));
         assertEquals(expected, inputCsv.rightJoin(inputCsv2.getCsv(), "color"));
+        assertEquals(expected, inputCsv.rightJoin(inputCsv2, (r1) -> r1.dr("color").eq(r1.dl("color"))).dropColum(2));
+        assertEquals(expected, inputCsv.rightJoin(inputCsv2.unwrap(), (r1) -> r1.dr("color").eq(r1.dl("color"))).dropColum(2));
 
     }
 
     @Test
-    void testOuterJoin() {
+    void tesFullJoin() {
 
         JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
           asList("color", "matching", "in-french"),
@@ -677,6 +681,8 @@ class JFuzzyCSVTableTest {
         assertEquals(expected, inputCsv.fullJoin(inputCsv2, "color"));
         assertEquals(expected, inputCsv.fullJoin(inputCsv2.unwrap(), "color"));
         assertEquals(expected, inputCsv.fullJoin(inputCsv2.getCsv(), "color"));
+        assertEquals(expected, inputCsv.fullJoin(inputCsv2, (r1) -> r1.dr("color").eq(r1.dl("color"))).dropColum(2));
+        assertEquals(expected, inputCsv.fullJoin(inputCsv2.unwrap(), (r1) -> r1.dr("color").eq(r1.dl("color"))).dropColum(2));
 
     }
 

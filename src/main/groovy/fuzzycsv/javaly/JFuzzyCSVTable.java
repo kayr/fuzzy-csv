@@ -218,11 +218,11 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.join(csv2, joinColumns).javaApi();
     }
 
-    public JFuzzyCSVTable join(FuzzyCSVTable tbl, Fx1.Rec func) {
+    public JFuzzyCSVTable join(FuzzyCSVTable tbl, Fx1<Record, Object> func) {
         return table.join(tbl, FxUtils.toCls(func)).javaApi();
     }
 
-    public JFuzzyCSVTable join(JFuzzyCSVTable tbl, Fx1.Rec func) {
+    public JFuzzyCSVTable join(JFuzzyCSVTable tbl, Fx1<Record, Object> func) {
         return table.join(tbl.unwrap(), FxUtils.toCls(func)).javaApi();
     }
     //endregion
@@ -239,6 +239,15 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     public JFuzzyCSVTable leftJoin(List<? extends List> csv2, String... joinColumns) {
         return table.leftJoin(csv2, joinColumns).javaApi();
     }
+
+    public JFuzzyCSVTable leftJoin(FuzzyCSVTable tbl, Fx1<Record, Object> func) {
+        return table.leftJoin(tbl, FxUtils.toCls(func)).javaApi();
+    }
+
+    public JFuzzyCSVTable leftJoin(JFuzzyCSVTable csv2, Fx1<Record, Object> func) {
+        return leftJoin(csv2.unwrap(), func);
+    }
+
     //endregion
 
 
@@ -254,6 +263,15 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     public JFuzzyCSVTable rightJoin(List<? extends List> csv2, String... joinColumns) {
         return table.rightJoin(csv2, joinColumns).javaApi();
     }
+
+    public JFuzzyCSVTable rightJoin(FuzzyCSVTable tbl, Fx1<Record, Object> func) {
+        return table.rightJoin(tbl, FxUtils.toCls(func)).javaApi();
+    }
+
+    public JFuzzyCSVTable rightJoin(JFuzzyCSVTable csv2, Fx1<Record, Object> func) {
+        return rightJoin(csv2.unwrap(), func);
+    }
+
     //endregion
 
 
@@ -270,35 +288,16 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.fullJoin(csv2, joinColumns).javaApi();
     }
 
-    //endregion
-
-    public JFuzzyCSVTable join(List<? extends List> csv2, Fx1.Rec joinColumns) {
-        return table.join(csv2, FxUtils.toCls(joinColumns)).javaApi();
-    }
-
-    public JFuzzyCSVTable leftJoin(FuzzyCSVTable tbl, Fx1.Rec func) {
-        return table.leftJoin(tbl, FxUtils.toCls(func)).javaApi();
-    }
-
-    public JFuzzyCSVTable leftJoin(List<? extends List> csv2, Fx1.Rec func) {
-        return table.leftJoin(csv2, FxUtils.toCls(func)).javaApi();
-    }
-
-    public JFuzzyCSVTable rightJoin(FuzzyCSVTable tbl, Fx1.Rec func) {
-        return table.rightJoin(tbl, FxUtils.toCls(func)).javaApi();
-    }
-
-    public JFuzzyCSVTable rightJoin(List<? extends List> csv2, Fx1.Rec func) {
-        return table.rightJoin(csv2, FxUtils.toCls(func)).javaApi();
-    }
-
-    public JFuzzyCSVTable fullJoin(FuzzyCSVTable tbl, Fx1.Rec func) {
+    public JFuzzyCSVTable fullJoin(FuzzyCSVTable tbl, Fx1<Record, Object> func) {
         return table.fullJoin(tbl, FxUtils.toCls(func)).javaApi();
     }
 
-    public JFuzzyCSVTable fullJoin(List<? extends List> csv2, Fx1.Rec func) {
-        return table.fullJoin(csv2, FxUtils.toCls(func)).javaApi();
+    public JFuzzyCSVTable fullJoin(JFuzzyCSVTable csv2, Fx1<Record, Object> func) {
+        return fullJoin(csv2.unwrap(), func);
     }
+
+    //endregion
+
 
     public JFuzzyCSVTable joinOnIdx(JFuzzyCSVTable data) {
         return joinOnIdx(data.table);

@@ -639,6 +639,7 @@ class FuzzyCSV {
 
         //prepare positions for the headers
         Map<String, Integer> positions = headers.collectEntries {
+            //todo do not waste time on headers that are already indices
             [it.toString(), Fuzzy.findBestPosition(csv[0], it.toString(), ACCURACY_THRESHOLD.get())]
         }
 
