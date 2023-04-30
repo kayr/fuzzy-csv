@@ -27,6 +27,7 @@ class NumbTest {
         assertTrue(Numb.of("1").eq(1.0d));
         assertTrue(Numb.of("1").eq(1.0f));
         assertTrue(Numb.of(null).eq(null));
+        assertTrue(Numb.of(null).eq(Numb.nullV()));
 
 
         assertThrows(IllegalArgumentException.class, () -> Numb.of("1").eq("1"));
@@ -42,6 +43,8 @@ class NumbTest {
         assertFalse(Numb.of("1").neq(1.0d));
         assertFalse(Numb.of("1").neq(1.0f));
         assertFalse(Numb.of(null).neq(null));
+        assertFalse(Numb.of(null).neq(Numb.nullV()));
+
 
         assertThrows(IllegalArgumentException.class, () -> Numb.of("1").neq("1"));
         assertTrue(Numb.of("1").neq(null));
@@ -56,10 +59,12 @@ class NumbTest {
 
         //NULLS
         assertFalse(Numb.of(null).gt(null));
+        assertFalse(Numb.of(null).gt(Numb.nullV()));
         //not(NULL > 1)
         assertFalse(Numb.of(null).gt(1));
         //1 > NULL
         assertTrue(Numb.of(1).gt(null));
+        assertTrue(Numb.of(1).gt(Numb.nullV()));
         //0 > NULL
         assertTrue(Numb.of(0).gt(null));
         //-1 > NULL
@@ -75,6 +80,7 @@ class NumbTest {
 
         //NULLS
         assertTrue(Numb.of(null).gte(null));
+        assertTrue(Numb.of(null).gte(Numb.nullV()));
         //not(NULL >= 1)
         assertFalse(Numb.of(null).gte(1));
         //1 >= NULL
@@ -93,6 +99,7 @@ class NumbTest {
 
         //NULLS
         assertFalse(Numb.of(null).lt(null));
+        assertFalse(Numb.of(null).lt(Numb.nullV()));
         //NULL < 1
         assertTrue(Numb.of(null).lt(1));
         //NULL < 0
@@ -116,6 +123,7 @@ class NumbTest {
 
         //NULLS
         assertTrue(Numb.of(null).lte(null));
+        assertTrue(Numb.of(null).lte(Numb.nullV()));
         //NULL <= 1
         assertTrue(Numb.of(null).lte(1));
         //NULL <= 0
@@ -128,6 +136,23 @@ class NumbTest {
         assertFalse(Numb.of(0).lte(null));
         //-1 <= NULL
         assertFalse(Numb.of(-1).lte(null));
+    }
+
+    @Test
+    void plus(){
+        Numb one = Numb.of(1);
+        Numb nullNumb = Numb.nullV();
+
+        assertEquals(3, one.plus(2).unwrap().intValue());
+
+        //1.4 + 1.6 = 3.0
+        assertEquals(3.0, Numb.of(1.4).plus(1.6).unwrap().doubleValue(), 0.0001);
+
+        //nulls throw exception
+        assertThrows(IllegalArgumentException.class, () -> nullNumb.plus(1));
+        assertThrows(IllegalArgumentException.class, () -> one.plus(null));
+        assertThrows(IllegalArgumentException.class, () -> nullNumb.plus(null));
+        assertThrows(IllegalArgumentException.class, () -> nullNumb.plus(nullNumb));
     }
 
 
