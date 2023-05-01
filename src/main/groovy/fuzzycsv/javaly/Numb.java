@@ -113,25 +113,22 @@ public class Numb {
 
 
     public Numb plus(Object other) {
-        BigDecimal augend = extractValueIfThisNotNull(other);
-        return of(value.add(augend));
+        BigDecimal addend = toBigDecimalIfArithAllowed(other);
+        return of(value.add(addend));
     }
 
     public Numb minus(Object other) {
-        BigDecimal subtrahend = extractValueIfThisNotNull(other);
+        BigDecimal subtrahend = toBigDecimalIfArithAllowed(other);
         return of(value.subtract(subtrahend));
     }
 
     public Numb times(Object other) {
-        BigDecimal multiplicand = extractValueIfThisNotNull(other);
+        BigDecimal multiplicand = toBigDecimalIfArithAllowed(other);
         return of(value.multiply(multiplicand));
     }
 
-    private static final int DIVISION_EXTRA_PRECISION = SystemUtil.getIntegerSafe("groovy.division.extra.precision", 10);
-    private static final int DIVISION_MIN_SCALE = SystemUtil.getIntegerSafe("groovy.division.min.scale", 10);
-
     public Numb div(Object right) {
-        BigDecimal divisor = extractValueIfThisNotNull(right);
+        BigDecimal divisor = toBigDecimalIfArithAllowed(right);
         try {
             return of(value.divide(divisor));
         } catch (ArithmeticException e) {
@@ -145,18 +142,31 @@ public class Numb {
         }
     }
 
-    private BigDecimal extractValueIfThisNotNull(Object other) {
-        if (isNull()) throw new IllegalArgumentException("Cannot perform math operation on null");
-        BigDecimal operand = extractValue(other);
+    public Numb pow(Object other) {
+        BigDecimal exponent = toBigDecimalIfArithAllowed(other);
+        return of(value.pow(exponent.intValue()));
+    }
+
+    public Numb neg() {
+        assertIsNotNull();
+        return of(value.negate());
+    }
+
+
+    private static final int DIVISION_EXTRA_PRECISION = SystemUtil.getIntegerSafe("groovy.division.extra.precision", 10);
+    private static final int DIVISION_MIN_SCALE = SystemUtil.getIntegerSafe("groovy.division.min.scale", 10);
+
+
+
+    private BigDecimal toBigDecimalIfArithAllowed(Object other) {
+        assertIsNotNull();
+        BigDecimal operand = toBigDecimalStrict(other);
         if (operand == null) throw new IllegalArgumentException("Cannot perform math operation with null");
         return operand;
     }
 
-    private BigDecimal extractValue(Object other) {
-        if (other instanceof Numb) {
-            return ((Numb) other).unwrap();
-        }
-        return toBigDecimalStrict(other);
+    private void assertIsNotNull() {
+        if (isNull()) throw new IllegalArgumentException("Cannot perform math operation on null");
     }
 
 

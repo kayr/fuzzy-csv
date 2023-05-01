@@ -52,7 +52,7 @@ class NumbTest {
     }
 
     @Test
-    void gt(){
+    void gt() {
 
         assertTrue(Numb.of(2).gt(1));
         assertTrue(Numb.of(2.03).gt(2.02));
@@ -72,7 +72,7 @@ class NumbTest {
     }
 
     @Test
-    void gte(){
+    void gte() {
 
         assertTrue(Numb.of(2).gte(1));
         assertTrue(Numb.of(2).gte(2));
@@ -92,7 +92,7 @@ class NumbTest {
     }
 
     @Test
-    void lt(){
+    void lt() {
 
         assertTrue(Numb.of(1).lt(2));
         assertTrue(Numb.of(2.02).lt(2.03));
@@ -115,7 +115,7 @@ class NumbTest {
     }
 
     @Test
-    void lte(){
+    void lte() {
 
         assertTrue(Numb.of(1).lte(2));
         assertTrue(Numb.of(2).lte(2));
@@ -139,7 +139,7 @@ class NumbTest {
     }
 
     @Test
-    void plus(){
+    void plus() {
         Numb one = Numb.of(1);
         Numb nullNumb = Numb.nullV();
 
@@ -156,7 +156,7 @@ class NumbTest {
     }
 
     @Test
-    void minus(){
+    void minus() {
         Numb one = Numb.of(1);
         Numb nullNumb = Numb.nullV();
 
@@ -173,7 +173,7 @@ class NumbTest {
     }
 
     @Test
-    void times(){
+    void times() {
         Numb one = Numb.of(1);
         Numb nullNumb = Numb.nullV();
 
@@ -190,7 +190,7 @@ class NumbTest {
     }
 
     @Test
-    void div(){
+    void div() {
         Numb one = Numb.of(1);
         Numb nullNumb = Numb.nullV();
 
@@ -207,5 +207,32 @@ class NumbTest {
         assertThrows(IllegalArgumentException.class, () -> nullNumb.div(nullNumb));
     }
 
+    @Test
+    void pow() {
+        Numb one = Numb.of(1);
+        Numb nullNumb = Numb.nullV();
+
+        assertEquals(100, Numb.of(10).pow(2).unwrap().intValue());
+
+        //1.4 ^ 1.6 = 1.4
+        assertEquals(1.4, Numb.of(1.4).pow(1.6).unwrap().doubleValue(), 0.0001);
+
+        //nulls throw exception
+        assertThrows(IllegalArgumentException.class, () -> nullNumb.pow(1));
+        assertThrows(IllegalArgumentException.class, () -> one.pow(null));
+        assertThrows(IllegalArgumentException.class, () -> nullNumb.pow(null));
+        assertThrows(IllegalArgumentException.class, () -> nullNumb.pow(nullNumb));
+    }
+
+    @Test
+    void neg() {
+        Numb one = Numb.of(1);
+        Numb nullNumb = Numb.nullV();
+
+        assertEquals(-1, one.neg().unwrap().intValue());
+
+        //nulls throw exception
+        assertThrows(IllegalArgumentException.class, nullNumb::neg);
+    }
 
 }
