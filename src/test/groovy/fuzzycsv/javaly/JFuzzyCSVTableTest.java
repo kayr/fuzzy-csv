@@ -50,20 +50,23 @@ class JFuzzyCSVTableTest {
       asList("color", "matching"),
       asList("Red", "Black"),
       asList("Purple", "Black"),
+
       asList("Green", "Beige"),
+
       asList("Blue", "Gray")
     );
 
-    private final JFuzzyCSVTable inputCsv2 = JFuzzyCSVTable.fromRows(
-      asList("color", "in-french"),
-      asList("Red", "Rouge"),
-      asList("Purple", "Violet"),
-      asList("Blue", "Bleu"),
+    private final JFuzzyCSVTable inputCsv2 = FuzzyCSVTable.tbl(
+      asList(
+        asList("color", "in-french"),
+        asList("Red", "Rouge"),
+        asList("Purple", "Violet"),
+        asList("Blue", "Bleu"),
 
-      asList("Orange", "Orange"),
-      asList("Yellow", "Jaune")
-
-    );
+        asList("Orange", "Orange"),
+        asList("Yellow", "Jaune")
+      )
+    ).javaApi();
 
 
     @Test
@@ -638,8 +641,18 @@ class JFuzzyCSVTableTest {
         assertEquals(expected, inputCsv.leftJoin(inputCsv2, "color"));
         assertEquals(expected, inputCsv.leftJoin(inputCsv2.unwrap(), "color"));
         assertEquals(expected, inputCsv.leftJoin(inputCsv2.getCsv(), "color"));
-        assertEquals(expected, inputCsv.leftJoin(inputCsv2, (r1) -> r1.dr("color").eq(r1.dl("color"))).dropColum(2));
-        assertEquals(expected, inputCsv.leftJoin(inputCsv2.unwrap(), (r1) -> r1.dr("color").eq(r1.dl("color"))).dropColum(2));
+
+
+        JFuzzyCSVTable expectedWithFunction = JFuzzyCSVTable.fromRows(
+          asList("color", "matching", "color", "in-french"),
+          asList("Red", "Black", "Red", "Rouge"),
+          asList("Purple", "Black", "Purple", "Violet"),
+          asList("Green", "Beige", null, null),
+          asList("Blue", "Gray", "Blue", "Bleu")
+        );
+
+        assertEquals(expectedWithFunction, inputCsv.leftJoin(inputCsv2, (r1) -> r1.dr("color").eq(r1.dl("color"))));
+        assertEquals(expectedWithFunction, inputCsv.leftJoin(inputCsv2.unwrap(), (r1) -> r1.dr("color").eq(r1.dl("color"))));
 
     }
 
@@ -659,8 +672,21 @@ class JFuzzyCSVTableTest {
         assertEquals(expected, inputCsv.rightJoin(inputCsv2, "color"));
         assertEquals(expected, inputCsv.rightJoin(inputCsv2.unwrap(), "color"));
         assertEquals(expected, inputCsv.rightJoin(inputCsv2.getCsv(), "color"));
-        assertEquals(expected, inputCsv.rightJoin(inputCsv2, (r1) -> r1.dr("color").eq(r1.dl("color"))).dropColum(2));
-        assertEquals(expected, inputCsv.rightJoin(inputCsv2.unwrap(), (r1) -> r1.dr("color").eq(r1.dl("color"))).dropColum(2));
+
+
+        JFuzzyCSVTable expectedWithFunction = JFuzzyCSVTable.fromRows(
+          asList("color", "matching", "color", "in-french"),
+          asList("Red", "Black", "Red", "Rouge"),
+          asList("Purple", "Black", "Purple", "Violet"),
+          asList("Blue", "Gray", "Blue", "Bleu"),
+          asList(null, null, "Orange", "Orange"),
+          asList(null, null, "Yellow", "Jaune")
+
+        );
+
+
+        assertEquals(expectedWithFunction, inputCsv.rightJoin(inputCsv2, (r1) -> r1.dr("color").eq(r1.dl("color"))));
+        assertEquals(expectedWithFunction, inputCsv.rightJoin(inputCsv2.unwrap(), (r1) -> r1.dr("color").eq(r1.dl("color"))));
 
     }
 
@@ -678,11 +704,25 @@ class JFuzzyCSVTableTest {
 
         );
 
+
         assertEquals(expected, inputCsv.fullJoin(inputCsv2, "color"));
         assertEquals(expected, inputCsv.fullJoin(inputCsv2.unwrap(), "color"));
         assertEquals(expected, inputCsv.fullJoin(inputCsv2.getCsv(), "color"));
-        assertEquals(expected, inputCsv.fullJoin(inputCsv2, (r1) -> r1.dr("color").eq(r1.dl("color"))).dropColum(2));
-        assertEquals(expected, inputCsv.fullJoin(inputCsv2.unwrap(), (r1) -> r1.dr("color").eq(r1.dl("color"))).dropColum(2));
+
+        JFuzzyCSVTable expectedWithFunction = JFuzzyCSVTable.fromRows(
+          asList("color", "matching", "color", "in-french"),
+          asList("Red", "Black", "Red", "Rouge"),
+          asList("Purple", "Black", "Purple", "Violet"),
+          asList("Green", "Beige", null, null),
+          asList("Blue", "Gray", "Blue", "Bleu"),
+          asList(null, null, "Orange", "Orange"),
+          asList(null, null, "Yellow", "Jaune")
+
+        );
+
+
+        assertEquals(expectedWithFunction, inputCsv.fullJoin(inputCsv2, (r1) -> r1.dr("color").eq(r1.dl("color"))));
+        assertEquals(expectedWithFunction, inputCsv.fullJoin(inputCsv2.unwrap(), (r1) -> r1.dr("color").eq(r1.dl("color"))));
 
     }
 
@@ -714,6 +754,7 @@ class JFuzzyCSVTableTest {
 
         assertEquals(expected, inputCsv.leftJoinOnIdx(inputCsv2.slice(1, 2)));
         assertEquals(expected, inputCsv.leftJoinOnIdx(inputCsv2.slice(1, 2)));
+
     }
 
     @Test
@@ -1565,6 +1606,69 @@ class JFuzzyCSVTableTest {
             assertEquals(inserted, fromDb);
 
             assertTrue(fromDb.column("color").stream().allMatch(arg -> arg.equals("Blue")));
+        }
+    }
+
+    @Nested
+    class Transform {
+
+        @Test
+        void transform() {
+            JFuzzyCSVTable transformed = inputCsv.transform(arg -> "-" + arg + "-");
+            /*
+                 asList("color", "matching"),
+      asList("Red", "Black"),
+      asList("Purple", "Black"),
+      asList("Green", "Beige"),
+      asList("Blue", "Gray")
+             */
+
+            JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+              asList("color", "matching"),
+              asList("-Red-", "-Black-"),
+              asList("-Purple-", "-Black-"),
+              asList("-Green-", "-Beige-"),
+              asList("-Blue-", "-Gray-")
+
+            );
+
+
+            assertEquals(expected, transformed);
+        }
+
+        @Test
+        void transform2() {
+            JFuzzyCSVTable transformed = inputCsv.transform((r, o) -> r.idx() + "-" + o + "-");
+
+            JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+              asList("color", "matching"),
+              asList("1-Red-", "1-Black-"),
+              asList("2-Purple-", "2-Black-"),
+              asList("3-Green-", "3-Beige-"),
+              asList("4-Blue-", "4-Gray-")
+
+
+            );
+
+            assertEquals(expected, transformed);
+
+        }
+
+        @Test
+        void transform3() {
+            JFuzzyCSVTable transformed = inputCsv.transform((r, o, cidx) -> r.idx() + "-" + o + "-" + cidx);
+
+            JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
+              asList("color", "matching"),
+              asList("1-Red-0", "1-Black-1"),
+              asList("2-Purple-0", "2-Black-1"),
+              asList("3-Green-0", "3-Beige-1"),
+              asList("4-Blue-0", "4-Gray-1")
+
+            );
+
+            assertEquals(expected, transformed);
+
         }
     }
 
