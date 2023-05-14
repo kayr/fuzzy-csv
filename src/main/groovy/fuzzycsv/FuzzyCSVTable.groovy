@@ -104,11 +104,10 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     FuzzyCSVTable moveCol(int col, int dest) {
 
-        def headers = []
+        def headers = FuzzyCSV.newList(header.size())
         header.size().times { headers.add it }
 
         def idx1 = FuzzyCSVUtils.move(headers, col, dest)
-
         return select(idx1)
     }
 

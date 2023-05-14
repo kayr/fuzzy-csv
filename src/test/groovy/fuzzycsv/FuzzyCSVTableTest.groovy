@@ -50,8 +50,6 @@ class FuzzyCSVTableTest {
     }
 
 
-
-
     @Test
     void testCountReducer() {
         def fn2ndLetter = { it['sub_county'][1] }
@@ -118,8 +116,8 @@ class FuzzyCSVTableTest {
                 .aggregate(['sub_county',
                             sum('ps_total_score').az('sum'),
                             sum('tap_total_score').az('tap_sum')],
-                fx { it.sub_county }
-        )
+                        fx { it.sub_county }
+                )
 
         def expected = [
                 ['sub_county', 'sum', 'tap_sum'],
@@ -139,8 +137,8 @@ class FuzzyCSVTableTest {
     void testAutoAggregateGrouping() {
         def results = tbl(Data.groupingData)
                 .summarize('sub_county',
-                sum('ps_total_score').az('sum'),
-                sum('tap_total_score').az('tap_sum'))
+                        sum('ps_total_score').az('sum'),
+                        sum('tap_total_score').az('tap_sum'))
 
         def expected = [
                 ['sub_county', 'sum', 'tap_sum'],
@@ -171,6 +169,7 @@ class FuzzyCSVTableTest {
 
         assert expected.toString() == actual.csv.toString()
     }
+
     @Test
     void testAddColumnByCopy() {
         def actual = tbl(csv2).copy().addColumnByCopy(fn('Bla') { it.ps_total_score + 1 })
@@ -293,7 +292,6 @@ class FuzzyCSVTableTest {
         ]
 
 
-
         def expected = [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
                         ['Noon', 2, null, 0],
                         ['Noon', 3, null, 0],
@@ -301,7 +299,6 @@ class FuzzyCSVTableTest {
                         ['sc2', 2, 1, 10],
                         ['sc2', 3, null, '1'],
                         ['sc2', 18.1, null, null]]
-
 
 
         assert expected == tbl(lists).sort('sub_county', { it['ps_total_score'] }).csv
@@ -414,11 +411,11 @@ class FuzzyCSVTableTest {
                                ['45', 'pin', 'm']]
 
         deDuped = csv.distinctBy(fx { [it.name, it.sex] })
-        assert deDuped.csv ==  [['id', 'name', 'sex'],
-                                ['25', 'kayr', 'm'],
-                                ['24', 'kayr', 'f'],
-                                ['6d', 'ron', 'f'],
-                                ['45', 'pin', 'm']]
+        assert deDuped.csv == [['id', 'name', 'sex'],
+                               ['25', 'kayr', 'm'],
+                               ['24', 'kayr', 'f'],
+                               ['6d', 'ron', 'f'],
+                               ['45', 'pin', 'm']]
 
 
     }
@@ -598,7 +595,6 @@ class FuzzyCSVTableTest {
         ])
 
 
-
         def result = csv.padAllRecords()
 
         assert result.csv == [['a', 'b', 'c', null],
@@ -672,7 +668,7 @@ p\tfema+le\t31'''
         try {
             table.write(nonExistent)
             assert nonExistent.text == csvString
-        }finally {
+        } finally {
             nonExistent.delete()
         }
 
@@ -681,7 +677,7 @@ p\tfema+le\t31'''
     @Test
     void testAppendEmptyRecords() {
         def newData = tbl(csv2).copy()
-                               .appendEmptyRecord(2)
+                .appendEmptyRecord(2)
 
         assert newData.size() == csv2.size() + 1
 
@@ -883,7 +879,7 @@ p\tfema+le\t31'''
     void testFromJsonMap() {
         def t = '''{"name":"joe","lname":"lasty","data":[["name","number"],["john",1.1]]}'''
 
-        def c = FuzzyCSVTable.fromJsonText(t).sort ('key')
+        def c = FuzzyCSVTable.fromJsonText(t).sort('key')
 
 
         Assert.assertEquals '''
@@ -895,7 +891,7 @@ p\tfema+le\t31'''
 ║ lname │ lasty                         ║
 ╟───────┼───────────────────────────────╢
 ║ name  │ joe                           ║
-╚═══════╧═══════════════════════════════╝'''.trim(),c.toStringFormatted().trim()
+╚═══════╧═══════════════════════════════╝'''.trim(), c.toStringFormatted().trim()
 
         def table = c.gridify().toStringFormatted()
 
@@ -967,7 +963,7 @@ p\tfema+le\t31'''
                 .toStringFormatted()
 
 
-        Assert.assertEquals( '''
+        Assert.assertEquals('''
 ╔═════════════╤═════════════╤═════════════════╗
 ║ dsd         │ dsssd       │                 ║
 ║ fgfg        │             │                 ║
@@ -1004,7 +1000,7 @@ p\tfema+le\t31'''
 ║ ║ 1 │ 2   ║ │             │                 ║
 ║ ╚═══╧═════╝ │ skdksd      │ skdksd          ║
 ║             │     fkkfdjf │     fkkfdjf     ║
-╚═════════════╧═════════════╧═════════════════╝'''.trim(),formatted.trim())
+╚═════════════╧═════════════╧═════════════════╝'''.trim(), formatted.trim())
     }
 
     @Test
@@ -1012,7 +1008,7 @@ p\tfema+le\t31'''
 
         def json = '{\n  "name": "kate",\n  "sho": "muj",\n  "list": [\n    "dsd",\n    "sdsd"\n  ],\n  "csv": [\n    [\n      "dsd",\n      "sdsd",\n      null\n    ],\n    [\n      "sdsd",\n      1\n    ],\n    "hanging cell",\n    [\n      "sd",\n      [\n        2,\n        3,\n        4,\n        {\n          "a": 3,\n          "b": 6\n        }\n      ]\n    ],\n    [\n      {\n        "a": 3,\n        "b": 6\n      },\n      "b",\n      "c"\n    ]\n  ],\n  "full name": {\n    "fname": "fu",\n    "lname": "last"\n  },\n  "data": [\n    {\n      "r1c1-col": "r1c1",\n      "r1c2-col": "r1c2"\n    },\n    {\n      "r2c1-col": "r2c1"\n    }\n  ]\n}'
 
-        def formatted = FuzzyCSVTable.fromJsonText(json).asListGrid().sort ('key').toStringFormatted()
+        def formatted = FuzzyCSVTable.fromJsonText(json).asListGrid().sort('key').toStringFormatted()
 
 
         Assert.assertEquals formatted.trim(), '''
@@ -1166,8 +1162,8 @@ p\tfema+le\t31'''
 
 
         def text = FuzzyCSVTable.fromJsonText(json)
-                .transform {it instanceof BigDecimal ? it.stripTrailingZeros().toPlainString() : it}
-                .select('amount','chargeOwner','type','dsd')
+                .transform { it instanceof BigDecimal ? it.stripTrailingZeros().toPlainString() : it }
+                .select('amount', 'chargeOwner', 'type', 'dsd')
         Assert.assertEquals '''
 ╔════════╤═════════════╤═══════════╤══════╗
 ║ amount │ chargeOwner │ type      │ dsd  ║
@@ -1311,6 +1307,9 @@ p\tfema+le\t31'''
                                          ['2', '1', '3', '4'],
                                          ['22', '11', '22', '44']]
 
+        assert FuzzyCSVTable.tbl([['c1', 'c3', 'c2', 'c2'],
+                                  ['1', '3', '4', '2'],
+                                  ['11', '22', '44', '22']]) == csv.moveCol(1, 3).csv
 
     }
 
