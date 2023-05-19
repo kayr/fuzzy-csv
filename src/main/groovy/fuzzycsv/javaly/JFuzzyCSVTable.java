@@ -13,7 +13,6 @@ import java.sql.Connection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class JFuzzyCSVTable implements Iterable<Record> {
 
@@ -499,8 +498,8 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.reverse().javaApi();
     }
 
-    public JFuzzyCSVTable padAllRecords() {
-        return table.padAllRecords().javaApi();
+    public JFuzzyCSVTable equalizeAllRowWidths() {
+        return table.equalizeAllRowWidths().javaApi();
     }
 
     public <T> List<T> toPojoListStrict(Class<T> aClass) {

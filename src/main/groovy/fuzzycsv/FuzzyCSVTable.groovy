@@ -673,7 +673,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     @CompileStatic
-    FuzzyCSVTable padAllRecords() {
+    FuzzyCSVTable equalizeAllRowWidths() {
         return tbl(tableName, FuzzyCSV.padAllRecords(csv))
     }
 
@@ -881,12 +881,12 @@ class FuzzyCSVTable implements Iterable<Record> {
             if (cellValue) {
                 if (cellValue[0] instanceof Collection &&
                         cellValue.every { it instanceof Collection }) {
-                    return tbl(cellValue.collect()).padAllRecords().mayBeGridify(options)
+                    return tbl(cellValue.collect()).equalizeAllRowWidths().mayBeGridify(options)
                 }
 
                 if (cellValue[0] instanceof Map &&
                         cellValue.every { it instanceof Map }) {
-                    return fromMapList(cellValue).padAllRecords().mayBeGridify(options)
+                    return fromMapList(cellValue).equalizeAllRowWidths().mayBeGridify(options)
                 }
 
                 if (GridOptions.LIST_AS_TABLE in options) return gridifyList(cellValue).mayBeGridify(options)

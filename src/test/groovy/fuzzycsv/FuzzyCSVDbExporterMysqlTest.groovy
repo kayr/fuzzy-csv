@@ -423,7 +423,7 @@ VALUES
                 .transformHeader { it.toUpperCase() }
 
 
-        table1.padAllRecords().dbExport(gsql.connection, ExportParams.of(DbExportFlags.CREATE,
+        table1.equalizeAllRowWidths().dbExport(gsql.connection, ExportParams.of(DbExportFlags.CREATE,
                 DbExportFlags.INSERT,
                 DbExportFlags.RESTRUCTURE).withDialect(DIALECT))
 
@@ -435,7 +435,7 @@ VALUES
                                 [2, 11, 227, 33, 'BB', null, 44]]
 
 
-        table2.padAllRecords().dbUpdate(gsql.connection, ExportParams.of(DbExportFlags.RESTRUCTURE).withDialect(DIALECT).withPageSize(1), 'ID')
+        table2.equalizeAllRowWidths().dbUpdate(gsql.connection, ExportParams.of(DbExportFlags.RESTRUCTURE).withDialect(DIALECT).withPageSize(1), 'ID')
 
         def v = FuzzyCSVTable.toCSV(gsql, 'select * from X2')
 

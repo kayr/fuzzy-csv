@@ -595,7 +595,7 @@ class FuzzyCSVTableTest {
         ])
 
 
-        def result = csv.padAllRecords()
+        def result = csv.equalizeAllRowWidths()
 
         assert result.csv == [['a', 'b', 'c', null],
                               ['b', 'c', null, null],

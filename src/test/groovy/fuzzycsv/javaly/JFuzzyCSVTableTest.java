@@ -990,7 +990,7 @@ class JFuzzyCSVTableTest {
         List<String> newHeader = asList("color", "matching", "in-french");
         JFuzzyCSVTable result = inputCsv.copy()
                                   .setHeader(newHeader)
-                                  .padAllRecords();
+                                  .equalizeAllRowWidths();
         JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
           asList("color", "matching", "in-french"),
           asList("Red", "Black", null),
