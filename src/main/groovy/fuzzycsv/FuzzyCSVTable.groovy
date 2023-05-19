@@ -32,6 +32,7 @@ class FuzzyCSVTable implements Iterable<Record> {
             csv = [[]]
         }
 
+
         try {
             def header = FastIndexOfList.wrap(csv.first())
             csv.set(0, header)
@@ -840,26 +841,32 @@ class FuzzyCSVTable implements Iterable<Record> {
 
 
     static enum GridOptions {
-        LIST_AS_TABLE, LIST_AS_STRING, SHALLOW_MODE
+        LIST_AS_TABLE, SHALLOW_MODE
     }
 
     FuzzyCSVTable asListGrid() {
-        return gridify(EnumSet.of(GridOptions.LIST_AS_TABLE))
+        return toGrid(GridOptions.LIST_AS_TABLE)
 
     }
 
-    FuzzyCSVTable asSimpleGrid() {
-        return gridify(EnumSet.of(GridOptions.LIST_AS_STRING))
+
+
+    FuzzyCSVTable toGrid( GridOptions... moreOptions) {
+        EnumSet<GridOptions> finalOptions = EnumSet.noneOf(GridOptions)
+        if (moreOptions) {
+            finalOptions.addAll(moreOptions)
+        }
+        return toGrid0(finalOptions)
     }
 
-    FuzzyCSVTable gridify(Set<GridOptions> gridOptions) {
+    private FuzzyCSVTable toGrid0(Set<GridOptions> gridOptions) {
         def table = copy()
         table.header.each { table.renameHeader(it, it?.toString()?.replace('\t', '   ')) }
         return table.transform { gridifyCell(it, gridOptions) }
     }
 
     private FuzzyCSVTable mayBeGridify(Set<GridOptions> options) {
-        return GridOptions.SHALLOW_MODE in options ? this : gridify(options)
+        return GridOptions.SHALLOW_MODE in options ? this : toGrid0(options)
     }
 
     private static Object gridifyCell(def cellValue, Set<GridOptions> options) {

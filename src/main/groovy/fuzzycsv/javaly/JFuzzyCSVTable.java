@@ -556,17 +556,10 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.toJsonText();
     }
 
-    public JFuzzyCSVTable asListGrid() {
-        return table.asListGrid().javaApi();
+    public JFuzzyCSVTable toGrid(FuzzyCSVTable.GridOptions... gridOptions) {
+        return table.toGrid(gridOptions).javaApi();
     }
 
-    public JFuzzyCSVTable asSimpleGrid() {
-        return table.asSimpleGrid().javaApi();
-    }
-
-    public JFuzzyCSVTable gridify(Set<FuzzyCSVTable.GridOptions> gridOptions) {
-        return table.gridify(gridOptions).javaApi();
-    }
 
     FuzzyCSVTable unwrap() {
         return table;

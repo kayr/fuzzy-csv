@@ -1,6 +1,6 @@
 package fuzzycsv
 
-
+import fuzzycsv.javaly.JFuzzyCSVTable
 import groovy.transform.ToString
 import org.junit.Assert
 import org.junit.BeforeClass
@@ -893,7 +893,7 @@ p\tfema+le\t31'''
 ║ name  │ joe                           ║
 ╚═══════╧═══════════════════════════════╝'''.trim(), c.toStringFormatted().trim()
 
-        def table = c.gridify().toStringFormatted()
+        def table = c.toGrid().toStringFormatted()
 
         Assert.assertEquals '''
 ╔═══════╤═══════════════════╗
@@ -959,7 +959,7 @@ p\tfema+le\t31'''
 
 
         def formatted = table.addRecordArr([['a', 'b'], [1, 2]], "\n\n\n\nskdksd\n\tfkkfdjf", "\n\n\n\nskdksd\n\tfkkfdjf")
-                .asSimpleGrid()
+                .toGrid()
                 .toStringFormatted()
 
 
@@ -1108,7 +1108,7 @@ p\tfema+le\t31'''
 ║ sho       │ muj                                     ║
 ╚═══════════╧═════════════════════════════════════════╝'''.trim()
 
-        def formatted2 = FuzzyCSVTable.fromJsonText(json).asSimpleGrid().sort('key').toStringFormatted()
+        def formatted2 = FuzzyCSVTable.fromJsonText(json).toGrid().sort('key').toStringFormatted()
 
 
         Assert.assertEquals formatted2.trim(), '''
@@ -1317,5 +1317,11 @@ p\tfema+le\t31'''
     static def insp(FuzzyCSVTable t) {
         println(t.csv.inspect().replaceAll(/\], \[/, '],\n['))
         return t
+    }
+
+    @Test
+    void printAllMethodsOnJFuzzyCSVTable() {
+        def methods = JFuzzyCSVTable.metaClass.methods*.name
+        println methods.sort().unique().join('\n')
     }
 }

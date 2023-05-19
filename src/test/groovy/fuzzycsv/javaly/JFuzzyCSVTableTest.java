@@ -1425,8 +1425,7 @@ class JFuzzyCSVTableTest {
           asList(3, asList("three", "thrice"))
         );
 
-        JFuzzyCSVTable result = data.asListGrid();
-        JFuzzyCSVTable result2 = data.gridify(EnumSet.of(FuzzyCSVTable.GridOptions.LIST_AS_TABLE));
+        JFuzzyCSVTable result = data.toGrid(FuzzyCSVTable.GridOptions.LIST_AS_TABLE);
 
         JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
           asList("a", "b"),
@@ -1448,7 +1447,6 @@ class JFuzzyCSVTableTest {
         );
 
         assertEquals(expected, result);
-        assertEquals(expected, result2);
     }
 
     @Test
@@ -1460,8 +1458,7 @@ class JFuzzyCSVTableTest {
           asList(3, asList("three", "thrice"))
         );
 
-        JFuzzyCSVTable result = data.asSimpleGrid();
-        JFuzzyCSVTable result2 = data.gridify(EnumSet.of(FuzzyCSVTable.GridOptions.LIST_AS_STRING));
+        JFuzzyCSVTable result = data.toGrid();
 
         JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
           asList("a", "b"),
@@ -1472,7 +1469,6 @@ class JFuzzyCSVTableTest {
 
 
         assertEquals(expected, result);
-        assertEquals(expected, result2);
     }
 
     @Test
