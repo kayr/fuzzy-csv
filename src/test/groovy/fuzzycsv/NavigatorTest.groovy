@@ -1,14 +1,13 @@
 package fuzzycsv
 
-
+import fuzzycsv.javaly.Fx1
 import fuzzycsv.nav.Navigator
-import groovy.test.GroovyAssert
 import org.junit.Test
 
 import static fuzzycsv.FuzzyCSVTable.tbl
 import static groovy.test.GroovyAssert.shouldFail
 
-class NavigatorTest  {
+class NavigatorTest {
     def data = [['1', '2', '3', '4', '5'],
                 [6, 7, 8, 9, 10],
                 [11, 12, 13, 14, 15]
@@ -65,21 +64,23 @@ class NavigatorTest  {
         assert navigator.value("Hhe", copy)
         assert copy.value(navigator) == 'Hhe'
 
-        navigator.right().right().down().value(900,copy)
+        navigator.right().right().down().value(900, copy)
         assert copy.csv[1][2] == 900
 
 
     }
 
     @Test
-    void testNavigationOnBorder(){
-        def navigator = Navigator.start().table(tbl(data))
+    void testNavigationOnBorder() {
+        def copy = tbl(data).copy()
+        def navigator = Navigator.start().table(copy)
 
         def corner = navigator.row(0).col(4)
 
         assert corner.value() == '5'
-        assert corner.rightIter().collect{it.value()} == ['5']
-        assert corner.right().rightIter().collect{it.value()} == []
+        assert corner.rightIter().collect { it.value() } == ['5']
+        assert corner.right().rightIter().collect { it.value() } == []
+        assert corner.rightIter().find({ it.value() == '5' } as Fx1).get().value() == '5'
 
 
         assert corner.toTopLeft().value() == '1'
@@ -114,7 +115,7 @@ class NavigatorTest  {
     }
 
     @Test
-    void testAddAbove(){
+    void testAddAbove() {
 
         def table = tbl(data)
         def navigator = new Navigator(0, 0, table)
@@ -129,7 +130,7 @@ class NavigatorTest  {
     }
 
     @Test
-    void testAddBelow(){
+    void testAddBelow() {
 
         def table = tbl(data)
         def navigator = new Navigator(0, 0, table)

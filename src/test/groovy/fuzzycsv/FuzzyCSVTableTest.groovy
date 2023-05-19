@@ -1309,7 +1309,7 @@ p\tfema+le\t31'''
 
         assert FuzzyCSVTable.tbl([['c1', 'c3', 'c2', 'c2'],
                                   ['1', '3', '4', '2'],
-                                  ['11', '22', '44', '22']]) == csv.moveCol(1, 3).csv
+                                  ['11', '22', '44', '22']]).csv == csv.moveCol(1, 3).csv
 
     }
 

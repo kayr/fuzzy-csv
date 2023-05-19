@@ -1,5 +1,9 @@
 package fuzzycsv.javaly
 
+interface VoidFx1<R> {
+    void call(R) throws Exception;
+}
+
 interface Fx1<T, R> {
     R call(T arg) throws Exception;
 }

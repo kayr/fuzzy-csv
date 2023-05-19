@@ -1,12 +1,17 @@
 package fuzzycsv.nav
 
 import fuzzycsv.FuzzyCSVTable
+import fuzzycsv.javaly.Fx1
+import fuzzycsv.javaly.VoidFx1
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.FirstParam
 import groovy.transform.stc.SimpleType
 
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.stream.Stream
+import java.util.stream.StreamSupport
 
 @CompileStatic
 class IterHelper {
@@ -19,7 +24,7 @@ class IterHelper {
 }
 
 @CompileStatic
-trait ExIterator<E, SELF extends Iterator> implements Iterator<E> {
+abstract class ExIterator<E, SELF extends Iterator> implements Iterator<E> {
     E last() {
         return IterHelper.last(this)
     }
@@ -41,11 +46,18 @@ trait ExIterator<E, SELF extends Iterator> implements Iterator<E> {
 
         return this as SELF
     }
+
+    Stream<E> stream() {
+        if (hasNext()) {
+           return StreamSupport.stream(Spliterators.spliteratorUnknownSize(this, Spliterator.ORDERED) as Spliterator<E>, false)
+        }
+        return Stream.empty()
+    }
 }
 
 
 @CompileStatic
-class NavIterator implements ExIterator<Navigator, NavIterator> {
+class NavIterator extends ExIterator<Navigator, NavIterator> {
     private static AtomicInteger i = new AtomicInteger()
 
     Navigator curr
@@ -64,11 +76,13 @@ class NavIterator implements ExIterator<Navigator, NavIterator> {
         return new NavIterator(curr: curr.table(table), table: table)
     }
 
+    @PackageScope
     NavIterator withStopper(@ClosureParams(value = SimpleType, options = ["fuzzycsv.FuzzyCSVTable", "fuzzycsv.nav.Navigator"]) Closure<Boolean> stopper) {
         this.stopper = stopper
         return this
     }
 
+    @PackageScope
     NavIterator withStepper(@ClosureParams(FirstParam.FirstGenericType) Closure<Navigator> next) {
         this.next = next
         return this
@@ -100,6 +114,13 @@ class NavIterator implements ExIterator<Navigator, NavIterator> {
         return curr
     }
 
+    Optional<Navigator> find(Fx1<Navigator, Boolean> pred) {
+        stream().filter { Navigator n -> pred.call(n) }.findFirst()
+    }
+
+    void each(VoidFx1<Navigator> fx) {
+        stream().forEach { Navigator n -> fx.call(n) }
+    }
 
 }
 
