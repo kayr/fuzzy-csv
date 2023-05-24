@@ -595,7 +595,7 @@ class FuzzyCSVTableTest {
         ])
 
 
-        def result = csv.equalizeAllRowWidths()
+        def result = csv.equalizeRowWidths()
 
         assert result.csv == [['a', 'b', 'c', null],
                               ['b', 'c', null, null],
@@ -677,7 +677,7 @@ p\tfema+le\t31'''
     @Test
     void testAppendEmptyRecords() {
         def newData = tbl(csv2).copy()
-                .appendEmptyRecord(2)
+                .addEmptyRow(2)
 
         assert newData.size() == csv2.size() + 1
 
@@ -823,7 +823,7 @@ p\tfema+le\t31'''
     }
 
     @ToString
-    class StudentMissingPropery {
+    class StudentMissingProperty {
         String name
         String school
     }
@@ -853,14 +853,14 @@ p\tfema+le\t31'''
 
 
         try {
-            FuzzyCSVTable.tbl(data).toPojoListStrict(StudentMissingPropery.class)
+            FuzzyCSVTable.tbl(data).toPojoListStrict(StudentMissingProperty.class)
             fail("Expecting a failure")
         } catch (MissingPropertyException x) {
 
         }
 
 
-        def list = FuzzyCSVTable.tbl(data).toPojoList(StudentMissingPropery.class)
+        def list = FuzzyCSVTable.tbl(data).toPojoList(StudentMissingProperty.class)
 
         assert !list.isEmpty()
 
@@ -918,11 +918,11 @@ p\tfema+le\t31'''
 
         def c = FuzzyCSVTable.fromJsonText(t)
 
-        def result = c.addRecordArr("JB", 455)
-                .addRecord(["JLis", 767])
-                .addRecordMap([name: "MName", number: 90])
-                .addRecordArr()
-                .addRecordMap([name: "MNameEmp"])
+        def result = c.addRow("JB", 455)
+                .addRows(["JLis", 767])
+                .addRowsFromMaps([[name: "MName", number: 90], [name: "SecondName", number: 20]])
+                .addRow()
+                .addRowFromMap([name: "MNameEmp"])
 
 
         assert result.csv == [['name', 'number'],
@@ -930,6 +930,7 @@ p\tfema+le\t31'''
                               ['JB', 455],
                               ['JLis', 767],
                               ['MName', 90],
+                              ['SecondName', 20],
                               [null, null],
                               ['MNameEmp', null]]
 
@@ -953,12 +954,12 @@ p\tfema+le\t31'''
     @Test
     void testPrinting() {
         def table = FuzzyCSVTable.withHeader("dsd\nfgfg", "dsssd\n\n\n", "\n\n\n\nskdksd\n\tfkkfdjf")
-                .addRecordArr("dsdsd", "\n\n\n\nskdksd\n\tfkkfdjf", "\n\n\n\nskdksd\n\tfkkfdjf")
-                .addRecordArr("dsdsd", "\n\n\n\nskdksd\n\tfkkfdjf", [f: 'sdm', fd: 'kdd'])
-                .addRecordArr("dsdsd", "\n\n\n\nskdksd\n\tfkkfdjf", [['sdsd']])
+                .addRow("dsdsd", "\n\n\n\nskdksd\n\tfkkfdjf", "\n\n\n\nskdksd\n\tfkkfdjf")
+                .addRow("dsdsd", "\n\n\n\nskdksd\n\tfkkfdjf", [f: 'sdm', fd: 'kdd'])
+                .addRow("dsdsd", "\n\n\n\nskdksd\n\tfkkfdjf", [['sdsd']])
 
 
-        def formatted = table.addRecordArr([['a', 'b'], [1, 2]], "\n\n\n\nskdksd\n\tfkkfdjf", "\n\n\n\nskdksd\n\tfkkfdjf")
+        def formatted = table.addRow([['a', 'b'], [1, 2]], "\n\n\n\nskdksd\n\tfkkfdjf", "\n\n\n\nskdksd\n\tfkkfdjf")
                 .toGrid()
                 .toStringFormatted()
 
@@ -1319,9 +1320,4 @@ p\tfema+le\t31'''
         return t
     }
 
-    @Test
-    void printAllMethodsOnJFuzzyCSVTable() {
-        def methods = JFuzzyCSVTable.metaClass.methods*.name
-        println methods.sort().unique().join('\n')
-    }
 }

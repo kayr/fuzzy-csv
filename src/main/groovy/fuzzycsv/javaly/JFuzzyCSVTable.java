@@ -28,29 +28,29 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    public JFuzzyCSVTable addRecordMap(int idx, Map item) {
-        return table.addRecordMap(idx, item).javaApi();
+    public JFuzzyCSVTable addRowsFromMaps(int idx, List<Map<?,?>> maps) {
+        return table.addRowsFromMaps(idx, maps).javaApi();
     }
 
-    public JFuzzyCSVTable addRecordMap(Map item) {
-        return table.addRecordMap(item).javaApi();
+    public JFuzzyCSVTable addRowFromMaps(List<Map<?,?>> maps) {
+        return table.addRowsFromMaps(maps).javaApi();
     }
 
-    public JFuzzyCSVTable addRecords(int idx, List... item) {
-        return table.addRecords(idx, item).javaApi();
+    public JFuzzyCSVTable addRows(int idx, List<?>... rows) {
+        return table.addRows(idx, rows).javaApi();
     }
 
-    public JFuzzyCSVTable addRecords(List... item) {
-        return table.addRecords(item).javaApi();
+    public JFuzzyCSVTable addRows( List<?>... rows) {
+        return table.addRows(rows).javaApi();
     }
 
     public JFuzzyCSVTable addEmptyRecord() {
         //todo rename FuzzyCSVTable.appendEmptyRecord to addEmptyRecord
-        return table.appendEmptyRecord().javaApi();
+        return table.addEmptyRow().javaApi();
     }
 
     public JFuzzyCSVTable addEmptyRecord(int number) {
-        return table.appendEmptyRecord(number).javaApi();
+        return table.addEmptyRow(number).javaApi();
     }
 
     public int columnIdx(String name) {
@@ -471,7 +471,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
     public JFuzzyCSVTable addRecordArr(Object... item) {
-        return table.addRecordArr(item).javaApi();
+        return table.addRow(item).javaApi();
     }
 
     public String toCsvString() {
@@ -499,7 +499,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
     public JFuzzyCSVTable equalizeAllRowWidths() {
-        return table.equalizeAllRowWidths().javaApi();
+        return table.equalizeRowWidths().javaApi();
     }
 
     public <T> List<T> toPojoListStrict(Class<T> aClass) {

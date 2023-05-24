@@ -43,7 +43,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable name(String name) {
-        return tbl(name, csv)
+        return tbl(name, this.csv)
     }
 
     String name() {
@@ -139,11 +139,11 @@ class FuzzyCSVTable implements Iterable<Record> {
 
         //get the values of all aggregators
         aggregators.each {
-            it.data = csv
+            it.data = this.csv
         }
 
 
-        def newTable = csv.size() < 2 ? [csv[0]] : csv[0..1]
+        def newTable = this.csv.size() < 2 ? [this.csv[0]] : this.csv[0..1]
 
         //format the table as using the new column organisation
         newTable = FuzzyCSV.select(columns, newTable)
@@ -212,12 +212,12 @@ class FuzzyCSVTable implements Iterable<Record> {
     @CompileStatic
     Map<Object, FuzzyCSVTable> groupBy(RecordFx groupFx) {
 
-        def csvHeader = csv[0]
+        def csvHeader = this.csv[0]
 
         Map<Object, List<List>> groups = [:]
-        csv.eachWithIndex { List entry, int i ->
+        this.csv.eachWithIndex { List entry, int i ->
             if (i == 0) return
-            Record record = Record.getRecord(csvHeader, entry, csv, i)
+            Record record = Record.getRecord(csvHeader, entry, this.csv, i)
             record.leftHeaders = csvHeader
             record.leftRecord = entry
             def value = groupFx.getValue(record)
@@ -246,7 +246,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     boolean isEmpty() {
-        return csv?.size() <= 1
+        return this.csv?.size() <= 1
     }
 
 
@@ -257,18 +257,18 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     @CompileStatic
     List getAt(Integer colIdx) {
-        def column = FuzzyCSV.getValuesForColumn(csv, colIdx)
+        def column = FuzzyCSV.getValuesForColumn(this.csv, colIdx)
         column.remove(0)
         return column
     }
 
 
     Record row(int idx) {
-        return Record.getRecord(csv, idx);
+        return Record.getRecord(this.csv, idx);
     }
 
     def <T> T get(int row, int col) {
-        return csv[row][col]
+        return this.csv[row][col]
     }
 
     def <T> T get(int rowIdx, String colName) {
@@ -276,16 +276,16 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     def value(Navigator navigator) {
-        return csv[navigator.row][navigator.col]
+        return this.csv[navigator.row][navigator.col]
     }
 
     def firstCell() {
         if (isEmpty()) return null
-        else return csv[1][0]
+        else return this.csv[1][0]
     }
 
     FuzzyCSVTable getAt(IntRange range) {
-        return tbl(FuzzyCSV.getAt(csv, range))
+        return tbl(FuzzyCSV.getAt(this.csv, range))
     }
 
     FuzzyCSVTable join(FuzzyCSVTable tbl, String[] joinColumns) {
@@ -293,7 +293,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable join(List<? extends List> csv2, String[] joinColumns) {
-        return tbl(FuzzyCSV.join(csv, csv2, joinColumns))
+        return tbl(FuzzyCSV.join(this.csv, csv2, joinColumns))
     }
 
     FuzzyCSVTable leftJoin(FuzzyCSVTable tbl, String[] joinColumns) {
@@ -301,7 +301,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable leftJoin(List<? extends List> csv2, String[] joinColumns) {
-        return tbl(FuzzyCSV.leftJoin(csv, csv2, joinColumns))
+        return tbl(FuzzyCSV.leftJoin(this.csv, csv2, joinColumns))
     }
 
     FuzzyCSVTable rightJoin(FuzzyCSVTable tbl, String[] joinColumns) {
@@ -309,7 +309,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable rightJoin(List<? extends List> csv2, String[] joinColumns) {
-        return tbl(FuzzyCSV.rightJoin(csv, csv2, joinColumns))
+        return tbl(FuzzyCSV.rightJoin(this.csv, csv2, joinColumns))
     }
 
     FuzzyCSVTable fullJoin(FuzzyCSVTable tbl, String[] joinColumns) {
@@ -317,7 +317,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable fullJoin(List<? extends List> csv2, String[] joinColumns) {
-        return tbl(FuzzyCSV.fullJoin(csv, csv2, joinColumns))
+        return tbl(FuzzyCSV.fullJoin(this.csv, csv2, joinColumns))
     }
 
     FuzzyCSVTable join(FuzzyCSVTable tbl,
@@ -335,7 +335,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable join(List<? extends List> csv2, RecordFx joinColumns) {
-        return tbl(FuzzyCSV.join(csv, csv2, joinColumns, FuzzyCSV.selectAllHeaders(csv, csv2) as Object[]))
+        return tbl(FuzzyCSV.join(this.csv, csv2, joinColumns, FuzzyCSV.selectAllHeaders(this.csv, csv2) as Object[]))
     }
 
     FuzzyCSVTable leftJoin(FuzzyCSVTable tbl,
@@ -353,7 +353,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable leftJoin(List<? extends List> csv2, RecordFx fx) {
-        return tbl(FuzzyCSV.leftJoin(csv, csv2, fx, FuzzyCSV.selectAllHeaders(csv, csv2) as Object[]))
+        return tbl(FuzzyCSV.leftJoin(this.csv, csv2, fx, FuzzyCSV.selectAllHeaders(this.csv, csv2) as Object[]))
     }
 
     FuzzyCSVTable rightJoin(FuzzyCSVTable tbl,
@@ -371,7 +371,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable rightJoin(List<? extends List> csv2, RecordFx fx) {
-        return tbl(FuzzyCSV.rightJoin(csv, csv2, fx, FuzzyCSV.selectAllHeaders(csv, csv2) as Object[]))
+        return tbl(FuzzyCSV.rightJoin(this.csv, csv2, fx, FuzzyCSV.selectAllHeaders(this.csv, csv2) as Object[]))
     }
 
     FuzzyCSVTable fullJoin(FuzzyCSVTable tbl,
@@ -389,24 +389,24 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable fullJoin(List<? extends List> csv2, RecordFx fx) {
-        return tbl(FuzzyCSV.fullJoin(csv, csv2, fx, FuzzyCSV.selectAllHeaders(csv, csv2) as Object[]))
+        return tbl(FuzzyCSV.fullJoin(this.csv, csv2, fx, FuzzyCSV.selectAllHeaders(this.csv, csv2) as Object[]))
     }
 
 
     FuzzyCSVTable joinOnIdx(FuzzyCSVTable data) {
-        return tbl(FuzzyCSV.joinOnIdx(csv, data.csv))
+        return tbl(FuzzyCSV.joinOnIdx(this.csv, data.csv))
     }
 
     FuzzyCSVTable lefJoinOnIdx(FuzzyCSVTable data) {
-        return tbl(FuzzyCSV.leftJoinOnIdx(csv, data.csv))
+        return tbl(FuzzyCSV.leftJoinOnIdx(this.csv, data.csv))
     }
 
     FuzzyCSVTable rightJoinOnIdx(FuzzyCSVTable data) {
-        return tbl(FuzzyCSV.rightJoinOnIdx(csv, data.csv))
+        return tbl(FuzzyCSV.rightJoinOnIdx(this.csv, data.csv))
     }
 
     FuzzyCSVTable fullJoinOnIdx(FuzzyCSVTable data) {
-        return tbl(FuzzyCSV.fullJoinOnIdx(csv, data.csv))
+        return tbl(FuzzyCSV.fullJoinOnIdx(this.csv, data.csv))
     }
 
 
@@ -415,7 +415,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable select(List<?> columns) {
-        return tbl(FuzzyCSV.select(columns, csv))
+        return tbl(FuzzyCSV.select(columns, this.csv))
     }
 
     FuzzyCSVTable unwind(String[] columns) {
@@ -423,7 +423,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable unwind(List<String> columns) {
-        return tbl(FuzzyCSV.unwind(csv, columns as String[]))
+        return tbl(FuzzyCSV.unwind(this.csv, columns as String[]))
     }
 
     FuzzyCSVTable transpose(String columToBeHeader, String columnForCell, String[] primaryKeys) {
@@ -431,11 +431,11 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable pivot(String columToBeHeader, String columnForCell, String[] primaryKeys) {
-        tbl(FuzzyCSV.pivotToCSV(csv, columToBeHeader, columnForCell, primaryKeys))
+        tbl(FuzzyCSV.pivotToCSV(this.csv, columToBeHeader, columnForCell, primaryKeys))
     }
 
     FuzzyCSVTable transpose() {
-        tbl(csv.transpose())
+        tbl(this.csv.transpose())
     }
 
     FuzzyCSVTable leftShift(FuzzyCSVTable other) {
@@ -500,9 +500,9 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable addColumn(RecordFx... fnz) {
-        def thisCsv = csv
+        def thisCsv = this.csv
         for (fn in fnz) {
-            thisCsv = FuzzyCSV.putInColumn(thisCsv, fn, csv[0].size())
+            thisCsv = FuzzyCSV.putInColumn(thisCsv, fn, this.csv[0].size())
         }
         return tbl(thisCsv)
     }
@@ -518,7 +518,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable deleteColumns(Object[] columnNames) {
-        return tbl(tableName, FuzzyCSV.deleteColumn(csv, columnNames))
+        return tbl(tableName, FuzzyCSV.deleteColumn(this.csv, columnNames))
     }
 
     FuzzyCSVTable delete(String[] columnNames) {
@@ -531,12 +531,12 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable transform(RecordFx... fns) {
-        return tbl(FuzzyCSV.transform(csv, fns))
+        return tbl(FuzzyCSV.transform(this.csv, fns))
     }
 
     FuzzyCSVTable transform(String column, RecordFx fx) {
         fx.setName(column)
-        return tbl(FuzzyCSV.transform(csv, fx))
+        return tbl(FuzzyCSV.transform(this.csv, fx))
     }
 
     /**
@@ -545,7 +545,7 @@ class FuzzyCSVTable implements Iterable<Record> {
      * @return
      */
     FuzzyCSVTable transform(Closure fx) {
-        return tbl(FuzzyCSV.transform(csv, fx))
+        return tbl(FuzzyCSV.transform(this.csv, fx))
     }
 
     List<String> getHeader() {
@@ -554,23 +554,23 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     List<String> getHeader(boolean copy) {
         if (copy)
-            return new ArrayList<String>(csv[0])
+            return new ArrayList<String>(this.csv[0])
         else
-            csv[0]
+            this.csv[0]
     }
 
     FuzzyCSVTable setHeader(List<String> newHeader) {
-        csv[0] = FastIndexOfList.wrap(newHeader)
+        this.csv[0] = FastIndexOfList.wrap(newHeader)
         return this
     }
 
 
     FuzzyCSVTable copy() {
-        tbl(FuzzyCSV.copy(csv))
+        tbl(FuzzyCSV.copy(this.csv))
     }
 
     FuzzyCSVTable clone() {
-        return tbl(csv.clone())
+        return tbl(this.csv.clone())
     }
 
 
@@ -583,24 +583,24 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable filter(RecordFx fx) {
-        tbl(FuzzyCSV.filter(csv, fx))
+        tbl(FuzzyCSV.filter(this.csv, fx))
     }
 
     FuzzyCSVTable putInCell(String header, int rowIdx, Object value) {
-        tbl(FuzzyCSV.putInCellWithHeader(csv, header, rowIdx, value))
+        tbl(FuzzyCSV.putInCellWithHeader(this.csv, header, rowIdx, value))
     }
 
     FuzzyCSVTable putInCell(int col, int row, Object value) {
-        tbl(FuzzyCSV.putInCell(csv, col, row, value))
+        tbl(FuzzyCSV.putInCell(this.csv, col, row, value))
     }
 
     FuzzyCSVTable insertColumn(List<?> column, int colIdx) {
-        tbl(FuzzyCSV.insertColumn(csv, column, colIdx))
+        tbl(FuzzyCSV.insertColumn(this.csv, column, colIdx))
     }
 
 
     FuzzyCSVTable putInColumn(List colValues, int colIdx) {
-        tbl(FuzzyCSV.putInColumn(csv, colValues, colIdx))
+        tbl(FuzzyCSV.putInColumn(this.csv, colValues, colIdx))
     }
 
     FuzzyCSVTable putInColumn(int colId,
@@ -609,63 +609,72 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable putInColumn(int colId, RecordFx value, FuzzyCSVTable sourceTable = null) {
-        tbl(FuzzyCSV.putInColumn(csv, value, colId, sourceTable?.csv))
+        tbl(FuzzyCSV.putInColumn(this.csv, value, colId, sourceTable?.csv))
     }
 
 
     FuzzyCSVTable cleanUpRepeats(String[] columns) {
-        tbl(FuzzyCSV.cleanUpRepeats(csv, columns))
+        tbl(FuzzyCSV.cleanUpRepeats(this.csv, columns))
     }
 
-    FuzzyCSVTable appendEmptyRecord(int number = 1) {
-        number.times { FuzzyCSV.appendEmptyRecord(csv) }
+    FuzzyCSVTable addEmptyRow(int number = 1) {
+        number.times { FuzzyCSV.appendEmptyRecord(this.csv) }
         return this
     }
 
 
-    FuzzyCSVTable addRecordArr(Object... item) {
-        if (!item) return appendEmptyRecord()
-
-        addRecord(item as List)
-        return this
+    //todo probably should get rid this method or addRow([])
+    FuzzyCSVTable addRow(Object... values) {
+        if (!values) return addEmptyRow()
+        return addRowsFromLists([values.toList()])
     }
 
-    FuzzyCSVTable addRecordMap(int idx = size() + 1, Map item) {
-        def thisCsv = toCSV([item])
+
+    FuzzyCSVTable addRows(int idx = size() + 1, List... rows) {
+        addRowsFromLists(idx, rows.toList())
+    }
+
+
+    FuzzyCSVTable addRowFromMap(Map<?,?> map) {
+        return addRowsFromMaps(size() + 1, [map])
+    }
+
+    FuzzyCSVTable addRowsFromMaps(int idx = size() + 1, List<Map<?,?>> maps) {
+        def thisCsv = fromMapList(maps)
 
         def headers = FuzzyCSV.mergeHeaders(header, thisCsv.header)
-        def record = thisCsv.select(headers).first().finalRecord
+        def newTable = thisCsv.select(headers)
 
-        return addRecord(idx, record)
+        def csv = newTable.csv
+        return addRowsFromLists(idx, csv.subList(1, csv.size()))
     }
 
-    FuzzyCSVTable addRecord(int idx = size() + 1, List item) {
-        addRecords(idx, item)
-    }
 
-    FuzzyCSVTable addRecords(int idx = size() + 1, List... item) {
+    @CompileStatic
+    FuzzyCSVTable addRowsFromLists(int idx = size() + 1, List<List<?>> rows) {
         int nextIdx = idx
-        for (it in item) {
-            csv.add(nextIdx, it as List)
+        for (it in rows) {
+            this.csv.add(nextIdx, it as List)
             nextIdx++
         }
         return this
     }
 
+
     String toCsvString() {
-        return FuzzyCSV.csvToString(csv)
+        return FuzzyCSV.csvToString(this.csv)
     }
 
     List<Map<String, Object>> toMapList() {
-        return FuzzyCSV.toMapList(csv)
+        return FuzzyCSV.toMapList(this.csv)
     }
 
     FuzzyCSVTable sort(Closure c) {
-        tbl(FuzzyCSV.sort(csv, c))
+        tbl(FuzzyCSV.sort(this.csv, c))
     }
 
     FuzzyCSVTable sort(Object... c) {
-        tbl(FuzzyCSV.sort(csv, c))
+        tbl(FuzzyCSV.sort(this.csv, c))
     }
 
     FuzzyCSVTable reverse() {
@@ -673,8 +682,8 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     @CompileStatic
-    FuzzyCSVTable equalizeAllRowWidths() {
-        return tbl(tableName, FuzzyCSV.padAllRecords(csv))
+    FuzzyCSVTable equalizeRowWidths() {
+        return tbl(tableName, FuzzyCSV.padAllRecords(this.csv))
     }
 
     @CompileStatic
@@ -701,11 +710,11 @@ class FuzzyCSVTable implements Iterable<Record> {
 
 
     String toString() {
-        if (csv == null)
+        if (this.csv == null)
             return 'null'
         StringBuffer buffer = new StringBuffer()
 
-        csv.each {
+        this.csv.each {
             buffer << it?.toString()
             buffer << '\n'
         }
@@ -713,7 +722,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     String columnName(int index) {
-        return csv[0][index]
+        return this.csv[0][index]
     }
 
     int columnIdx(String name, double accuracy = FuzzyCSV.ACCURACY_THRESHOLD.get()) {
@@ -778,7 +787,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     Integer size() {
-        def size = csv?.size() ?: 0
+        def size = this.csv?.size() ?: 0
         if (size) {
             return size - 1
         }
@@ -786,38 +795,38 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable write(String filePath) {
-        FuzzyCSV.writeToFile(csv, filePath)
+        FuzzyCSV.writeToFile(this.csv, filePath)
         return this
     }
 
     FuzzyCSVTable write(File file) {
-        FuzzyCSV.writeToFile(csv, file)
+        FuzzyCSV.writeToFile(this.csv, file)
         return this
 
     }
 
     FuzzyCSVTable write(Writer writer) {
-        FuzzyCSV.writeCSV(csv, writer)
+        FuzzyCSV.writeCSV(this.csv, writer)
         return this
     }
 
     FuzzyCSVTable writeToJson(String filePath) {
-        FuzzyCSV.writeJson(csv, filePath)
+        FuzzyCSV.writeJson(this.csv, filePath)
         return this
     }
 
     FuzzyCSVTable writeToJson(File file) {
-        FuzzyCSV.writeJson(csv, file)
+        FuzzyCSV.writeJson(this.csv, file)
         return this
     }
 
     FuzzyCSVTable writeToJson(Writer w) {
-        FuzzyCSV.writeJson(csv, w)
+        FuzzyCSV.writeJson(this.csv, w)
         return this
     }
 
     String toJsonText() {
-        return FuzzyCSV.toJsonText(csv)
+        return FuzzyCSV.toJsonText(this.csv)
     }
 
     String toStringFormatted(boolean wrap = false, int minCol = 10) {
@@ -830,7 +839,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     private String[][] toStrArray() {
-        return csv.collect { l ->
+        return this.csv.collect { l ->
             l.collect { d ->
                 if (d == null || d == '') return '-'
                 if (d instanceof FuzzyCSVTable) return d.toStringFormatted()
@@ -850,8 +859,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-
-    FuzzyCSVTable toGrid( GridOptions... moreOptions) {
+    FuzzyCSVTable toGrid(GridOptions... moreOptions) {
         EnumSet<GridOptions> finalOptions = EnumSet.noneOf(GridOptions)
         if (moreOptions) {
             finalOptions.addAll(moreOptions)
@@ -881,12 +889,12 @@ class FuzzyCSVTable implements Iterable<Record> {
             if (cellValue) {
                 if (cellValue[0] instanceof Collection &&
                         cellValue.every { it instanceof Collection }) {
-                    return tbl(cellValue.collect()).equalizeAllRowWidths().mayBeGridify(options)
+                    return tbl(cellValue.collect()).equalizeRowWidths().mayBeGridify(options)
                 }
 
                 if (cellValue[0] instanceof Map &&
                         cellValue.every { it instanceof Map }) {
-                    return fromMapList(cellValue).equalizeAllRowWidths().mayBeGridify(options)
+                    return fromMapList(cellValue).equalizeRowWidths().mayBeGridify(options)
                 }
 
                 if (GridOptions.LIST_AS_TABLE in options) return gridifyList(cellValue).mayBeGridify(options)
@@ -905,7 +913,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     static FuzzyCSVTable gridifyList(Collection coll) {
         def header = withHeader("i", "v")
         coll.eachWithIndex { Object entry, int i ->
-            header.addRecordArr(i, entry)
+            header.addRow(i, entry)
         }
         return header
     }
@@ -931,13 +939,13 @@ class FuzzyCSVTable implements Iterable<Record> {
 
         FuzzyCSVTable records = (FuzzyCSVTable) o
 
-        if (csv != records.csv) return false
+        if (this.csv != records.csv) return false
 
         return true
     }
 
     int hashCode() {
-        return csv.hashCode()
+        return this.csv.hashCode()
     }
 
 

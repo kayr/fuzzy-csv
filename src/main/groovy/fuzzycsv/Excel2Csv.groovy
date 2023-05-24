@@ -82,7 +82,7 @@ class Excel2Csv {
 
             if (index > endRow) break
         }
-        return FuzzyCSVTable.tbl(result).equalizeAllRowWidths()
+        return FuzzyCSVTable.tbl(result).equalizeRowWidths()
     }
 
     static List<Object> rowToList(Row row, FormulaEvaluator fe) {

@@ -265,20 +265,20 @@ class Navigator {
     }
 
     Navigator addAbove(FuzzyCSVTable t = table) {
-        addAbove(t, FuzzyCSV.createList(t.header))
+        addAbove(t, FuzzyCSV.listOfSameSize(t.header))
     }
 
     Navigator addAbove(FuzzyCSVTable t = table, List<Object> list) {
-        t.addRecord(row, list)
+        t.addRows(row, list)
         return down()
     }
 
     Navigator addBelow(FuzzyCSVTable t = table) {
-        addBelow(t, FuzzyCSV.createList(t.header))
+        addBelow(t, FuzzyCSV.listOfSameSize(t.header))
     }
 
     Navigator addBelow(FuzzyCSVTable t = table, List<Object> list) {
-        t.addRecord(row + 1, list)
+        t.addRows(row + 1, list)
         return this
     }
 

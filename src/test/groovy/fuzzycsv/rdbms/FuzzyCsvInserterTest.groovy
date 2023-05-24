@@ -13,9 +13,9 @@ class FuzzyCsvInserterTest {
     void testGenerateInsert() {
 
         FuzzyCSVTable table = FuzzyCSVTable.withHeader("h1", "h2", "h3")
-                .addRecordArr(1, "2", "P")
-                .addRecordArr(1.2, "2.2", "P.2")
-                .addRecordArr(1.3, "2.3", "P.3")
+                .addRow(1, "2", "P")
+                .addRow(1.2, "2.2", "P.2")
+                .addRow(1.3, "2.3", "P.3")
 
         Pair<String, List<Object>> result = FuzzyCsvDbInserter.generateInsert(DefaultSqlRenderer.getInstance(),table, "my_table")
 
@@ -34,9 +34,9 @@ class FuzzyCsvInserterTest {
     void testGenerateUpdate() {
 
         FuzzyCSVTable table = FuzzyCSVTable.withHeader("h1", "h2", "h3")
-                .addRecordArr(1, "2", "P")
-                .addRecordArr(1.2, "2.2", "P.2")
-                .addRecordArr(1.3, "2.3", "P.3")
+                .addRow(1, "2", "P")
+                .addRow(1.2, "2.2", "P.2")
+                .addRow(1.3, "2.3", "P.3")
 
         List<Pair<String, List<Object>>> pairs = FuzzyCsvDbInserter.generateUpdate(DefaultSqlRenderer.instance,table, "my_table", "h1")
 
@@ -61,9 +61,9 @@ class FuzzyCsvInserterTest {
     void testGenerateUpdate2() {
 
         FuzzyCSVTable table = FuzzyCSVTable.withHeader("h1", "h2", "h3")
-                .addRecordArr(1, "2", "P")
-                .addRecordArr(1.2, "2.2", "P.2")
-                .addRecordArr(1.3, "2.3", "P.3")
+                .addRow(1, "2", "P")
+                .addRow(1.2, "2.2", "P.2")
+                .addRow(1.3, "2.3", "P.3")
 
         List<Pair<String, List<Object>>> pairs = FuzzyCsvDbInserter.generateUpdate(DefaultSqlRenderer.instance,table, "my_table", "h1", "h3")
 

@@ -24,7 +24,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static fuzzycsv.FuzzyStaticApi.count;
 import static fuzzycsv.javaly.FxUtils.recordFx;
@@ -95,9 +98,9 @@ class JFuzzyCSVTableTest {
     }
 
     @Test
-    void addRecord() {
+    void addAdd() {
         //when
-        JFuzzyCSVTable result = inputCsv.addRecords(asList("Yellow", "Orange"));
+        JFuzzyCSVTable result = inputCsv.addRows(asList("Yellow", "Orange"));
 
         JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
           asList("color", "matching"),
@@ -114,7 +117,7 @@ class JFuzzyCSVTableTest {
     @Test
     void addRecordWithIdx() {
         //when
-        JFuzzyCSVTable result = inputCsv.addRecords(2, asList("Yellow", "Orange"),
+        JFuzzyCSVTable result = inputCsv.addRows(2, asList("Yellow", "Orange"),
           asList("Brown", "White"));
 
         JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
@@ -133,11 +136,11 @@ class JFuzzyCSVTableTest {
     @Test
     void addRecordMap() {
         //when
-        JFuzzyCSVTable result = inputCsv.addRecordMap(
-          mapOf(
+        JFuzzyCSVTable result = inputCsv.addRowFromMaps(
+          asList(mapOf(
             kv("color", "Yellow"),
             kv("matching", "Orange"))
-        );
+          ));
 
 
         JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
@@ -157,11 +160,11 @@ class JFuzzyCSVTableTest {
     @Test
     void addRecordMapWithIdx() {
         //when
-        JFuzzyCSVTable result = inputCsv.addRecordMap(2,
-          mapOf(
+        JFuzzyCSVTable result = inputCsv.addRowsFromMaps(2,
+          singletonList(mapOf(
             kv("color", "Yellow"),
             kv("matching", "Orange"))
-        );
+          ));
 
         JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
           asList("color", "matching"),
