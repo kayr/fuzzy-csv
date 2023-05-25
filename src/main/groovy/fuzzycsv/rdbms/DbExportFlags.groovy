@@ -21,5 +21,9 @@ enum DbExportFlags {
         return of(CREATE_IF_NOT_EXISTS, INSERT, RESTRUCTURE)
     }
 
+    static Set<DbExportFlags> createAndInsert() {
+        return of(CREATE_IF_NOT_EXISTS,INSERT)
+    }
+
 
 }

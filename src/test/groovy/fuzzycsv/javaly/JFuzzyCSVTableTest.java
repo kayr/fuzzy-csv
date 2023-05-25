@@ -1548,7 +1548,7 @@ class JFuzzyCSVTableTest {
 
             FuzzyCSVDbExporter.ExportResult result = testTable.dbExportAndGetResult(gsql.getConnection(), ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT));
 
-            JFuzzyCSVTable insertResult = result.mergeKeys().javaApi();
+            JFuzzyCSVTable insertResult = result.getExportedData().javaApi();
 
             JFuzzyCSVTable fromTable = FuzzyCSVTable.fromSqlQuery(gsql, "select * from test_table2")
                                          .javaApi()
@@ -1568,7 +1568,7 @@ class JFuzzyCSVTableTest {
 
             FuzzyCSVDbExporter.ExportResult result = testTable.dbExportAndGetResult(gsql.getConnection(), ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT).withDialect(SqlDialect.H2));
 
-            JFuzzyCSVTable insertResult = result.mergeKeys().javaApi().renameHeader("pk_0", "id");
+            JFuzzyCSVTable insertResult = result.getExportedData().javaApi().renameHeader("pk_0", "id");
 
             JFuzzyCSVTable fromTable = FuzzyCSVTable.fromSqlQuery(gsql, "select * from \"test_table3\"")
                                          .javaApi()
@@ -1590,7 +1590,7 @@ class JFuzzyCSVTableTest {
 
             FuzzyCSVDbExporter.ExportResult result = testTable.dbExportAndGetResult(gsql.getConnection(), ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT).withDialect(SqlDialect.H2));
 
-            JFuzzyCSVTable insertResult = result.mergeKeys().javaApi().renameHeader("pk_0", "id");
+            JFuzzyCSVTable insertResult = result.getExportedData().javaApi().renameHeader("pk_0", "id");
 
 
             JFuzzyCSVTable inserted = insertResult.modify(arg -> arg.set("color", "Blue"))

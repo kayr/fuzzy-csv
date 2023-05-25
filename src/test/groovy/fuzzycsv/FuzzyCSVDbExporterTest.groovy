@@ -198,10 +198,10 @@ VALUES
                                 .of(DbExportFlags.INSERT)
                                 .withPageSize(2))
                 .with {
-                    assert mergeKeys().csv == [['pk_0', 'string_col', 'dec_col', 'int_col', 'bool_col'],
-                                               [1, 'Hakibale', 18.1, null, null],
-                                               [2, 'Hakibale', 19, null, null],
-                                               [3, 'Kisomoro', null, 1, true]]
+                    assert getExportedData().csv == [['pk_0', 'string_col', 'dec_col', 'int_col', 'bool_col'],
+                                                     [1, 'Hakibale', 18.1, null, null],
+                                                     [2, 'Hakibale', 19, null, null],
+                                                     [3, 'Kisomoro', null, 1, true]]
 
                 }
 

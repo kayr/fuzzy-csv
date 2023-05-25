@@ -182,8 +182,8 @@ class FuzzyCSVDbExporter {
         return rt
     }
 
-    private logQuery(Pair<String, List<Object>> it) {
-        log.trace("executing [$it.left] params $it.right")
+    private static logQuery(Pair<String, List<Object>> queryAndParams) {
+        log.trace("executing [$queryAndParams.left] params $queryAndParams.right")
     }
 
     @CompileStatic
@@ -318,11 +318,11 @@ class FuzzyCSVDbExporter {
     }
 
     static class ExportResult {
-        boolean createdTable
-        FuzzyCSVTable primaryKeys
-        FuzzyCSVTable exportedData
+        private boolean createdTable
+        private FuzzyCSVTable primaryKeys
+        private FuzzyCSVTable exportedData
 
-        FuzzyCSVTable mergeKeys() {
+        FuzzyCSVTable getExportedData() {
             primaryKeys.fullJoinOnIdx(exportedData)
         }
     }
