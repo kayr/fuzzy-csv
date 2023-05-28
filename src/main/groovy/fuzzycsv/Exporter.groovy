@@ -18,7 +18,7 @@ class Exporter {
     }
 
     @PackageScope
-    static Exporter withTable(FuzzyCSVTable table) {
+    static Exporter create(FuzzyCSVTable table) {
         return new Exporter(table)
     }
 
@@ -51,7 +51,8 @@ class Exporter {
         }
 
         private Database copy() {
-            def d = new Database(table)
+            def d = create()
+            d.table = table
             d.connection = connection
             d.dataSource = dataSource
             d.exportParams = exportParams
@@ -65,10 +66,12 @@ class Exporter {
 
         Database withConnection(Connection connection) {
             copy().tap { it.connection = connection }
+                    .assertDatasourceAndConnectionNotBothSet()
         }
 
         Database withDatasource(DataSource dataSource) {
             copy().tap { it.dataSource = dataSource }
+                    .assertDatasourceAndConnectionNotBothSet()
         }
 
 
@@ -80,7 +83,7 @@ class Exporter {
             return Objects.requireNonNull(exportResult, "export() must be called before getExportResult()")
         }
 
-        Database export(String tableName) {
+        Database export() {
             def exportConnection = exportConnection()
             try {
                 def exporter = new FuzzyCSVDbExporter(exportConnection, exportParams)
@@ -91,7 +94,7 @@ class Exporter {
             }
         }
 
-        Database update(String tableName, String... identifiers) {
+        Database update(String... identifiers) {
             def exportConnection = exportConnection()
             try {
                 def exporter = new FuzzyCSVDbExporter(exportConnection, exportParams)
@@ -113,7 +116,14 @@ class Exporter {
             return connection != null
         }
 
-
+        private Database assertDatasourceAndConnectionNotBothSet() {
+            if (dataSource != null && connection != null) {
+                throw new IllegalStateException("dataSource and connection cannot both be set")
+            }
+            return this
+        }
     }
 
 }
+
+
