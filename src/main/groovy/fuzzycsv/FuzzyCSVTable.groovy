@@ -829,6 +829,14 @@ class FuzzyCSVTable implements Iterable<Record> {
         return FuzzyCSV.toJsonText(this.csv)
     }
 
+    Exporter export(){
+        return Exporter.create(this)
+    }
+
+    Converter convert(){
+        return Converter.create(this)
+    }
+
     String toStringFormatted(boolean wrap = false, int minCol = 10) {
 
         def array = toStrArray()

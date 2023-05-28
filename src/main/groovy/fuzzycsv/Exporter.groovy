@@ -89,7 +89,8 @@ class Exporter {
             return this
         }
 
-        private String jsonText() {
+        @PackageScope
+        String jsonText() {
             String json = asMaps ?
                     JsonOutput.toJson(table.toMapList()) :
                     JsonOutput.toJson(table.getCsv())
@@ -173,7 +174,7 @@ class Exporter {
         private FuzzyCSVTable table
         private Connection connection
         private DataSource dataSource
-        private ExportParams exportParams = ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS,DbExportFlags.INSERT)
+        private ExportParams exportParams = ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS, DbExportFlags.INSERT)
         private ExportResult exportResult
 
         private Database() {
