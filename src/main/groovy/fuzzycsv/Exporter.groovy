@@ -7,6 +7,10 @@ import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 
 import javax.sql.DataSource
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.sql.Connection
 
 @CompileStatic
@@ -28,6 +32,73 @@ class Exporter {
 
     Database toDb() {
         return Database.create().withTable(table);
+    }
+
+    @CompileStatic
+    static class Csv {
+        private String delimiter = ","
+        private String quote = "\""
+        private String escape = "\\"
+        private String lineSeparator = "\n"
+        private boolean quoteAll = true
+        private FuzzyCSVTable table
+
+        Csv withDelimiter(String delimiter) {
+            copy().tap { it.delimiter = delimiter }
+        }
+
+        Csv withQuote(String quote) {
+            copy().tap { it.quote = quote }
+        }
+
+        Csv withEscape(String escape) {
+            copy().tap { it.escape = escape }
+        }
+
+        Csv withLineSeparator(String lineSeparator) {
+            copy().tap { it.lineSeparator = lineSeparator }
+        }
+
+        Csv withTable(FuzzyCSVTable table) {
+            copy().tap { it.table = table }
+        }
+
+        Csv withQuoteAll(boolean applyQuotesToAll) {
+            copy().tap { it.quoteAll = applyQuotesToAll }
+        }
+
+        Csv copy() {
+            def c = new Csv()
+            c.delimiter = delimiter
+            c.quote = quote
+            c.escape = escape
+            c.lineSeparator = lineSeparator
+            c.table = table
+            c.quoteAll = quoteAll
+            return c
+        }
+
+        static Csv create() {
+            return new Csv()
+        }
+
+        Csv export(String path) {
+            return export(Paths.get(path))
+        }
+
+        Csv export(Path path) {
+            def writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)
+            writer.withCloseable { export(it) }
+            return this
+        }
+
+        Csv export(Writer writer) {
+            def w = new FuzzyCSVWriter(writer, delimiter.charAt(0), quote.charAt(0), escape.charAt(0), lineSeparator, quoteAll)
+            w.writeAll(table.getCsv())
+            return this
+        }
+
+
     }
 
     @CompileStatic

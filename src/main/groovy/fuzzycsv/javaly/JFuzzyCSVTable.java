@@ -560,7 +560,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    FuzzyCSVTable unwrap() {
+    public FuzzyCSVTable unwrap() {
         return table;
     }
 

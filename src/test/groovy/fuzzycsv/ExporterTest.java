@@ -8,6 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -19,6 +22,135 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ExporterTest {
 
+    FuzzyCSVTable table = FuzzyCSVTable.fromRows(
+      asList("ID", "NAME", "AGE"),
+      asList("1", "John", "20"),
+      asList("2", "Jane", "30"),
+      asList("3", "Jack", "40")
+    ).name("TEST_TABLE");
+
+
+    private String readAndDelete(Path path) throws IOException {
+        try {
+            byte[] bytes = Files.readAllBytes(path);
+            return new String(bytes);
+        } finally {
+            Files.delete(path);
+        }
+    }
+
+
+    @Nested
+    class Csv {
+
+        @Test
+        void testExportToFilePath() throws IOException {
+            Path tempFile = createTempFile();
+            Exporter.Csv.create().withTable(table).export(tempFile);
+
+
+            assertEquals("\"ID\",\"NAME\",\"AGE\"\n" +
+                           "\"1\",\"John\",\"20\"\n" +
+                           "\"2\",\"Jane\",\"30\"\n" +
+                           "\"3\",\"Jack\",\"40\"\n", readAndDelete(tempFile));
+        }
+
+        @Test
+        void testExportToFileStringPath() throws IOException {
+            Path tempFile = createTempFile();
+            Exporter.Csv.create().withTable(table).export(tempFile.toString());
+
+
+            assertEquals("\"ID\",\"NAME\",\"AGE\"\n" +
+                           "\"1\",\"John\",\"20\"\n" +
+                           "\"2\",\"Jane\",\"30\"\n" +
+                           "\"3\",\"Jack\",\"40\"\n", readAndDelete(tempFile));
+        }
+
+        @Test
+        void testWithSemiColonDelimiter() throws IOException {
+            Path tempFile = createTempFile();
+            Exporter.Csv.create().withTable(table).withDelimiter(";").export(tempFile);
+
+            assertEquals("\"ID\";\"NAME\";\"AGE\"\n" +
+                           "\"1\";\"John\";\"20\"\n" +
+                           "\"2\";\"Jane\";\"30\"\n" +
+                           "\"3\";\"Jack\";\"40\"\n", readAndDelete(tempFile));
+        }
+
+        @Test
+        void testWithCustomQuote() throws IOException {
+            Path tempFile = createTempFile();
+            Exporter.Csv.create().withTable(table).withQuote("'").export(tempFile);
+
+            assertEquals("'ID','NAME','AGE'\n" +
+                           "'1','John','20'\n" +
+                           "'2','Jane','30'\n" +
+                           "'3','Jack','40'\n", readAndDelete(tempFile));
+        }
+
+        @Test
+        void testWithCustomEscape() throws IOException {
+            Path tempFile = createTempFile();
+            FuzzyCSVTable tableCopy = table.copy().putInCell(1, 1, "J\"ane");
+            Exporter.Csv.create().withTable(tableCopy).withEscape("'").export(tempFile);
+
+            assertEquals("\"ID\",\"NAME\",\"AGE\"\n" +
+                           "\"1\",\"J'\"ane\",\"20\"\n" +
+                           "\"2\",\"Jane\",\"30\"\n" +
+                           "\"3\",\"Jack\",\"40\"\n", readAndDelete(tempFile));
+
+
+        }
+
+        @Test
+        void testWithAllCustoms() throws IOException {
+            Path tempFile = createTempFile();
+            FuzzyCSVTable tableCopy = table.copy().putInCell(1, 1, "J'ane");
+            Exporter.Csv.create()
+              .withTable(tableCopy)
+              .withEscape("-")
+              .withQuote("'")
+              .withDelimiter(";")
+              .export(tempFile);
+
+            assertEquals("'ID';'NAME';'AGE'\n" +
+                           "'1';'J-'ane';'20'\n" +
+                           "'2';'Jane';'30'\n" +
+                           "'3';'Jack';'40'\n", readAndDelete(tempFile));
+
+        }
+
+        @Test
+        void testNoQuotes() throws IOException {
+            Path tempFile = createTempFile();
+            Exporter.Csv.create().withTable(table).withQuoteAll(false).export(tempFile);
+
+            assertEquals("ID,NAME,AGE\n" +
+                           "1,John,20\n" +
+                           "2,Jane,30\n" +
+                           "3,Jack,40\n", readAndDelete(tempFile));
+        }
+
+        @Test
+        void testWithCustomLineSeparator() throws IOException {
+            Path tempFile = createTempFile();
+            Exporter.Csv.create().withTable(table).withLineSeparator("\r\n").export(tempFile);
+
+            assertEquals("\"ID\",\"NAME\",\"AGE\"\r\n" +
+                           "\"1\",\"John\",\"20\"\r\n" +
+                           "\"2\",\"Jane\",\"30\"\r\n" +
+                           "\"3\",\"Jack\",\"40\"\r\n", readAndDelete(tempFile));
+        }
+
+
+        private Path createTempFile() throws IOException {
+            return Files.createTempFile("test", "csv");
+
+        }
+
+    }
+
 
     @Nested
     class Database {
@@ -27,12 +159,6 @@ public class ExporterTest {
         private JdbcConnectionPool dataSource;
         private Exporter.Database dbExporter;
 
-        FuzzyCSVTable table = FuzzyCSVTable.fromRows(
-          asList("ID", "NAME", "AGE"),
-          asList("1", "John", "20"),
-          asList("2", "Jane", "30"),
-          asList("3", "Jack", "40")
-        ).name("TEST_TABLE");
 
         @BeforeEach
         public void setUp() {
@@ -51,13 +177,6 @@ public class ExporterTest {
             dataSource.dispose();
 
         }
-
-        /*
-        test withDatasource copies the DatabaseObject
-        test with connection copies the DatabaseObject
-        test withExportParams copies the ExportParams
-        test withTable copies the FuzzyCSVTable
-         */
 
         @Test
         void testWeCannotSetBothDatasourceAndConnection() throws SQLException {
