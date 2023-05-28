@@ -22,7 +22,7 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ExporterTest {
+class ExporterTest {
 
     FuzzyCSVTable table = FuzzyCSVTable.fromRows(
       asList("ID", "NAME", "AGE"),
@@ -43,6 +43,39 @@ public class ExporterTest {
             Files.delete(path);
         }
     }
+
+    @Test
+    void toDb() throws SQLException {
+        JdbcConnectionPool dataSource = H2DbHelper.getDataSource();
+        try (Sql sql = new Sql(dataSource)) {
+            Exporter.create(table).toDb()
+              .withDatasource(dataSource)
+              .withExportParams(ExportParams.of(CREATE, INSERT))
+              .export();
+
+            assertEquals(3, sql.rows("SELECT * FROM TEST_TABLE").size());
+        } finally {
+            H2DbHelper.dropAllAndDispose(dataSource);
+        }
+    }
+
+    @Test
+    void toCsv() {
+        Writer writer = new StringWriter();
+        Exporter.create(table).toCsv().withQuoteAll(false).export(writer);
+        assertEquals("ID,NAME,AGE\n" +
+                       "1,John,20\n" +
+                       "2,Jane,30\n" +
+                       "3,Jack,40\n", writer.toString());
+    }
+
+    @Test
+    void toJson() {
+        Writer writer = new StringWriter();
+        Exporter.create(table).toJson().withAsMaps(false).export(writer);
+        assertEquals("[[\"ID\",\"NAME\",\"AGE\"],[\"1\",\"John\",\"20\"],[\"2\",\"Jane\",\"30\"],[\"3\",\"Jack\",\"40\"]]", writer.toString());
+    }
+
 
     @Nested
     class Json {
@@ -225,18 +258,13 @@ public class ExporterTest {
         public void setUp() {
             dataSource = H2DbHelper.getDataSource();
             dbExporter = Exporter.Database.create()
-                           .withDatasource(dataSource)
-                           .withExportParams(ExportParams.of(CREATE, INSERT));
+                           .withDatasource(dataSource);
         }
 
 
         @AfterEach
-        public void tearDown() throws SQLException {
-            try (Connection connection = dataSource.getConnection()) {
-                H2DbHelper.dropAllTables(connection);
-            }
-            dataSource.dispose();
-
+        public void tearDown() {
+            H2DbHelper.dropAllAndDispose(dataSource);
         }
 
         @Test

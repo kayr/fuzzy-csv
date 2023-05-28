@@ -4,6 +4,7 @@ import fuzzycsv.rdbms.DDLUtils
 import groovy.sql.Sql
 import org.h2.jdbcx.JdbcConnectionPool
 
+import javax.sql.DataSource
 import java.sql.Connection
 
 class H2DbHelper {
@@ -26,6 +27,12 @@ class H2DbHelper {
         return JdbcConnectionPool.create('jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', 'sa', '')
     }
 
+    static void dropAllAndDispose(JdbcConnectionPool ds) {
+         ds.connection.withCloseable { conn ->
+             dropAllTables(conn)
+         }
+        ds.dispose()
+    }
     static void dropAllTables(Connection connection) {
         Sql gsql = new Sql(connection)
         DDLUtils.allTables(connection, null)

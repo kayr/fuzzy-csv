@@ -1,5 +1,6 @@
 package fuzzycsv
 
+import fuzzycsv.rdbms.DbExportFlags
 import fuzzycsv.rdbms.ExportParams
 import fuzzycsv.rdbms.FuzzyCSVDbExporter
 import fuzzycsv.rdbms.FuzzyCSVDbExporter.ExportResult
@@ -33,6 +34,14 @@ class Exporter {
 
     Database toDb() {
         return Database.create().withTable(table);
+    }
+
+    Csv toCsv() {
+        return Csv.create().withTable(table)
+    }
+
+    Json toJson() {
+        return Json.create().withTable(table)
     }
 
     static class Json {
@@ -164,7 +173,7 @@ class Exporter {
         private FuzzyCSVTable table
         private Connection connection
         private DataSource dataSource
-        private ExportParams exportParams
+        private ExportParams exportParams = ExportParams.of(DbExportFlags.CREATE_IF_NOT_EXISTS,DbExportFlags.INSERT)
         private ExportResult exportResult
 
         private Database() {
