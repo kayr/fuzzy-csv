@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -29,6 +31,9 @@ public class ExporterTest {
       asList("3", "Jack", "40")
     ).name("TEST_TABLE");
 
+    private Path createTempFile() throws IOException {
+        return Files.createTempFile("test", ".tmp");
+    }
 
     private String readAndDelete(Path path) throws IOException {
         try {
@@ -37,6 +42,67 @@ public class ExporterTest {
         } finally {
             Files.delete(path);
         }
+    }
+
+    @Nested
+    class Json {
+
+        @Test
+        void testExportToPath() throws IOException {
+            Path tempFile = createTempFile();
+            Exporter.Json.create().withTable(table).withAsMaps(true).export(tempFile);
+
+            assertEquals("[{\"ID\":\"1\",\"NAME\":\"John\",\"AGE\":\"20\"},{\"ID\":\"2\",\"NAME\":\"Jane\",\"AGE\":\"30\"},{\"ID\":\"3\",\"NAME\":\"Jack\",\"AGE\":\"40\"}]", readAndDelete(tempFile));
+        }
+
+        @Test
+        void testExportToStringPath() throws IOException {
+            Path tempFile = createTempFile();
+            Exporter.Json.create().withTable(table).withAsMaps(true).export(tempFile.toString());
+
+            assertEquals("[{\"ID\":\"1\",\"NAME\":\"John\",\"AGE\":\"20\"},{\"ID\":\"2\",\"NAME\":\"Jane\",\"AGE\":\"30\"},{\"ID\":\"3\",\"NAME\":\"Jack\",\"AGE\":\"40\"}]", readAndDelete(tempFile));
+        }
+
+
+        @Test
+        void testExportAsMapsWithPrettyPrinting() throws IOException {
+            Path tempFile = createTempFile();
+            Exporter.Json.create().withTable(table).withAsMaps(true).withPrettyPrint(true).export(tempFile.toString());
+
+            assertEquals("[\n" +
+                           "    {\n" +
+                           "        \"ID\": \"1\",\n" +
+                           "        \"NAME\": \"John\",\n" +
+                           "        \"AGE\": \"20\"\n" +
+                           "    },\n" +
+                           "    {\n" +
+                           "        \"ID\": \"2\",\n" +
+                           "        \"NAME\": \"Jane\",\n" +
+                           "        \"AGE\": \"30\"\n" +
+                           "    },\n" +
+                           "    {\n" +
+                           "        \"ID\": \"3\",\n" +
+                           "        \"NAME\": \"Jack\",\n" +
+                           "        \"AGE\": \"40\"\n" +
+                           "    }\n" +
+                           "]", readAndDelete(tempFile));
+        }
+
+        @Test
+        void testExportAsListOfLists() throws IOException {
+            Path tempFile = createTempFile();
+            Exporter.Json.create().withTable(table).withAsMaps(false).export(tempFile.toString());
+            assertEquals("[[\"ID\",\"NAME\",\"AGE\"],[\"1\",\"John\",\"20\"],[\"2\",\"Jane\",\"30\"],[\"3\",\"Jack\",\"40\"]]", readAndDelete(tempFile));
+        }
+
+        @Test
+        void testExportToWriter() {
+            Writer writer = new StringWriter();
+            Exporter.Json.create().withTable(table).withAsMaps(false).export(writer);
+            assertEquals("[[\"ID\",\"NAME\",\"AGE\"],[\"1\",\"John\",\"20\"],[\"2\",\"Jane\",\"30\"],[\"3\",\"Jack\",\"40\"]]", writer.toString());
+
+        }
+
     }
 
 
@@ -143,11 +209,6 @@ public class ExporterTest {
                            "\"3\",\"Jack\",\"40\"\r\n", readAndDelete(tempFile));
         }
 
-
-        private Path createTempFile() throws IOException {
-            return Files.createTempFile("test", "csv");
-
-        }
 
     }
 

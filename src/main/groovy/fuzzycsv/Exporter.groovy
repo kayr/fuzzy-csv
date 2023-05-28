@@ -3,6 +3,7 @@ package fuzzycsv
 import fuzzycsv.rdbms.ExportParams
 import fuzzycsv.rdbms.FuzzyCSVDbExporter
 import fuzzycsv.rdbms.FuzzyCSVDbExporter.ExportResult
+import groovy.json.JsonOutput
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 
@@ -32,6 +33,63 @@ class Exporter {
 
     Database toDb() {
         return Database.create().withTable(table);
+    }
+
+    static class Json {
+
+        private FuzzyCSVTable table
+        private boolean prettyPrint = false
+        private boolean asMaps = false
+
+        Json withTable(FuzzyCSVTable table) {
+            copy().tap { it.table = table }
+        }
+
+        Json withPrettyPrint(boolean prettyPrint) {
+            copy().tap { it.prettyPrint = prettyPrint }
+        }
+
+        Json withAsMaps(boolean asMaps) {
+            copy().tap { it.asMaps = asMaps }
+        }
+
+        Json copy() {
+            def c = new Json()
+            c.table = table
+            c.prettyPrint = prettyPrint
+            c.asMaps = asMaps
+            return c
+        }
+
+        static Json create() {
+            return new Json()
+        }
+
+        Json export(String path) {
+            return export(Paths.get(path))
+        }
+
+        Json export(Path path) {
+            def writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)
+            writer.withCloseable { writer.write(jsonText()) }
+            return this
+        }
+
+        Json export(Writer writer) {
+            writer.write(jsonText())
+            return this
+        }
+
+        private String jsonText() {
+            String json = asMaps ?
+                    JsonOutput.toJson(table.toMapList()) :
+                    JsonOutput.toJson(table.getCsv())
+            if (prettyPrint) {
+                return JsonOutput.prettyPrint(json)
+            }
+            return json
+        }
+
     }
 
     @CompileStatic
