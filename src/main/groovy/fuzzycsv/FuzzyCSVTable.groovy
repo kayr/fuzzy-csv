@@ -837,23 +837,8 @@ class FuzzyCSVTable implements Iterable<Record> {
         return Converter.create(this)
     }
 
-    String toStringFormatted(boolean wrap = false, int minCol = 10) {
-
-        def array = toStrArray()
-
-        String[][] object = isEmpty() ? [] : array[1..-1] as String[][]
-
-        return FlipTable.of(array[0], object)
-    }
-
-    private String[][] toStrArray() {
-        return this.csv.collect { l ->
-            l.collect { d ->
-                if (d == null || d == '') return '-'
-                if (d instanceof FuzzyCSVTable) return d.toStringFormatted()
-                return d.toString().replace('\t', '    ')
-            }
-        }
+    String toStringFormatted() {
+        return convert().toPretty().string();
     }
 
 

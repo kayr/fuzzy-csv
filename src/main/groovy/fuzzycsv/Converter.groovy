@@ -25,28 +25,35 @@ class Converter {
     static class Csv {
         private Exporter.Csv exporter = new Exporter.Csv()
 
+        private Csv() {
+        }
+
+        private Csv(Exporter.Csv exporter) {
+            this.exporter = exporter
+        }
+
         Csv withDelimiter(String delimiter) {
-            create().tap { it.exporter = exporter.withDelimiter(delimiter) }
+            new Csv(exporter.withDelimiter(delimiter))
         }
 
         Csv withQuote(String quoteChar) {
-            create().tap { it.exporter = exporter.withQuote(quoteChar) }
+            new Csv(exporter.withQuote(quoteChar))
         }
 
         Csv withEscape(String escapeChar) {
-            create().tap { it.exporter = exporter.withEscape(escapeChar) }
+            new Csv(exporter.withEscape(escapeChar))
         }
 
         Csv withLineSeparator(String lineSeparator) {
-            create().tap { it.exporter = exporter.withLineSeparator(lineSeparator) }
+            new Csv(exporter.withLineSeparator(lineSeparator))
         }
 
         Csv withQuoteAll(boolean applyQuotesToAll) {
-            create().tap { it.exporter = exporter.withQuoteAll(applyQuotesToAll) }
+            new Csv(exporter.withQuoteAll(applyQuotesToAll))
         }
 
         Csv withTable(FuzzyCSVTable table) {
-            create().tap { it.exporter = exporter.withTable(table) }
+            new Csv(exporter.withTable(table))
         }
 
         String string() {
@@ -102,6 +109,7 @@ class Converter {
         private Pretty() {
         }
 
+        @SuppressWarnings('GrMethodMayBeStatic')
         Pretty withTable(FuzzyCSVTable table) {
             new Pretty(table: table)
         }
@@ -119,20 +127,23 @@ class Converter {
         private static String[][] toStrArray(FuzzyCSVTable theTable) {
             def columns = theTable.header.size()
             def rows = theTable.size()
-            String[][] tableArray = new String[rows][]
-            for (int r = 1; r <= rows; r++) {
-
+            def tableArray = new String[rows][]
+            for (int r = 0; r < rows; r++) {
                 def newRow = new String[columns]
+
                 for (int c = 0; c < columns; c++) {
-                    def cellValue = theTable.get(r, c)
-                    if (cellValue == null || cellValue == '') cellValue = '-'
-                    else if (cellValue instanceof FuzzyCSVTable) cellValue = create().withTable(cellValue).string()
-                    else cellValue = cellValue.toString().replace('\t', '    ')
+                    def cellValue = theTable.get(r+1, c)
+
+                    if (cellValue == null || cellValue == '')
+                        cellValue = '-'
+                    else if (cellValue instanceof FuzzyCSVTable)
+                        cellValue = create().withTable(cellValue).string()
+                    else
+                        cellValue = cellValue.toString().replace('\t', '    ')
+
                     newRow[c] = cellValue
                 }
-
-                tableArray[r-1] = newRow
-
+                tableArray[r] = newRow
             }
             return tableArray
         }
