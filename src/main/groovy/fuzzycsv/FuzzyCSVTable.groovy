@@ -668,7 +668,7 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     @Deprecated//remove
     List<Map<String, ?>> toMapList() {
-        return convert().toMaps()
+        return convert().toMaps().result()
     }
 
     FuzzyCSVTable sort(Closure c) {

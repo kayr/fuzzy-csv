@@ -31,18 +31,38 @@ public class Converter {
         return Csv.create().withTable(table);
     }
 
-    public List<Map<String,?>> toMaps() {
-        List<List<?>> csv = table.getCsv();
-        List<String> header = table.getHeader();
-        int csvSize = csv.size();
+    public Maps toMaps() {
+        return Maps.create().withTable(table);
+    }
 
-        List<Map<String,?>> result = new ArrayList<>(csvSize);
-        for(int i = 0; i < csvSize; i++) {
-            if (i == 0) continue;
-            result.add(Record.getRecord(header, csv.get(i), csv).toMap());
+    public static class Maps{
+        private final FuzzyCSVTable table;
+
+        private Maps(FuzzyCSVTable table) {
+            this.table = table;
         }
 
-        return result;
+        static Maps create() {
+            return new Maps(null);
+        }
+
+        public Maps withTable(FuzzyCSVTable table) {
+            return new Maps(table);
+        }
+
+        public List<Map<String,?>> result() {
+            List<List<?>> csv = table.getCsv();
+            List<String> header = table.getHeader();
+            int csvSize = csv.size();
+
+            List<Map<String,?>> result = new ArrayList<>(csvSize);
+            for(int i = 0; i < csvSize; i++) {
+                if (i == 0) continue;
+                result.add(Record.getRecord(header, csv.get(i), csv).toMap());
+            }
+
+            return result;
+        }
     }
 
     public static class Csv {
