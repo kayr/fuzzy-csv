@@ -61,7 +61,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.columnIdx(name, accuracy);
     }
 
-    public List<List> getCsv() {
+    public List<List<?>> getCsv() {
         return table.getCsv();
     }
 
@@ -478,7 +478,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.toCsvString();
     }
 
-    public List<Map<String, Object>> toMapList() {
+    public List<Map<String, ?>> toMapList() {
         return table.toMapList();
     }
 

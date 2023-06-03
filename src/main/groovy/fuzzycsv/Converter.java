@@ -4,6 +4,9 @@ import com.jakewharton.fliptables.FlipTable;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Converter {
     private final FuzzyCSVTable table;
@@ -22,6 +25,24 @@ public class Converter {
 
     public Json toJson() {
         return Json.create().withTable(table);
+    }
+
+    public Csv toCsv() {
+        return Csv.create().withTable(table);
+    }
+
+    public List<Map<String,?>> toMaps() {
+        List<List<?>> csv = table.getCsv();
+        List<String> header = table.getHeader();
+        int csvSize = csv.size();
+
+        List<Map<String,?>> result = new ArrayList<>(csvSize);
+        for(int i = 0; i < csvSize; i++) {
+            if (i == 0) continue;
+            result.add(Record.getRecord(header, csv.get(i), csv).toMap());
+        }
+
+        return result;
     }
 
     public static class Csv {

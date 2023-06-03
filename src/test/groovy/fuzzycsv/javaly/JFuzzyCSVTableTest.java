@@ -240,9 +240,9 @@ class JFuzzyCSVTableTest {
     @Test
     void testGetCsv() {
 
-        List<List> csv = inputCsv.getCsv();
+        List<List<?>> csv = inputCsv.getCsv();
 
-        List<List> expected = asList(
+        List<List<?>> expected = asList(
           asList("color", "matching"),
           asList("Red", "Black"),
           asList("Purple", "Black"),
@@ -1149,7 +1149,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void toMapList() {
-        List<Map<String, Object>> result = inputCsv.toMapList();
+        List<Map<String, ?>> result = inputCsv.toMapList();
         List<Map<String, String>> expected = asList(
           mapOf(kv("color", "Red"),
             kv("matching", "Black")),

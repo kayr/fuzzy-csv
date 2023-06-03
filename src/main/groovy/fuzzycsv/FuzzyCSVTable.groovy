@@ -24,7 +24,7 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     private static Logger log = LoggerFactory.getLogger(FuzzyCSVTable)
 
-    final List<List> csv
+    final List<List<?>> csv
     private String tableName
 
     FuzzyCSVTable(List<? extends List> csv) {
@@ -212,7 +212,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     @CompileStatic
     Map<Object, FuzzyCSVTable> groupBy(RecordFx groupFx) {
 
-        def csvHeader = this.csv[0]
+        def csvHeader = this.csv[0] as List<String>
 
         Map<Object, List<List>> groups = [:]
         this.csv.eachWithIndex { List entry, int i ->
@@ -661,12 +661,14 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
+    @Deprecated//remove
     String toCsvString() {
-        return FuzzyCSV.csvToString(this.csv)
+        return convert().toCsv().string()
     }
 
-    List<Map<String, Object>> toMapList() {
-        return FuzzyCSV.toMapList(this.csv)
+    @Deprecated//remove
+    List<Map<String, ?>> toMapList() {
+        return convert().toMaps()
     }
 
     FuzzyCSVTable sort(Closure c) {
@@ -753,7 +755,7 @@ class FuzzyCSVTable implements Iterable<Record> {
 
             def recordMap = it.toMap()
 
-            Map<?, ?> spreadMap = [:]
+            Map<String, ?> spreadMap = [:]
             if (val instanceof Collection) {
                 val.eachWithIndex { Object entry, int i ->
                     def name = config.createName(i + 1)
@@ -919,8 +921,8 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    FuzzyCSVTable printTable(PrintStream out = System.out, boolean wrap = false, int minCol = 10) {
-        out.println(toStringFormatted(wrap, minCol))
+    FuzzyCSVTable printTable(PrintStream out = System.out) {
+        out.println(toStringFormatted())
         return this
     }
 

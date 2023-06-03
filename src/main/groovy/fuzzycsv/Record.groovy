@@ -295,13 +295,17 @@ class Record {
 
     boolean isHeader() { recordIdx == 0 }
 
-    Map toMap(String... headers) {
+    Map<String,?> toMap(String... headers) {
         return toMap(headers as List)
     }
 
-    Map toMap(List headers) {
+    Map<String,?>  toMap(List headers) {
         if (!headers) headers = finalHeaders
-        headers.collectEntries { [it, val(it)] }
+        Map<String,?> map = [:]
+        for (String header : headers) {
+            map[header] = val(header)
+        }
+        return map
     }
 
     def propertyMissing(String name, def arg) {
@@ -318,7 +322,7 @@ class Record {
         getRecord(header, record, csv, i)
     }
 
-    static Record getRecord(List header, List record, List<List> csv) {
+    static Record getRecord(List header, List record, List<List<?>> csv) {
         return getRecord(header, record, csv, -1)
     }
 

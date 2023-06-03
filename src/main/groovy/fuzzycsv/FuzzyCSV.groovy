@@ -927,15 +927,17 @@ class FuzzyCSV {
         return csv
     }
 
-    static List<Map> toMapList(List<? extends List> csv) {
-        def header = csv[0]
-        int i = 0
-        csv.findResults {
-            if (i == 0) {
-                i++; return null
-            }
-            Record.getRecord(header, it, csv).toMap()
+    @Deprecated//remove
+    @CompileStatic
+    static List<Map<String,?>> toMapList(List<? extends List> csv) {
+        List<String> header = csv[0]
+        int csvSize = csv.size()
+        List<Map<String,?>> result = new ArrayList(csvSize)
+        for(int i = 0; i < csvSize; i++) {
+            if (i == 0) continue
+           result.add(Record.getRecord(header, csv[i], csv).toMap())
         }
+        return result
     }
 
     @CompileStatic
