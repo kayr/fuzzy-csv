@@ -20,6 +20,10 @@ public class Converter {
         return Pretty.create().withTable(table);
     }
 
+    public Json toJson() {
+        return Json.create().withTable(table);
+    }
+
     public static class Csv {
         private Exporter.Csv exporter = new Exporter.Csv();
 

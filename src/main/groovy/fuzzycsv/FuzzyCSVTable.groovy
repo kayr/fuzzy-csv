@@ -1,6 +1,6 @@
 package fuzzycsv
 
-import com.jakewharton.fliptables.FlipTable
+
 import com.opencsv.CSVParser
 import fuzzycsv.javaly.JFuzzyCSVTable
 import fuzzycsv.nav.Navigator
@@ -794,39 +794,46 @@ class FuzzyCSVTable implements Iterable<Record> {
         return size
     }
 
+    @Deprecated//remove
     FuzzyCSVTable write(String filePath) {
-        FuzzyCSV.writeToFile(this.csv, filePath)
+        export().toCsv().export(filePath)
         return this
     }
 
+    @Deprecated//remove
     FuzzyCSVTable write(File file) {
-        FuzzyCSV.writeToFile(this.csv, file)
+       export().toCsv().export(file.absolutePath)
         return this
 
     }
 
+    @Deprecated//remove
     FuzzyCSVTable write(Writer writer) {
-        FuzzyCSV.writeCSV(this.csv, writer)
+        export().toCsv().export(writer)
         return this
     }
 
+    @Deprecated//remove
     FuzzyCSVTable writeToJson(String filePath) {
-        FuzzyCSV.writeJson(this.csv, filePath)
+        export().toJson().export(filePath)
         return this
     }
 
+    @Deprecated//remove
     FuzzyCSVTable writeToJson(File file) {
-        FuzzyCSV.writeJson(this.csv, file)
+        export().toJson().export(file.absolutePath)
         return this
     }
 
+    @Deprecated//remove
     FuzzyCSVTable writeToJson(Writer w) {
-        FuzzyCSV.writeJson(this.csv, w)
+        export().toJson().export(w)
         return this
     }
 
+    @Deprecated//remove
     String toJsonText() {
-        return FuzzyCSV.toJsonText(this.csv)
+       convert().toJson().string()
     }
 
     Exporter export(){
@@ -942,19 +949,28 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
+    @Deprecated//remove
     FuzzyCSVTable dbExport(Connection connection, ExportParams params) {
-        dbExportAndGetResult(connection, params)
+        export().toDb().withConnection(connection)
+        .withExportParams(params)
+        .export()
         this
     }
 
+    @Deprecated//remove
     FuzzyCSVDbExporter.ExportResult dbExportAndGetResult(Connection connection, ExportParams params) {
-        return new FuzzyCSVDbExporter(connection, params)
-                .dbExport(this)
+     return export().toDb().withConnection(connection)
+        .withExportParams(params)
+        .export()
+        .exportResult
+
     }
 
+    @Deprecated//remove
     FuzzyCSVTable dbUpdate(Connection connection, ExportParams params, String... identifiers) {
-        new FuzzyCSVDbExporter(connection, params)
-                .updateData(this, identifiers)
+       export().toDb().withConnection(connection)
+        .withExportParams(params)
+        .update(identifiers)
         this
     }
 
@@ -1019,7 +1035,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    @Deprecated
+    @Deprecated//remove
     static FuzzyCSVTable toCSV(Sql sql, String query) {
         fromSqlQuery(sql, query)
     }
