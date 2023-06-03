@@ -838,7 +838,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     String toStringFormatted() {
-        return convert().toPretty().string();
+        return convert().toPretty().string()
     }
 
 
