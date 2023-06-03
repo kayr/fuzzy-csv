@@ -355,7 +355,7 @@ VALUES
                                 .withPageSize(2))
 
         table2
-                .transformHeader { it.toUpperCase() }
+                .renameHeader { it.toUpperCase() }
                 .name('X1')
                 .dbExport(
                         gsql.connection,
@@ -364,7 +364,7 @@ VALUES
                                 .withPageSize(2))
 
         table3
-                .transformHeader { it.toUpperCase() }
+                .renameHeader { it.toUpperCase() }
                 .name('X1')
                 .dbExport(
                         gsql.connection,
@@ -378,7 +378,7 @@ VALUES
         normalizeNumbers(fromDb)
 
 
-        def mergedResult = (table1.transformHeader { it.toUpperCase() } << table2 << table3).select(fromDb.header)
+        def mergedResult = (table1.renameHeader { it.toUpperCase() } << table2 << table3).select(fromDb.header)
         normalizeNumbers(mergedResult)
 
 //        assert mergedResult.csv == fromDb.csv
@@ -408,13 +408,13 @@ VALUES
                 .fromMapList([[id: 1, a: 1, b: 2.4, c: 3, a3: 'XXX', d1: 1.2],
                               [id: 2, a: 11, b: 227, c: 33, d: 44, a3: 'BB']])
                 .name('X2')
-                .transformHeader { it.toUpperCase() }
+                .renameHeader { it.toUpperCase() }
 
         def table2 = FuzzyCSVTable
                 .fromMapList([[id: 1, a: 12, b: 2.42, c: 32, a3: 'XXX2'],
                               [id: 2, a: 112, b: 2272, c: 332, d: 44, a3: 'BB2', d1: 1.2]])
                 .name('X2')
-                .transformHeader { it.toUpperCase() }
+                .renameHeader { it.toUpperCase() }
 
 
         table1.equalizeRowWidths().dbExport(gsql.connection, ExportParams.of(DbExportFlags.CREATE,
@@ -446,13 +446,13 @@ VALUES
                 .fromMapList([[id: 1, a: 1, b: 2.4, c: 3, a3: 'XXX', d1: 1.2],
                               [id: 2, a: 11, b: 227, c: 33, d: 44, a3: 'BB']])
                 .name('X2')
-                .transformHeader { it.toUpperCase() }
+                .renameHeader { it.toUpperCase() }
 
         def table2 = FuzzyCSVTable
                 .fromMapList([[id: 1, a: 12, b: 2.42, c: 32, a3: 'XXX2'],
                               [id: 2, a: 112, b: 2272, c: 332, d: 44, a3: 'BB2', d1: 1.2]])
                 .name('X2')
-                .transformHeader { it.toUpperCase() }
+                .renameHeader { it.toUpperCase() }
 
 
         table1.equalizeRowWidths().dbExport(gsql.connection, ExportParams.of(DbExportFlags.CREATE,

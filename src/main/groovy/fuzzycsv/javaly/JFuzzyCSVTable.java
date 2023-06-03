@@ -124,7 +124,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
     public JFuzzyCSVTable transformHeader(Fx1<String, String> func) {
-        return table.transformHeader(FxUtils.toCls(func)).javaApi();
+        return table.renameHeader(func).javaApi();
     }
 
     public JFuzzyCSVTable renameHeader(int from, String to) {

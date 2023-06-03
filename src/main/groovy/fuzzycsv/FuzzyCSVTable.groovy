@@ -1,7 +1,8 @@
 package fuzzycsv
 
-
 import com.opencsv.CSVParser
+import fuzzycsv.javaly.Fx1
+import fuzzycsv.javaly.FxUtils
 import fuzzycsv.javaly.JFuzzyCSVTable
 import fuzzycsv.nav.Navigator
 import fuzzycsv.rdbms.ExportParams
@@ -9,7 +10,6 @@ import fuzzycsv.rdbms.FuzzyCSVDbExporter
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import groovy.transform.stc.ClosureParams
-import groovy.transform.stc.FirstParam
 import groovy.transform.stc.SimpleType
 import org.codehaus.groovy.runtime.InvokerHelper
 import org.slf4j.Logger
@@ -76,8 +76,8 @@ class FuzzyCSVTable implements Iterable<Record> {
         return this
     }
 
-    FuzzyCSVTable transformHeader(@ClosureParams(FirstParam.FirstGenericType) Closure<String> func) {
-        setHeader(header.collect(func))
+    FuzzyCSVTable renameHeader(Fx1<String, String> func) {
+        setHeader(header.collect(FxUtils.toCls(func)))
         this
     }
 
