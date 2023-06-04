@@ -528,7 +528,7 @@ class FuzzyCSVTable implements Iterable<Record> {
 
 
 
-    FuzzyCSVTable concatRows(FuzzyCSVTable table, ConcatMethod.Row method) {
+    FuzzyCSVTable concatRows(FuzzyCSVTable table, ConcatMethod.Row method = ConcatMethod.Row.ALL) {
         switch (method) {
             case  ConcatMethod.Row.COMMON:
                 return tbl(FuzzyCSV.joinOnIdx(this.csv, table.csv))
@@ -542,7 +542,8 @@ class FuzzyCSVTable implements Iterable<Record> {
         }
     }
 
-    FuzzyCSVTable concatColumns(FuzzyCSVTable table, ConcatMethod.Column method) {
+
+    FuzzyCSVTable concatColumns(FuzzyCSVTable table, ConcatMethod.Column method = ConcatMethod.Column.ALL) {
         switch (method) {
             case ConcatMethod.Column.STACK:
                 return tbl(FuzzyCSV.mergeByAppending(this.csv, table.csv))

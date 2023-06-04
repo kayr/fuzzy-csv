@@ -181,6 +181,7 @@ class FuzzyCSVTest {
         assert tbl(csv1).mergeByColumn(csv3).csv == expected
         assert tbl(csv1).mergeByColumn(tbl(csv3)).csv == expected
         assert tbl(csv1).concatColumns(tbl(csv3), Column.ALL).csv == expected
+        assert tbl(csv1).concatColumns(tbl(csv3)).csv == expected
         assert (tbl(csv1) << tbl(csv3)).csv == expected
     }
 
@@ -284,7 +285,11 @@ class FuzzyCSVTest {
                                                                          [null, null, null, null, 'Betty', 'Biology', '80']]
 
         assert csv1LessRows.concatRows(csv2MoreRows, Row.RIGHT).csv == csv1LessRows.concatRows(csv2MoreRows, Row.ALL).csv
+        assert csv1LessRows.concatRows(csv2MoreRows, Row.RIGHT).csv == csv1LessRows.concatRows(csv2MoreRows).csv
+
+
         assert csv2MoreRows.concatRows(csv1LessRows, Row.LEFT).csv == csv2MoreRows.concatRows(csv1LessRows, Row.ALL).csv
+        assert csv2MoreRows.concatRows(csv1LessRows, Row.LEFT).csv == csv2MoreRows.concatRows(csv1LessRows).csv
 
 
     }
