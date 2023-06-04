@@ -1,10 +1,10 @@
 package fuzzycsv
 
-
 import groovy.test.GroovyAssert
 import org.junit.Before
 import org.junit.Test
 
+import static fuzzycsv.ConcatMethod.*
 import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.RecordFx.fn
 import static fuzzycsv.RecordFx.fx
@@ -108,6 +108,9 @@ class FuzzyCSVTest {
 
         assert a.union(b).csv == [['a'],
                                   ['r1']]
+
+        assert a.concatColumns(b,Column.STACK).csv == [['a'],
+                                  ['r1']]
     }
 
     @Test
@@ -117,6 +120,9 @@ class FuzzyCSVTest {
 
         assert a.union(b).csv == [['a'],
                                   ['r1']]
+
+        assert a.concatColumns(b,Column.STACK).csv == [['a'],
+                                  ['r1']]
     }
 
     @Test
@@ -125,6 +131,9 @@ class FuzzyCSVTest {
         def b = tbl((List) null)
 
         assert a.union(b).csv == [['a'],
+                                  ['r1']]
+
+        assert a.concatColumns(b,Column.STACK).csv == [['a'],
                                   ['r1']]
     }
 
@@ -171,8 +180,10 @@ class FuzzyCSVTest {
 
         assert tbl(csv1).mergeByColumn(csv3).csv == expected
         assert tbl(csv1).mergeByColumn(tbl(csv3)).csv == expected
+        assert tbl(csv1).concatColumns(tbl(csv3), Column.ALL).csv == expected
         assert (tbl(csv1) << tbl(csv3)).csv == expected
     }
+
 
     @Test
     void testJoinColumn() {
@@ -242,6 +253,42 @@ class FuzzyCSVTest {
 
     }
 
+
+    @Test
+    void testConcatRows() {
+
+        def csv1LessRows = tbl(getCSV('/csv1.csv'))
+        def csv2MoreRows = tbl(getCSV('/csv2.csv'))
+
+
+        assertEquals(
+                tbl([['Name', 'Subject', 'Mark', 'Name', 'Sex', 'Age', 'Location'],
+                     ['Ronald', 'Math', '50', 'Ronald', 'Male', '3', 'Bweyos'],
+                     ['Ronald', 'English', '50', 'Sara', 'Female', '4', 'Muyenga']]), csv2MoreRows.concatRows(csv1LessRows, Row.COMMON))
+
+
+        assert csv2MoreRows.concatRows(csv1LessRows, Row.LEFT).csv == [['Name', 'Subject', 'Mark', 'Name', 'Sex', 'Age', 'Location'],
+                                                                                    ['Ronald', 'Math', '50', 'Ronald', 'Male', '3', 'Bweyos'],
+                                                                                    ['Ronald', 'English', '50', 'Sara', 'Female', '4', 'Muyenga'],
+                                                                                    ['Betty', 'Biology', '80', null, null, null, null]]
+
+
+        assert csv2MoreRows.concatRows(csv1LessRows, Row.RIGHT).csv == [['Name', 'Subject', 'Mark', 'Name', 'Sex', 'Age', 'Location'],
+                                                                         ['Ronald', 'Math', '50', 'Ronald', 'Male', '3', 'Bweyos'],
+                                                                         ['Ronald', 'English', '50', 'Sara', 'Female', '4', 'Muyenga']]
+
+
+        assert csv1LessRows.concatRows(csv2MoreRows, Row.RIGHT).csv == [['Name', 'Sex', 'Age', 'Location', 'Name', 'Subject', 'Mark'],
+                                                                         ['Ronald', 'Male', '3', 'Bweyos', 'Ronald', 'Math', '50'],
+                                                                         ['Sara', 'Female', '4', 'Muyenga', 'Ronald', 'English', '50'],
+                                                                         [null, null, null, null, 'Betty', 'Biology', '80']]
+
+        assert csv1LessRows.concatRows(csv2MoreRows, Row.RIGHT).csv == csv1LessRows.concatRows(csv2MoreRows, Row.ALL).csv
+        assert csv2MoreRows.concatRows(csv1LessRows, Row.LEFT).csv == csv2MoreRows.concatRows(csv1LessRows, Row.ALL).csv
+
+
+    }
+
     @Test
     void testLeftJoinColumn() {
 
@@ -289,7 +336,6 @@ class FuzzyCSVTest {
 
         def csv_2 = getCSV('/csv2.csv')
         def csv_1 = getCSV('/csv1.csv')
-
 
 
         def expected = [
@@ -348,7 +394,7 @@ class FuzzyCSVTest {
         //fuzzy csv table
         join = tbl(csv_1).fullJoin(tbl(csv_2), fx {
             it.Name == it.'@Name'
-        }).select(fx { it[0] ?: it[4] }.az('Name'), 'Sex', 'Age', 'Location', 'Subject', 'Mark')//use index of 4 since there will be a null value in the first column of `name`
+        }).printTable().select(fx { it[0] ?: it[4] }.az('Name'), 'Sex', 'Age', 'Location', 'Subject', 'Mark')//use index of 4 since there will be a null value in the first column of `name`
         assertEquals expected.toString(), join.csv.toString()
 
         //fuzzy csv table

@@ -401,10 +401,18 @@ class FuzzyCSVTable implements Iterable<Record> {
         return tbl(FuzzyCSV.joinOnIdx(this.csv, data.csv))
     }
 
+    /**
+     * @deprecated to be removed use concat instead
+     */
+    @Deprecated
     FuzzyCSVTable lefJoinOnIdx(FuzzyCSVTable data) {
         return tbl(FuzzyCSV.leftJoinOnIdx(this.csv, data.csv))
     }
 
+    /**
+     * @deprecated to be removed use concat instead
+     */
+    @Deprecated
     FuzzyCSVTable rightJoinOnIdx(FuzzyCSVTable data) {
         return tbl(FuzzyCSV.rightJoinOnIdx(this.csv, data.csv))
     }
@@ -442,18 +450,34 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(this.csv.transpose())
     }
 
+    /**
+     * @deprecated will be moved to extension methods
+     */
+    @Deprecated
     FuzzyCSVTable leftShift(FuzzyCSVTable other) {
         return mergeByColumn(other)
     }
 
+    /**
+     * @deprecated TBR:  will be moved to extension methods
+     */
+    @Deprecated
     FuzzyCSVTable leftShift(List<? extends List> other) {
         return mergeByColumn(other)
     }
 
+    /**
+     * @deprecated TBR: use {@link #concatColumns}  instead
+     */
+    @Deprecated
     FuzzyCSVTable mergeByColumn(List<? extends List> otherCsv) {
         return tbl(FuzzyCSV.mergeByColumn(this.csv, otherCsv))
     }
 
+    /**
+     * @deprecated TBR: use {@link #concatColumns}  instead
+     */
+    @Deprecated
     FuzzyCSVTable mergeByColumn(FuzzyCSVTable tbl) {
         return mergeByColumn(tbl.csv)
     }
@@ -470,7 +494,7 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     /**
      *
-     * Deprecated use #union
+     * @depracted Deprecated use #union
      */
     @Deprecated
     FuzzyCSVTable mergeByAppending(List<? extends List> otherCsv) {
@@ -478,27 +502,71 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     /**
-     * Deprecated use #union
      *
+     * @depracted Deprecated use #conatColumns
      */
     @Deprecated
     FuzzyCSVTable mergeByAppending(FuzzyCSVTable tbl) {
         return union(tbl.csv)
     }
 
+
+
+    /**
+     *
+     * @depracted TBR.. we wost accept a list of list anymore
+     */
+    @Deprecated
     FuzzyCSVTable union(List<? extends List> otherCsv) {
-        return tbl(FuzzyCSV.mergeByAppending(this.csv, otherCsv))
+        return union(tbl(otherCsv))
     }
+
 
     FuzzyCSVTable union(FuzzyCSVTable tbl) {
-        return union(tbl.csv)
+        return concatColumns(tbl, ConcatMethod.Column.STACK)
     }
 
 
+
+    FuzzyCSVTable concatRows(FuzzyCSVTable table, ConcatMethod.Row method) {
+        switch (method) {
+            case  ConcatMethod.Row.COMMON:
+                return tbl(FuzzyCSV.joinOnIdx(this.csv, table.csv))
+            case ConcatMethod.Row.LEFT:
+                return tbl(FuzzyCSV.leftJoinOnIdx(this.csv, table.csv))
+            case ConcatMethod.Row.RIGHT:
+                return tbl(FuzzyCSV.rightJoinOnIdx(this.csv, table.csv))
+            case ConcatMethod.Row.ALL:
+                return tbl(FuzzyCSV.fullJoinOnIdx(this.csv, table.csv))
+
+        }
+    }
+
+    FuzzyCSVTable concatColumns(FuzzyCSVTable table, ConcatMethod.Column method) {
+        switch (method) {
+            case ConcatMethod.Column.STACK:
+                return tbl(FuzzyCSV.mergeByAppending(this.csv, table.csv))
+            case ConcatMethod.Column.ALL:
+                return tbl(FuzzyCSV.mergeByColumn(this.csv, table.csv))
+
+        }
+    }
+
+
+
+
+    /**
+     * @deprecated TBR: will go to extension methods
+     */
+    @Deprecated
     FuzzyCSVTable plus(FuzzyCSVTable tbl) {
         return union(tbl)
     }
 
+    /**
+     * @deprecated TBR: will go to extension methods
+     */
+    @Deprecated
     FuzzyCSVTable plus(List<? extends List> csv) {
         return union(csv)
     }
@@ -853,7 +921,15 @@ class FuzzyCSVTable implements Iterable<Record> {
         return Converter.create(this)
     }
 
+    /**
+     * @deprecated use {@link #toPrettyString()} instead
+     */
+    @Deprecated
     String toStringFormatted() {
+        return convert().toPretty().string()
+    }
+
+    String toPrettyString() {
         return convert().toPretty().string()
     }
 
