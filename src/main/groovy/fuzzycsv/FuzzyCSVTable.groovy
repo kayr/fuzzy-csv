@@ -492,45 +492,15 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     }
 
-    /**
-     *
-     * @depracted Deprecated use #union
-     */
-    @Deprecated
-    FuzzyCSVTable mergeByAppending(List<? extends List> otherCsv) {
-        return tbl(FuzzyCSV.mergeByAppending(this.csv, otherCsv))
-    }
-
-    /**
-     *
-     * @depracted Deprecated use #conatColumns
-     */
-    @Deprecated
-    FuzzyCSVTable mergeByAppending(FuzzyCSVTable tbl) {
-        return union(tbl.csv)
-    }
-
-
-
-    /**
-     *
-     * @depracted TBR.. we wost accept a list of list anymore
-     */
-    @Deprecated
-    FuzzyCSVTable union(List<? extends List> otherCsv) {
-        return union(tbl(otherCsv))
-    }
-
 
     FuzzyCSVTable union(FuzzyCSVTable tbl) {
         return concatColumns(tbl, ConcatMethod.Column.STACK)
     }
 
 
-
     FuzzyCSVTable concatRows(FuzzyCSVTable table, ConcatMethod.Row method = ConcatMethod.Row.ALL) {
         switch (method) {
-            case  ConcatMethod.Row.COMMON:
+            case ConcatMethod.Row.COMMON:
                 return tbl(FuzzyCSV.joinOnIdx(this.csv, table.csv))
             case ConcatMethod.Row.LEFT:
                 return tbl(FuzzyCSV.leftJoinOnIdx(this.csv, table.csv))
@@ -552,8 +522,6 @@ class FuzzyCSVTable implements Iterable<Record> {
 
         }
     }
-
-
 
 
     /**
