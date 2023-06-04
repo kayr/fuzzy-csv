@@ -430,9 +430,6 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.getHeader();
     }
 
-    public List<String> getHeader(boolean copy) {
-        return table.getHeader(copy);
-    }
 
     public JFuzzyCSVTable setHeader(List<String> newHeader) {
         return table.setHeader(newHeader).javaApi();

@@ -29,15 +29,8 @@ class FuzzyCSVDbExporterTest {
 
     @After
     void tearDown() {
-//        gsql.execute("SHUTDOWN")
-        DDLUtils.allTables(gsql.connection, null)
-                .filter { it.TABLE_TYPE == 'TABLE' }
-                .each {
-                    println("Dropping******** $it.TABLE_NAME")
-                    gsql.execute("drop table $it.TABLE_NAME" as String)
-                }
-        gsql.close()
-//        gsql.close()
+        H2DbHelper.dropAllTables(gsql.connection)
+        gsql.connection.close();
     }
 
     def data = [

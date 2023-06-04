@@ -52,20 +52,22 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     FuzzyCSVTable normalizeHeaders(String prefix = 'C_', String postFix = '_') {
         def visited = new HashSet()
-        header.eachWithIndex { h, int i ->
+
+        def theHeader = header
+        theHeader.eachWithIndex { h, int i ->
             def origH = h
             h = h?.trim()
             if (!h) h = "$prefix$i$postFix".toString()
             else if (visited.contains(h)) h = "$prefix$i$postFix$h".toString()
             visited << origH
-            header.set(i, h)
+            theHeader.set(i, h)
         }
-
+        header = theHeader
         return this
     }
 
     FuzzyCSVTable renameHeader(String from, String to) {
-        FuzzyCSVUtils.replace(header, from, to)
+        header = FuzzyCSVUtils.replace(header, from, to)
         return this
     }
 
@@ -83,8 +85,10 @@ class FuzzyCSVTable implements Iterable<Record> {
 
 
     FuzzyCSVTable renameHeader(int from, String to) {
-        if (from >= 0 && from < header.size())
-            header.set(from, to)
+        def theHeader = header
+        if (from >= 0 && from < theHeader.size())
+            theHeader.set(from, to)
+        header = theHeader
         return this
     }
 
@@ -549,15 +553,9 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     List<String> getHeader() {
-        return getHeader(false)
+        return new ArrayList<String>(this.csv[0])
     }
 
-    List<String> getHeader(boolean copy) {
-        if (copy)
-            return new ArrayList<String>(this.csv[0])
-        else
-            this.csv[0]
-    }
 
     FuzzyCSVTable setHeader(List<String> newHeader) {
         this.csv[0] = FastIndexOfList.wrap(newHeader)
@@ -635,11 +633,11 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    FuzzyCSVTable addRowFromMap(Map<?,?> map) {
+    FuzzyCSVTable addRowFromMap(Map<?, ?> map) {
         return addRowsFromMaps(size() + 1, [map])
     }
 
-    FuzzyCSVTable addRowsFromMaps(int idx = size() + 1, List<Map<?,?>> maps) {
+    FuzzyCSVTable addRowsFromMaps(int idx = size() + 1, List<Map<?, ?>> maps) {
         def thisCsv = fromMapList(maps)
 
         def headers = FuzzyCSV.mergeHeaders(header, thisCsv.header)
@@ -661,12 +659,14 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    @Deprecated//remove
+    @Deprecated
+//remove
     String toCsvString() {
         return convert().toCsv().string()
     }
 
-    @Deprecated//remove
+    @Deprecated
+//remove
     List<Map<String, ?>> toMapList() {
         return convert().toMaps().result()
     }
@@ -796,53 +796,60 @@ class FuzzyCSVTable implements Iterable<Record> {
         return size
     }
 
-    @Deprecated//remove
+    @Deprecated
+//remove
     FuzzyCSVTable write(String filePath) {
         export().toCsv().export(filePath)
         return this
     }
 
-    @Deprecated//remove
+    @Deprecated
+//remove
     FuzzyCSVTable write(File file) {
-       export().toCsv().export(file.absolutePath)
+        export().toCsv().export(file.absolutePath)
         return this
 
     }
 
-    @Deprecated//remove
+    @Deprecated
+//remove
     FuzzyCSVTable write(Writer writer) {
         export().toCsv().export(writer)
         return this
     }
 
-    @Deprecated//remove
+    @Deprecated
+//remove
     FuzzyCSVTable writeToJson(String filePath) {
         export().toJson().export(filePath)
         return this
     }
 
-    @Deprecated//remove
+    @Deprecated
+//remove
     FuzzyCSVTable writeToJson(File file) {
         export().toJson().export(file.absolutePath)
         return this
     }
 
-    @Deprecated//remove
+    @Deprecated
+//remove
     FuzzyCSVTable writeToJson(Writer w) {
         export().toJson().export(w)
         return this
     }
 
-    @Deprecated//remove
+    @Deprecated
+//remove
     String toJsonText() {
-       convert().toJson().string()
+        convert().toJson().string()
     }
 
-    Exporter export(){
+    Exporter export() {
         return Exporter.create(this)
     }
 
-    Converter convert(){
+    Converter convert() {
         return Converter.create(this)
     }
 
@@ -951,28 +958,31 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    @Deprecated//remove
+    @Deprecated
+//remove
     FuzzyCSVTable dbExport(Connection connection, ExportParams params) {
         export().toDb().withConnection(connection)
-        .withExportParams(params)
-        .export()
+                .withExportParams(params)
+                .export()
         this
     }
 
-    @Deprecated//remove
+    @Deprecated
+//remove
     FuzzyCSVDbExporter.ExportResult dbExportAndGetResult(Connection connection, ExportParams params) {
-     return export().toDb().withConnection(connection)
-        .withExportParams(params)
-        .export()
-        .exportResult
+        return export().toDb().withConnection(connection)
+                .withExportParams(params)
+                .export()
+                .exportResult
 
     }
 
-    @Deprecated//remove
+    @Deprecated
+//remove
     FuzzyCSVTable dbUpdate(Connection connection, ExportParams params, String... identifiers) {
-       export().toDb().withConnection(connection)
-        .withExportParams(params)
-        .update(identifiers)
+        export().toDb().withConnection(connection)
+                .withExportParams(params)
+                .update(identifiers)
         this
     }
 
@@ -1037,7 +1047,8 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    @Deprecated//remove
+    @Deprecated
+//remove
     static FuzzyCSVTable toCSV(Sql sql, String query) {
         fromSqlQuery(sql, query)
     }

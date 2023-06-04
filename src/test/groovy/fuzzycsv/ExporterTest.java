@@ -259,6 +259,8 @@ class ExporterTest {
             dataSource = H2DbHelper.getDataSource();
             dbExporter = Exporter.Database.create()
                            .withDatasource(dataSource);
+
+            System.out.println("Active connections: " + dataSource.getActiveConnections());
         }
 
 
@@ -288,25 +290,29 @@ class ExporterTest {
 
         @Test
         void testExport() {
+            int activeConnections = dataSource.getActiveConnections();
             dbExporter.withTable(table).export();
             FuzzyCSVTable fromDB = fetchData();
             assertEquals(table.getCsv(), fromDB.getCsv());
-            assertEquals(0, dataSource.getActiveConnections());
+            assertEquals(activeConnections, dataSource.getActiveConnections());
         }
 
         @Test
         void testExportWithConnectionDoesNotCloseConnection() throws SQLException {
+            int activeConnections = dataSource.getActiveConnections();
             try (Connection connection = dataSource.getConnection()) {
                 exportWithNoDatasource().withConnection(connection).withTable(table).export();
                 FuzzyCSVTable fromDB = fetchData();
                 assertEquals(table.getCsv(), fromDB.getCsv());
-                assertEquals(1, dataSource.getActiveConnections());
+                assertEquals(activeConnections+1, dataSource.getActiveConnections());
             }
         }
 
         @Test
         void testUpdateWithConnectionDoesNotCloseConnection() throws SQLException {
+            int activeConnections = dataSource.getActiveConnections();
             try (Connection connection = dataSource.getConnection()) {
+
                 exportWithNoDatasource().withConnection(connection).withTable(table).export();
                 FuzzyCSVTable fromDB = fetchData();
                 assertEquals(table.size(), fromDB.size());
@@ -322,7 +328,7 @@ class ExporterTest {
 
                 FuzzyCSVTable updatedFromDB = fetchData();
                 assertEquals(updatedTable.getCsv(), updatedFromDB.getCsv());
-                assertEquals(1, dataSource.getActiveConnections());
+                assertEquals(activeConnections+1, dataSource.getActiveConnections());
             }
         }
 

@@ -4,13 +4,13 @@ import fuzzycsv.rdbms.DDLUtils
 import groovy.sql.Sql
 import org.h2.jdbcx.JdbcConnectionPool
 
-import javax.sql.DataSource
 import java.sql.Connection
+import java.util.concurrent.locks.ReentrantLock
 
 class H2DbHelper {
 
     static Sql getConnection() {
-        Sql.newInstance('jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false')
+        Sql.newInstance(getDataSource().connection)
     }
 
     static Sql getMySqlConnection() {
@@ -22,17 +22,30 @@ class H2DbHelper {
         return Sql.newInstance(dbURL, dbUserName, dbPassword, dbDriver)
     }
 
+    static ReentrantLock lock = new ReentrantLock()
+    static JdbcConnectionPool ds
+
     static JdbcConnectionPool getDataSource() {
-        //use h2 datasource
-        return JdbcConnectionPool.create('jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', 'sa', '')
+        if (ds != null) {
+            return ds
+        }
+        lock.lock()
+        try {
+            if (ds == null) {
+                ds = JdbcConnectionPool.create('jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', 'sa', '')
+            }
+        } finally {
+            lock.unlock()
+        }
+        return ds
     }
 
     static void dropAllAndDispose(JdbcConnectionPool ds) {
-         ds.connection.withCloseable { conn ->
-             dropAllTables(conn)
-         }
-        ds.dispose()
+        ds.connection.withCloseable { conn ->
+            dropAllTables(conn)
+        }
     }
+
     static void dropAllTables(Connection connection) {
         Sql gsql = new Sql(connection)
         DDLUtils.allTables(connection, null)

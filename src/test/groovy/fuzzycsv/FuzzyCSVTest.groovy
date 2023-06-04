@@ -1,11 +1,10 @@
 package fuzzycsv
 
-import groovy.sql.Sql
+
 import groovy.test.GroovyAssert
 import org.junit.Before
 import org.junit.Test
 
-import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.RecordFx.fn
 import static fuzzycsv.RecordFx.fx
@@ -788,6 +787,7 @@ class FuzzyCSVTest {
         def table = "CREATE TABLE PERSON (ID INT PRIMARY KEY, FIRSTNAME VARCHAR(64), LASTNAME VARCHAR(64));"
         def insert = "insert into PERSON values (1,'kay','r')"
 
+
         def sql = H2DbHelper.connection
         sql.execute("DROP TABLE IF EXISTS PERSON")
         sql.execute(table)
@@ -809,6 +809,7 @@ class FuzzyCSVTest {
         }
 
         sql.close()
+
 
     }
 
@@ -858,6 +859,8 @@ class FuzzyCSVTest {
         }
         //test aliases on columns
         assert [['1', '1']] == FuzzyCSVTable.parseCsv(f.text).csv
+
+        sql.close()
 
     }
 

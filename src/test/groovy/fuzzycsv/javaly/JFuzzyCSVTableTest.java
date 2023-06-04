@@ -976,14 +976,10 @@ class JFuzzyCSVTableTest {
         assertEquals(expected, actual);
     }
 
-    @Test
-    void testGetHeader() {
-        assertEquals(asList("color", "matching"), inputCsv.getHeader());
-    }
 
     @Test
     void testGetHeaderAsCopy() {
-        List<String> header = inputCsv.getHeader(true);
+        List<String> header = inputCsv.getHeader();
         header.add("new column");
         assertEquals(asList("color", "matching"), inputCsv.getHeader());
     }
