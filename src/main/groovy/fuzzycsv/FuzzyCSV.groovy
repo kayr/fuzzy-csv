@@ -795,7 +795,7 @@ class FuzzyCSV {
         return newHeaders
     }
 
-    static List<List> insertColumn(List<? extends List> csv, List<?> column, int colIdx) {
+    static List<List> addColumn(List<? extends List> csv, List<?> column, int colIdx) {
 
         if (colIdx > csv[0].size())
             throw new IllegalArgumentException("Column index is greater than the column size")

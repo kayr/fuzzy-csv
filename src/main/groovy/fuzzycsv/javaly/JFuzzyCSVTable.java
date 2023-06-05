@@ -453,7 +453,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
     public JFuzzyCSVTable insertColumn(List<?> column, int colIdx) {
-        return table.insertColumn(column, colIdx).javaApi();
+        return table.addColumn(colIdx, column).javaApi();
     }
 
     public JFuzzyCSVTable putInColumn(List<?> colValues, int colIdx) {

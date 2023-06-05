@@ -456,7 +456,7 @@ class FuzzyCSVTest {
     void testInsertColumn() {
         def newColumn = ['phone', '775']
         def table = tbl(csv3)
-        def actualCsv = table.insertColumn(newColumn, 1).csv
+        def actualCsv = table.addColumn(1, newColumn).csv
         def expectCSV = [
                 ['namel', 'phone', 'age', 'sex'],
                 ['alex', '775', '21', 'male']
@@ -471,18 +471,18 @@ class FuzzyCSVTest {
                           ['one', 'two'],
                           ['one', 'two']])
 
-        assert table2.copy().insertColumn(newColumn, 2) == tbl([['one', 'two', 'phone'],
-                                                                ['one', 'two', '775'],
-                                                                ['one', 'two', null],
-                                                                ['one', 'two', null],
-                                                                ['one', 'two', null],
-                                                                ['one', 'two', null],
-                                                                ['one', 'two', null]])
+        assert table2.copy().addColumn(2, newColumn) == tbl([['one', 'two', 'phone'],
+                                                             ['one', 'two', '775'],
+                                                             ['one', 'two', null],
+                                                             ['one', 'two', null],
+                                                             ['one', 'two', null],
+                                                             ['one', 'two', null],
+                                                             ['one', 'two', null]])
 
         assert expectCSV == actualCsv
 
         try {
-            table2.insertColumn(newColumn, 3)
+            table2.addColumn(3, newColumn)
             fail("Should not reach here")
         } catch (IllegalArgumentException x) {
             assert x.message.contains("Column index is greater than the column size")

@@ -623,8 +623,8 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(FuzzyCSV.setCell(this.csv, col, row, value))
     }
 
-    FuzzyCSVTable insertColumn(List<?> column, int colIdx) {
-        tbl(FuzzyCSV.insertColumn(this.csv, column, colIdx))
+    FuzzyCSVTable addColumn(int colIdx, List<?> column) {
+        tbl(FuzzyCSV.addColumn(this.csv, column, colIdx))
     }
 
 
