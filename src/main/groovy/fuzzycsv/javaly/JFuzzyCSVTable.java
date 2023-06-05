@@ -182,11 +182,11 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
     public <T> T value(int rowIdx, int colIdx) {
-        return table.get(rowIdx, colIdx);
+        return table.get(colIdx, rowIdx);
     }
 
     public <T> T value(int rowIdx, String colName) {
-        return table.get(rowIdx, colName);
+        return table.get(colName, rowIdx);
     }
 
     @SuppressWarnings("unchecked")

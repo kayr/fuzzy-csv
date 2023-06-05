@@ -172,7 +172,7 @@ public class Converter {
                 String[] newRow = new String[columns];
 
                 for (int c = 0; c < columns; c++) {
-                    Object cellValue = theTable.get(r + 1, c);
+                    Object cellValue = theTable.get(c, r + 1);
 
                     if (cellValue == null || cellValue.equals("")) cellValue = "-";
                     else if (cellValue instanceof FuzzyCSVTable)

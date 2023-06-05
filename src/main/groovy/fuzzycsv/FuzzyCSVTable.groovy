@@ -271,11 +271,11 @@ class FuzzyCSVTable implements Iterable<Record> {
         return Record.getRecord(this.csv, idx);
     }
 
-    def <T> T get(int row, int col) {
+    def <T> T get(int col, int row) {
         return this.csv[row][col]
     }
 
-    def <T> T get(int rowIdx, String colName) {
+    def <T> T get(String colName, int rowIdx) {
         return row(rowIdx).val(colName)
     }
 
