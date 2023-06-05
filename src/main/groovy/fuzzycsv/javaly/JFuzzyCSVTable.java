@@ -436,8 +436,8 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.copy().javaApi();
     }
 
-    public JFuzzyCSVTable filter(Fx1<Record, Object> func) {
-        return table.filter(FxUtils.toCls(func)).javaApi();
+    public JFuzzyCSVTable filter(Fx1<Record, Boolean> func) {
+        return table.filter(func).javaApi();
     }
 
     public JFuzzyCSVTable delete(Fx1<Record, Object> func) {

@@ -605,17 +605,19 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    FuzzyCSVTable filter(@ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func) {
-        filter(fx(func))
-    }
-
-    FuzzyCSVTable delete(@ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func) {
-        filter { func.call(it) == false }
+    FuzzyCSVTable filter(Fx1<Record,Boolean> func) {
+        filter(FxUtils.recordFx (func))
     }
 
     FuzzyCSVTable filter(RecordFx fx) {
         tbl(FuzzyCSV.filter(this.csv, fx))
     }
+
+
+    FuzzyCSVTable delete(@ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func) {
+        filter { func.call(it) == false }
+    }
+
 
     FuzzyCSVTable set(String header, int rowIdx, Object value) {
         tbl(FuzzyCSV.setCellWithHeader(this.csv, header, rowIdx, value))
