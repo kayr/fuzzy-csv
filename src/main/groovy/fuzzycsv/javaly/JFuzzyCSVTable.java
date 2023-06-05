@@ -411,16 +411,16 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.transform(fns).javaApi();
     }
 
-    public JFuzzyCSVTable transform(Fx1<Object, Object> fx) {
-        return table.transform(FxUtils.toCls(fx)).javaApi();
+    public JFuzzyCSVTable mapCells(Fx1<Object, Object> fx) {
+        return table.mapCells(FxUtils.toCls(fx)).javaApi();
     }
 
-    public JFuzzyCSVTable transform(Fx2<Record, Object, Object> fx) {
-        return table.transform(FxUtils.toCls(fx)).javaApi();
+    public JFuzzyCSVTable mapCells(Fx2<Record, Object, Object> fx) {
+        return table.mapCells(FxUtils.toCls(fx)).javaApi();
     }
 
-    public JFuzzyCSVTable transform(Fx3<Record, Object, Integer, Object> fx) {
-        return table.transform(FxUtils.toCls(fx)).javaApi();
+    public JFuzzyCSVTable mapCells(Fx3<Record, Object, Integer, Object> fx) {
+        return table.mapCells(FxUtils.toCls(fx)).javaApi();
     }
 
     public List<String> getHeader() {

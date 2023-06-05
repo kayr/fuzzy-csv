@@ -1608,7 +1608,7 @@ class JFuzzyCSVTableTest {
 
         @Test
         void transform() {
-            JFuzzyCSVTable transformed = inputCsv.transform(arg -> "-" + arg + "-");
+            JFuzzyCSVTable transformed = inputCsv.mapCells(arg -> "-" + arg + "-");
             /*
                  asList("color", "matching"),
       asList("Red", "Black"),
@@ -1632,7 +1632,7 @@ class JFuzzyCSVTableTest {
 
         @Test
         void transform2() {
-            JFuzzyCSVTable transformed = inputCsv.transform((r, o) -> r.idx() + "-" + o + "-");
+            JFuzzyCSVTable transformed = inputCsv.mapCells((r, o) -> r.idx() + "-" + o + "-");
 
             JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
               asList("color", "matching"),
@@ -1650,7 +1650,7 @@ class JFuzzyCSVTableTest {
 
         @Test
         void transform3() {
-            JFuzzyCSVTable transformed = inputCsv.transform((r, o, cidx) -> r.idx() + "-" + o + "-" + cidx);
+            JFuzzyCSVTable transformed = inputCsv.mapCells((r, o, cidx) -> r.idx() + "-" + o + "-" + cidx);
 
             JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
               asList("color", "matching"),

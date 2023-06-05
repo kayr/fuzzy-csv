@@ -581,7 +581,7 @@ class FuzzyCSVTable implements Iterable<Record> {
      * @param fx
      * @return
      */
-    FuzzyCSVTable transform(Closure fx) {
+    FuzzyCSVTable mapCells(Closure fx) {
         return tbl(FuzzyCSV.transform(this.csv, fx))
     }
 
@@ -918,7 +918,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     private FuzzyCSVTable toGrid0(Set<GridOptions> gridOptions) {
         def table = copy()
         table.header.each { table.renameHeader(it, it?.toString()?.replace('\t', '   ')) }
-        return table.transform { gridifyCell(it, gridOptions) }
+        return table.mapCells { gridifyCell(it, gridOptions) }
     }
 
     private FuzzyCSVTable mayBeGridify(Set<GridOptions> options) {

@@ -209,7 +209,7 @@ class FuzzyCSVTableTest {
     @Test
     void testTransformCell() {
         def subCountiesAndIdx = []
-        def copy = tbl(csv2).copy().transform { v -> "$v".padRight(10, '-') }
+        def copy = tbl(csv2).copy().mapCells { v -> "$v".padRight(10, '-') }
         assert [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
                 ['Hakibale--', '18.1------', 'null------', 'null------'],
                 ['Kabonero--', '1---------', 'null------', 'null------'],
@@ -220,7 +220,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testTransformCellWithRecord() {
-        def copy = tbl(csv2).copy().transform { r, v -> "${r['sub_county']}-$v".toString() }
+        def copy = tbl(csv2).copy().mapCells { r, v -> "${r['sub_county']}-$v".toString() }
         assert [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
                 ['Hakibale-Hakibale', 'Hakibale-Hakibale-18.1', 'Hakibale-Hakibale-null', 'Hakibale-Hakibale-null'],
                 ['Kabonero-Kabonero', 'Kabonero-Kabonero-1', 'Kabonero-Kabonero-null', 'Kabonero-Kabonero-null'],
@@ -231,7 +231,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testTransformCellWith3Params() {
-        def copy = tbl(csv2).copy().transform { r, v, i ->
+        def copy = tbl(csv2).copy().mapCells { r, v, i ->
             if (i == 0) v else "${r['sub_county']}-$v".toString()
         }
 
@@ -1149,7 +1149,7 @@ p\tfema+le\t31'''
 
 
         def text = FuzzyCSVTable.fromJsonText(json)
-                .transform { it instanceof BigDecimal ? it.stripTrailingZeros().toPlainString() : it }
+                .mapCells { it instanceof BigDecimal ? it.stripTrailingZeros().toPlainString() : it }
                 .select('amount', 'chargeOwner', 'type', 'dsd')
         Assert.assertEquals '''
 ╔════════╤═════════════╤═══════════╤══════╗
