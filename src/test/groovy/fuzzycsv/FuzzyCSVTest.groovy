@@ -725,11 +725,11 @@ class FuzzyCSVTest {
         ]
 
 
-        def actual = tbl(orig).transform('dis', fx { "SC ${it.dis}" }).csv
+        def actual = tbl(orig).mapColumns( fx { "SC ${it.dis}" }.az('dis')).csv
         assert actual == expected
 
         GroovyAssert.shouldFail(IllegalArgumentException) {
-            tbl(orig).transform('fakeColumn', fx {})
+            tbl(orig).mapColumns(fx {}.az("fakeColumn"))
         }
 
 
@@ -752,7 +752,7 @@ class FuzzyCSVTest {
         ]
 
 
-        def actual = tbl(orig).transform(fx('dis') { "SC ${it.dis}" },
+        def actual = tbl(orig).mapColumns(fx('dis') { "SC ${it.dis}" },
                 fx('qlt') { "$it.dis $it.qlt" }).csv
         assert actual == expected
 

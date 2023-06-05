@@ -555,7 +555,7 @@ class FuzzyCSVTableTest {
 
         def result = tbl(csv)
                 .unwind('map')
-                .transform('map') { it['map'] as String }
+                .mapColumn('map') { it['map'] as String }
         assert result.csv == [['rec', 'map'],
                               ['a', 'name=Ronald'],
                               ['a', 'sex=Male'],

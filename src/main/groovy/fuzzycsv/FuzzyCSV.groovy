@@ -579,7 +579,7 @@ class FuzzyCSV {
      * Transforms a table with a source.With the given transformer.
      *
      */
-    static transform(List<? extends List> csv, RecordFx... fxs) {
+    static mapColumns(List<? extends List> csv, RecordFx... fxs) {
         def newHeaders = new ArrayList<>(csv[0])
 
         fxs.each { fx ->
@@ -1036,7 +1036,7 @@ class FuzzyCSV {
     }
 
     @CompileStatic
-    static List<List> transform(List<List> csv, Closure<Object> transform) {
+    static List<List> mapCells(List<List> csv, Closure<Object> transform) {
 
         def maxParams = transform.getMaximumNumberOfParameters()
         def header = csv[0]

@@ -1,5 +1,6 @@
 package fuzzycsv
 
+import fuzzycsv.javaly.Fx1
 import groovy.transform.CompileStatic
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.SimpleType
@@ -54,7 +55,7 @@ class FuzzyStaticApi {
      * Record function with coercion OFF -> FASTER
      * @param function
      */
-    static RecordFx fx(@ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure function) {
+    static RecordFx fx(Fx1<Record,Object> function) {
         return RecordFx.fx(function)
     }
 

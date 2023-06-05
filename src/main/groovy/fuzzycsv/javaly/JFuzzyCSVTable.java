@@ -403,12 +403,12 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    public JFuzzyCSVTable transform(String column, Fx1<Record, Object> func) {
-        return table.transform(column, FxUtils.toCls(func)).javaApi();
+    public JFuzzyCSVTable mapColumn(String column, Fx1<Record, Object> func) {
+        return table.mapColumn(column, func).javaApi();
     }
 
-    public JFuzzyCSVTable transform(RecordFx... fns) {
-        return table.transform(fns).javaApi();
+    public JFuzzyCSVTable mapColumn(RecordFx... fns) {
+        return table.mapColumns(fns).javaApi();
     }
 
     public JFuzzyCSVTable mapCells(Fx1<Object, Object> fx) {

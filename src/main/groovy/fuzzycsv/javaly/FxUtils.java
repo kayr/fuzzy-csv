@@ -66,7 +66,7 @@ public class FxUtils {
     }
 
     public static RecordFx recordFx(String name, Fx1<Record, ?> fx) {
-        return RecordFx.fx(name, toCls(fx));
+        return RecordFx.fx(name, fx);
     }
 
     public static RecordFx recordFx(Fx1<Record, ?> fx) {

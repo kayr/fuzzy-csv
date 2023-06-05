@@ -1,5 +1,6 @@
 package fuzzycsv
 
+import fuzzycsv.javaly.Fx1
 import groovy.transform.CompileStatic
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.SimpleType
@@ -7,7 +8,7 @@ import groovy.transform.stc.SimpleType
 class RecordFx {
 
     String name
-    Closure c
+    Fx1<Record,?>  c
     ResolutionStrategy resolutionStrategy
     private boolean useFuzzy = false
     public headerEnabled = false
@@ -15,7 +16,7 @@ class RecordFx {
 
     protected RecordFx() {}
 
-    RecordFx(String name, @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure c) {
+    RecordFx(String name,  Fx1<Record,Object> c) {
         this.name = name
         this.c = c
     }
@@ -68,15 +69,15 @@ class RecordFx {
     /**
      * Record function with coercion OFF -> FASTER
      * @param function
-     * @return
+     * @returnq
      */
     @CompileStatic
-    static RecordFx fx(@ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure function) {
+    static RecordFx fx(Fx1<Record,?> function) {
         fx(RecordFx.class.getSimpleName(), function)
     }
 
     @CompileStatic
-    static RecordFx fx(String name, @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure function) {
+    static RecordFx fx(String name,  Fx1<Record,?> function) {
         def r = new RecordFx(name, function)
         r.useCoercion = false
         return r

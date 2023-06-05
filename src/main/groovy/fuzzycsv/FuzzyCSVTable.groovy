@@ -558,23 +558,23 @@ class FuzzyCSVTable implements Iterable<Record> {
         return tbl(tableName, FuzzyCSV.deleteColumn(this.csv, columnNames))
     }
 
+    /**
+     * @deprecated TBR: name not consistent with other methods
+     */
+    @Deprecated
     FuzzyCSVTable delete(String[] columnNames) {
         return deleteColumns(columnNames)
     }
 
-    FuzzyCSVTable transform(String column,
-                            @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func) {
-        transform(column, fx(func))
+    FuzzyCSVTable mapColumn(String column,
+                            Fx1<Record, Object> func) {
+        mapColumns(fx(func).az(column))
     }
 
-    FuzzyCSVTable transform(RecordFx... fns) {
-        return tbl(FuzzyCSV.transform(this.csv, fns))
+    FuzzyCSVTable mapColumns(RecordFx... fns) {
+        return tbl(FuzzyCSV.mapColumns(this.csv, fns))
     }
 
-    FuzzyCSVTable transform(String column, RecordFx fx) {
-        fx.setName(column)
-        return tbl(FuzzyCSV.transform(this.csv, fx))
-    }
 
     /**
      * Transform every cell
@@ -582,7 +582,7 @@ class FuzzyCSVTable implements Iterable<Record> {
      * @return
      */
     FuzzyCSVTable mapCells(Closure fx) {
-        return tbl(FuzzyCSV.transform(this.csv, fx))
+        return tbl(FuzzyCSV.mapCells(this.csv, fx))
     }
 
     List<String> getHeader() {
@@ -601,8 +601,8 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    FuzzyCSVTable filter(Fx1<Record,Boolean> func) {
-        filter(FxUtils.recordFx (func))
+    FuzzyCSVTable filter(Fx1<Record, Boolean> func) {
+        filter(FxUtils.recordFx(func))
     }
 
     FuzzyCSVTable filter(RecordFx fx) {

@@ -944,7 +944,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testTransform() {
-        JFuzzyCSVTable actual = inputCsv.transform("color", r -> r.d("color").str().concat(" *"));
+        JFuzzyCSVTable actual = inputCsv.mapColumn("color", r -> r.d("color").str().concat(" *"));
 
         JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
           asList("color", "matching"),
@@ -959,7 +959,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testTransformWithFunctions() {
-        JFuzzyCSVTable actual = inputCsv.transform(
+        JFuzzyCSVTable actual = inputCsv.mapColumn(
           recordFx("color", r -> r.d("color").str().concat(" *")),
           recordFx("matching", r -> r.d("matching").str().concat(" *"))
         );
