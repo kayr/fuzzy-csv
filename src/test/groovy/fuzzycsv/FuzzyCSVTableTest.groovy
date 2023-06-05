@@ -567,7 +567,7 @@ class FuzzyCSVTableTest {
     @Test
     void testAggregationEmptyTable() {
         def csv = tbl([['a', 'b']])
-        def result = csv.autoAggregate('a', sum('b').az('sum'))
+        def result = csv.summarize('a', sum('b').az('sum'))
         assert result.csv.size() == 1
         assert result.header.contains('sum')
         assert result.header.size() == 2

@@ -120,12 +120,8 @@ class FuzzyCSVTable implements Iterable<Record> {
         aggregate(columns as List)
     }
 
-    FuzzyCSVTable summarize(Object... columns) {
-        return autoAggregate(columns)
-    }
-
     @CompileStatic
-    FuzzyCSVTable autoAggregate(Object... columns) {
+    FuzzyCSVTable summarize(Object... columns) {
         def groupByColumns = columns.findAll { !(it instanceof Aggregator) }
         def fn = fx { Record r ->
             def answer = groupByColumns.collect { c ->
@@ -161,7 +157,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable distinct() {
-        return autoAggregate(header as Object[])
+        return summarize(header as Object[])
     }
 
     FuzzyCSVTable distinctBy(Object... columns) {

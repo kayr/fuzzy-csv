@@ -399,7 +399,7 @@ class FuzzyCSVTest {
         //fuzzy csv table
         join = tbl(csv_1).fullJoin(tbl(csv_2), fx {
             it.Name == it.'@Name'
-        }).printTable().select(fx { it[0] ?: it[4] }.az('Name'), 'Sex', 'Age', 'Location', 'Subject', 'Mark')//use index of 4 since there will be a null value in the first column of `name`
+        }).select(fx { it[0] ?: it[4] }.az('Name'), 'Sex', 'Age', 'Location', 'Subject', 'Mark')//use index of 4 since there will be a null value in the first column of `name`
         assertEquals expected.toString(), join.csv.toString()
 
         //fuzzy csv table
