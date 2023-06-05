@@ -191,7 +191,7 @@ class ExporterTest {
         @Test
         void testWithCustomEscape() throws IOException {
             Path tempFile = createTempFile();
-            FuzzyCSVTable tableCopy = table.copy().putInCell(1, 1, "J\"ane");
+            FuzzyCSVTable tableCopy = table.copy().set(1, 1, "J\"ane");
             Exporter.Csv.create().withTable(tableCopy).withEscape("'").export(tempFile);
 
             assertEquals("\"ID\",\"NAME\",\"AGE\"\n" +
@@ -205,7 +205,7 @@ class ExporterTest {
         @Test
         void testWithAllCustoms() throws IOException {
             Path tempFile = createTempFile();
-            FuzzyCSVTable tableCopy = table.copy().putInCell(1, 1, "J'ane");
+            FuzzyCSVTable tableCopy = table.copy().set(1, 1, "J'ane");
             Exporter.Csv.create()
               .withTable(tableCopy)
               .withEscape("-")

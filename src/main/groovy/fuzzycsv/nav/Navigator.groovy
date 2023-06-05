@@ -143,7 +143,7 @@ class Navigator {
     }
 
     Navigator value(obj, FuzzyCSVTable t = table) {
-        t.putInCell(col, row, obj)
+        t.set(col, row, obj)
         return this
     }
 

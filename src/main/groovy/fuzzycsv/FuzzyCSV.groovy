@@ -87,13 +87,13 @@ class FuzzyCSV {
     }
 
 
-    static List<List> putInCellWithHeader(List<? extends List> csv, String columnHeader, int rowIdx, Object value) {
+    static List<List> setCellWithHeader(List<? extends List> csv, String columnHeader, int rowIdx, Object value) {
         def position = Fuzzy.findPosition(csv[0], columnHeader)
-        return putInCell(csv, position, rowIdx, value)
+        return setCell(csv, position, rowIdx, value)
 
     }
 
-    static List<List> putInCell(List<? extends List> csv, int colIdx, int rowIdx, Object value) {
+    static List<List> setCell(List<? extends List> csv, int colIdx, int rowIdx, Object value) {
         csv[rowIdx][colIdx] = value
         return csv
     }
@@ -998,7 +998,7 @@ class FuzzyCSV {
         return csv
     }
 
-    static List<List> cleanUpRepeats(List<? extends List> strings, String... columns) {
+    static List<List> removeDuplicateCells(List<? extends List> strings, String... columns) {
 
         def headers = strings[0]
 

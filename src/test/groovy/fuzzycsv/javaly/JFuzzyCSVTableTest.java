@@ -910,7 +910,6 @@ class JFuzzyCSVTableTest {
 
         assertEquals(expected, inputCsv.union(inputCsv2));
         assertEquals(expected, inputCsv.union(inputCsv2.unwrap()));
-        assertEquals(expected, inputCsv.union(inputCsv2.getCsv()));
     }
 
     @Test

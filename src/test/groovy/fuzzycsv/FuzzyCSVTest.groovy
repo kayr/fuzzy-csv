@@ -494,7 +494,7 @@ class FuzzyCSVTest {
     @Test
     void testPutInCell() {
 
-        def actualCsv = tbl(csv3).putInCell(1, 1, '44').csv
+        def actualCsv = tbl(csv3).set(1, 1, '44').csv
         def expectCSV = [
                 ['namel', 'age', 'sex'] as String[],
                 ['alex', '44', 'male'] as String[]
@@ -502,7 +502,7 @@ class FuzzyCSVTest {
 
         assert expectCSV == actualCsv
 
-        actualCsv = tbl(csv3).putInCell('age', 1, '54').csv
+        actualCsv = tbl(csv3).set('age', 1, '54').csv
         expectCSV = [
                 ['namel', 'age', 'sex'] as String[],
                 ['alex', '54', 'male'] as String[]
@@ -780,7 +780,7 @@ class FuzzyCSVTest {
                 [null, null, null, null],
                 ['female', null, 4, null],
                 [null, null, 5, null],
-                [null, null, 4, null]] == tbl(csv).cleanUpRepeats().csv
+                [null, null, 4, null]] == tbl(csv).removeDuplicateCells().csv
     }
 
     @Test
@@ -803,7 +803,7 @@ class FuzzyCSVTest {
                 [null, 2, null, null],
                 ['female', null, 4, null],
                 [null, null, 5, null],
-                [null, null, 4, null]] == FuzzyCSV.cleanUpRepeats(csv, 'sex', 'p4')
+                [null, null, 4, null]] == FuzzyCSV.removeDuplicateCells(csv, 'sex', 'p4')
     }
 
     @Test

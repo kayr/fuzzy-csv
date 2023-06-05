@@ -621,12 +621,12 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(FuzzyCSV.filter(this.csv, fx))
     }
 
-    FuzzyCSVTable putInCell(String header, int rowIdx, Object value) {
-        tbl(FuzzyCSV.putInCellWithHeader(this.csv, header, rowIdx, value))
+    FuzzyCSVTable set(String header, int rowIdx, Object value) {
+        tbl(FuzzyCSV.setCellWithHeader(this.csv, header, rowIdx, value))
     }
 
-    FuzzyCSVTable putInCell(int col, int row, Object value) {
-        tbl(FuzzyCSV.putInCell(this.csv, col, row, value))
+    FuzzyCSVTable set(int col, int row, Object value) {
+        tbl(FuzzyCSV.setCell(this.csv, col, row, value))
     }
 
     FuzzyCSVTable insertColumn(List<?> column, int colIdx) {
@@ -648,8 +648,8 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    FuzzyCSVTable cleanUpRepeats(String[] columns) {
-        tbl(FuzzyCSV.cleanUpRepeats(this.csv, columns))
+    FuzzyCSVTable removeDuplicateCells(String[] columns) {
+        tbl(FuzzyCSV.removeDuplicateCells(this.csv, columns))
     }
 
     FuzzyCSVTable addEmptyRow(int number = 1) {

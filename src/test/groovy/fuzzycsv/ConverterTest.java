@@ -49,7 +49,7 @@ class ConverterTest {
 
         @Test
         void testWithCustomEscape() {
-            FuzzyCSVTable tableCopy = table.copy().putInCell(1, 1, "J\"ane");
+            FuzzyCSVTable tableCopy = table.copy().set(1, 1, "J\"ane");
             String output = Converter.Csv.create()
                               .withTable(tableCopy)
                               .withEscape("-")
@@ -64,7 +64,7 @@ class ConverterTest {
 
         @Test
         void testWithAllCustoms() {
-            FuzzyCSVTable tableCopy = table.copy().putInCell(1, 1, "J'ane");
+            FuzzyCSVTable tableCopy = table.copy().set(1, 1, "J'ane");
             String ouput = Converter.Csv.create()
                              .withTable(tableCopy)
                              .withEscape("-")

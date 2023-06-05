@@ -381,9 +381,6 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return union(tbl.table);
     }
 
-    public JFuzzyCSVTable union(List<? extends List> otherCsv) {
-        return table.union(otherCsv).javaApi();
-    }
 
     public JFuzzyCSVTable union(FuzzyCSVTable tbl) {
         return table.union(tbl).javaApi();
@@ -448,11 +445,11 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
     public JFuzzyCSVTable putInCell(String header, int rowIdx, Object value) {
-        return table.putInCell(header, rowIdx, value).javaApi();
+        return table.set(header, rowIdx, value).javaApi();
     }
 
     public JFuzzyCSVTable putInCell(int col, int row, Object value) {
-        return table.putInCell(col, row, value).javaApi();
+        return table.set(col, row, value).javaApi();
     }
 
     public JFuzzyCSVTable insertColumn(List<?> column, int colIdx) {
@@ -464,7 +461,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
     public JFuzzyCSVTable cleanUpRepeats(String... columns) {
-        return table.cleanUpRepeats(columns).javaApi();
+        return table.removeDuplicateCells(columns).javaApi();
     }
 
     public JFuzzyCSVTable addRecordArr(Object... item) {

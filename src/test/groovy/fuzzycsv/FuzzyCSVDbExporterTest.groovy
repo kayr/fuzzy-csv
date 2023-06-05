@@ -10,6 +10,7 @@ import org.junit.Before
 import org.junit.Test
 
 import static fuzzycsv.FuzzyStaticApi.fx
+import static fuzzycsv.FuzzyStaticApi.tbl
 
 class FuzzyCSVDbExporterTest {
 
@@ -217,8 +218,8 @@ VALUES
                 FuzzyCSVTable
                         .tbl(data)
                         .copy()
-                        .union(FuzzyCSV.copy(data))
-                        .union(FuzzyCSV.copy(data))
+                        .union(tbl(data).copy())
+                        .union(tbl(data).copy())
                         .addColumn(fx { it.idx() }.az('idx'))
                         .moveCol('idx', 0)
 
@@ -246,8 +247,8 @@ VALUES
                 FuzzyCSVTable
                         .tbl(data)
                         .copy()
-                        .union(FuzzyCSV.copy(data))
-                        .union(FuzzyCSV.copy(data))
+                        .union(tbl(data).copy())
+                        .union(tbl(data).copy())
                         .addColumn(fx { it.idx() }.az('idx'))
                         .moveCol('idx', 0)
                         .delete { it.idx() == 9 }
@@ -275,8 +276,8 @@ VALUES
                 FuzzyCSVTable
                         .tbl(data)
                         .copy()
-                        .union(FuzzyCSV.copy(data))
-                        .union(FuzzyCSV.copy(data))
+                        .union(tbl(data).copy())
+                        .union(tbl(data).copy())
                         .addColumn(fx { it.idx() }.az('idx'))
                         .moveCol('idx', 0)
 
