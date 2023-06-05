@@ -139,7 +139,7 @@ class Navigator {
 
 
     def value(FuzzyCSVTable t = table) {
-        return t.value(this)
+        return t.get(this)
     }
 
     Navigator value(obj, FuzzyCSVTable t = table) {

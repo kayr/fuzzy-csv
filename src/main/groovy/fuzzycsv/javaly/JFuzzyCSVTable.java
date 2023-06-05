@@ -191,7 +191,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
 
     @SuppressWarnings("unchecked")
     public <T> T value(Navigator navigator) {
-        return (T) table.value(navigator);
+        return (T) table.get(navigator);
     }
 
     @SuppressWarnings("unchecked")

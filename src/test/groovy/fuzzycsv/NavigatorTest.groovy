@@ -62,7 +62,7 @@ class NavigatorTest {
 
         def copy = tbl(data).copy()
         assert navigator.value("Hhe", copy)
-        assert copy.value(navigator) == 'Hhe'
+        assert copy.get(navigator) == 'Hhe'
 
         navigator.right().right().down().value(900, copy)
         assert copy.csv[1][2] == 900

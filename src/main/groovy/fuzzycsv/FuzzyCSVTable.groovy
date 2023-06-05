@@ -275,7 +275,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         return row(rowIdx).val(colName)
     }
 
-    def value(Navigator navigator) {
+    def get(Navigator navigator) {
         return this.csv[navigator.row][navigator.col]
     }
 
