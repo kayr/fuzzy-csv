@@ -550,7 +550,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable addColumnByCopy(RecordFx... fnz) {
-        def newHeader = [*header, *fnz]
+        def newHeader = [*header.indices, *fnz]
         return select(newHeader)
     }
 
