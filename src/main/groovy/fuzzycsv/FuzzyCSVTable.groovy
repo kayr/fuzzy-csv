@@ -600,10 +600,6 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(FuzzyCSV.copy(this.csv))
     }
 
-    FuzzyCSVTable clone() {
-        return tbl(this.csv.clone())
-    }
-
 
     FuzzyCSVTable filter(Fx1<Record,Boolean> func) {
         filter(FxUtils.recordFx (func))
