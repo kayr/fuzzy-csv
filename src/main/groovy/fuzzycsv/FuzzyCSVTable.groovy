@@ -566,6 +566,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         return deleteColumns(columnNames)
     }
 
+
     FuzzyCSVTable mapColumn(String column,
                             Fx1<Record, Object> func) {
         mapColumns(fx(func).az(column))
@@ -628,17 +629,13 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    FuzzyCSVTable putInColumn(List colValues, int colIdx) {
+    FuzzyCSVTable replaceColumn(int colIdx, List colValues) {
         tbl(FuzzyCSV.putInColumn(this.csv, colValues, colIdx))
     }
 
-    FuzzyCSVTable putInColumn(int colId,
-                              @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func, FuzzyCSVTable sourceTable = null) {
-        putInColumn(colId, fx(func), sourceTable)
-    }
-
-    FuzzyCSVTable putInColumn(int colId, RecordFx value, FuzzyCSVTable sourceTable = null) {
-        tbl(FuzzyCSV.putInColumn(this.csv, value, colId, sourceTable?.csv))
+    FuzzyCSVTable mutateColumn(int colIdx,
+                               Fx1<Record,Object> func) {
+        tbl(FuzzyCSV.putInColumn(this.csv, fx(func).az(null), colIdx, null))
     }
 
 

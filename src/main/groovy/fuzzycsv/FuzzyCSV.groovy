@@ -100,9 +100,10 @@ class FuzzyCSV {
 
     @CompileStatic
     static List<List> putInColumn(List<? extends List> csvList, List column, int insertIdx) {
+        def size = column.size()
         csvList.eachWithIndex { List entry, int lstIdx ->
             def entryList = entry
-            def cellValue = lstIdx >= column.size() ? null : column[lstIdx]
+            def cellValue = lstIdx >= size ? null : column[lstIdx]
             entryList[insertIdx] = cellValue
         }
         return csvList
@@ -196,7 +197,7 @@ class FuzzyCSV {
         csvList.eachWithIndex { List entry, int lstIdx ->
             def cellValue
             if (lstIdx == 0) {
-                cellValue = column.name
+                cellValue = column.name?:header[insertIdx]
             } else {
                 def record = Record.getRecord(header, entry, csvList, lstIdx).setLeftCsv(sourceCSV)
                 if (sourceCSV) {
@@ -580,7 +581,7 @@ class FuzzyCSV {
      *
      */
     static mapColumns(List<? extends List> csv, RecordFx... fxs) {
-        def newHeaders = new ArrayList<>(csv[0])
+        def newHeaders = csv[0].indices.toList()
 
         fxs.each { fx ->
             def columnPosition = Fuzzy.findPosition(csv[0], fx.name)

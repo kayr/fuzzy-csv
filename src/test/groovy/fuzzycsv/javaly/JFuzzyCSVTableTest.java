@@ -317,7 +317,8 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testPutInColumn() {
-        JFuzzyCSVTable result = inputCsv.putInColumn(0, recordFx("New Name", r -> "Yellow"));
+        JFuzzyCSVTable result = inputCsv.mutateColum(0, r -> "Yellow")
+                                  .renameHeader("color", "New Name");
 
         JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
           asList("New Name", "matching"),
@@ -328,31 +329,10 @@ class JFuzzyCSVTableTest {
         );
 
         assertEquals(expected, result);
+        assertSame(result.getCsv(),inputCsv.getCsv());
     }
 
-    @Test
-    void testPutInColumnWithSourceTable() {
-        //create a radom table of players
-        JFuzzyCSVTable players = JFuzzyCSVTable.fromRows(
-          asList("name", "team"),
-          asList("John", "Red"),
-          asList("Mike", "Blue"),
-          asList("Bob", "Green"),
-          asList("Jack", "Yellow")
-        );
 
-        JFuzzyCSVTable result = inputCsv.putInColumn(0, recordFx("New Name", r -> r.left("name") + " " + r.f("New Name")), players.unwrap());
-
-        JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
-          asList("New Name", "matching"),
-          asList("John Red", "Black"),
-          asList("Mike Purple", "Black"),
-          asList("Bob Green", "Beige"),
-          asList("Jack Blue", "Gray")
-        );
-
-        assertEquals(expected, result);
-    }
 
 
     @Test
@@ -1077,7 +1057,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testPutListInColumn() {
-        JFuzzyCSVTable result = inputCsv.copy().putInColumn(asList("my-header", "value1", "value2", "value3", "value4"), 1);
+        JFuzzyCSVTable result = inputCsv.copy().mutateColum(asList("my-header", "value1", "value2", "value3", "value4"), 1);
         JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
           asList("color", "my-header"),
           asList("Red", "value1"),

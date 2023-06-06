@@ -711,21 +711,21 @@ class FuzzyCSVTest {
     @Test
     void testTransform() {
         def orig = FuzzyCSV.toUnModifiableCSV([
-                ['dis', 'qlt', 'qty', 'acss', 'rel'],
+                ['__', 'qlt', 'qty', '__', 'rel'],
                 ['kava', 'male', 2, 4, 4],
                 ['lira', 'female', 44, 55, 66],
                 ['lira', 'male', 44, 55, 66]
         ])
 
         def expected = [
-                ['dis', 'qlt', 'qty', 'acss', 'rel'],
+                ['__', 'qlt', 'qty', '__', 'rel'],
                 ['SC kava', 'male', 2, 4, 4],
                 ['SC lira', 'female', 44, 55, 66],
                 ['SC lira', 'male', 44, 55, 66]
         ]
 
 
-        def actual = tbl(orig).mapColumns( fx { "SC ${it.dis}" }.az('dis')).csv
+        def actual = tbl(orig).mapColumns( fx { "SC ${it['__']}" }.az('__')).csv
         assert actual == expected
 
         GroovyAssert.shouldFail(IllegalArgumentException) {

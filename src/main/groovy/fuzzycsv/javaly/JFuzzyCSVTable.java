@@ -87,14 +87,11 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    public JFuzzyCSVTable putInColumn(int colId, RecordFx recordFx) {
-        return table.putInColumn(colId, recordFx).javaApi();
+    public JFuzzyCSVTable mutateColum(int colId, Fx1<Record,Object> recordFx) {
+        return table.mutateColumn(colId, recordFx).javaApi();
 
     }
 
-    public JFuzzyCSVTable putInColumn(int colId, RecordFx recordFx, FuzzyCSVTable sourceTable) {
-        return table.putInColumn(colId, recordFx, sourceTable).javaApi();
-    }
 
 
     public <T> List<T> toPojoList(Class<T> aClass) {
@@ -456,8 +453,8 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.addColumn(colIdx, column).javaApi();
     }
 
-    public JFuzzyCSVTable putInColumn(List<?> colValues, int colIdx) {
-        return table.putInColumn(colValues, colIdx).javaApi();
+    public JFuzzyCSVTable mutateColum(List<?> colValues, int colIdx) {
+        return table.replaceColumn(colIdx, colValues).javaApi();
     }
 
     public JFuzzyCSVTable cleanUpRepeats(String... columns) {
