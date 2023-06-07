@@ -250,21 +250,14 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    /**
-     * @deprecated Moved to Extension method
-     */
-    @Deprecated
-    List getAt(String columnName) {
-        return getAt(Fuzzy.findPosition(header, columnName))
+    List<Object> getColumn(String columnName) {
+        def position = Fuzzy.findPosition(header, columnName)
+        List<Object> column = getColumn(position)
+        return column
     }
 
-    /**
-     * @deprecated Moved to Extension method
-     */
-    @Deprecated
-    @CompileStatic
-    List getAt(Integer colIdx) {
-        def column = FuzzyCSV.getValuesForColumn(this.csv, colIdx)
+    List<Object> getColumn(int position) {
+        def column = FuzzyCSV.getValuesForColumn(this.csv, position)
         column.remove(0)
         return column
     }
@@ -409,12 +402,16 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
+    /**
+     * @deprecated TBR use concat instead
+     */
+    @Deprecated
     FuzzyCSVTable joinOnIdx(FuzzyCSVTable data) {
         return tbl(FuzzyCSV.joinOnIdx(this.csv, data.csv))
     }
 
     /**
-     * @deprecated to be removed use concat instead
+     * @deprecated TBR use concat instead
      */
     @Deprecated
     FuzzyCSVTable lefJoinOnIdx(FuzzyCSVTable data) {
@@ -422,13 +419,18 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     /**
-     * @deprecated to be removed use concat instead
+     * @deprecated TBR use concat instead
      */
     @Deprecated
     FuzzyCSVTable rightJoinOnIdx(FuzzyCSVTable data) {
         return tbl(FuzzyCSV.rightJoinOnIdx(this.csv, data.csv))
     }
 
+
+    /**
+     * @deprecated TBR use concat instead
+     */
+    @Deprecated
     FuzzyCSVTable fullJoinOnIdx(FuzzyCSVTable data) {
         return tbl(FuzzyCSV.fullJoinOnIdx(this.csv, data.csv))
     }
@@ -654,7 +656,7 @@ class FuzzyCSVTable implements Iterable<Record> {
      */
     @Deprecated
     FuzzyCSVTable mutateColumn(int colIdx,
-                               Fx1<Record,Object> func) {
+                               Fx1<Record, Object> func) {
         tbl(FuzzyCSV.putInColumn(this.csv, fx(func).az(null), colIdx, null))
     }
 

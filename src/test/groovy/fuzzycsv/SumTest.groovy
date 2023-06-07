@@ -51,7 +51,7 @@ class SumTest {
                 RecordFx.fx { 'sas' }.az('asas'),
                 FuzzyStaticApi.sum(fn {
                     it.'ps_total_score' + it.'pipes_total_score' + it.'tap_total_score'
-                }))[1][0] == 31.1
+                }))[1][1] == 31.1
 
         assert sumFx.value == 31.1
         assert sumFx.columnName == 'sum'

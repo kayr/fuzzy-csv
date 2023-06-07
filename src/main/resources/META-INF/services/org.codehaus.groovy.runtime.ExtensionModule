@@ -1,0 +1,3 @@
+moduleName=FuzzyCsvExtensions
+moduleVersion=1.0.0
+extensionClasses=fuzzycsv.FuzzyCsvExtensionMethods

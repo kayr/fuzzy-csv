@@ -517,7 +517,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testColumn() {
-        List<String> result = inputCsv.column("color");
+        List<Object> result = inputCsv.getColumn("color");
         List<String> expected = asList("Red", "Purple", "Green", "Blue");
         assertEquals(expected, result);
     }
@@ -525,7 +525,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testColumWithIndex() {
-        List<String> result = inputCsv.column(0);
+        List<Object> result = inputCsv.getColumn(0);
         List<String> expected = asList("Red", "Purple", "Green", "Blue");
         assertEquals(expected, result);
     }
@@ -1579,7 +1579,7 @@ class JFuzzyCSVTableTest {
 
             assertEquals(inserted, fromDb);
 
-            assertTrue(fromDb.column("color").stream().allMatch(arg -> arg.equals("Blue")));
+            assertTrue(fromDb.getColumn("color").stream().allMatch(arg -> arg.equals("Blue")));
         }
     }
 

@@ -4,7 +4,6 @@ import fuzzycsv.*;
 import fuzzycsv.nav.Navigator;
 import fuzzycsv.rdbms.ExportParams;
 import fuzzycsv.rdbms.FuzzyCSVDbExporter;
-import groovy.lang.IntRange;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -166,12 +165,12 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.isEmpty();
     }
 
-    public List column(String columnName) {
-        return table.getAt(columnName);
+    public List<Object> getColumn(String columnName) {
+        return table.getColumn(columnName);
     }
 
-    public List column(Integer colIdx) {
-        return table.getAt(colIdx);
+    public List<Object> getColumn(Integer colIdx) {
+        return table.getColumn(colIdx);
     }
 
     public Record row(int idx) {

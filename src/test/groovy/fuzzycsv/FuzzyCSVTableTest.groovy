@@ -189,7 +189,7 @@ class FuzzyCSVTableTest {
     @Test
     void testGetCellValue() {
         assert tbl(csv2)['sub_county'][0] == 'Hakibale'
-        assert tbl(csv2)[0][0] == 'Hakibale'
+        assert tbl(csv2)[1].sub_county == 'Hakibale'
         assert tbl(csv2).firstCell() == 'Hakibale'
     }
 
@@ -727,7 +727,7 @@ p\tfema+le\t31'''
         def t = '''[["name","number"],["john",1.1]]'''
         def c = FuzzyCSVTable.fromJsonText(t)
         assert c.size() == 1
-        assert c[1][0] instanceof BigDecimal
+        assert c[1][1] instanceof BigDecimal
         assert c.row(1)[1] == 1.1
         assert c.toJsonText() == t
     }
