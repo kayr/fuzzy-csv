@@ -246,7 +246,7 @@ class Record {
     }
 
 
-    def getAt(int idx, ResolutionStrategy resolutionStrategy1 = resolutionStrategy) {
+    Object getValue(int idx, ResolutionStrategy resolutionStrategy1) {
         switch (resolutionStrategy1) {
             case FINAL_FIRST:
             case DERIVED_FIRST:
@@ -276,11 +276,8 @@ class Record {
     }
 
 
-    def getAt(CharSequence name) { propertyMissing(name as String) }
+    Record set(String name, def value) {
 
-    def getAt(def name) { throw new UnsupportedOperationException("object column names not supported. $name") }
-
-    Record setAt(String name, def value) {
         def position = Fuzzy.findPosition(finalHeaders, name)
         if (position == -1) {
             throwColumnNotFound(name)
@@ -289,19 +286,15 @@ class Record {
         return this
     }
 
-    Record set(String name, def value) {
-        return setAt(name, value)
-    }
-
     boolean isHeader() { recordIdx == 0 }
 
-    Map<String,?> toMap(String... headers) {
+    Map<String, ?> toMap(String... headers) {
         return toMap(headers as List)
     }
 
-    Map<String,?>  toMap(List headers) {
+    Map<String, ?> toMap(List headers) {
         if (!headers) headers = finalHeaders
-        Map<String,?> map = [:]
+        Map<String, ?> map = [:]
         for (String header : headers) {
             map[header] = val(header)
         }
