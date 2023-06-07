@@ -197,8 +197,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
     public JFuzzyCSVTable slice(int from, int to) {
-        IntRange groovyRange = new IntRange(from, to);
-        return table.getAt(groovyRange).javaApi();
+        return table.slice(from,to).javaApi();
     }
 
     //region Inner Join

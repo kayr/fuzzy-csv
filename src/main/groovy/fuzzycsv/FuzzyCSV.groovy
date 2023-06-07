@@ -604,7 +604,7 @@ class FuzzyCSV {
         def size = csv.size()
         for (int i = 1; i < size; i++) {
             def record = Record.getRecord(csv, i)
-            if (filter.getValue(record)) {
+            if (filter.getValue(record) == true) {
                 action.getValue(record)
             }
         }

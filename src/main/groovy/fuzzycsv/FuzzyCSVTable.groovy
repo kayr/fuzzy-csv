@@ -250,11 +250,18 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
+    /**
+     * @deprecated Moved to Extension method
+     */
+    @Deprecated
     List getAt(String columnName) {
         return getAt(Fuzzy.findPosition(header, columnName))
     }
 
-
+    /**
+     * @deprecated Moved to Extension method
+     */
+    @Deprecated
     @CompileStatic
     List getAt(Integer colIdx) {
         def column = FuzzyCSV.getValuesForColumn(this.csv, colIdx)
@@ -284,8 +291,17 @@ class FuzzyCSVTable implements Iterable<Record> {
         else return this.csv[1][0]
     }
 
+    /**
+     * @deprecated Moved to Extension method
+     */
+    @Deprecated
     FuzzyCSVTable getAt(IntRange range) {
         return tbl(FuzzyCSV.getAt(this.csv, range))
+    }
+
+    FuzzyCSVTable slice(int from, int to) {
+        IntRange groovyRange = new IntRange(from, to);
+        return tbl(FuzzyCSV.getAt(this.csv, groovyRange))
     }
 
     FuzzyCSVTable join(FuzzyCSVTable tbl, String[] joinColumns) {
@@ -633,6 +649,10 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(FuzzyCSV.putInColumn(this.csv, colValues, colIdx))
     }
 
+    /**
+     * @deprecated TBR: this provide the same functionality as modify(..) or update(..)
+     */
+    @Deprecated
     FuzzyCSVTable mutateColumn(int colIdx,
                                Fx1<Record,Object> func) {
         tbl(FuzzyCSV.putInColumn(this.csv, fx(func).az(null), colIdx, null))
@@ -649,7 +669,6 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    //todo probably should get rid this method or addRow([])
     FuzzyCSVTable addRow(Object... values) {
         if (!values) return addEmptyRow()
         return addRowsFromLists([values.toList()])
