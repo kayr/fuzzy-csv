@@ -1,5 +1,7 @@
 package fuzzycsv;
 
+import groovy.lang.IntRange;
+
 import java.util.List;
 
 public class FuzzyCsvExtensionMethods {
@@ -13,6 +15,19 @@ public class FuzzyCsvExtensionMethods {
 
     public static Record getAt(FuzzyCSVTable self, int index) {
         return self.row(index);
+    }
+
+    public static FuzzyCSVTable getAt(FuzzyCSVTable self,IntRange range) {
+        return self.doSlice(range);
+    }
+
+
+    public static FuzzyCSVTable leftShift(FuzzyCSVTable self, FuzzyCSVTable right) {
+        return self.concatColumns(right);
+    }
+
+    public static FuzzyCSVTable plus(FuzzyCSVTable self, FuzzyCSVTable right) {
+        return self.union(right);
     }
 
 

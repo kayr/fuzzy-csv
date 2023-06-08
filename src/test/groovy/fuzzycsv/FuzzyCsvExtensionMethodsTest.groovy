@@ -31,4 +31,68 @@ class FuzzyCsvExtensionMethodsTest {
         data[1]['age'] = 23
         assert data[1]['age'] == 23
     }
+
+    @Test
+    void testLeftShift() {
+        def data2 = FuzzyCSVTable.tbl([
+                ['gender'],
+                ['m'],
+                ['f'],
+        ])
+
+        def result = data << data2
+
+        def expected = FuzzyCSVTable.tbl([
+                ['name', 'age', 'gender'],
+                ['kay', null, null],
+                ['rok', 5, null],
+                [null, null, 'm'],
+                [null, null, 'f'],
+        ])
+
+        assert result == expected
+    }
+
+    @Test
+    void testPlus() {
+        def data2 = FuzzyCSVTable.tbl([
+                ['a', 'b', 'c'],
+                [1, 2, 3],
+                [4, 5, 6],
+                [7, 8, 9]
+        ])
+
+        def result = data + data2
+
+        def expected = FuzzyCSVTable.tbl([
+                ['name', 'age'],
+                ['kay', null],
+                ['rok', 5],
+                [1, 2, 3],
+                [4, 5, 6],
+                [7, 8, 9]
+        ])
+
+        assert result == expected
+    }
+
+    @Test
+    void testGetAtRange(){
+        def data2 = FuzzyCSVTable.tbl([
+                ['a', 'b', 'c'],
+                [1, 2, 3],
+                [4, 5, 6],
+                [7, 8, 9]
+        ])
+
+        def result = data2[1..-2]
+
+        def expected = FuzzyCSVTable.tbl([
+                ['a', 'b', 'c'],
+                [1, 2, 3],
+                [4, 5, 6]
+        ])
+
+        assert result == expected
+    }
 }

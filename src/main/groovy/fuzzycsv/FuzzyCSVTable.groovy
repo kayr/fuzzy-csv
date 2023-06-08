@@ -9,6 +9,7 @@ import fuzzycsv.rdbms.ExportParams
 import fuzzycsv.rdbms.FuzzyCSVDbExporter
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.SimpleType
 import org.codehaus.groovy.runtime.InvokerHelper
@@ -284,17 +285,13 @@ class FuzzyCSVTable implements Iterable<Record> {
         else return this.csv[1][0]
     }
 
-    /**
-     * @deprecated Moved to Extension method
-     */
-    @Deprecated
-    FuzzyCSVTable getAt(IntRange range) {
-        return tbl(FuzzyCSV.getAt(this.csv, range))
+    FuzzyCSVTable slice(int from, int to) {
+        IntRange groovyRange = new IntRange(from, to)
+        return doSlice(groovyRange)
     }
 
-    FuzzyCSVTable slice(int from, int to) {
-        IntRange groovyRange = new IntRange(from, to);
-        return tbl(FuzzyCSV.getAt(this.csv, groovyRange))
+    @PackageScope FuzzyCSVTable doSlice(IntRange groovyRange) {
+        tbl(FuzzyCSV.getAt(this.csv, groovyRange))
     }
 
     FuzzyCSVTable join(FuzzyCSVTable tbl, String[] joinColumns) {
@@ -472,13 +469,6 @@ class FuzzyCSVTable implements Iterable<Record> {
         return mergeByColumn(other)
     }
 
-    /**
-     * @deprecated TBR:  will be moved to extension methods
-     */
-    @Deprecated
-    FuzzyCSVTable leftShift(List<? extends List> other) {
-        return mergeByColumn(other)
-    }
 
     /**
      * @deprecated TBR: use {@link #concatColumns}  instead
@@ -538,21 +528,6 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    /**
-     * @deprecated TBR: will go to extension methods
-     */
-    @Deprecated
-    FuzzyCSVTable plus(FuzzyCSVTable tbl) {
-        return union(tbl)
-    }
-
-    /**
-     * @deprecated TBR: will go to extension methods
-     */
-    @Deprecated
-    FuzzyCSVTable plus(List<? extends List> csv) {
-        return union(csv)
-    }
 
     FuzzyCSVTable addColumn(RecordFx... fnz) {
         def thisCsv = this.csv
@@ -572,8 +547,8 @@ class FuzzyCSVTable implements Iterable<Record> {
         return select(newHeader)
     }
 
-    FuzzyCSVTable deleteColumns(Object[] columnNames) {
-        return tbl(tableName, FuzzyCSV.deleteColumn(this.csv, columnNames))
+    FuzzyCSVTable deleteColumns(Object[] columnNameOrIndex) {
+        return tbl(tableName, FuzzyCSV.deleteColumn(this.csv, columnNameOrIndex))
     }
 
     /**

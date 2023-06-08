@@ -117,7 +117,7 @@ class FuzzyCsvDbInserter {
         return (0..pageCount - 1).collect { Integer page ->
             int start = page * pageSize
             int end = start + pageSize
-            def callable = { table[start + 1..end] } as Callable
+            def callable = { table.slice(start + 1,end) } as Callable
             return callable
         }
     }
