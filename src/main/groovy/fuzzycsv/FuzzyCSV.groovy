@@ -236,18 +236,6 @@ class FuzzyCSV {
         writer.writeAll(csv)
     }
 
-    @CompileStatic
-    static String csvToString(List<? extends List> csv) {
-        def stringWriter = new StringWriter()
-        def writer = new FuzzyCSVWriter(stringWriter)
-        writer.writeAll(csv)
-        stringWriter.toString()
-    }
-
-    @CompileStatic
-    static void writeJson(List<? extends List> csv, String file) {
-        writeJson(csv, new File(file))
-    }
 
     @CompileStatic
     static void writeJson(List<? extends List> csv, File file) {
@@ -268,12 +256,6 @@ class FuzzyCSV {
         new JsonSlurper().parseText(text)
     }
 
-    private static List<List> toListofList(Object object) {
-        if (object instanceof List) {
-            return object
-        }
-        throw new IllegalArgumentException("Json is not a valid csv")
-    }
 
     @CompileStatic
     static def fromJson(Reader reader) {
