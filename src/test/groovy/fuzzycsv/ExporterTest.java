@@ -72,7 +72,7 @@ class ExporterTest {
     @Test
     void toJson() {
         Writer writer = new StringWriter();
-        Exporter.create(table).toJson().withAsMaps(false).export(writer);
+        Exporter.create(table).toJson().withAsMaps(false).write(writer);
         assertEquals("[[\"ID\",\"NAME\",\"AGE\"],[\"1\",\"John\",\"20\"],[\"2\",\"Jane\",\"30\"],[\"3\",\"Jack\",\"40\"]]", writer.toString());
     }
 
@@ -83,7 +83,7 @@ class ExporterTest {
         @Test
         void testExportToPath() throws IOException {
             Path tempFile = createTempFile();
-            Exporter.Json.create().withTable(table).withAsMaps(true).export(tempFile);
+            Exporter.Json.create().withTable(table).withAsMaps(true).write(tempFile);
 
             assertEquals("[{\"ID\":\"1\",\"NAME\":\"John\",\"AGE\":\"20\"},{\"ID\":\"2\",\"NAME\":\"Jane\",\"AGE\":\"30\"},{\"ID\":\"3\",\"NAME\":\"Jack\",\"AGE\":\"40\"}]", readAndDelete(tempFile));
         }
@@ -91,7 +91,7 @@ class ExporterTest {
         @Test
         void testExportToStringPath() throws IOException {
             Path tempFile = createTempFile();
-            Exporter.Json.create().withTable(table).withAsMaps(true).export(tempFile.toString());
+            Exporter.Json.create().withTable(table).withAsMaps(true).write(tempFile.toString());
 
             assertEquals("[{\"ID\":\"1\",\"NAME\":\"John\",\"AGE\":\"20\"},{\"ID\":\"2\",\"NAME\":\"Jane\",\"AGE\":\"30\"},{\"ID\":\"3\",\"NAME\":\"Jack\",\"AGE\":\"40\"}]", readAndDelete(tempFile));
         }
@@ -100,7 +100,7 @@ class ExporterTest {
         @Test
         void testExportAsMapsWithPrettyPrinting() throws IOException {
             Path tempFile = createTempFile();
-            Exporter.Json.create().withTable(table).withAsMaps(true).withPrettyPrint(true).export(tempFile.toString());
+            Exporter.Json.create().withTable(table).withAsMaps(true).withPrettyPrint(true).write(tempFile.toString());
 
             assertEquals("[\n" +
                            "    {\n" +
@@ -124,14 +124,14 @@ class ExporterTest {
         @Test
         void testExportAsListOfLists() throws IOException {
             Path tempFile = createTempFile();
-            Exporter.Json.create().withTable(table).withAsMaps(false).export(tempFile.toString());
+            Exporter.Json.create().withTable(table).withAsMaps(false).write(tempFile.toString());
             assertEquals("[[\"ID\",\"NAME\",\"AGE\"],[\"1\",\"John\",\"20\"],[\"2\",\"Jane\",\"30\"],[\"3\",\"Jack\",\"40\"]]", readAndDelete(tempFile));
         }
 
         @Test
         void testExportToWriter() {
             Writer writer = new StringWriter();
-            Exporter.Json.create().withTable(table).withAsMaps(false).export(writer);
+            Exporter.Json.create().withTable(table).withAsMaps(false).write(writer);
             assertEquals("[[\"ID\",\"NAME\",\"AGE\"],[\"1\",\"John\",\"20\"],[\"2\",\"Jane\",\"30\"],[\"3\",\"Jack\",\"40\"]]", writer.toString());
 
         }

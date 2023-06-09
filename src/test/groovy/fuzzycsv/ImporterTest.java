@@ -28,7 +28,7 @@ class ImporterTest {
                            "\"joe\",\"lasty\",\"1.1\"\n" +
                            "\"joz\",\"lasty\",\"1.1\"\n";
 
-            FuzzyCSVTable table = Importer.from().csv().parse(csv);
+            FuzzyCSVTable table = Importer.from().csv().parseText(csv);
 
             assertEquals(csv, table.convert().toCsv().getResult());
         }
@@ -39,7 +39,7 @@ class ImporterTest {
                            "'joe','lasty','1.1'\n" +
                            "'joz','lasty','1.1'\n";
 
-            FuzzyCSVTable table = Importer.from().csv().withQuote('\'').parse(csv);
+            FuzzyCSVTable table = Importer.from().csv().withQuote('\'').parseText(csv);
 
             assertEquals(csv, table.convert().toCsv().withQuote("'").getResult());
         }
@@ -50,7 +50,7 @@ class ImporterTest {
                            "'joe';'lasty';'1.1'\n" +
                            "'joz';'lasty';'1.1'\n";
 
-            FuzzyCSVTable table = Importer.from().csv().withQuote('\'').withDelimiter(';').parse(csv);
+            FuzzyCSVTable table = Importer.from().csv().withQuote('\'').withDelimiter(';').parseText(csv);
 
             assertEquals(csv, table.convert().toCsv().withQuote("'").withDelimiter(";").getResult());
         }
@@ -61,16 +61,14 @@ class ImporterTest {
                            "'joe','lasty','1.1'\n" +
                            "'joz','lasty','1.1'\n";
 
-            FuzzyCSVTable table = Importer.from().csv().withQuote('\'').withEscape('-').parse(csv);
+            FuzzyCSVTable table = Importer.from().csv().withQuote('\'').withEscape('-').parseText(csv);
 
             assertEquals(csv, table.convert().toCsv().withQuote("'").withEscape("-").getResult());
         }
 
         @Test
         void importFromFile() throws IOException {
-            Path tempFile = Files.createTempFile("test", "csv");
-
-            table.export().toCsv().write(tempFile);
+            Path tempFile = writeCsv();
 
             FuzzyCSVTable actual = Importer.from().csv().parse(tempFile);
 
@@ -89,15 +87,70 @@ class ImporterTest {
 
         @Test
         void importFromPath() throws IOException {
-            Path tempFile = Files.createTempFile("test", "csv");
-            table.export().toCsv().write(tempFile);
+            Path tempFile = writeCsv();
 
-            FuzzyCSVTable actual = Importer.from().csv().parsePath(tempFile.toString());
+            FuzzyCSVTable actual = Importer.from().csv().parse(tempFile.toString());
 
             assertEquals(table, actual);
         }
 
+        private Path writeCsv() throws IOException {
+            Path tempFile = Files.createTempFile("test", "csv");
+            table.export().toCsv().write(tempFile);
+            return tempFile;
+        }
 
     }
+
+
+    @Nested
+    class Json {
+
+        private Path writeJson() throws IOException {
+            Path tempFile = Files.createTempFile("test", "json");
+            table.export().toJson().write(tempFile);
+            return tempFile;
+        }
+
+        @Test
+        void parseFromFile() throws IOException {
+
+            Path tempFile = writeJson();
+
+            FuzzyCSVTable actual = Importer.from().json().parse(tempFile);
+
+            assertEquals(table, actual);
+        }
+
+        @Test
+        void parseFromReader() {
+            String jsonString = table.convert().toJson().getResult();
+            StringReader reader = new StringReader(jsonString);
+
+            FuzzyCSVTable actual = Importer.from().json().parse(reader);
+
+            assertEquals(table, actual);
+        }
+
+        @Test
+        void parseFromPath() throws IOException {
+            Path tempFile = writeJson();
+
+            FuzzyCSVTable actual = Importer.from().json().parsePath(tempFile.toString());
+
+            assertEquals(table, actual);
+        }
+
+        @Test
+        void parseFromJsonString() {
+            String jsonString = table.convert().toJson().getResult();
+
+            FuzzyCSVTable actual = Importer.from().json().parseText(jsonString);
+
+            assertEquals(table, actual);
+        }
+
+    }
+
 
 }

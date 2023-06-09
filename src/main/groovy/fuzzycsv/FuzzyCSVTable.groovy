@@ -843,21 +843,21 @@ class FuzzyCSVTable implements Iterable<Record> {
     @Deprecated
 //remove
     FuzzyCSVTable writeToJson(String filePath) {
-        export().toJson().export(filePath)
+        export().toJson().write(filePath)
         return this
     }
 
     @Deprecated
 //remove
     FuzzyCSVTable writeToJson(File file) {
-        export().toJson().export(file.absolutePath)
+        export().toJson().write(file.absolutePath)
         return this
     }
 
     @Deprecated
 //remove
     FuzzyCSVTable writeToJson(Writer w) {
-        export().toJson().export(w)
+        export().toJson().write(w)
         return this
     }
 
@@ -1019,7 +1019,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         from().csv().withDelimiter(separator)
                 .withQuote(quoteChar)
                 .withEscape(escapeChar)
-                .parse(csvString)
+                .parseText(csvString)
     }
 
     static FuzzyCSVTable parseCsv(Reader reader,
@@ -1038,7 +1038,8 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    private static FuzzyCSVTable coerceFromObj(json) {
+    @PackageScope
+     static FuzzyCSVTable coerceFromObj(json) {
         def cell = gridifyCell(json, EnumSet.of(GridOptions.SHALLOW_MODE))
         if (cell instanceof FuzzyCSVTable)
             return cell

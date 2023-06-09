@@ -74,17 +74,17 @@ class Exporter {
             return new Json()
         }
 
-        Json export(String path) {
-            return export(Paths.get(path))
+        Json write(String path) {
+            return write(Paths.get(path))
         }
 
-        Json export(Path path) {
+        Json write(Path path) {
             def writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)
             writer.withCloseable { writer.write(jsonText()) }
             return this
         }
 
-        Json export(Writer writer) {
+        Json write(Writer writer) {
             writer.write(jsonText())
             return this
         }
