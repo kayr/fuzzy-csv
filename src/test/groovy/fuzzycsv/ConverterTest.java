@@ -19,7 +19,7 @@ class ConverterTest {
 
         @Test
         void shouldConvertToCsvString() {
-            String output = Converter.Csv.create().withTable(table).string();
+            String output = Converter.Csv.create().withTable(table).getResult();
 
             assertEquals("\"name\",\"lname\",\"data\"\n" +
                            "\"joe\",\"lasty\",\"1.1\"\n" +
@@ -30,7 +30,7 @@ class ConverterTest {
         @Test
         void testWithSemiColonDelimiter() {
 
-            String output = Converter.Csv.create().withTable(table).withDelimiter(";").string();
+            String output = Converter.Csv.create().withTable(table).withDelimiter(";").getResult();
 
             assertEquals("\"name\";\"lname\";\"data\"\n" +
                            "\"joe\";\"lasty\";\"1.1\"\n" +
@@ -40,7 +40,7 @@ class ConverterTest {
 
         @Test
         void testWithCustomQuote() {
-            String output = Converter.Csv.create().withTable(table).withQuote("'").string();
+            String output = Converter.Csv.create().withTable(table).withQuote("'").getResult();
 
             assertEquals("'name','lname','data'\n" +
                            "'joe','lasty','1.1'\n" +
@@ -53,7 +53,7 @@ class ConverterTest {
             String output = Converter.Csv.create()
                               .withTable(tableCopy)
                               .withEscape("-")
-                              .string();
+                              .getResult();
 
             assertEquals("\"name\",\"lname\",\"data\"\n" +
                            "\"joe\",\"J-\"ane\",\"1.1\"\n" +
@@ -70,7 +70,7 @@ class ConverterTest {
                              .withEscape("-")
                              .withQuote("'")
                              .withDelimiter(";")
-                             .string();
+                             .getResult();
 
             assertEquals("'name';'lname';'data'\n" +
                            "'joe';'J-'ane';'1.1'\n" +
@@ -80,7 +80,7 @@ class ConverterTest {
 
         @Test
         void testNoQuotes() {
-            String output = Converter.Csv.create().withTable(table).withQuoteAll(false).string();
+            String output = Converter.Csv.create().withTable(table).withQuoteAll(false).getResult();
 
             assertEquals("name,lname,data\n" +
                            "joe,lasty,1.1\n" +
@@ -89,7 +89,7 @@ class ConverterTest {
 
         @Test
         void testWithCustomLineSeparator() {
-            String output = Converter.Csv.create().withTable(table).withLineSeparator("\r\n").string();
+            String output = Converter.Csv.create().withTable(table).withLineSeparator("\r\n").getResult();
 
             assertEquals("\"name\",\"lname\",\"data\"\r\n" +
                            "\"joe\",\"lasty\",\"1.1\"\r\n" +
@@ -106,7 +106,7 @@ class ConverterTest {
         void shouldConvertToJsonWithMaps() {
             Converter.Json json = Converter.Json.create().withTable(table);
 
-            String output = json.withAsMaps(true).string();
+            String output = json.withAsMaps(true).getResult();
 
             assertEquals("[{\"name\":\"joe\",\"lname\":\"lasty\",\"data\":\"1.1\"},{\"name\":\"joz\",\"lname\":\"lasty\",\"data\":\"1.1\"}]", output);
         }
@@ -115,7 +115,7 @@ class ConverterTest {
         void shouldConvertToJsonWithArrays() {
             Converter.Json json = Converter.Json.create().withTable(table);
 
-            String output = json.withAsMaps(false).string();
+            String output = json.withAsMaps(false).getResult();
 
             assertEquals("[[\"name\",\"lname\",\"data\"],[\"joe\",\"lasty\",\"1.1\"],[\"joz\",\"lasty\",\"1.1\"]]", output);
         }
@@ -124,7 +124,7 @@ class ConverterTest {
         void shouldConvertToJsonWithMapsPrettyPrinted() {
             Converter.Json json = Converter.Json.create().withTable(table);
 
-            String output = json.withAsMaps(true).withPrettyPrint(true).string();
+            String output = json.withAsMaps(true).withPrettyPrint(true).getResult();
 
             assertEquals("[\n" +
                            "    {\n" +
@@ -149,7 +149,7 @@ class ConverterTest {
         void withTable() {
             Converter.Pretty pretty = Converter.Pretty.create().withTable(table);
 
-            String output = pretty.string();
+            String output = pretty.getResult();
 
             assertEquals("╔══════╤═══════╤══════╗\n" +
                            "║ name │ lname │ data ║\n" +
@@ -166,8 +166,8 @@ class ConverterTest {
 
             String output = FuzzyCSVTable.fromJsonText(t)
                               .sort("key")
-                              .toGrid(FuzzyCSVTable.GridOptions.LIST_AS_TABLE)
-                              .convert().toPretty().string();
+                              .toGrid(GridOptions.LIST_AS_TABLE)
+                              .convert().toPretty().getResult();
 
             String expected = "╔═══════╤═══════════════════╗\n" +
                                 "║ key   │ value             ║\n" +

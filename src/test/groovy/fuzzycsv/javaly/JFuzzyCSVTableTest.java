@@ -1,9 +1,6 @@
 package fuzzycsv.javaly;
 
-import fuzzycsv.FuzzyCSV;
-import fuzzycsv.FuzzyCSVTable;
-import fuzzycsv.H2DbHelper;
-import fuzzycsv.Record;
+import fuzzycsv.*;
 import fuzzycsv.nav.Navigator;
 import fuzzycsv.rdbms.DDLUtils;
 import fuzzycsv.rdbms.DbExportFlags;
@@ -1403,7 +1400,7 @@ class JFuzzyCSVTableTest {
           asList(3, asList("three", "thrice"))
         );
 
-        JFuzzyCSVTable result = data.toGrid(FuzzyCSVTable.GridOptions.LIST_AS_TABLE);
+        JFuzzyCSVTable result = data.toGrid(GridOptions.LIST_AS_TABLE);
 
         JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
           asList("a", "b"),

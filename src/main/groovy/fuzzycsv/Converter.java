@@ -99,7 +99,7 @@ public class Converter {
             return new Csv(exporter.withTable(table));
         }
 
-        public String string() {
+        public String getResult() {
             StringWriter w = new StringWriter();
             exporter.export(w);
             return w.toString();
@@ -132,7 +132,7 @@ public class Converter {
             return new Json(exporter.withAsMaps(asMaps));
         }
 
-        public String string() {
+        public String getResult() {
             return exporter.jsonText();
         }
 
@@ -154,7 +154,7 @@ public class Converter {
             return pretty;
         }
 
-        public String string() {
+        public String getResult() {
             String[] header = DefaultGroovyMethods.asType(table.getHeader(), String[].class);
             String[][] data = toStrArray(table);
             return FlipTable.of(header, data);
@@ -176,7 +176,7 @@ public class Converter {
 
                     if (cellValue == null || cellValue.equals("")) cellValue = "-";
                     else if (cellValue instanceof FuzzyCSVTable)
-                        cellValue = create().withTable((FuzzyCSVTable) cellValue).string();
+                        cellValue = create().withTable((FuzzyCSVTable) cellValue).getResult();
                     else cellValue = cellValue.toString().replace("\t", "    ");
 
                     newRow[c] = cellValue.toString();

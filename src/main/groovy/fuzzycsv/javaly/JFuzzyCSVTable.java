@@ -544,7 +544,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.toJsonText();
     }
 
-    public JFuzzyCSVTable toGrid(FuzzyCSVTable.GridOptions... gridOptions) {
+    public JFuzzyCSVTable toGrid(GridOptions... gridOptions) {
         return table.toGrid(gridOptions).javaApi();
     }
 
