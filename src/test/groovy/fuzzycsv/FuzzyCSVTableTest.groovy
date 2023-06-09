@@ -324,7 +324,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testRecordListToCSV() {
-        assert FuzzyCSVTable.toCSVFromRecordList(tbl(csv2).collect()).csv == csv2
+        assert FuzzyCSVTable.fromRecordList(tbl(csv2).collect()).csv == csv2
     }
 
     @Test

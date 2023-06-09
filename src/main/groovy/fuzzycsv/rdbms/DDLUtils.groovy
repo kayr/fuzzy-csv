@@ -31,7 +31,7 @@ class DDLUtils {
 
     private static FuzzyCSVTable toTable(ResultSet resultSet) {
         try {
-            return FuzzyCSVTable.toCSV(resultSet)
+            return FuzzyCSVTable.fromResultSet(resultSet)
         } finally {
             FuzzyCSVUtils.closeQuietly(resultSet)
         }

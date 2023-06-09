@@ -98,7 +98,7 @@ class FuzzyCSVDbExporterMysqlTest {
         sql.execute(ddl)
 
 
-        def columns = FuzzyCSVTable.toCSV(sql.connection.metaData.getColumns(null, null, 'MYTABLE', null))
+        def columns = FuzzyCSVTable.fromResultSet(sql.connection.metaData.getColumns(null, null, 'MYTABLE', null))
 
 
         columns.find { it.COLUMN_NAME == 'STRING_COL' }.with {

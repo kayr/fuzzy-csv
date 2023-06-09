@@ -290,7 +290,8 @@ class FuzzyCSVTable implements Iterable<Record> {
         return doSlice(groovyRange)
     }
 
-    @PackageScope FuzzyCSVTable doSlice(IntRange groovyRange) {
+    @PackageScope
+    FuzzyCSVTable doSlice(IntRange groovyRange) {
         tbl(FuzzyCSV.getAt(this.csv, groovyRange))
     }
 
@@ -526,7 +527,6 @@ class FuzzyCSVTable implements Iterable<Record> {
 
         }
     }
-
 
 
     FuzzyCSVTable addColumn(RecordFx... fnz) {
@@ -1039,7 +1039,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    static FuzzyCSVTable toListOfLists(Collection<?> Collection0) {
+    private static FuzzyCSVTable toListOfLists(Collection<?> Collection0) {
         tbl(FuzzyCSV.toListOfLists(Collection0))
     }
 
@@ -1085,20 +1085,8 @@ class FuzzyCSVTable implements Iterable<Record> {
         fromSqlQuery(sql, query)
     }
 
-    @Deprecated
-    static FuzzyCSVTable toCSV(ResultSet resultSet) {
-        fromResultSet(resultSet)
-    }
 
-    @Deprecated
-    static FuzzyCSVTable toCSVFromRecordList(Collection<Record> Collection0) {
-        tbl(FuzzyCSV.toCSVFromRecordList(Collection0))
-    }
 
-    @Deprecated
-    static FuzzyCSVTable get(List<List> csv) {
-        return tbl(csv)
-    }
 
     //endregion
 

@@ -854,7 +854,7 @@ class FuzzyCSVTest {
         assert [['Identifier', 'Another ID'], [1, 1]] == FuzzyCSV.toCSV(sql, 'select id as "Identifier",id as "Another ID" from PERSON')
 
         sql.query('select id as "Identifier",id as "Another ID" from PERSON') { rs ->
-            def v = FuzzyCSVTable.toCSV(rs);
+            def v = FuzzyCSVTable.fromResultSet(rs);
 
             assert v.csv == [['Identifier', 'Another ID'], [1, 1]]
         }
