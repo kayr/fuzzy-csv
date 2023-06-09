@@ -448,8 +448,8 @@ class FuzzyCSVTest {
 
         def text = Data.csvs[path.replace('/', '')]
         return FuzzyCSV.toUnModifiableCSV(
-                FuzzyCSVTable.toListOfLists(
-                        FuzzyCSVTable.parseCsv(text).csv).csv)
+                FuzzyCSV.toListOfLists(
+                        FuzzyCSVTable.parseCsv(text).csv))
     }
 
     @Test

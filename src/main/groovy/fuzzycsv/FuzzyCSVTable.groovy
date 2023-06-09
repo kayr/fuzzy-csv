@@ -1018,23 +1018,25 @@ class FuzzyCSVTable implements Iterable<Record> {
                                   char separator = CSVParser.DEFAULT_SEPARATOR,
                                   char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
                                   char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
-        toListOfLists(FuzzyCSV.parseCsv(csvString, separator, quoteChar, escapeChar))
+        from().csv().withDelimiter(separator)
+                .withQuote(quoteChar)
+                .withEscape(escapeChar)
+                .parse(csvString)
     }
 
     static FuzzyCSVTable parseCsv(Reader reader,
                                   char separator = CSVParser.DEFAULT_SEPARATOR,
                                   char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
                                   char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
-        toListOfLists(FuzzyCSV.parseCsv(reader, separator, quoteChar, escapeChar))
+        from().csv().withDelimiter(separator)
+                .withQuote(quoteChar)
+                .withEscape(escapeChar)
+                .parse(reader)
+
     }
 
     static FuzzyCSVTable toCSV(List<? extends Map> listOfMaps, String[] cols) {
         tbl(FuzzyCSV.toCSV(listOfMaps, cols))
-    }
-
-
-    private static FuzzyCSVTable toListOfLists(Collection<?> Collection0) {
-        tbl(FuzzyCSV.toListOfLists(Collection0))
     }
 
 
@@ -1085,6 +1087,10 @@ class FuzzyCSVTable implements Iterable<Record> {
     //endregion
 
     //region static initializer with from
+
+    static Importer from(){
+        return Importer.from()
+    }
 
     static FuzzyCSVTable fromCsvString(String csvString,
                                        char separator = CSVParser.DEFAULT_SEPARATOR,
