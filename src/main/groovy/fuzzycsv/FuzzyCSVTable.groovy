@@ -889,16 +889,10 @@ class FuzzyCSVTable implements Iterable<Record> {
         return convert().toPretty().string()
     }
 
-
-    static enum GridOptions {
-        LIST_AS_TABLE, SHALLOW_MODE
-    }
-
     FuzzyCSVTable asListGrid() {
         return toGrid(GridOptions.LIST_AS_TABLE)
 
     }
-
 
     FuzzyCSVTable toGrid(GridOptions... moreOptions) {
         EnumSet<GridOptions> finalOptions = EnumSet.noneOf(GridOptions)
