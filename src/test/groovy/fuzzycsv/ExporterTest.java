@@ -62,7 +62,7 @@ class ExporterTest {
     @Test
     void toCsv() {
         Writer writer = new StringWriter();
-        Exporter.create(table).toCsv().withQuoteAll(false).export(writer);
+        Exporter.create(table).toCsv().withQuoteAll(false).write(writer);
         assertEquals("ID,NAME,AGE\n" +
                        "1,John,20\n" +
                        "2,Jane,30\n" +
@@ -145,7 +145,7 @@ class ExporterTest {
         @Test
         void testExportToFilePath() throws IOException {
             Path tempFile = createTempFile();
-            Exporter.Csv.create().withTable(table).export(tempFile);
+            Exporter.Csv.create().withTable(table).write(tempFile);
 
 
             assertEquals("\"ID\",\"NAME\",\"AGE\"\n" +
@@ -157,7 +157,7 @@ class ExporterTest {
         @Test
         void testExportToFileStringPath() throws IOException {
             Path tempFile = createTempFile();
-            Exporter.Csv.create().withTable(table).export(tempFile.toString());
+            Exporter.Csv.create().withTable(table).write(tempFile.toString());
 
 
             assertEquals("\"ID\",\"NAME\",\"AGE\"\n" +
@@ -169,7 +169,7 @@ class ExporterTest {
         @Test
         void testWithSemiColonDelimiter() throws IOException {
             Path tempFile = createTempFile();
-            Exporter.Csv.create().withTable(table).withDelimiter(";").export(tempFile);
+            Exporter.Csv.create().withTable(table).withDelimiter(";").write(tempFile);
 
             assertEquals("\"ID\";\"NAME\";\"AGE\"\n" +
                            "\"1\";\"John\";\"20\"\n" +
@@ -180,7 +180,7 @@ class ExporterTest {
         @Test
         void testWithCustomQuote() throws IOException {
             Path tempFile = createTempFile();
-            Exporter.Csv.create().withTable(table).withQuote("'").export(tempFile);
+            Exporter.Csv.create().withTable(table).withQuote("'").write(tempFile);
 
             assertEquals("'ID','NAME','AGE'\n" +
                            "'1','John','20'\n" +
@@ -192,7 +192,7 @@ class ExporterTest {
         void testWithCustomEscape() throws IOException {
             Path tempFile = createTempFile();
             FuzzyCSVTable tableCopy = table.copy().set(1, 1, "J\"ane");
-            Exporter.Csv.create().withTable(tableCopy).withEscape("'").export(tempFile);
+            Exporter.Csv.create().withTable(tableCopy).withEscape("'").write(tempFile);
 
             assertEquals("\"ID\",\"NAME\",\"AGE\"\n" +
                            "\"1\",\"J'\"ane\",\"20\"\n" +
@@ -211,7 +211,7 @@ class ExporterTest {
               .withEscape("-")
               .withQuote("'")
               .withDelimiter(";")
-              .export(tempFile);
+              .write(tempFile);
 
             assertEquals("'ID';'NAME';'AGE'\n" +
                            "'1';'J-'ane';'20'\n" +
@@ -223,7 +223,7 @@ class ExporterTest {
         @Test
         void testNoQuotes() throws IOException {
             Path tempFile = createTempFile();
-            Exporter.Csv.create().withTable(table).withQuoteAll(false).export(tempFile);
+            Exporter.Csv.create().withTable(table).withQuoteAll(false).write(tempFile);
 
             assertEquals("ID,NAME,AGE\n" +
                            "1,John,20\n" +
@@ -234,7 +234,7 @@ class ExporterTest {
         @Test
         void testWithCustomLineSeparator() throws IOException {
             Path tempFile = createTempFile();
-            Exporter.Csv.create().withTable(table).withLineSeparator("\r\n").export(tempFile);
+            Exporter.Csv.create().withTable(table).withLineSeparator("\r\n").write(tempFile);
 
             assertEquals("\"ID\",\"NAME\",\"AGE\"\r\n" +
                            "\"1\",\"John\",\"20\"\r\n" +

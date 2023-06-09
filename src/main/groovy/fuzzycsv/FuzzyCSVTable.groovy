@@ -683,8 +683,6 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    @Deprecated
-//remove
     String toCsvString() {
         return convert().toCsv().getResult()
     }
@@ -823,14 +821,14 @@ class FuzzyCSVTable implements Iterable<Record> {
     @Deprecated
 //remove
     FuzzyCSVTable write(String filePath) {
-        export().toCsv().export(filePath)
+        export().toCsv().write(filePath)
         return this
     }
 
     @Deprecated
 //remove
     FuzzyCSVTable write(File file) {
-        export().toCsv().export(file.absolutePath)
+        export().toCsv().write(file.absolutePath)
         return this
 
     }
@@ -838,7 +836,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     @Deprecated
 //remove
     FuzzyCSVTable write(Writer writer) {
-        export().toCsv().export(writer)
+        export().toCsv().write(writer)
         return this
     }
 

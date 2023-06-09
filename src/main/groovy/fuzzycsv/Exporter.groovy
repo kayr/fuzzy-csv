@@ -109,6 +109,7 @@ class Exporter {
         private String escape = "\\"
         private String lineSeparator = "\n"
         private boolean quoteAll = true
+
         private FuzzyCSVTable table
 
         Csv withDelimiter(String delimiter) {
@@ -150,17 +151,17 @@ class Exporter {
             return new Csv()
         }
 
-        Csv export(String path) {
-            return export(Paths.get(path))
+        Csv write(String path) {
+            return write(Paths.get(path))
         }
 
-        Csv export(Path path) {
+        Csv write(Path path) {
             def writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)
-            writer.withCloseable { export(it) }
+            writer.withCloseable { write(it) }
             return this
         }
 
-        Csv export(Writer writer) {
+        Csv write(Writer writer) {
             def w = new FuzzyCSVWriter(writer, delimiter.charAt(0), quote.charAt(0), escape.charAt(0), lineSeparator, quoteAll)
             w.writeAll(table.getCsv())
             return this

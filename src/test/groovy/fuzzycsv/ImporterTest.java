@@ -3,9 +3,21 @@ package fuzzycsv;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ImporterTest {
+
+    FuzzyCSVTable table = FuzzyCSVTable.fromRows(
+      asList("name", "lname", "data"),
+      asList("joe", "lasty", "1.1"),
+      asList("joz", "lasty", "1.1")
+    );
 
     @Nested
     class Csv {
@@ -53,6 +65,29 @@ class ImporterTest {
 
             assertEquals(csv, table.convert().toCsv().withQuote("'").withEscape("-").getResult());
         }
+
+        @Test
+        void importFromFile() throws IOException {
+            Path tempFile = Files.createTempFile("test", "csv");
+
+            table.export().toCsv().write(tempFile);
+
+            FuzzyCSVTable actual = Importer.from().csv().parse(tempFile);
+
+            assertEquals(table, actual);
+        }
+
+        @Test
+        void importFromReader(){
+            String csvString = table.toCsvString();
+            StringReader reader = new StringReader(csvString);
+
+            FuzzyCSVTable actual = Importer.from().csv().parse(reader);
+
+            assertEquals(table, actual);
+        }
+
+
 
     }
 

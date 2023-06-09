@@ -101,7 +101,7 @@ public class Converter {
 
         public String getResult() {
             StringWriter w = new StringWriter();
-            exporter.export(w);
+            exporter.write(w);
             return w.toString();
         }
 
