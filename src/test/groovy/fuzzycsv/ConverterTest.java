@@ -167,7 +167,7 @@ class ConverterTest {
             String output = FuzzyCSVTable.fromJsonText(t)
                               .sort("key")
                               .toGrid(GridOptions.LIST_AS_TABLE)
-                              .convert().toPretty().getResult();
+                              .to().pretty().getResult();
 
             String expected = "╔═══════╤═══════════════════╗\n" +
                                 "║ key   │ value             ║\n" +

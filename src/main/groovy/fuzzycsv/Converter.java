@@ -19,19 +19,19 @@ public class Converter {
         return new Converter(table);
     }
 
-    public Pretty toPretty() {
+    public Pretty pretty() {
         return Pretty.create().withTable(table);
     }
 
-    public Json toJson() {
+    public Json json() {
         return Json.create().withTable(table);
     }
 
-    public Csv toCsv() {
+    public Csv csv() {
         return Csv.create().withTable(table);
     }
 
-    public Maps toMaps() {
+    public Maps maps() {
         return Maps.create().withTable(table);
     }
 
@@ -50,7 +50,7 @@ public class Converter {
             return new Maps(table);
         }
 
-        public List<Map<String,?>> result() {
+        public List<Map<String,?>> getResult() {
             List<List<?>> csv = table.getCsv();
             List<String> header = table.getHeader();
             int csvSize = csv.size();

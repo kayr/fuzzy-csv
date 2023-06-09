@@ -92,7 +92,7 @@ class Exporter {
         @PackageScope
         String jsonText() {
             String json = asMaps ?
-                    JsonOutput.toJson(table.toMapList()) :
+                    JsonOutput.toJson(table.to().maps().getResult()) :
                     JsonOutput.toJson(table.getCsv())
             if (prettyPrint) {
                 return JsonOutput.prettyPrint(json)

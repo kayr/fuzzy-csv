@@ -30,7 +30,7 @@ class ImporterTest {
 
             FuzzyCSVTable table = Importer.from().csv().parseText(csv);
 
-            assertEquals(csv, table.convert().toCsv().getResult());
+            assertEquals(csv, table.to().csv().getResult());
         }
 
         @Test
@@ -41,7 +41,7 @@ class ImporterTest {
 
             FuzzyCSVTable table = Importer.from().csv().withQuote('\'').parseText(csv);
 
-            assertEquals(csv, table.convert().toCsv().withQuote("'").getResult());
+            assertEquals(csv, table.to().csv().withQuote("'").getResult());
         }
 
         @Test
@@ -52,7 +52,7 @@ class ImporterTest {
 
             FuzzyCSVTable table = Importer.from().csv().withQuote('\'').withDelimiter(';').parseText(csv);
 
-            assertEquals(csv, table.convert().toCsv().withQuote("'").withDelimiter(";").getResult());
+            assertEquals(csv, table.to().csv().withQuote("'").withDelimiter(";").getResult());
         }
 
         @Test
@@ -63,7 +63,7 @@ class ImporterTest {
 
             FuzzyCSVTable table = Importer.from().csv().withQuote('\'').withEscape('-').parseText(csv);
 
-            assertEquals(csv, table.convert().toCsv().withQuote("'").withEscape("-").getResult());
+            assertEquals(csv, table.to().csv().withQuote("'").withEscape("-").getResult());
         }
 
         @Test
@@ -124,7 +124,7 @@ class ImporterTest {
 
         @Test
         void parseFromReader() {
-            String jsonString = table.convert().toJson().getResult();
+            String jsonString = table.to().json().getResult();
             StringReader reader = new StringReader(jsonString);
 
             FuzzyCSVTable actual = Importer.from().json().parse(reader);
@@ -143,7 +143,16 @@ class ImporterTest {
 
         @Test
         void parseFromJsonString() {
-            String jsonString = table.convert().toJson().getResult();
+            String jsonString = table.to().json().getResult();
+
+            FuzzyCSVTable actual = Importer.from().json().parseText(jsonString);
+
+            assertEquals(table, actual);
+        }
+
+        @Test
+        void parseFromJsonStringWithCustomOptions() {
+            String jsonString = table.to().json().withAsMaps(true).getResult();
 
             FuzzyCSVTable actual = Importer.from().json().parseText(jsonString);
 

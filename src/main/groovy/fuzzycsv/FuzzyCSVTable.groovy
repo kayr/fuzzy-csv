@@ -684,13 +684,13 @@ class FuzzyCSVTable implements Iterable<Record> {
 
 
     String toCsvString() {
-        return convert().toCsv().getResult()
+        return to().csv().getResult()
     }
 
     @Deprecated
 //remove
     List<Map<String, ?>> toMapList() {
-        return convert().toMaps().result()
+        return to().maps().getResult()
     }
 
     FuzzyCSVTable sort(Closure c) {
@@ -864,14 +864,14 @@ class FuzzyCSVTable implements Iterable<Record> {
     @Deprecated
 //remove
     String toJsonText() {
-        convert().toJson().getResult()
+        to().json().getResult()
     }
 
     Exporter export() {
         return Exporter.create(this)
     }
 
-    Converter convert() {
+    Converter to() {
         return Converter.create(this)
     }
 
@@ -880,11 +880,11 @@ class FuzzyCSVTable implements Iterable<Record> {
      */
     @Deprecated
     String toStringFormatted() {
-        return convert().toPretty().getResult()
+        return to().pretty().getResult()
     }
 
     String toPrettyString() {
-        return convert().toPretty().getResult()
+        return to().pretty().getResult()
     }
 
     FuzzyCSVTable asListGrid() {
