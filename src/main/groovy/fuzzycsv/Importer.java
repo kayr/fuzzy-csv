@@ -44,7 +44,7 @@ public class Importer {
             return parse(reader);
         }
 
-        public FuzzyCSVTable getFromPath(String path) {
+        public FuzzyCSVTable parsePath(String path) {
             return parse(Paths.get(path));
         }
 

@@ -78,7 +78,7 @@ class ImporterTest {
         }
 
         @Test
-        void importFromReader(){
+        void importFromReader() {
             String csvString = table.toCsvString();
             StringReader reader = new StringReader(csvString);
 
@@ -87,6 +87,15 @@ class ImporterTest {
             assertEquals(table, actual);
         }
 
+        @Test
+        void importFromPath() throws IOException {
+            Path tempFile = Files.createTempFile("test", "csv");
+            table.export().toCsv().write(tempFile);
+
+            FuzzyCSVTable actual = Importer.from().csv().parsePath(tempFile.toString());
+
+            assertEquals(table, actual);
+        }
 
 
     }
