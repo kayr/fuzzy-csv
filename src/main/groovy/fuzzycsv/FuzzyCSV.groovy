@@ -213,44 +213,6 @@ class FuzzyCSV {
         return csvList
     }
 
-    static void writeToFile(List<? extends List> csv, String file) {
-        writeToFile(csv, new File(file))
-    }
-
-    static void writeToFile(List<? extends List> csv, File sysFile) {
-        if (sysFile.exists())
-            sysFile.delete()
-
-        if (!sysFile.parentFile?.exists()) {
-            sysFile.parentFile?.mkdirs()
-        }
-
-        sysFile.withWriter { fileWriter ->
-            writeCSV(csv, fileWriter)
-        }
-
-    }
-
-    static void writeCSV(List<? extends List> csv, Writer fileWriter) {
-        CSVWriter writer = new FuzzyCSVWriter(fileWriter)
-        writer.writeAll(csv)
-    }
-
-
-    @CompileStatic
-    static void writeJson(List<? extends List> csv, File file) {
-        file.withWriter { BufferedWriter w -> writeJson(csv, w) }
-    }
-
-    @CompileStatic
-    static void writeJson(List<? extends List> csv, Writer fileWriter) {
-        def json = toJsonText(csv)
-        fileWriter.write(json)
-    }
-
-    static String toJsonText(List<? extends List> csv) {
-        return JsonOutput.toJson(csv)
-    }
 
     static Object fromJsonText(String text) {
         new JsonSlurper().parseText(text)
