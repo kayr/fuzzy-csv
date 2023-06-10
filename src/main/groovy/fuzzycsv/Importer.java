@@ -15,7 +15,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static fuzzycsv.FuzzyCSVUtils.list;
 
 public class Importer {
 
@@ -36,6 +42,47 @@ public class Importer {
 
     public Database db() {
         return Database.create();
+    }
+
+    public FuzzyCSVTable listsOrMaps(Object obj) {
+        return FuzzyCSVTable.coerceFromObj(obj);
+    }
+
+    public FuzzyCSVTable map(Map<String, ?> map) {
+        List<List<Object>> csv = new ArrayList<>(map.size());
+        csv.add(list("key", "value"));
+        for (Map.Entry<String, ?> entry : map.entrySet()) {
+            String k = entry.getKey();
+            Object v = entry.getValue();
+            csv.add(list(k, v));
+        }
+        return FuzzyCSVTable.tbl(csv);
+    }
+
+
+    public FuzzyCSVTable maps(Collection<Map<String, ?>> maps) {
+        return FuzzyCSVTable.tbl(FuzzyCSV.toCSVLenient(maps));
+    }
+
+    public FuzzyCSVTable records(Collection<Record> records) {
+        return FuzzyCSVTable.tbl(FuzzyCSV.toCSVFromRecordList(records));
+    }
+
+    public FuzzyCSVTable lists(List<List<?>> csv) {
+        return FuzzyCSVTable.tbl(csv);
+    }
+
+    public FuzzyCSVTable rows(List<?>... rows) {
+        return FuzzyCSVTable.tbl(list(rows));
+    }
+
+    public FuzzyCSVTable pojos(Collection<?> pojos) {
+        List<Map<String, ?>> mapList = pojos.stream().map(FuzzyCSVUtils::toProperties).collect(Collectors.toList());
+        return maps(mapList);
+    }
+
+    public FuzzyCSVTable pojo(Object pojo) {
+        return map(FuzzyCSVUtils.toProperties(pojo));
     }
 
 
@@ -86,21 +133,21 @@ public class Importer {
 
         public FuzzyCSVTable parseText(String json) {
             Object o = new JsonSlurper().parseText(json);
-            return FuzzyCSVTable.coerceFromObj(o);
+            return Importer.from().listsOrMaps(o);
         }
 
         public FuzzyCSVTable parse(Path path) {
             try {
                 Object object = new JsonSlurper().parse(Files.newBufferedReader(path));
-                return FuzzyCSVTable.coerceFromObj(object);
+                return Importer.from().listsOrMaps(object);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw FuzzyCsvException.wrap(e);
             }
         }
 
         public FuzzyCSVTable parse(Reader reader) {
             Object object = new JsonSlurper().parse(reader);
-            return FuzzyCSVTable.coerceFromObj(object);
+            return Importer.from().listsOrMaps(object);
         }
 
         public FuzzyCSVTable parsePath(String path) {
@@ -121,12 +168,16 @@ public class Importer {
             return new Database();
         }
 
-        public FuzzyCSVTable fetch(String query) throws SQLException {
+        public FuzzyCSVTable fetch(String query) {
             Connection theConnection = getConnection();
             try (
               Statement preparedStatement = theConnection.createStatement();
               ResultSet resultSet = preparedStatement.executeQuery(query)) {
+
                 return fetch(resultSet);
+
+            } catch (SQLException e) {
+                throw FuzzyCsvException.wrap(e);
             } finally {
                 mayBeCloseConnection(theConnection);
             }
@@ -155,9 +206,9 @@ public class Importer {
             return dataSource != null;
         }
 
-        public Connection getConnection() throws SQLException {
+        public Connection getConnection() {
             if (isUsingDataSource()) {
-                return dataSource.getConnection();
+                return FuzzyCsvException.wrap(() -> dataSource.getConnection());
             }
             if (connection == null) {
                 throw new IllegalStateException("No connection or datasource set");

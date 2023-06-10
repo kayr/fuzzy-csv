@@ -16,6 +16,12 @@ class FuzzyCSVUtils {
         return rt
     }
 
+    static <T> List<T> list(T... arr) {
+        def rt = new ArrayList<T>()
+        rt.addAll(arr)
+        return rt
+    }
+
     static Object safeGet(List it, int idx) {
         if (idx < 0 || it == null) return null
         return it.size() > idx ? it.get(idx) : null
@@ -137,7 +143,7 @@ class FuzzyCSVUtils {
         }
     }
 
-    static Map toProperties(Object o) {
+    static Map<String,Object> toProperties(Object o) {
         final Map properties = o.properties
         properties.remove("class")
         return properties

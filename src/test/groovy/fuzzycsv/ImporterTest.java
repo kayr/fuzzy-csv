@@ -178,7 +178,7 @@ class ImporterTest {
 
         @BeforeEach
         void setUp() throws SQLException {
-
+            H2DbHelper.dropAllAndDispose();
             dataSource = H2DbHelper.getDataSource();
             sql = new Sql(dataSource);
             String table = "CREATE TABLE PERSON (ID INT PRIMARY KEY, FIRSTNAME VARCHAR(64), LASTNAME VARCHAR(64));";
@@ -207,7 +207,7 @@ class ImporterTest {
         @Test
         void fromSqlQueryUsingConnection() throws SQLException {
 
-            try(Connection connection = dataSource.getConnection()){
+            try (Connection connection = dataSource.getConnection()) {
                 FuzzyCSVTable table = FuzzyCSVTable.from().db()
                                         .withConnection(connection)
                                         .fetch("select * from PERSON");
@@ -222,9 +222,9 @@ class ImporterTest {
         @Test
         void fromResultSet() throws SQLException {
 
-            try(Connection connection = dataSource.getConnection();
-                PreparedStatement statement = connection.prepareStatement("select * from PERSON");
-                ResultSet resultSet = statement.executeQuery()){
+            try (Connection connection = dataSource.getConnection();
+                 PreparedStatement statement = connection.prepareStatement("select * from PERSON");
+                 ResultSet resultSet = statement.executeQuery()) {
 
                 FuzzyCSVTable table = FuzzyCSVTable.from().db().fetch(resultSet);
 

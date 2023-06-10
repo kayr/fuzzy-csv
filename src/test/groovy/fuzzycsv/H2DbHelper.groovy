@@ -40,6 +40,12 @@ class H2DbHelper {
         return ds
     }
 
+    static void dropAllAndDispose() {
+        if(ds == null) {
+            return
+        }
+        dropAllAndDispose(ds)
+    }
     static void dropAllAndDispose(JdbcConnectionPool ds) {
         ds.connection.withCloseable { conn ->
             dropAllTables(conn)

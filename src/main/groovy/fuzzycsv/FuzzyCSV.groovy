@@ -903,7 +903,7 @@ class FuzzyCSV {
         return csv
     }
 
-    static List<List> toCSVLenient(List<? extends Map> list) {
+    static List<List> toCSVLenient(Collection<? extends Map> list) {
 
         def indexMap = [:]
         def indexTracker = 0

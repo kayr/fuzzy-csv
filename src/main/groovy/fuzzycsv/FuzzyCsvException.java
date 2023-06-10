@@ -21,8 +21,8 @@ public class FuzzyCsvException extends RuntimeException {
         }
     }
 
-    public static void rethrow(Exception e) {
-        throw new FuzzyCsvException(e.getMessage(), e);
+    public static FuzzyCsvException wrap(Exception e) {
+        return new FuzzyCsvException(e.getMessage(), e);
     }
 
 }

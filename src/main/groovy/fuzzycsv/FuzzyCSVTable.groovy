@@ -1039,7 +1039,7 @@ class FuzzyCSVTable implements Iterable<Record> {
 
 
     @PackageScope
-     static FuzzyCSVTable coerceFromObj(json) {
+    static FuzzyCSVTable coerceFromObj(json) {
         def cell = gridifyCell(json, EnumSet.of(GridOptions.SHALLOW_MODE))
         if (cell instanceof FuzzyCSVTable)
             return cell
@@ -1081,13 +1081,11 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-
-
     //endregion
 
     //region static initializer with from
 
-    static Importer from(){
+    static Importer from() {
         return Importer.from()
     }
 
@@ -1110,56 +1108,53 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     static FuzzyCSVTable fromRows(List... rows) {
-        return tbl(rows.toList())
+        return from().rows(rows)
     }
 
     static FuzzyCSVTable fromInspection(Object obj) {
-        return coerceFromObj(obj)
+        return from().listsOrMaps(obj)
     }
 
     static FuzzyCSVTable fromRecordList(Collection<Record> records) {
-        tbl(FuzzyCSV.toCSVFromRecordList(records))
+        return from().records(records)
     }
 
     static FuzzyCSVTable fromSqlQuery(Sql sql, String query) {
-        from().db().withConnection(sql.connection)
+        return from().db().withConnection(sql.connection)
                 .withDataSource(sql.dataSource)
                 .fetch(query)
     }
 
     static FuzzyCSVTable fromResultSet(ResultSet resultSet) {
-        from().db().fetch(resultSet)
+        return from().db().fetch(resultSet)
     }
 
     static FuzzyCSVTable fromMapList(Collection<? extends Map> listOfMaps) {
-        tbl(FuzzyCSV.toCSVLenient(listOfMaps as List))
+        return tbl(FuzzyCSV.toCSVLenient(listOfMaps as List))
     }
 
     static FuzzyCSVTable fromPojoList(Collection<Object> pojoList) {
-        def listOfMaps = pojoList.collect { FuzzyCSVUtils.toProperties(it) }
-        return fromMapList(listOfMaps)
+      return from().pojos(pojoList)
     }
 
     static FuzzyCSVTable fromJsonText(String text) {
-        return coerceFromObj(FuzzyCSV.fromJsonText(text))
+        return from().json().parseText(text)
     }
 
     static FuzzyCSVTable fromJson(File file) {
-        return coerceFromObj(FuzzyCSV.fromJson(file))
+        return from().json().parse(file.toPath())
     }
 
     static FuzzyCSVTable fromJson(Reader r) {
-        return coerceFromObj(FuzzyCSV.fromJson(r))
+        return from().json().parse(r)
     }
 
     static FuzzyCSVTable fromPojo(Object kv) {
-        return fromMap(FuzzyCSVUtils.toProperties(kv.properties))
+        return from().pojo(kv)
     }
 
     static FuzzyCSVTable fromMap(Map kv) {
-        List<List<Object>> head = [["key", "value"]]
-        kv.each { k, v -> head.add([k, v]) }
-        return tbl(head)
+        return from().map(kv)
     }
 
     //endregion
