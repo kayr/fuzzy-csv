@@ -4,12 +4,17 @@ import com.opencsv.CSVReader;
 import groovy.json.JsonSlurper;
 import lombok.AccessLevel;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 public class Importer {
@@ -27,6 +32,10 @@ public class Importer {
 
     public Json json() {
         return Json.create();
+    }
+
+    public Database db() {
+        return Database.create();
     }
 
 
@@ -97,6 +106,65 @@ public class Importer {
         public FuzzyCSVTable parsePath(String path) {
             return parse(Paths.get(path));
         }
+
+    }
+
+    @lombok.With
+    @lombok.NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Database {
+
+        private DataSource dataSource;
+        private Connection connection;
+
+        public static Database create() {
+            return new Database();
+        }
+
+        public FuzzyCSVTable fetch(String query) throws SQLException {
+            Connection theConnection = getConnection();
+            try (
+              Statement preparedStatement = theConnection.createStatement();
+              ResultSet resultSet = preparedStatement.executeQuery(query)) {
+                return fetch(resultSet);
+            } finally {
+                mayBeCloseConnection(theConnection);
+            }
+        }
+
+        public FuzzyCSVTable fetch(ResultSet resultSet) {
+            List<List<?>> csv = FuzzyCSV.toCSV(resultSet);
+            return FuzzyCSVTable.tbl(csv);
+        }
+
+
+        private void mayBeCloseConnection(Connection connection) {
+
+            if (isUsingDataSource()) {
+                try {
+                    connection.close();
+                } catch (Exception x) {
+                    //ignore
+                }
+            }
+
+
+        }
+
+        private boolean isUsingDataSource() {
+            return dataSource != null;
+        }
+
+        public Connection getConnection() throws SQLException {
+            if (isUsingDataSource()) {
+                return dataSource.getConnection();
+            }
+            if (connection == null) {
+                throw new IllegalStateException("No connection or datasource set");
+            }
+            return connection;
+        }
+
 
     }
 }

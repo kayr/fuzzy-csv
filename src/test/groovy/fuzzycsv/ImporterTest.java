@@ -1,5 +1,9 @@
 package fuzzycsv;
 
+import groovy.sql.Sql;
+import org.h2.jdbcx.JdbcConnectionPool;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -7,6 +11,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -159,6 +167,58 @@ class ImporterTest {
             assertEquals(table, actual);
         }
 
+    }
+
+    @Nested
+    class Database {
+
+
+        JdbcConnectionPool dataSource;
+        Sql sql;
+
+        @BeforeEach
+        void setUp() throws SQLException {
+
+            dataSource = H2DbHelper.getDataSource();
+            sql = new Sql(dataSource);
+            String table = "CREATE TABLE PERSON (ID INT PRIMARY KEY, FIRSTNAME VARCHAR(64), LASTNAME VARCHAR(64));";
+            String insert = "insert into PERSON values (1,'kay','r')";
+            sql.execute(table);
+            sql.execute(insert);
+        }
+
+        @AfterEach
+        void tearDown() {
+            H2DbHelper.dropAllAndDispose(dataSource);
+        }
+
+        @Test
+        void fromSqlQuery() throws SQLException {
+
+            FuzzyCSVTable table = FuzzyCSVTable.from().db()
+                                    .withDataSource(dataSource)
+                                    .fetch("select * from PERSON");
+
+            assertEquals(1, table.size());
+            assertEquals("kay", table.row(1).val("FIRSTNAME"));
+            assertEquals("r", table.row(1).val("LASTNAME"));
+        }
+
+        @Test
+        void fromResultSet() throws SQLException {
+
+            try(Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement("select * from PERSON");
+                ResultSet resultSet = statement.executeQuery()){
+
+                FuzzyCSVTable table = FuzzyCSVTable.from().db().fetch(resultSet);
+
+                assertEquals(1, table.size());
+                assertEquals("kay", table.row(1).val("FIRSTNAME"));
+                assertEquals("r", table.row(1).val("LASTNAME"));
+            }
+
+        }
     }
 
 

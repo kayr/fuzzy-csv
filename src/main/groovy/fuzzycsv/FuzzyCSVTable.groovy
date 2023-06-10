@@ -1122,11 +1122,13 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     static FuzzyCSVTable fromSqlQuery(Sql sql, String query) {
-        tbl(FuzzyCSV.toCSV(sql, query))
+        from().db().withConnection(sql.connection)
+                .withDataSource(sql.dataSource)
+                .fetch(query)
     }
 
     static FuzzyCSVTable fromResultSet(ResultSet resultSet) {
-        tbl(FuzzyCSV.toCSV(resultSet))
+        from().db().fetch(resultSet)
     }
 
     static FuzzyCSVTable fromMapList(Collection<? extends Map> listOfMaps) {
