@@ -197,11 +197,26 @@ class ImporterTest {
 
             FuzzyCSVTable table = FuzzyCSVTable.from().db()
                                     .withDataSource(dataSource)
-                                    .fetch("select * from PERSON");
+                                    .fetch("select FIRSTNAME as \"fn\", LASTNAME  from PERSON");
 
             assertEquals(1, table.size());
-            assertEquals("kay", table.row(1).val("FIRSTNAME"));
+            assertEquals("kay", table.row(1).val("fn"));
             assertEquals("r", table.row(1).val("LASTNAME"));
+        }
+
+        @Test
+        void fromSqlQueryUsingConnection() throws SQLException {
+
+            try(Connection connection = dataSource.getConnection()){
+                FuzzyCSVTable table = FuzzyCSVTable.from().db()
+                                        .withConnection(connection)
+                                        .fetch("select * from PERSON");
+
+                assertEquals(1, table.size());
+                assertEquals("kay", table.row(1).val("FIRSTNAME"));
+                assertEquals("r", table.row(1).val("LASTNAME"));
+            }
+
         }
 
         @Test
@@ -219,6 +234,8 @@ class ImporterTest {
             }
 
         }
+
+
     }
 
 
