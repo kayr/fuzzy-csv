@@ -10,8 +10,6 @@ import fuzzycsv.rdbms.FuzzyCSVDbExporter
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.stc.ClosureParams
-import groovy.transform.stc.SimpleType
 import org.codehaus.groovy.runtime.InvokerHelper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -183,7 +181,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable aggregate(List columns,
-                            @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure groupFx) {
+                            Fx1<Record, Object> groupFx) {
         return aggregate(columns, fx(groupFx))
     }
 
@@ -236,7 +234,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     Map<Object, FuzzyCSVTable> groupBy(
-            @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure groupFx) {
+            Fx1<Record, Object> groupFx) {
         return groupBy(fx(groupFx))
     }
 
@@ -358,7 +356,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable join(FuzzyCSVTable tbl,
-                       @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func) {
+                       Fx1<Record, Object> func) {
         return join(tbl, fx(func))
     }
 
@@ -367,7 +365,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable join(List<? extends List> csv2,
-                       @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure joinCondition) {
+                       Fx1<Record, Object> joinCondition) {
         return join(csv2, fx(joinCondition))
     }
 
@@ -376,7 +374,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable leftJoin(FuzzyCSVTable tbl,
-                           @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func) {
+                           Fx1<Record, Object> func) {
         return leftJoin(tbl, fx(func))
     }
 
@@ -385,7 +383,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable leftJoin(List<? extends List> csv2,
-                           @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func) {
+                           Fx1<Record, Object> func) {
         return leftJoin(csv2, fx(func))
     }
 
@@ -394,7 +392,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable rightJoin(FuzzyCSVTable tbl,
-                            @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func) {
+                            Fx1<Record, Object> func) {
         return rightJoin(tbl, fx(func))
     }
 
@@ -403,7 +401,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable rightJoin(List<? extends List> csv2,
-                            @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func) {
+                            Fx1<Record, Object> func) {
         return rightJoin(csv2, fx(func))
     }
 
@@ -412,7 +410,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable fullJoin(FuzzyCSVTable tbl,
-                           @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func) {
+                           Fx1<Record, Object> func) {
         return fullJoin(tbl, fx(func))
     }
 
@@ -421,7 +419,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable fullJoin(List<? extends List> csv2,
-                           @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func) {
+                           Fx1<Record, Object> func) {
         return fullJoin(csv2, fx(func))
     }
 
@@ -560,7 +558,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     FuzzyCSVTable addColumn(String name,
-                            @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func) {
+                            Fx1<Record, Object> func) {
         return addColumn(fx(name, func))
     }
 
@@ -626,7 +624,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    FuzzyCSVTable delete(@ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure func) {
+    FuzzyCSVTable delete(Fx1<Record, Object> func) {
         filter { func.call(it) == false }
     }
 
@@ -780,7 +778,7 @@ class FuzzyCSVTable implements Iterable<Record> {
      */
     @Deprecated
     int columnIdx(String name, double accuracy = FuzzyCSV.ACCURACY_THRESHOLD.get()) {
-       return getColumnIndex(name, accuracy)
+        return getColumnIndex(name, accuracy)
     }
 
 

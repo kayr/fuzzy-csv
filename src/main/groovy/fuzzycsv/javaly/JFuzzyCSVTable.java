@@ -156,7 +156,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
      * @return key to FuzyCSVTable. A avoid unnecessary copying of data, the returned table is of type FuzzyCSVTable. If you need a JFuzzyCSVTable, use {@link FuzzyCSVTable#javaApi()} }
      */
     public Map<Object, FuzzyCSVTable> groupBy(Fx1<Record, Object> groupFx) {
-        return table.groupBy(FxUtils.toCls(groupFx));
+        return table.groupBy(groupFx);
 
 
     }
@@ -213,11 +213,11 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
     public JFuzzyCSVTable join(FuzzyCSVTable tbl, Fx1<Record, Object> func) {
-        return table.join(tbl, FxUtils.toCls(func)).javaApi();
+        return table.join(tbl, func).javaApi();
     }
 
     public JFuzzyCSVTable join(JFuzzyCSVTable tbl, Fx1<Record, Object> func) {
-        return table.join(tbl.unwrap(), FxUtils.toCls(func)).javaApi();
+        return table.join(tbl.unwrap(), func).javaApi();
     }
     //endregion
 
@@ -235,7 +235,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
     public JFuzzyCSVTable leftJoin(FuzzyCSVTable tbl, Fx1<Record, Object> func) {
-        return table.leftJoin(tbl, FxUtils.toCls(func)).javaApi();
+        return table.leftJoin(tbl, func).javaApi();
     }
 
     public JFuzzyCSVTable leftJoin(JFuzzyCSVTable csv2, Fx1<Record, Object> func) {
@@ -259,7 +259,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
     public JFuzzyCSVTable rightJoin(FuzzyCSVTable tbl, Fx1<Record, Object> func) {
-        return table.rightJoin(tbl, FxUtils.toCls(func)).javaApi();
+        return table.rightJoin(tbl, func).javaApi();
     }
 
     public JFuzzyCSVTable rightJoin(JFuzzyCSVTable csv2, Fx1<Record, Object> func) {
@@ -283,7 +283,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
     public JFuzzyCSVTable fullJoin(FuzzyCSVTable tbl, Fx1<Record, Object> func) {
-        return table.fullJoin(tbl, FxUtils.toCls(func)).javaApi();
+        return table.fullJoin(tbl, func).javaApi();
     }
 
     public JFuzzyCSVTable fullJoin(JFuzzyCSVTable csv2, Fx1<Record, Object> func) {
@@ -385,8 +385,8 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.addColumn(fnz).javaApi();
     }
 
-    public JFuzzyCSVTable addColumn(String name, Fx1<Record, ?> func) {
-        return table.addColumn(name, FxUtils.toCls(func)).javaApi();
+    public JFuzzyCSVTable addColumn(String name, Fx1<Record, Object> func) {
+        return table.addColumn(name, func).javaApi();
     }
 
     public JFuzzyCSVTable addColumnByCopy(RecordFx... fnz) {
@@ -436,7 +436,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
     public JFuzzyCSVTable delete(Fx1<Record, Object> func) {
-        return table.delete(FxUtils.toCls(func)).javaApi();
+        return table.delete(func).javaApi();
     }
 
     public JFuzzyCSVTable putInCell(String header, int rowIdx, Object value) {
