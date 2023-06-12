@@ -28,7 +28,6 @@ import java.util.Objects;
 
 import static fuzzycsv.FuzzyStaticApi.count;
 import static fuzzycsv.javaly.FxUtils.recordFx;
-import static fuzzycsv.javaly.FxUtils.spreader;
 import static fuzzycsv.javaly.TestUtils.kv;
 import static fuzzycsv.javaly.TestUtils.mapOf;
 import static java.util.Arrays.asList;
@@ -1270,7 +1269,7 @@ class JFuzzyCSVTableTest {
               asList(3, asList("three", "thrice"))
             );
 
-            JFuzzyCSVTable result = data.spread(spreader("b", (key, value) -> key + "_-_" + value));
+            JFuzzyCSVTable result = data.spread(FuzzyStaticApi.spreader("b", (key, value) -> key + "_-_" + value));
 
             JFuzzyCSVTable expected = JFuzzyCSVTable.fromRows(
               asList("a", "b_-_1", "b_-_2"),

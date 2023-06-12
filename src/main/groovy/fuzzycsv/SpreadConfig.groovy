@@ -1,18 +1,20 @@
 package fuzzycsv
 
+import fuzzycsv.javaly.Fx2
 import groovy.transform.CompileStatic
 import groovy.transform.builder.Builder
 import groovy.transform.builder.SimpleStrategy
 
 @Builder(builderStrategy = SimpleStrategy, prefix = 'with')
 @CompileStatic
-class SpreadConfig {
+class SpreadConfig<COL,KEY> {
     Object col
-    Closure nameGenFn = { Object col, Object value -> "${RecordFx.resolveName(col)}_${value}" }
+    Fx2<Object, Object, String> nameGenFn = { Object col, Object value -> "${RecordFx.resolveName(col)}_${value}" }
 
 
-    String createName(def key) {
-        return nameGenFn.call(col, key)?.toString()
+    String createName(KEY key) {
+        def call = nameGenFn.call(col, key)
+        return call?.toString()
     }
 
 }

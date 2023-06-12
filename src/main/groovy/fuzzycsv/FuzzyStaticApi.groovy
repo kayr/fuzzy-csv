@@ -1,6 +1,7 @@
 package fuzzycsv
 
 import fuzzycsv.javaly.Fx1
+import fuzzycsv.javaly.Fx2
 import groovy.transform.CompileStatic
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.SimpleType
@@ -55,11 +56,11 @@ class FuzzyStaticApi {
      * Record function with coercion OFF -> FASTER
      * @param function
      */
-    static RecordFx fx(Fx1<Record,Object> function) {
+    static RecordFx fx(Fx1<Record, Object> function) {
         return RecordFx.fx(function)
     }
 
-    static RecordFx fx(String name,  Fx1<Record,?> function) {
+    static RecordFx fx(String name, Fx1<Record, ?> function) {
         return RecordFx.fx(name, function)
     }
 
@@ -67,7 +68,7 @@ class FuzzyStaticApi {
         return FuzzyCSVTable.tbl(csv)
     }
 
-    static SpreadConfig spreader(Object col, Closure<String> nameGen) {
+    static SpreadConfig spreader(Object col, Fx2<Object, Object, String> nameGen) {
         new SpreadConfig().withCol(col).withNameGenFn(nameGen)
     }
 

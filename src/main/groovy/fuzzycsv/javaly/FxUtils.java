@@ -1,9 +1,7 @@
 package fuzzycsv.javaly;
 
-import fuzzycsv.FuzzyStaticApi;
 import fuzzycsv.Record;
 import fuzzycsv.RecordFx;
-import fuzzycsv.SpreadConfig;
 import groovy.lang.Closure;
 
 public class FxUtils {
@@ -71,11 +69,6 @@ public class FxUtils {
 
     public static RecordFx recordFx(Fx1<Record, ?> fx) {
         return recordFx(null, fx);
-    }
-
-    static <K, V> SpreadConfig spreader(String col, Fx2<K, V, String> nameGen) {
-
-        return FuzzyStaticApi.spreader(col, toCls(nameGen));
     }
 
 
