@@ -936,7 +936,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         }
 
         if (cellValue instanceof Map) {
-            return tbl(cellValue).mayBeGridify(options)
+            return tbl((Map)cellValue).mayBeGridify(options)
         }
 
 
@@ -1096,12 +1096,6 @@ class FuzzyCSVTable implements Iterable<Record> {
         return parseCsv(csvString, separator, quoteChar, escapeChar)
     }
 
-    static FuzzyCSVTable fromCsvReader(Reader csvString,
-                                       char separator = CSVParser.DEFAULT_SEPARATOR,
-                                       char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
-                                       char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
-        return parseCsv(csvString, separator, quoteChar, escapeChar)
-    }
 
     static FuzzyCSVTable fromListList(List<List> csv) {
         return tbl(csv)

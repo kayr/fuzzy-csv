@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static fuzzycsv.FuzzyCSVUtils.closeQuietly;
 import static fuzzycsv.FuzzyCSVUtils.list;
 
 public class Importer {
@@ -49,14 +50,14 @@ public class Importer {
     }
 
     public FuzzyCSVTable map(Map<String, ?> map) {
-        List<List<Object>> csv = new ArrayList<>(map.size());
+        List<List<?>> csv = new ArrayList<>(map.size());
         csv.add(list("key", "value"));
         for (Map.Entry<String, ?> entry : map.entrySet()) {
             String k = entry.getKey();
             Object v = entry.getValue();
             csv.add(list(k, v));
         }
-        return FuzzyCSVTable.tbl(csv);
+        return lists(csv);
     }
 
 
@@ -110,7 +111,7 @@ public class Importer {
             try (Reader reader = Files.newBufferedReader(path)) {
                 return parse(reader);
             } catch (IOException e) {
-                throw new RuntimeException("failed to parse file", e);
+                throw new FuzzyCsvException("Failed parsing CSV File: " + path, e);
             }
         }
 
@@ -119,7 +120,7 @@ public class Importer {
                 List<String[]> strings = rd.readAll();
                 return FuzzyCSVTable.tbl(FuzzyCSV.toListOfLists(strings));
             } catch (IOException e) {
-                throw new RuntimeException("Failed parsing CSV File", e);
+                throw new FuzzyCsvException("Failed parsing CSV From Reader", e);
             }
         }
     }
@@ -141,7 +142,7 @@ public class Importer {
                 Object object = new JsonSlurper().parse(Files.newBufferedReader(path));
                 return Importer.from().listsOrMaps(object);
             } catch (IOException e) {
-                throw FuzzyCsvException.wrap(e);
+                throw new FuzzyCsvException("Failed parsing JSON File", e);
             }
         }
 
@@ -190,16 +191,9 @@ public class Importer {
 
 
         private void mayBeCloseConnection(Connection connection) {
-
             if (isUsingDataSource()) {
-                try {
-                    connection.close();
-                } catch (Exception x) {
-                    //ignore
-                }
+                closeQuietly(connection);
             }
-
-
         }
 
         private boolean isUsingDataSource() {

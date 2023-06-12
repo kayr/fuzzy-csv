@@ -15,7 +15,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import static fuzzycsv.javaly.TestUtils.kv;
+import static fuzzycsv.javaly.TestUtils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -27,6 +32,165 @@ class ImporterTest {
       asList("joz", "lasty", "1.1")
     );
 
+
+    @Test
+    void fromMap() {
+        Map<String, String> map = mapOf(
+          kv("name", "joe"),
+          kv("lname", "lasty"),
+          kv("data", "1.1")
+        );
+
+        FuzzyCSVTable result = Importer.from().map(map);
+
+        FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
+          asList("key", "value"),
+          asList("name", "joe"),
+          asList("lname", "lasty"),
+          asList("data", "1.1")
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void fromMaps() {
+        Map<String, String> map1 = mapOf(
+          kv("name", "joe"),
+          kv("lname", "lasty"),
+          kv("data", "1.1")
+        );
+        Map<String, String> map2 = mapOf(
+          kv("name", "joz"),
+          kv("lname", "lasty"),
+          kv("data", "1.2")
+        );
+
+        FuzzyCSVTable result = Importer.from().maps(asList(map1, map2));
+
+        FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
+          asList("name", "lname", "data"),
+          asList("joe", "lasty", "1.1"),
+          asList("joz", "lasty", "1.2")
+        );
+
+        assertEquals(expected, result);
+    }
+
+
+    @Test
+    void fromRecords() {
+        Iterator<Record> iterator = table.iterator();
+        Record record1 = iterator.next();
+        Record record2 = iterator.next();
+
+        FuzzyCSVTable result = Importer.from().records(asList(record1, record2));
+
+        FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
+          asList("name", "lname", "data"),
+          asList("joe", "lasty", "1.1"),
+          asList("joz", "lasty", "1.1")
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void fromRows() {
+        FuzzyCSVTable result = Importer.from().rows(
+          asList("name", "lname", "data"),
+          asList("joe", "lasty", "1.1"),
+          asList("joz", "lasty", "1.1")
+        );
+
+        FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
+          asList("name", "lname", "data"),
+          asList("joe", "lasty", "1.1"),
+          asList("joz", "lasty", "1.1")
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @lombok.Getter
+    static class Person {
+        private String name;
+        private String lname;
+        private String data;
+
+        public Person(String name, String lname, String data) {
+            this.name = name;
+            this.lname = lname;
+            this.data = data;
+        }
+    }
+
+    @Test
+    void fromPojos() {
+        Person person1 = new Person("joe", "lasty", "1.1");
+        Person person2 = new Person("joz", "lasty", "1.2");
+
+        FuzzyCSVTable result = Importer.from().pojos(asList(person1, person2));
+
+        FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
+          asList("name", "lname", "data"),
+          asList("joe", "lasty", "1.1"),
+          asList("joz", "lasty", "1.2")
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void fromPojo() {
+        Person person = new Person("joe", "lasty", "1.1");
+
+        FuzzyCSVTable result = Importer.from().pojo(person);
+
+        FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
+          asList("key", "value"),
+          asList("name", "joe"),
+          asList("lname", "lasty"),
+          asList("data", "1.1")
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void fromListOrMaps() {
+        Map<String, String> map1 = mapOf(
+          kv("name", "joe"),
+          kv("lname", "lasty"),
+          kv("data", "1.1")
+        );
+
+
+        List<Object> data = asList(
+          asList("header1", "header2", "header3"),
+          asList("value1", "value2", "value3")
+        );
+
+        FuzzyCSVTable result1 = Importer.from().listsOrMaps(map1);
+
+        FuzzyCSVTable result2 = Importer.from().listsOrMaps(data);
+
+        FuzzyCSVTable expected1 = FuzzyCSVTable.fromRows(
+          asList("key", "value"),
+          asList("name", "joe"),
+          asList("lname", "lasty"),
+          asList("data", "1.1")
+        );
+
+        FuzzyCSVTable expected2 = FuzzyCSVTable.fromRows(
+          asList("header1", "header2", "header3"),
+          asList("value1", "value2", "value3")
+        );
+
+        assertEquals(expected1, result1);
+        assertEquals(expected2, result2);
+    }
+
     @Nested
     class Csv {
 
@@ -36,7 +200,7 @@ class ImporterTest {
                            "\"joe\",\"lasty\",\"1.1\"\n" +
                            "\"joz\",\"lasty\",\"1.1\"\n";
 
-            FuzzyCSVTable table = Importer.from().csv().parseText(csv);
+            FuzzyCSVTable table = FuzzyCSVTable.from().csv().parseText(csv);
 
             assertEquals(csv, table.to().csv().getResult());
         }
@@ -125,7 +289,7 @@ class ImporterTest {
 
             Path tempFile = writeJson();
 
-            FuzzyCSVTable actual = Importer.from().json().parse(tempFile);
+            FuzzyCSVTable actual = FuzzyCSVTable.from().json().parse(tempFile);
 
             assertEquals(table, actual);
         }
