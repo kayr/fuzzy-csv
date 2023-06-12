@@ -52,12 +52,12 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.addEmptyRow(number).javaApi();
     }
 
-    public int columnIdx(String name) {
-        return table.columnIdx(name);
+    public int getColumnIndex(String name) {
+        return table.getColumnIndex(name);
     }
 
-    public int columnIdx(String name, double accuracy) {
-        return table.columnIdx(name, accuracy);
+    public int getColumnIndex(String name, double accuracy) {
+        return table.getColumnIndex(name, accuracy);
     }
 
     public List<List<?>> getCsv() {
@@ -500,8 +500,8 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.toString();
     }
 
-    public String columnName(int index) {
-        return table.columnName(index);
+    public String getColumnName(int index) {
+        return table.getColumnName(index);
     }
 
     public JFuzzyCSVTable spread(SpreadConfig... colNames) {

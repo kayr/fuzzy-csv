@@ -216,22 +216,22 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testColumnIdx() {
-        assertEquals(0, inputCsv.columnIdx("color"));
-        assertEquals(-1, inputCsv.columnIdx("polor"));
-        assertEquals(1, inputCsv.columnIdx("matching"));
-        assertEquals(-1, inputCsv.columnIdx("notFound"));
+        assertEquals(0, inputCsv.getColumnIndex("color"));
+        assertEquals(-1, inputCsv.getColumnIndex("polor"));
+        assertEquals(1, inputCsv.getColumnIndex("matching"));
+        assertEquals(-1, inputCsv.getColumnIndex("notFound"));
 
     }
 
 
     @Test
     void testColumnIdxWithAccuracy() {
-        assertEquals(0, inputCsv.columnIdx("color", 0.8));
-        assertEquals(1, inputCsv.columnIdx("matching", 0.8));
-        assertEquals(-1, inputCsv.columnIdx("notFound", 0.8));
-        assertEquals(0, inputCsv.columnIdx("col", 0.8));
-        assertEquals(0, inputCsv.columnIdx("zolor", 0.8));
-        assertEquals(0, inputCsv.columnIdx("polor", 0.8));
+        assertEquals(0, inputCsv.getColumnIndex("color", 0.8));
+        assertEquals(1, inputCsv.getColumnIndex("matching", 0.8));
+        assertEquals(-1, inputCsv.getColumnIndex("notFound", 0.8));
+        assertEquals(0, inputCsv.getColumnIndex("col", 0.8));
+        assertEquals(0, inputCsv.getColumnIndex("zolor", 0.8));
+        assertEquals(0, inputCsv.getColumnIndex("polor", 0.8));
     }
 
     @Test
@@ -1233,7 +1233,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testColumnName() {
-        String columnName = inputCsv.columnName(1);
+        String columnName = inputCsv.getColumnName(1);
         assertEquals("matching", columnName);
     }
 

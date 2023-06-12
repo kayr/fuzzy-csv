@@ -767,13 +767,31 @@ class FuzzyCSVTable implements Iterable<Record> {
         return buffer.toString()
     }
 
+    /**
+     * @deprecated use {@link #getColumnName(int)} instead
+     */
+    @Deprecated
     String columnName(int index) {
+        return getColumnName(index)
+    }
+
+    /**
+     * @deprecated use {@link #getColumnIndex(java.lang.String)} instead
+     */
+    @Deprecated
+    int columnIdx(String name, double accuracy = FuzzyCSV.ACCURACY_THRESHOLD.get()) {
+       return getColumnIndex(name, accuracy)
+    }
+
+
+    String getColumnName(int index) {
         return this.csv[0][index]
     }
 
-    int columnIdx(String name, double accuracy = FuzzyCSV.ACCURACY_THRESHOLD.get()) {
+    int getColumnIndex(String name, double accuracy = FuzzyCSV.ACCURACY_THRESHOLD.get()) {
         return Fuzzy.findBestPosition(header, name, accuracy)
     }
+
 
     FuzzyCSVTable spread(SpreadConfig... colNames) {
         return colNames.inject(this) { acc, colName -> acc._spread(colName) }

@@ -59,7 +59,7 @@ class FuzzyStaticApi {
         return RecordFx.fx(function)
     }
 
-    static RecordFx fx(String name, @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure function) {
+    static RecordFx fx(String name,  Fx1<Record,?> function) {
         return RecordFx.fx(name, function)
     }
 
