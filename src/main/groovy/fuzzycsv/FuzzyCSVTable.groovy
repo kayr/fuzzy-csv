@@ -492,17 +492,9 @@ class FuzzyCSVTable implements Iterable<Record> {
         tbl(this.csv.transpose())
     }
 
-    /**
-     * @deprecated will be moved to extension methods
-     */
-    @Deprecated
-    FuzzyCSVTable leftShift(FuzzyCSVTable other) {
-        return mergeByColumn(other)
-    }
-
 
     /**
-     * @deprecated TBR: use {@link #concatColumns}  instead
+     * @deprecated TBR: use {@link #concatColumns(fuzzycsv.FuzzyCSVTable)}  instead
      */
     @Deprecated
     FuzzyCSVTable mergeByColumn(List<? extends List> otherCsv) {
