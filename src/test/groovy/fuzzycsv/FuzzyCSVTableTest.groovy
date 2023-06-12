@@ -172,7 +172,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testAddColumnByCopy() {
-        def actual = tbl(csv2).copy().renameHeader("tap_total_score","sub_county").addColumnByCopy(fn('Bla') { it.ps_total_score + 1 })
+        def actual = tbl(csv2).copy().renameHeader("tap_total_score", "sub_county").addColumnByCopy(fn('Bla') { it.ps_total_score + 1 })
 
         def expected = [
                 ['sub_county', 'ps_total_score', 'pipes_total_score', 'sub_county', 'Bla'],
@@ -1281,18 +1281,28 @@ p\tfema+le\t31'''
 
         def csv = FuzzyCSVTable.parseCsv(data)
 
-        csv.copy().normalizeHeaders()
 
         assert csv.moveCol('c2', 'c1').csv == [['c2', 'c1', 'c3', 'c2'],
                                                ['2', '1', '3', '4'],
                                                ['22', '11', '22', '44']]
 
+
+        assert csv.moveColumn('c2', 'c1').csv == [['c2', 'c1', 'c3', 'c2'],
+                                                  ['2', '1', '3', '4'],
+                                                  ['22', '11', '22', '44']]
+
         assert csv.moveCol('c2', 0).csv == [['c2', 'c1', 'c3', 'c2'],
                                             ['2', '1', '3', '4'],
                                             ['22', '11', '22', '44']]
+        assert csv.moveColumn('c2', 0).csv == [['c2', 'c1', 'c3', 'c2'],
+                                               ['2', '1', '3', '4'],
+                                               ['22', '11', '22', '44']]
         assert csv.moveCol(1, 0).csv == [['c2', 'c1', 'c3', 'c2'],
                                          ['2', '1', '3', '4'],
                                          ['22', '11', '22', '44']]
+        assert csv.moveColumn(1, 0).csv == [['c2', 'c1', 'c3', 'c2'],
+                                            ['2', '1', '3', '4'],
+                                            ['22', '11', '22', '44']]
 
         assert FuzzyCSVTable.tbl([['c1', 'c3', 'c2', 'c2'],
                                   ['1', '3', '4', '2'],

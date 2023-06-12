@@ -93,22 +93,51 @@ class FuzzyCSVTable implements Iterable<Record> {
         return this
     }
 
+    /**
+     *
+     * @deprecated use {@link #moveColumn(java.lang.String, int)} instead
+     */
+    @Deprecated
     FuzzyCSVTable moveCol(String col, int dest) {
+        return moveColumn(col, dest)
+
+    }
+
+    /**
+     *
+     * @deprecated use {@link #moveColumn(java.lang.String, java.lang.String)} instead
+     */
+    @Deprecated
+
+    FuzzyCSVTable moveCol(String col, String dest) {
+        return moveColumn(col, dest)
+    }
+
+
+    /**
+     *
+     * @deprecated use {@link #moveColumn(int, int)} instead
+     */
+    @Deprecated
+    FuzzyCSVTable moveCol(int col, int dest) {
+        return moveColumn(col, dest)
+    }
+
+    FuzzyCSVTable moveColumn(String col, int dest) {
         def tHeader = header
         def colIdx = tHeader.indexOf(col)
         def toIdx = dest
-        return moveCol(colIdx, toIdx)
-
+        return moveColumn(colIdx, toIdx)
     }
 
-    FuzzyCSVTable moveCol(String col, String dest) {
+    FuzzyCSVTable moveColumn(String col, String dest) {
         def tHeader = header
         def colIdx = tHeader.indexOf(col)
         def toIdx = tHeader.indexOf(dest)
-        return moveCol(colIdx, toIdx)
+        return moveColumn(colIdx, toIdx)
     }
 
-    FuzzyCSVTable moveCol(int col, int dest) {
+    FuzzyCSVTable moveColumn(int col, int dest) {
 
         def headers = FuzzyCSV.newList(header.size())
         header.size().times { headers.add it }
@@ -116,6 +145,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         def idx1 = FuzzyCSVUtils.move(headers, col, dest)
         return select(idx1)
     }
+
 
     FuzzyCSVTable aggregate(Object... columns) {
         aggregate(columns as List)
@@ -936,7 +966,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         }
 
         if (cellValue instanceof Map) {
-            return tbl((Map)cellValue).mayBeGridify(options)
+            return tbl((Map) cellValue).mayBeGridify(options)
         }
 
 
@@ -1128,24 +1158,13 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     static FuzzyCSVTable fromPojoList(Collection<Object> pojoList) {
-      return from().pojos(pojoList)
+        return from().pojos(pojoList)
     }
 
     static FuzzyCSVTable fromJsonText(String text) {
         return from().json().parseText(text)
     }
 
-    static FuzzyCSVTable fromJson(File file) {
-        return from().json().parse(file.toPath())
-    }
-
-    static FuzzyCSVTable fromJson(Reader r) {
-        return from().json().parse(r)
-    }
-
-    static FuzzyCSVTable fromPojo(Object kv) {
-        return from().pojo(kv)
-    }
 
     static FuzzyCSVTable fromMap(Map kv) {
         return from().map(kv)
