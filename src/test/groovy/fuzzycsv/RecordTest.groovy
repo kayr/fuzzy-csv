@@ -1,12 +1,12 @@
 package fuzzycsv
 
-import groovy.test.GroovyAssert
+
 import org.junit.Before
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail
 
-class RecordTest  {
+class RecordTest {
 
     def sourceHeader = ['name', 'sex']
     def sourceRecord = ['kay', 'male']
@@ -31,7 +31,7 @@ class RecordTest  {
         assert record.sex == 'male'
         assert record.'@sex' == 'male'
 
-        shouldFail (IllegalArgumentException) {
+        shouldFail(IllegalArgumentException) {
             record.blah
         }
 
@@ -43,9 +43,10 @@ class RecordTest  {
         record.leftHeaders = sourceHeader
         record.leftRecord = sourceRecord
 
-        shouldFail (IllegalArgumentException) { record.value('blah') }
+        shouldFail(IllegalArgumentException) { record.value('blah') }
         assert record.value('name') == 'ron'
         assert record.value('age', false) == null
+        assert new Record(derivedHeader, ['ron', 10]).value('age') == 10
         shouldFail(IllegalStateException) { record.value('age') == null }
         assert record.value('age', true, 10) == 10
     }
@@ -85,7 +86,7 @@ class RecordTest  {
 
     @Test
     void test_toMap() {
-        Record r = new Record(['a', 'b','c'], [1, 2,3])
+        Record r = new Record(['a', 'b', 'c'], [1, 2, 3])
         assert [a: 1, b: 2, c: 3] == r.toMap()
         assert [a: 1, b: 2] == r.toMap('a', 'b')
         assert [a: 1, b: 2] == r.toMap(['a', 'b'])

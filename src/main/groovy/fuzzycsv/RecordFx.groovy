@@ -9,10 +9,10 @@ class RecordFx {
 
     String name
     Fx1<Record,?>  c
-    ResolutionStrategy resolutionStrategy
-    private boolean useFuzzy = false
-    public headerEnabled = false
-    boolean useCoercion = true
+    ResolutionStrategy resolutionStrategy//todo delete
+    private boolean useFuzzy = false //todo delete
+    public headerEnabled = false //todo delete
+    boolean useCoercion = true //todo delete
 
     protected RecordFx() {}
 
@@ -23,7 +23,7 @@ class RecordFx {
 
     @CompileStatic
     Object getValue(Record record) {
-        if (record.isHeader() && !headerEnabled)
+        if (record.isHeader() && !headerEnabled) //todo delete
             return null
 
         if (resolutionStrategy != null)
@@ -31,7 +31,7 @@ class RecordFx {
 
         def rt
         if (useCoercion) {
-            rt = getValueWithCoercion(record)
+            rt = getValueWithCoercion(record) //todo delete
         } else {
             rt = c.call(record)
         }
@@ -48,7 +48,7 @@ class RecordFx {
      */
     @Deprecated
     static RecordFx get(String name, @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure c) {
-        return fx(name, c)
+        return fx(name, c) //todo delete
     }
 
     /**
@@ -58,12 +58,12 @@ class RecordFx {
      */
     @CompileStatic
     static RecordFx fn(@ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure function) {
-        fn(RecordFx.class.getSimpleName(), function)
+        fn(RecordFx.class.getSimpleName(), function) //todo delete
     }
 
     @CompileStatic
     static RecordFx fn(String name, @ClosureParams(value = SimpleType.class, options = "fuzzycsv.Record") Closure function) {
-        return new RecordFx(name, function)
+        return new RecordFx(name, function)//todo delete
     }
 
     /**
@@ -89,7 +89,7 @@ class RecordFx {
         return this
     }
 
-    RecordFx withResolution(ResolutionStrategy strategy) {
+    RecordFx withResolution(ResolutionStrategy strategy) {//todo delete
         this.resolutionStrategy = strategy
         return this
     }

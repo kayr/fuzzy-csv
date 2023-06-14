@@ -1017,7 +1017,6 @@ class FuzzyCSV {
                     break
                 case RecordFx:
                     rt = { List r -> (s as RecordFx).getValue(Record.getRecord(header, r, csv)) }
-
                     break
                 default:
                     rt = { List r -> Record.getRecord(header, r, csv).getAt(s) }

@@ -331,8 +331,7 @@ class Record {
 
         assertHeaderNameExists(name)
 
-        //todo bug casting to string
-        def value = propertyMissing(name)?.toString()?.trim()
+        def value = propertyMissing(name)
         if (required && value == null) {
             if (defaultValue) return defaultValue
             throw new IllegalStateException("Record [${idx()}] has an Empty Cell[$name] that is Required")

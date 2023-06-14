@@ -1,8 +1,8 @@
 package fuzzycsv
 
 enum ResolutionStrategy {
-    DERIVED_FIRST, //same as final first
-    SOURCE_FIRST,//same as left first
+    DERIVED_FIRST, //same as final first, todo delete
+    SOURCE_FIRST,//same as left first, todo delete
     LEFT_FIRST, RIGHT_FIRST, FINAL_FIRST
 }
 
