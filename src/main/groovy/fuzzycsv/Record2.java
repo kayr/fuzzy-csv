@@ -50,11 +50,11 @@ public class Record2 {
         return getValue("LEFT", leftColumns, leftValues, index, failIfColumNotFound, true);
     }
 
-    Object coda(String column) {
+    Object get(String column) {
         return getValue("FINAL", finalColumns, finalValues, column, failIfColumNotFound, true);
     }
 
-    Object coda(int index) {
+    Object get(int index) {
         return getValue("FINAL", finalColumns, finalValues, index, failIfColumNotFound, true);
     }
 
@@ -62,7 +62,7 @@ public class Record2 {
         return recordIndex;
     }
 
-    Object value(String column, ResolutionStrategy startFrom) {
+    Object get(String column, ResolutionStrategy startFrom) {
         switch (startFrom) {
             case LEFT_FIRST: {
                 Object left = getValue("LEFT", leftColumns, leftValues, column, false, false);
@@ -156,11 +156,7 @@ public class Record2 {
         }
 
         int size = values.size();
-        int actualIndex = columnIndex;
-        if (actualIndex < 0) {
-            //negative numbers start from last
-            actualIndex = values.size() + actualIndex;
-        }
+        int actualIndex = translateIndex(values, columnIndex);
 
 
         if (actualIndex >= size) {
@@ -173,10 +169,45 @@ public class Record2 {
 
     }
 
+    private static int translateIndex(List values, int columnIndex) {
+        int actualIndex = columnIndex;
+        if (actualIndex < 0) {
+            actualIndex = values.size() + actualIndex;
+        }
+        return actualIndex;
+    }
+
     public Record2 lenient() {
         this.failIfColumNotFound = false;
         return this;
     }
 
 
+    public Record2 set(String columName, Object value) {
+
+        if (columName == null)
+            throw new IllegalArgumentException("Column name cannot be null");
+
+        int index = finalColumns.indexOf(columName);
+        if (index == -1) {
+            throw new IllegalArgumentException("Column not found: " + columName);
+        }
+        finalValues.set(index, value);
+
+        return this;
+    }
+
+    public Record2 set(int columnIndex, Object value) {
+        int index = translateIndex(finalValues, columnIndex);
+        if (index == -1) {
+            throw new IllegalArgumentException("Column not found with index: " + columnIndex);
+        }
+
+        if(index >= finalValues.size())
+            throw new IndexOutOfBoundsException("Column index out of bounds: Index " + columnIndex + " (size: " + finalValues.size() + ")");
+
+        finalValues.set(index, value);
+
+        return this;
+    }
 }

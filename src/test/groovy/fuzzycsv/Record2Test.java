@@ -202,7 +202,7 @@ class Record2Test {
     }
 
     @Nested
-    class Coda {
+    class Get {
 
         Record2 record;
 
@@ -219,39 +219,39 @@ class Record2Test {
 
             @Test
             void whenColumnNotFound() {
-                IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.coda("c"));
+                IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.get("c"));
                 assertEquals("Column not found: c", exception.getMessage());
 
             }
 
             @Test
             void whenColumnFound() {
-                assertEquals(1, record.coda("a"));
-                assertEquals(2, record.coda("b"));
+                assertEquals(1, record.get("a"));
+                assertEquals(2, record.get("b"));
             }
 
             @Test
             void whenColumnIsNull() {
-                IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.coda(null));
+                IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.get(null));
                 assertEquals("Column name cannot be null", exception.getMessage());
             }
 
             @Test
             void whenColumnsAreNull() {
                 Record2 record = Record2.builder().build();
-                IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.coda("a"));
+                IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.get("a"));
                 assertEquals("FINAL, Column cannot be null", exception.getMessage());
             }
 
             @Test
             void whenColumnNotFoundWithLenient() {
-                assertEquals(null, record.lenient().coda("c"));
+                assertEquals(null, record.lenient().get("c"));
             }
 
             @Test
             void whenColumnFoundWithLenient() {
-                assertEquals(1, record.lenient().coda("a"));
-                assertEquals(2, record.lenient().coda("b"));
+                assertEquals(1, record.lenient().get("a"));
+                assertEquals(2, record.lenient().get("b"));
             }
         }
 
@@ -260,36 +260,36 @@ class Record2Test {
 
             @Test
             void whenColumnNotFound() {
-                var exception = assertThrows(IndexOutOfBoundsException.class, () -> record.coda(2));
+                var exception = assertThrows(IndexOutOfBoundsException.class, () -> record.get(2));
                 assertEquals("FINAL: Column index out of bounds: Index 2 (size: 2)", exception.getMessage());
 
             }
 
             @Test
             void whenColumnFound() {
-                assertEquals(1, record.coda(0));
-                assertEquals(2, record.coda(1));
-                assertEquals(2, record.coda(-1));
-                assertEquals(1, record.coda(-2));
+                assertEquals(1, record.get(0));
+                assertEquals(2, record.get(1));
+                assertEquals(2, record.get(-1));
+                assertEquals(1, record.get(-2));
             }
 
             @Test
             void whenColumnsAreNull() {
                 Record2 record = Record2.builder().build();
-                IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.coda(0));
+                IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.get(0));
                 assertEquals("FINAL, Column cannot be null", exception.getMessage());
             }
 
             @Test
             void whenColumnNotFoundWithLenient() {
-                assertEquals(null, record.lenient().coda(2));
+                assertEquals(null, record.lenient().get(2));
             }
 
             @Test
             void whenColumnFoundWithLenient() {
-                assertEquals(1, record.lenient().coda(0));
-                assertEquals(2, record.lenient().coda(1));
-                assertEquals(2, record.lenient().coda(-1));
+                assertEquals(1, record.lenient().get(0));
+                assertEquals(2, record.lenient().get(1));
+                assertEquals(2, record.lenient().get(-1));
             }
 
         }
@@ -298,7 +298,7 @@ class Record2Test {
 
 
     @Nested
-    class ValueTryIngAllColumns {
+    class GetTryIngAllColumns {
 
         Record2 record;
 
@@ -316,42 +316,86 @@ class Record2Test {
 
         @Test
         void whenColumnNotFound() {
-            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.coda("f"));
+            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.get("f"));
             assertEquals("Column not found: f", exception.getMessage());
         }
 
         @Test
         void whenColumnFoundInLeft() {
-            assertEquals(1, record.value("a", LEFT_FIRST));
-            assertEquals(2, record.value("b", LEFT_FIRST));
-            assertEquals(7, record.value("c", LEFT_FIRST));
-            assertEquals(8, record.value("d", LEFT_FIRST));
-            assertEquals(9, record.value("e", LEFT_FIRST));
+            assertEquals(1, record.get("a", LEFT_FIRST));
+            assertEquals(2, record.get("b", LEFT_FIRST));
+            assertEquals(7, record.get("c", LEFT_FIRST));
+            assertEquals(8, record.get("d", LEFT_FIRST));
+            assertEquals(9, record.get("e", LEFT_FIRST));
         }
 
         @Test
         void whenColumnFoundInRight() {
-            assertEquals(3, record.value("a", RIGHT_FIRST));
-            assertEquals(4, record.value("b", RIGHT_FIRST));
-            assertEquals(8, record.value("d", RIGHT_FIRST));
-            assertEquals(9, record.value("e", RIGHT_FIRST));
-            assertEquals(7, record.value("c", RIGHT_FIRST));
+            assertEquals(3, record.get("a", RIGHT_FIRST));
+            assertEquals(4, record.get("b", RIGHT_FIRST));
+            assertEquals(8, record.get("d", RIGHT_FIRST));
+            assertEquals(9, record.get("e", RIGHT_FIRST));
+            assertEquals(7, record.get("c", RIGHT_FIRST));
 
         }
 
         @Test
         void whenColumnFoundInFinal() {
-            assertEquals(5, record.value("a", FINAL_FIRST));
-            assertEquals(6, record.value("b", FINAL_FIRST));
-            assertEquals(9, record.value("e", FINAL_FIRST));
-            assertEquals(7, record.value("c", FINAL_FIRST));
-            assertEquals(8, record.value("d", FINAL_FIRST));
+            assertEquals(5, record.get("a", FINAL_FIRST));
+            assertEquals(6, record.get("b", FINAL_FIRST));
+            assertEquals(9, record.get("e", FINAL_FIRST));
+            assertEquals(7, record.get("c", FINAL_FIRST));
+            assertEquals(8, record.get("d", FINAL_FIRST));
         }
 
     }
 
     @Nested
-    class Set{
+    class Set {
+
+        Record2 record;
+
+        @BeforeEach
+        void setUp() {
+            record = Record2.builder()
+                       .leftColumns(list("a", "b"))
+                       .leftValues(list(1, 2))
+                       .rightColumns(list("a", "b","c"))
+                       .rightValues(list(3, 4))
+                       .finalColumns(list("a", "b","d"))
+                       .finalValues(list(5, 6))
+                       .build();
+        }
+
+        @Test
+        void setNewValue() {
+            record.set("a", 7);
+            assertEquals(7, record.get("a"));
+        }
+
+        @Test
+        void setNewValueWithIndex() {
+            record.set(0, 7);
+            assertEquals(7, record.get("a"));
+        }
+
+        @Test
+        void setWhereColumnNotFound() {
+            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.set("c", 7));
+            assertEquals("Column not found: c", exception.getMessage());
+        }
+
+        @Test
+        void setWhereColumnIsNull() {
+            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.set(null, 7));
+            assertEquals("Column name cannot be null", exception.getMessage());
+        }
+
+        @Test
+        void whereIndexIsOutOfBounds() {
+            IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class, () -> record.set(3, 7));
+            assertEquals("Column index out of bounds: Index 3 (size: 2)", exception.getMessage());
+        }
 
     }
 
