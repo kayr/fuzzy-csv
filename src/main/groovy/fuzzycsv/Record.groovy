@@ -160,7 +160,6 @@ class Record {
 
         def value
         switch (ourResolveStrategy) {
-            case SOURCE_FIRST:
             case LEFT_FIRST:
                 value = tryLeftFinalRight(name)
                 break
@@ -249,7 +248,6 @@ class Record {
     Object getValue(int idx, ResolutionStrategy resolutionStrategy1) {
         switch (resolutionStrategy1) {
             case FINAL_FIRST:
-            case DERIVED_FIRST:
                 def get = FuzzyCSVUtils.safeGet(finalRecord, idx)
                 if (get != null) return get
                 get = FuzzyCSVUtils.safeGet(rightRecord, idx)
@@ -258,7 +256,6 @@ class Record {
 
 
             case LEFT_FIRST:
-            case SOURCE_FIRST:
                 def get = FuzzyCSVUtils.safeGet(leftRecord, idx)
                 if (get != null) return get
                 get = FuzzyCSVUtils.safeGet(finalRecord, idx)
