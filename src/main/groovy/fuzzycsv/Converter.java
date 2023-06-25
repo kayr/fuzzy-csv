@@ -58,7 +58,7 @@ public class Converter {
             List<Map<String,?>> result = new ArrayList<>(csvSize);
             for(int i = 0; i < csvSize; i++) {
                 if (i == 0) continue;
-                result.add(Record.getRecord(header, csv.get(i), csv).toMap());
+                result.add(Record.getRecord(header, csv.get(i), csv,i).toMap());
             }
 
             return result;

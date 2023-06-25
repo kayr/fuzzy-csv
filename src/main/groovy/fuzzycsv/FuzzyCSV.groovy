@@ -5,7 +5,6 @@ import com.opencsv.CSVParser
 import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
 import fuzzycsv.rdbms.DDLUtils
-import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
@@ -197,12 +196,12 @@ class FuzzyCSV {
         csvList.eachWithIndex { List entry, int lstIdx ->
             def cellValue
             if (lstIdx == 0) {
-                cellValue = column.name?:header[insertIdx]
+                cellValue = column.name ?: header[insertIdx]
             } else {
                 def record = Record.getRecord(header, entry, csvList, lstIdx).setLeftCsv(sourceCSV)
                 if (sourceCSV) {
                     def oldCSVRecord = sourceCSV[lstIdx]
-                    def oldCSVHeader = sourceCSV[0]
+                    def oldCSVHeader = (List<String>) sourceCSV[0]
                     record.leftRecord = oldCSVRecord
                     record.leftHeaders = oldCSVHeader
                 }
@@ -372,7 +371,13 @@ class FuzzyCSV {
         def matchedRightRecordIndices = new HashSet()
         def finalCSV = [selectColumns.collect { it instanceof RecordFx ? it.name : it }]
 
-        Record recObj = new Record(leftHeaders: leftCsv[0], rightHeaders: rightCsv[0], recordIdx: -1, leftCsv: leftCsv, rightCsv: rightCsv, finalCsv: finalCSV)
+//        Record recObj2 = new Record(leftHeaders: leftCsv[0], rightHeaders: rightCsv[0], recordIdx: -1, leftCsv: leftCsv, rightCsv: rightCsv, finalCsv: finalCSV)
+        Record recObj = Record.getRecord(finalCSV.get(0), Collections.emptyList(), finalCSV, -1)
+                .setLeftHeaders(leftCsv[0])
+                .setRightHeaders(rightCsv[0])
+                .setLeftCsv(leftCsv)
+                .setRightCsv(rightCsv);
+
 
         if (!findRightRecord) {
             findRightRecord = getDefaultRightRecordFinder()
@@ -388,7 +393,7 @@ class FuzzyCSV {
 
             recObj.rightRecord = Collections.EMPTY_LIST
             recObj.leftRecord = leftRecord
-            recObj.setRecordIdx(lIdx)
+            recObj.recordIndex = lIdx
 
             def rightRecords = findRightRecord.call(recObj, onFunction, rightCsv) as List<Record>
 
@@ -396,7 +401,7 @@ class FuzzyCSV {
 
                 if (doLeftJoin) {
                     recObj.rightRecord = Collections.EMPTY_LIST
-                    List<Object> mergedRecord = buildCSVRecord(selectColumns, recObj)
+                    List<Object> mergedRecord = buildCSVRecord(selectColumns, recObj,ResolutionStrategy.LEFT_FIRST)
                     finalCSV << mergedRecord
                 }
 
@@ -410,7 +415,7 @@ class FuzzyCSV {
 
                 recObj.rightRecord = rightRecord.finalRecord
 
-                List<Object> mergedRecord = buildCSVRecord(selectColumns, recObj)
+                List<Object> mergedRecord = buildCSVRecord(selectColumns, recObj,ResolutionStrategy.LEFT_FIRST)
                 finalCSV << mergedRecord
             }
 
@@ -427,11 +432,10 @@ class FuzzyCSV {
             if (rIdx == 0) continue
             if (matchedRightRecordIndices.contains(rIdx)) continue
 
-            recObj.resolutionStrategy = ResolutionStrategy.RIGHT_FIRST
             recObj.leftRecord = Collections.emptyList()
             recObj.rightRecord = rightRecord
 
-            def newCombinedRecord = buildCSVRecord(selectColumns, recObj)
+            def newCombinedRecord = buildCSVRecord(selectColumns, recObj,ResolutionStrategy.RIGHT_FIRST)
             finalCSV << newCombinedRecord
         }
 
@@ -439,12 +443,13 @@ class FuzzyCSV {
     }
 
     @CompileStatic
-    private static List<Object> buildCSVRecord(List columns, Record recObj) {
+    private static List<Object> buildCSVRecord(List columns, Record recObj,ResolutionStrategy resolutionStrategy ) {
         List mergedRecord = columns.collect { columnFx ->
-            if (columnFx instanceof RecordFx)
+            if(columnFx == null) return null
+            if (columnFx instanceof RecordFx)//todo add support for adding resolution strategy
                 ((RecordFx) columnFx).getValue(recObj)
             else
-                recObj.val(columnFx)
+                recObj.get(columnFx.toString(),resolutionStrategy)
         }
         return mergedRecord
     }
@@ -463,7 +468,7 @@ class FuzzyCSV {
             if (it instanceof String) {
                 return it in joinColumns ?
                         fx { r ->
-                            r.tryLeftFinalRight(it)
+                            r.get(it,ResolutionStrategy.LEFT_FIRST)
                         }.az(it) :
                         fx { r -> r.left(it) }.az(it)
             }
@@ -872,15 +877,16 @@ class FuzzyCSV {
         return csv
     }
 
-    @Deprecated//remove
+    @Deprecated
+//remove
     @CompileStatic
-    static List<Map<String,?>> toMapList(List<? extends List> csv) {
+    static List<Map<String, ?>> toMapList(List<? extends List> csv) {
         List<String> header = csv[0]
         int csvSize = csv.size()
-        List<Map<String,?>> result = new ArrayList(csvSize)
-        for(int i = 0; i < csvSize; i++) {
+        List<Map<String, ?>> result = new ArrayList(csvSize)
+        for (int i = 0; i < csvSize; i++) {
             if (i == 0) continue
-           result.add(Record.getRecord(header, csv[i], csv).toMap())
+            result.add(Record.getRecord(header, csv[i], csv,i).toMap())
         }
         return result
     }
@@ -936,7 +942,7 @@ class FuzzyCSV {
         for (record in list) {
             def row = new ArrayList(columnSize)
             for (columns in cols) {
-                row << record.final(columns)
+                row << record.get(columns)
             }
             csv << row
         }

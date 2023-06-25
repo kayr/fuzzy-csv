@@ -2,6 +2,7 @@ package fuzzycsv
 
 
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail
@@ -26,10 +27,11 @@ class RecordTest {
         record.leftRecord = sourceRecord
 
         assert record.name == 'ron'
-        assert record.'@name' == 'kay'
+        assert record.left('name') == 'kay'
+//        assert record.'@name' == 'kay'
         assert record.age == 12
         assert record.sex == 'male'
-        assert record.'@sex' == 'male'
+        assert record.left('sex') == 'male'
 
         shouldFail(IllegalArgumentException) {
             record.blah
@@ -52,6 +54,7 @@ class RecordTest {
     }
 
     @Test
+    @Ignore("no longer support global leniency")
     void testAbsentColumn() {
         Record record = new Record(derivedHeader, ['ron', null])
 
@@ -82,6 +85,7 @@ class RecordTest {
         r.rightRecord = [0, 0]
 
         assert r.d == 0
+//        rt r.xxxx == 0
     }
 
     @Test
@@ -89,9 +93,7 @@ class RecordTest {
         Record r = new Record(['a', 'b', 'c'], [1, 2, 3])
         assert [a: 1, b: 2, c: 3] == r.toMap()
         assert [a: 1, b: 2] == r.toMap('a', 'b')
-        assert [a: 1, b: 2] == r.toMap(['a', 'b'])
         assert [a: 1] == r.toMap('a')
-        assert [a: 1] == r.toMap(['a'])
 
     }
 

@@ -42,7 +42,7 @@ class FuzzyCsvDbInserter {
         for (String h : finalHeaders) {
             String s = "  " + sqlRenderer.quoteName(h) + " =  ?"
             joiner.add(s)
-            valueParams.add(r.f(h))
+            valueParams.add(r.get(h))
         }
         String fieldUpdates = joiner.toString()
 
@@ -51,7 +51,7 @@ class FuzzyCsvDbInserter {
         for (String i : identifiers) {
             String s = sqlRenderer.quoteName(i) + " = ?"
             result.add(s)
-            valueParams.add(r.f(i))
+            valueParams.add(r.get(i))
         }
         String filterClause = " WHERE " + result.toString()
 

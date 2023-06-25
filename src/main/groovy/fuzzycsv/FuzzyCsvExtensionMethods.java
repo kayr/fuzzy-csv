@@ -32,15 +32,18 @@ public class FuzzyCsvExtensionMethods {
 
 
     public static Object getAt(Record self, int idx) {
-        return self.getValue(idx, ResolutionStrategy.FINAL_FIRST);
+        System.out.println("getAt(Record self, int idx) " + idx);
+        return self.get(idx);
     }
 
     public static Object getAt(Record self, CharSequence column) {
-        return self.propertyMissing(column.toString());
+        System.out.println("getAt(Record self, CharSequence column) " + column);
+        return self.get(column.toString());
     }
 
     public static Object getAt(Record self, String column) {
-        return self.propertyMissing(column);
+        System.out.println("getAt(Record self, String column) " + column);
+        return self.get(column);
     }
 
     public static Record setAt(Record self, String column, Object value) {

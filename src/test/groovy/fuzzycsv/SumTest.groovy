@@ -24,18 +24,20 @@ class SumTest {
     @Test
     void testSumFunctionsColumns() {
         FxExtensions.treatNullAsZero()
-        def sumFx = new Sum(columns: [fn {
-            it.'ps_total_score' + it.'pipes_total_score' + it.'tap_total_score'
-        }], columnName: 'sum', data: Data.csv)
-        assert sumFx.value == 31.1
-        assert sumFx.columnName == 'sum'
+        use(FxExtensions) {
+            def sumFx = new Sum(columns: [fn {
+                it.'ps_total_score' + it.'pipes_total_score' + it.'tap_total_score'
+            }], columnName: 'sum', data: Data.csv)
+            assert sumFx.value == 31.1
+            assert sumFx.columnName == 'sum'
 
-        //test fluent
-        sumFx = sum('ps_total_score', 'pipes_total_score', 'tap_total_score').az('sum')
-        sumFx.data = Data.csv
+            //test fluent
+            sumFx = sum('ps_total_score', 'pipes_total_score', 'tap_total_score').az('sum')
+            sumFx.data = Data.csv
 
-        assert sumFx.value == 31.1
-        assert sumFx.columnName == 'sum'
+            assert sumFx.value == 31.1
+            assert sumFx.columnName == 'sum'
+        }
     }
 
     @Test
@@ -47,14 +49,15 @@ class SumTest {
 
         def tb = FuzzyCSVTable.tbl(Data.csv)
 
-        assert tb.aggregate(
-                RecordFx.fx { 'sas' }.az('asas'),
-                FuzzyStaticApi.sum(fn {
-                    it.'ps_total_score' + it.'pipes_total_score' + it.'tap_total_score'
-                }))[1][1] == 31.1
-
-        assert sumFx.value == 31.1
-        assert sumFx.columnName == 'sum'
+        use(FxExtensions) {
+            assert tb.aggregate(
+                    RecordFx.fx { 'sas' }.az('asas'),
+                    FuzzyStaticApi.sum(fn {
+                        it.'ps_total_score' + it.'pipes_total_score' + it.'tap_total_score'
+                    }))[1][1] == 31.1
+            assert sumFx.value == 31.1
+            assert sumFx.columnName == 'sum'
+        }
 
         //test fluent
         sumFx = sum('ps_total_score', 'pipes_total_score', 'tap_total_score').az('sum')
@@ -65,15 +68,15 @@ class SumTest {
     }
 
     @Test
-    void testName(){
+    void testName() {
         def count = new Sum(['a'], null)
         assert count.getColumnName() == 'sum(a)'
 
-        count = new Sum(['a','b'], null)
+        count = new Sum(['a', 'b'], null)
         assert count.getColumnName() == 'sum(a,b)'
 
 
-        count = new Sum(['a','b'], null).az('xxx')
+        count = new Sum(['a', 'b'], null).az('xxx')
         assert count.getColumnName() == 'xxx'
     }
 }

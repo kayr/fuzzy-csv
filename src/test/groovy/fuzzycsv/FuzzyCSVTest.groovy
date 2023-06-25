@@ -317,7 +317,7 @@ class FuzzyCSVTest {
         assertEquals expected.toString(), join.toString()
 
         join = FuzzyCSV.leftJoin(csv_1, csv_2, fx {
-            it.r('Name') == it.l('Name')
+            it.right('Name') == it.left('Name')
         }, 'Name', 'Sex', 'Age', 'Location', 'Subject', 'Mark')
         assertEquals expected.toString(), join.toString()
 

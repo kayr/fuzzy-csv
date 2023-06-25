@@ -7,22 +7,19 @@ import org.junit.jupiter.api.Test;
 
 import static fuzzycsv.FuzzyCSVUtils.list;
 import static fuzzycsv.ResolutionStrategy.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class Record2Test {
 
     @Nested
     class Right {
 
-        Record2 record;
+        Record record;
 
         @BeforeEach
         void setUp() {
-            record = Record2.builder().
-                       rightColumns(list("a", "b"))
-                       .rightValues(list(1, 2))
-                       .build();
+            record = new Record().setRightHeaders(list("a", "b"))
+                       .setRightRecord(list(1, 2));
         }
 
         @Nested
@@ -48,14 +45,14 @@ class Record2Test {
 
             @Test
             void whenColumnsAreNull() {
-                Record2 record = Record2.builder().build();
+                Record record = new Record();
                 IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.right("a"));
                 assertEquals("RIGHT, Column cannot be null", exception.getMessage());
             }
 
             @Test
             void whenColumnNotFoundWithLenient() {
-                assertEquals(null, record.lenient().right("c"));
+                assertNull(record.lenient().right("c"));
             }
 
             @Test
@@ -85,14 +82,14 @@ class Record2Test {
 
             @Test
             void whenColumnsAreNull() {
-                Record2 record = Record2.builder().build();
+                Record record = new Record();
                 IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.right(0));
                 assertEquals("RIGHT, Column cannot be null", exception.getMessage());
             }
 
             @Test
             void whenColumnNotFoundWithLenient() {
-                assertEquals(null, record.lenient().right(2));
+                assertNull(record.lenient().right(2));
             }
 
             @Test
@@ -108,14 +105,12 @@ class Record2Test {
     @Nested
     class Left {
 
-        Record2 record;
+        Record record;
 
         @BeforeEach
         void setUp() {
-            record = Record2.builder().
-                       leftColumns(list("a", "b"))
-                       .leftValues(list(1, 2))
-                       .build();
+            record = new Record().setLeftHeaders(list("a", "b"))
+                       .setLeftRecord(list(1, 2));
         }
 
         @Nested
@@ -142,14 +137,14 @@ class Record2Test {
 
             @Test
             void whenColumnsAreNull() {
-                Record2 record = Record2.builder().build();
+                Record record = new Record();
                 IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.left("a"));
                 assertEquals("LEFT, Column cannot be null", exception.getMessage());
             }
 
             @Test
             void whenColumnNotFoundWithLenient() {
-                assertEquals(null, record.lenient().left("c"));
+                assertNull(record.lenient().left("c"));
             }
 
             @Test
@@ -179,14 +174,14 @@ class Record2Test {
 
             @Test
             void whenColumnsAreNull() {
-                Record2 record = Record2.builder().build();
+                Record record = new Record();
                 IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.left(0));
                 assertEquals("LEFT, Column cannot be null", exception.getMessage());
             }
 
             @Test
             void whenColumnNotFoundWithLenient() {
-                assertEquals(null, record.lenient().left(2));
+                assertNull(record.lenient().left(2));
             }
 
             @Test
@@ -204,14 +199,13 @@ class Record2Test {
     @Nested
     class Get {
 
-        Record2 record;
+        Record record;
 
         @BeforeEach
         void setUp() {
-            record = Record2.builder()
-                       .finalColumns(list("a", "b"))
-                       .finalValues(list(1, 2))
-                       .build();
+            record = new Record()
+                       .setFinalHeaders(list("a", "b"))
+                       .setFinalRecord(list(1, 2));
         }
 
         @Nested
@@ -238,14 +232,14 @@ class Record2Test {
 
             @Test
             void whenColumnsAreNull() {
-                Record2 record = Record2.builder().build();
+                Record record = new Record();
                 IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.get("a"));
                 assertEquals("FINAL, Column cannot be null", exception.getMessage());
             }
 
             @Test
             void whenColumnNotFoundWithLenient() {
-                assertEquals(null, record.lenient().get("c"));
+                assertNull(record.lenient().get("c"));
             }
 
             @Test
@@ -259,7 +253,7 @@ class Record2Test {
         class ByIndex {
 
             @Test
-            void whenColumnNotFound() {
+            void whenColumnNotFound_BOOKMARK() {
                 var exception = assertThrows(IndexOutOfBoundsException.class, () -> record.get(2));
                 assertEquals("FINAL: Column index out of bounds: Index 2 (size: 2)", exception.getMessage());
 
@@ -275,14 +269,14 @@ class Record2Test {
 
             @Test
             void whenColumnsAreNull() {
-                Record2 record = Record2.builder().build();
+                Record record = new Record();
                 IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.get(0));
                 assertEquals("FINAL, Column cannot be null", exception.getMessage());
             }
 
             @Test
             void whenColumnNotFoundWithLenient() {
-                assertEquals(null, record.lenient().get(2));
+                assertNull(record.lenient().get(2));
             }
 
             @Test
@@ -300,18 +294,19 @@ class Record2Test {
     @Nested
     class GetTryIngAllColumns {
 
-        Record2 record;
+        Record record;
 
         @BeforeEach
         void setUp() {
-            record = Record2.builder()
-                       .leftColumns(list("a", "b", "c"))
-                       .leftValues(list(1, 2, 7))
-                       .rightColumns(list("a", "b", "d"))
-                       .rightValues(list(3, 4, 8))
-                       .finalColumns(list("a", "b", "e"))
-                       .finalValues(list(5, 6, 9))
-                       .build();
+
+
+            record = new Record()
+                       .setLeftHeaders(list("a", "b", "c"))
+                       .setLeftRecord(list(1, 2, 7))
+                       .setRightHeaders(list("a", "b", "d"))
+                       .setRightRecord(list(3, 4, 8))
+                       .setFinalHeaders(list("a", "b", "e"))
+                       .setFinalRecord(list(5, 6, 9));
         }
 
         @Test
@@ -353,18 +348,18 @@ class Record2Test {
     @Nested
     class Set {
 
-        Record2 record;
+        Record record;
 
         @BeforeEach
         void setUp() {
-            record = Record2.builder()
-                       .leftColumns(list("a", "b"))
-                       .leftValues(list(1, 2))
-                       .rightColumns(list("a", "b","c"))
-                       .rightValues(list(3, 4))
-                       .finalColumns(list("a", "b","d"))
-                       .finalValues(list(5, 6))
-                       .build();
+
+            record = new Record()
+                       .setLeftHeaders(list("a", "b"))
+                       .setLeftRecord(list(1, 2))
+                       .setRightHeaders(list("a", "b", "c"))
+                       .setRightRecord(list(3, 4))
+                       .setFinalHeaders(list("a", "b", "d"))
+                       .setFinalRecord(list(5, 6));
         }
 
         @Test

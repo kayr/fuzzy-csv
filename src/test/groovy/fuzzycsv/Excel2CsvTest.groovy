@@ -21,7 +21,8 @@ class Excel2CsvTest {
 
         def modify = table.modify {
             set {
-                it.date = (it.date as Date).format("dd-MM-yyyy")
+//                it.date = (it.date as Date).format("dd-MM-yyyy")
+                it.set("date", (it.date as Date).format("dd-MM-yyyy"))
             }
         }
 

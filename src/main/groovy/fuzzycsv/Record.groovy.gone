@@ -6,7 +6,7 @@ import groovy.transform.CompileStatic
 import static fuzzycsv.ResolutionStrategy.*
 
 @CompileStatic
-class Record {
+class RecordX {
 
     List<String> finalHeaders
     List finalRecord
@@ -27,9 +27,9 @@ class Record {
 
     ResolutionStrategy resolutionStrategy = FINAL_FIRST
 
-    Record() {}
+    RecordX() {}
 
-    Record(List<String> headers, List record) {
+    RecordX(List<String> headers, List record) {
         setFinalRecord(record)
         setFinalHeaders(headers)
     }
@@ -66,7 +66,7 @@ class Record {
         return finalTable
     }
 
-    Record setFinalCsv(List<List> finalCsv) {
+    RecordX setFinalCsv(List<List> finalCsv) {
         this.finalTable = new FuzzyCSVTable(finalCsv)
         return this
     }
@@ -75,7 +75,7 @@ class Record {
         return leftTable
     }
 
-    Record setLeftCsv(List<List> leftCsv) {
+    RecordX setLeftCsv(List<List> leftCsv) {
         this.leftTable = new FuzzyCSVTable(leftCsv)
         return this
     }
@@ -84,12 +84,12 @@ class Record {
         return rightTable
     }
 
-    Record setRightCsv(List<List> rightCsv) {
+    RecordX setRightCsv(List<List> rightCsv) {
         this.rightTable = new FuzzyCSVTable(rightCsv)
         return this
     }
 
-    Record up() {
+    RecordX up() {
         if (isTop()) {
             return getRecord(finalHeaders, Collections.emptyList(), finalCsv.csv, 1)
         } else {
@@ -97,7 +97,7 @@ class Record {
         }
     }
 
-    Record down() {
+    RecordX down() {
         def idx = idx()
         if (isBottom()) {
             return getRecord(finalHeaders, Collections.emptyList(), finalCsv.csv, idx)
@@ -213,19 +213,19 @@ class Record {
         }
     }
 
-    Record silentModeOn() {
+    RecordX silentModeOn() {
         throwExceptionOnNullColumn = false
         useDefaultSilentMode = false
         return this
     }
 
-    Record silentModeOff() {
+    RecordX silentModeOff() {
         throwExceptionOnNullColumn = true
         useDefaultSilentMode = false
         return this
     }
 
-    Record silentModeDefault() {
+    RecordX silentModeDefault() {
         useDefaultSilentMode = true
         return this
     }
@@ -240,7 +240,7 @@ class Record {
 
     @SuppressWarnings("GrMethodMayBeStatic")
     private def throwColumnNotFound(String name) {
-        throw new IllegalArgumentException("Record ${idx()} should have a column[$name]")
+        throw new IllegalArgumentException("RecordX ${idx()} should have a column[$name]")
 
     }
 
@@ -273,7 +273,7 @@ class Record {
     }
 
 
-    Record set(String name, def value) {
+    RecordX set(String name, def value) {
 
         def position = Fuzzy.findPosition(finalHeaders, name)
         if (position == -1) {
@@ -306,18 +306,18 @@ class Record {
         return recordIdx
     }
 
-    static Record getRecord(List<List> csv, int i) {
+    static RecordX getRecord(List<List> csv, int i) {
         def header = csv[0]
         def record = csv[i]
         getRecord(header, record, csv, i)
     }
 
-    static Record getRecord(List header, List record, List<List<?>> csv) {
+    static RecordX getRecord(List header, List record, List<List<?>> csv) {
         return getRecord(header, record, csv, -1)
     }
 
-    static Record getRecord(List header, List record, List<List> csv, int idx) {
-        Record record1 = new Record(header, record)
+    static RecordX getRecord(List header, List record, List<List> csv, int idx) {
+        RecordX record1 = new RecordX(header, record)
         record1.recordIdx = idx
         record1.setFinalCsv(csv)
         return record1
@@ -331,20 +331,20 @@ class Record {
         def value = propertyMissing(name)
         if (required && value == null) {
             if (defaultValue) return defaultValue
-            throw new IllegalStateException("Record [${idx()}] has an Empty Cell[$name] that is Required")
+            throw new IllegalStateException("RecordX [${idx()}] has an Empty Cell[$name] that is Required")
         }
         return value
     }
 
     private void assertHeaderNameExists(String name) {
         def nameInHeader = finalHeaders?.contains(name) || leftHeaders?.contains(name)
-        if (!nameInHeader) throwColumnNotFound("Record ${idx()} should have a [$name]")
+        if (!nameInHeader) throwColumnNotFound("RecordX ${idx()} should have a [$name]")
     }
 
 
     def val(def col) {
         if (col instanceof RecordFx) {
-            col.getValue(this)
+            col.getValue(null)
         } else {
             propertyMissing(col as String)
         }

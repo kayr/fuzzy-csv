@@ -155,7 +155,7 @@ class FuzzyCSVTable implements Iterable<Record> {
         def fn = fx { Record r ->
             def answer = groupByColumns.collect { c ->
                 if (c instanceof RecordFx) ((RecordFx) c).getValue(r)
-                else r.final(c?.toString())
+                else r.get(c?.toString())
             }
             answer
         }
