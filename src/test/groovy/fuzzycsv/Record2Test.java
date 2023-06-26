@@ -234,7 +234,7 @@ class Record2Test {
             void whenColumnsAreNull() {
                 Record record = new Record();
                 IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.get("a"));
-                assertEquals("FINAL, Column cannot be null", exception.getMessage());
+                assertEquals("Column not found: a", exception.getMessage());
             }
 
             @Test
@@ -253,9 +253,9 @@ class Record2Test {
         class ByIndex {
 
             @Test
-            void whenColumnNotFound_BOOKMARK() {
-                var exception = assertThrows(IndexOutOfBoundsException.class, () -> record.get(2));
-                assertEquals("FINAL: Column index out of bounds: Index 2 (size: 2)", exception.getMessage());
+            void whenColumnNotFound() {
+                  var exception = assertThrows(IndexOutOfBoundsException.class, () -> record.get(2));
+                assertEquals("Column index out of bounds Or Null Records found: Index 2", exception.getMessage());
 
             }
 
@@ -270,8 +270,8 @@ class Record2Test {
             @Test
             void whenColumnsAreNull() {
                 Record record = new Record();
-                IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> record.get(0));
-                assertEquals("FINAL, Column cannot be null", exception.getMessage());
+                IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class, () -> record.get(0));
+                assertEquals("Column index out of bounds Or Null Records found: Index 0", exception.getMessage());
             }
 
             @Test
@@ -370,7 +370,7 @@ class Record2Test {
 
         @Test
         void setNewValueWithIndex() {
-            record.set(0, 7);
+            record.setAt(0, 7);
             assertEquals(7, record.get("a"));
         }
 
@@ -388,7 +388,7 @@ class Record2Test {
 
         @Test
         void whereIndexIsOutOfBounds() {
-            IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class, () -> record.set(3, 7));
+            IndexOutOfBoundsException exception = assertThrows(IndexOutOfBoundsException.class, () -> record.setAt(3, 7));
             assertEquals("Column index out of bounds: Index 3 (size: 2)", exception.getMessage());
         }
 

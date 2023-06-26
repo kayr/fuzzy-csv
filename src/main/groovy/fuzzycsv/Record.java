@@ -4,6 +4,7 @@ import fuzzycsv.javaly.Dynamic;
 import lombok.AccessLevel;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -73,15 +74,12 @@ public class Record {
     }
 
     public Object get(String column) {
-//        return getValue("FINAL", finalHeaders, finalRecord, column, failIfColumNotFound, true);
-
-        Object o = null;
+        Object o;
         if (column != null && column.charAt(0) == '@') {//todo remove support for @
             o = get(column.substring(1), ResolutionStrategy.LEFT_FIRST);
         } else {
             o = get(column, ResolutionStrategy.FINAL_FIRST);
         }
-        System.out.println("get( " + column + " ) = " + o);
         return o;
     }
 
@@ -186,7 +184,7 @@ public class Record {
         }
 
         if (failIfColumNotFound && indexNotExist(index))
-            throw new IllegalArgumentException("Column not found: " + index);
+            throw new IndexOutOfBoundsException("Column index out of bounds Or Null Records found: Index " + index);
 
         return null;
 
@@ -194,9 +192,10 @@ public class Record {
 
     private boolean indexNotExist(int index) {
         return index < 0 ||
-                 (leftHeaders != null && index >= leftHeaders.size()) ||
-                 (rightHeaders != null && index >= rightHeaders.size()) ||
-                 (finalHeaders != null && index >= finalHeaders.size());
+                 (leftRecord == null && rightRecord == null && finalRecord == null)||
+                 (leftRecord != null && index >= leftRecord.size()) ||
+                 (rightRecord != null && index >= rightRecord.size()) ||
+                 (finalRecord != null && index >= finalRecord.size());
     }
 
     private boolean columnNotExist(String column) {
@@ -272,6 +271,21 @@ public class Record {
     }
 
 
+
+    public Record setAt(int columnIndex, Object value) {
+        int index = translateIndex(finalRecord, columnIndex);
+        if (index == -1) {
+            throw new IllegalArgumentException("Column not found with index: " + columnIndex);
+        }
+
+        if (index >= finalRecord.size())
+            throw new IndexOutOfBoundsException("Column index out of bounds: Index " + columnIndex + " (size: " + finalRecord.size() + ")");
+
+        finalRecord.set(index, value);
+
+        return this;
+    }
+
     public Record set(String columName, Object value) {
 
         if (columName == null)
@@ -286,19 +300,6 @@ public class Record {
         return this;
     }
 
-    public Record set(int columnIndex, Object value) {
-        int index = translateIndex(finalRecord, columnIndex);
-        if (index == -1) {
-            throw new IllegalArgumentException("Column not found with index: " + columnIndex);
-        }
-
-        if (index >= finalRecord.size())
-            throw new IndexOutOfBoundsException("Column index out of bounds: Index " + columnIndex + " (size: " + finalRecord.size() + ")");
-
-        finalRecord.set(index, value);
-
-        return this;
-    }
 
 
     //region Deprecated
@@ -319,7 +320,7 @@ public class Record {
     }
 
     public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new LinkedHashMap<>();
         for (int i = 0; i < finalHeaders.size(); i++) {
             map.put(finalHeaders.get(i), finalRecord.get(i));
         }
@@ -367,10 +368,6 @@ public class Record {
         return o;
     }
 
-//    private Record strict() {
-//        this.failIfColumNotFound = true;
-//        return this;
-//    }
 
     public Dynamic d(String column) {
         return Dynamic.of(get(column));
@@ -387,11 +384,6 @@ public class Record {
     public Dynamic df(String column) {
         return Dynamic.of(get(column));
     }
-
-//    public Object propertyMissing(String name) {
-//        System.out.println("XXXXXXXXXXXXXXXXXXXX");
-//        return get(name,ResolutionStrategy.LEFT_FIRST);
-//    }
 
     public Record(List header, List record) {
         this(null, header, record, -1);

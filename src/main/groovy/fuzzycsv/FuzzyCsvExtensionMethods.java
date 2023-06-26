@@ -46,10 +46,16 @@ public class FuzzyCsvExtensionMethods {
         return self.get(column);
     }
 
+    public static Record putAt(Record self, String column, Object value) {
+        self.set(column, value);
+        return self;
+    }
+
     public static Record setAt(Record self, String column, Object value) {
         self.set(column, value);
         return self;
     }
+
 
 
 }
