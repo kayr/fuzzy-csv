@@ -1242,7 +1242,7 @@ p\tfema+le\t31'''
                 ['r3', 'sex', [null, null, 50], "8000k"]
         ]
 
-        def spread = FuzzyCSVTable.tbl(data).spread("marks")
+        def spread = FuzzyCSVTable.tbl(data).printTable().spread("marks").printTable()
         assert spread.csv == [['name', 'sex', 'marks_1', 'marks_2', 'marks_math', 'marks_sst', 'marks_3', 'other_value'],
                               ['r1', 'sex', 10, 20, null, null, null, null],
                               ['r2', 'sex', 10, null, null, null, null, null],

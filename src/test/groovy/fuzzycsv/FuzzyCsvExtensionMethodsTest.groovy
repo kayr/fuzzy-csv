@@ -18,6 +18,20 @@ class FuzzyCsvExtensionMethodsTest {
         assert data[2].name == 'rok'
     }
 
+    static class Record22 {
+        String name
+        Integer age
+
+        public Record22 set(String name, Object value) {
+            println "set($name, $value)"
+            return this
+        }
+
+        public Record22 get(String name) {
+            println "get($name)"
+            return this
+        }
+    }
     @Test
     void testUpdating() {
         assert data[1].age == null

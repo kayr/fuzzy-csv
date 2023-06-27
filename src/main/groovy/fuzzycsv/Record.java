@@ -3,10 +3,7 @@ package fuzzycsv;
 import fuzzycsv.javaly.Dynamic;
 import lombok.AccessLevel;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static fuzzycsv.FuzzyCSVUtils.safeGet;
 
@@ -192,7 +189,7 @@ public class Record {
 
     private boolean indexNotExist(int index) {
         return index < 0 ||
-                 (leftRecord == null && rightRecord == null && finalRecord == null)||
+                 (leftRecord == null && rightRecord == null && finalRecord == null) ||
                  (leftRecord != null && index >= leftRecord.size()) ||
                  (rightRecord != null && index >= rightRecord.size()) ||
                  (finalRecord != null && index >= finalRecord.size());
@@ -271,7 +268,6 @@ public class Record {
     }
 
 
-
     public Record setAt(int columnIndex, Object value) {
         int index = translateIndex(finalRecord, columnIndex);
         if (index == -1) {
@@ -301,7 +297,6 @@ public class Record {
     }
 
 
-
     //region Deprecated
 
     public static Record getRecord(List csv, int index) {
@@ -322,7 +317,9 @@ public class Record {
     public Map<String, Object> toMap() {
         Map<String, Object> map = new LinkedHashMap<>();
         for (int i = 0; i < finalHeaders.size(); i++) {
-            map.put(finalHeaders.get(i), finalRecord.get(i));
+            String key = finalHeaders.get(i);
+            Object value = FuzzyCSVUtils.safeGet(finalRecord, i);
+            map.put(key, value);
         }
         return map;
     }
@@ -389,5 +386,36 @@ public class Record {
         this(null, header, record, -1);
     }
 
+
     //endregion
+
+    //navigation
+
+    Record up() {
+        if (isTop()) {
+            return getRecord(finalHeaders, Collections.emptyList(), finalTable, 1);
+        } else {
+            int rIdx = idx() - 1;
+            return getRecord(finalHeaders, finalTable.get(rIdx), finalTable, rIdx);
+        }
+    }
+
+    Record down() {
+        int idx = idx();
+        if (isBottom()) {
+            return getRecord(finalHeaders, Collections.emptyList(), finalTable, idx);
+        } else {
+            int rIdx = idx + 1;
+            return getRecord(finalHeaders, finalTable.get(rIdx), finalTable, rIdx);
+        }
+    }
+
+    boolean isTop() {
+        return idx() == 1;
+    }
+
+    boolean isBottom() {
+        return idx() == finalTable.size() - 1;
+    }
+
 }
