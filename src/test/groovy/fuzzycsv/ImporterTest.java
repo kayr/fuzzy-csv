@@ -364,8 +364,8 @@ class ImporterTest {
                                     .fetch("select FIRSTNAME as \"fn\", LASTNAME  from PERSON");
 
             assertEquals(1, table.size());
-            assertEquals("kay", table.row(1).val("fn"));
-            assertEquals("r", table.row(1).val("LASTNAME"));
+            assertEquals("kay", table.row(1).get("fn"));
+            assertEquals("r", table.row(1).get("LASTNAME"));
         }
 
         @Test
@@ -377,8 +377,8 @@ class ImporterTest {
                                         .fetch("select * from PERSON");
 
                 assertEquals(1, table.size());
-                assertEquals("kay", table.row(1).val("FIRSTNAME"));
-                assertEquals("r", table.row(1).val("LASTNAME"));
+                assertEquals("kay", table.row(1).get("FIRSTNAME"));
+                assertEquals("r", table.row(1).get("LASTNAME"));
             }
 
         }
@@ -393,8 +393,8 @@ class ImporterTest {
                 FuzzyCSVTable table = FuzzyCSVTable.from().db().fetch(resultSet);
 
                 assertEquals(1, table.size());
-                assertEquals("kay", table.row(1).val("FIRSTNAME"));
-                assertEquals("r", table.row(1).val("LASTNAME"));
+                assertEquals("kay", table.row(1).get("FIRSTNAME"));
+                assertEquals("r", table.row(1).get("LASTNAME"));
             }
 
         }

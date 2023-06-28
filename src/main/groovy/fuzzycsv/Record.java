@@ -262,7 +262,10 @@ public class Record {
         return actualIndex;
     }
 
-    public Record lenient() {
+    /**
+     * Return null if column not found rather than throwing an exception
+     */
+    public Record lax() {
         this.failIfColumNotFound = false;
         return this;
     }
@@ -338,6 +341,10 @@ public class Record {
     }
 
 
+    /**
+     * @deprecated use {@link #get(String)} instead
+     */
+    @Deprecated
     public Object val(Object column) {
         if (column instanceof RecordFx) {
             return ((RecordFx) column).getValue(this);

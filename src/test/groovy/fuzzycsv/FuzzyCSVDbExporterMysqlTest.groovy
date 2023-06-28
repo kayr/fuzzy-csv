@@ -11,9 +11,10 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 
+import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.FuzzyStaticApi.fx
 
-@Ignore
+@Ignore("not set up mysql on github actions")
 class FuzzyCSVDbExporterMysqlTest {
 
 
@@ -56,7 +57,7 @@ class FuzzyCSVDbExporterMysqlTest {
     void testCreateColumn() {
 
 
-        def tbl = FuzzyCSVTable.tbl(data)
+        def tbl = tbl(data)
         def columns = export.createColumns(tbl)
 
         columns.find { it.name == 'string_col' }.with {
@@ -90,7 +91,7 @@ class FuzzyCSVDbExporterMysqlTest {
 
         def sql = H2DbHelper.connection
 
-        def tbl = FuzzyCSVTable.tbl(data)
+        def tbl = tbl(data)
 
         def ddl = export.createDDL(tbl.name("mytable"))
 
@@ -155,7 +156,7 @@ VALUES
     @Test
     void testWithInsertWithPaginate() {
 
-        def table = FuzzyCSVTable.tbl(data)
+        def table = tbl(data)
                 .addColumn(fx { it.idx() }.az('id'))
                 .name('XXX')
 
@@ -185,7 +186,7 @@ VALUES
     @Test
     void testWithInsertWithPaginateGeneratePKS() {
 
-        def table = FuzzyCSVTable.tbl(data)
+        def table = tbl(data)
                 .addColumn(fx { it.idx() }.az('id'))
                 .name('XXX1')
 
@@ -224,13 +225,12 @@ VALUES
     void testPaginate() {
 
         def table =
-                FuzzyCSVTable
-                        .tbl(data)
+                tbl(data)
                         .copy()
-                        .union(FuzzyCSV.copy(data))
-                        .union(FuzzyCSV.copy(data))
+                        .union(tbl(FuzzyCSV.copy(data)))
+                        .union(tbl(FuzzyCSV.copy(data)))
                         .addColumn(fx { it.idx() }.az('idx'))
-                        .moveCol('idx', 0)
+                        .moveColumn('idx', 0)
 
 
         int counter = 1
@@ -252,13 +252,12 @@ VALUES
     void testPaginateEven() {
 
         def table =
-                FuzzyCSVTable
-                        .tbl(data)
+                tbl(data)
                         .copy()
-                        .union(FuzzyCSV.copy(data))
-                        .union(FuzzyCSV.copy(data))
+                        .union(tbl(FuzzyCSV.copy(data)))
+                        .union(tbl(FuzzyCSV.copy(data)))
                         .addColumn(fx { it.idx() }.az('idx'))
-                        .moveCol('idx', 0)
+                        .moveColumn('idx', 0)
                         .delete { it.idx() == 9 }
 
 
@@ -281,13 +280,12 @@ VALUES
     void testPaginateBigPage() {
 
         def table =
-                FuzzyCSVTable
-                        .tbl(data)
+                tbl(data)
                         .copy()
-                        .union(FuzzyCSV.copy(data))
-                        .union(FuzzyCSV.copy(data))
+                        .union(tbl(FuzzyCSV.copy(data)))
+                        .union(tbl(FuzzyCSV.copy(data)))
                         .addColumn(fx { it.idx() }.az('idx'))
-                        .moveCol('idx', 0)
+                        .moveColumn('idx', 0)
 
 
         int counter = 1
@@ -312,7 +310,7 @@ VALUES
 
     @Test
     void testExportIfTableDoesNotExist() {
-        def t = FuzzyCSVTable.tbl(data)
+        def t = tbl(data)
                 .addColumn('id') { it.idx() }
                 .name('XXD')
 

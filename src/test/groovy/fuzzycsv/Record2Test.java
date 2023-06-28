@@ -52,13 +52,13 @@ class Record2Test {
 
             @Test
             void whenColumnNotFoundWithLenient() {
-                assertNull(record.lenient().right("c"));
+                assertNull(record.lax().right("c"));
             }
 
             @Test
             void whenColumnFoundWithLenient() {
-                assertEquals(1, record.lenient().right("a"));
-                assertEquals(2, record.lenient().right("b"));
+                assertEquals(1, record.lax().right("a"));
+                assertEquals(2, record.lax().right("b"));
             }
         }
 
@@ -89,13 +89,13 @@ class Record2Test {
 
             @Test
             void whenColumnNotFoundWithLenient() {
-                assertNull(record.lenient().right(2));
+                assertNull(record.lax().right(2));
             }
 
             @Test
             void whenColumnFoundWithLenient() {
-                assertEquals(1, record.lenient().right(0));
-                assertEquals(2, record.lenient().right(1));
+                assertEquals(1, record.lax().right(0));
+                assertEquals(2, record.lax().right(1));
             }
         }
 
@@ -144,13 +144,13 @@ class Record2Test {
 
             @Test
             void whenColumnNotFoundWithLenient() {
-                assertNull(record.lenient().left("c"));
+                assertNull(record.lax().left("c"));
             }
 
             @Test
             void whenColumnFoundWithLenient() {
-                assertEquals(1, record.lenient().left("a"));
-                assertEquals(2, record.lenient().left("b"));
+                assertEquals(1, record.lax().left("a"));
+                assertEquals(2, record.lax().left("b"));
             }
         }
 
@@ -181,14 +181,14 @@ class Record2Test {
 
             @Test
             void whenColumnNotFoundWithLenient() {
-                assertNull(record.lenient().left(2));
+                assertNull(record.lax().left(2));
             }
 
             @Test
             void whenColumnFoundWithLenient() {
-                assertEquals(1, record.lenient().left(0));
-                assertEquals(2, record.lenient().left(1));
-                assertEquals(2, record.lenient().left(-1));
+                assertEquals(1, record.lax().left(0));
+                assertEquals(2, record.lax().left(1));
+                assertEquals(2, record.lax().left(-1));
             }
 
         }
@@ -239,13 +239,13 @@ class Record2Test {
 
             @Test
             void whenColumnNotFoundWithLenient() {
-                assertNull(record.lenient().get("c"));
+                assertNull(record.lax().get("c"));
             }
 
             @Test
             void whenColumnFoundWithLenient() {
-                assertEquals(1, record.lenient().get("a"));
-                assertEquals(2, record.lenient().get("b"));
+                assertEquals(1, record.lax().get("a"));
+                assertEquals(2, record.lax().get("b"));
             }
         }
 
@@ -276,14 +276,14 @@ class Record2Test {
 
             @Test
             void whenColumnNotFoundWithLenient() {
-                assertNull(record.lenient().get(2));
+                assertNull(record.lax().get(2));
             }
 
             @Test
             void whenColumnFoundWithLenient() {
-                assertEquals(1, record.lenient().get(0));
-                assertEquals(2, record.lenient().get(1));
-                assertEquals(2, record.lenient().get(-1));
+                assertEquals(1, record.lax().get(0));
+                assertEquals(2, record.lax().get(1));
+                assertEquals(2, record.lax().get(-1));
             }
 
         }

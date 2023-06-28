@@ -67,7 +67,7 @@ class RecordTest {
         //GENERAL SILENT MODE
         FuzzyCSV.THROW_EXCEPTION_ON_ABSENT_COLUMN.set(false)
         record.silentModeDefault()
-        assert record.val('blah') == null
+        assert record.get('blah') == null
         assert record.silentVal('blah') == null
 
         //OVERRIDING SILENT MODE
