@@ -76,6 +76,10 @@ public class FxUtils {
         throw (T) t;
     }
 
+    static void rethrow(Throwable t) {
+        throw new RuntimeException(t);
+    }
+
     public <T> T cast(Object obj) {
         return (T) obj;
     }

@@ -191,7 +191,7 @@ class FuzzyCSVTable implements Iterable<Record> {
 
     FuzzyCSVTable distinctBy(Object... columns) {
         def allHeaders = header as List
-        def groupFx = fx { r -> columns.collect { c -> r.val(c) } }
+        def groupFx = fx { r -> columns.collect { c -> r.eval(c) } }
         return aggregate(allHeaders, groupFx)
     }
 
@@ -301,7 +301,7 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     def <T> T get(String colName, int rowIdx) {
-        return row(rowIdx).val(colName)
+        return row(rowIdx).eval(colName)
     }
 
     def get(Navigator navigator) {
@@ -811,7 +811,7 @@ class FuzzyCSVTable implements Iterable<Record> {
 
         List<Map> newMapList = iterator().collect { Record it ->
 
-            def val = it.val(col)
+            def val = it.eval(col)
 
             def recordMap = it.toMap()
 

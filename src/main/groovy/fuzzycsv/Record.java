@@ -1,6 +1,7 @@
 package fuzzycsv;
 
 import fuzzycsv.javaly.Dynamic;
+import fuzzycsv.javaly.Fx1;
 import lombok.AccessLevel;
 
 import java.util.*;
@@ -344,32 +345,42 @@ public class Record {
     /**
      * @deprecated use {@link #get(String)} instead
      */
-    @Deprecated
-    public Object val(Object column) {
+    public Object eval(Object column) {
+        if (column instanceof String) {
+            return get((String) column);
+        }
+
+
         if (column instanceof RecordFx) {
             return ((RecordFx) column).getValue(this);
-        } else {
-            return get(column.toString());
         }
+
+        if (column instanceof Fx1) {
+            try {
+                return ((Fx1<Record, Object>) column).call(this);
+            } catch (Exception e) {
+                throw FuzzyCsvException.wrap(e);
+            }
+        }
+
+        return get(column.toString());
     }
 
 
-    public Object value(String column) {
-        return value(column, true);
+    public Object require(String column) {
+        return require(column, null);
     }
 
-    public Object value(String column, boolean required) {
-        return value(column, required, null);
-    }
 
-    public Object value(String column, boolean required, Object defaultValue) {
+    public Object require(String column, Object defaultValue) {
         Object o = get(column);
-        if (required && o == null) {
-            if (defaultValue != null)
-                return defaultValue;
-            throw new IllegalStateException("Column not found: " + column);
+        if (o != null) {
+            return o;
         }
-        return o;
+        if (defaultValue != null) {
+            return defaultValue;
+        }
+        throw new IllegalStateException("Column value not found: " + column);
     }
 
 

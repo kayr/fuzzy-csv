@@ -45,12 +45,11 @@ class RecordTest {
         record.leftHeaders = sourceHeader
         record.leftRecord = sourceRecord
 
-        shouldFail(IllegalArgumentException) { record.value('blah') }
-        assert record.value('name') == 'ron'
-        assert record.value('age', false) == null
-        assert new Record(derivedHeader, ['ron', 10]).value('age') == 10
-        shouldFail(IllegalStateException) { record.value('age') == null }
-        assert record.value('age', true, 10) == 10
+        shouldFail(IllegalArgumentException) { record.require('blah') }
+        assert record.require('name') == 'ron'
+        assert new Record(derivedHeader, ['ron', 10]).require('age') == 10
+        shouldFail(IllegalStateException) { record.require('age') == null }
+        assert record.require('age', 10) == 10
     }
 
     @Test
@@ -58,7 +57,7 @@ class RecordTest {
     void testAbsentColumn() {
         Record record = new Record(derivedHeader, ['ron', null])
 
-        shouldFail(IllegalArgumentException) { record.value('blah') }
+        shouldFail(IllegalArgumentException) { record.require('blah') }
 
         //SILENT MODE ON RECORD
         assert record.withSilentMode { val("blah") } == null
@@ -73,7 +72,7 @@ class RecordTest {
         //OVERRIDING SILENT MODE
         shouldFail(IllegalArgumentException) {
             record.silentModeOff()
-            record.val('blah') == null
+            record.eval('blah') == null
         }
 
     }

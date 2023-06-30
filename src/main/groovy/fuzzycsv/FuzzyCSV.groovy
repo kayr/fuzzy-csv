@@ -301,7 +301,7 @@ class FuzzyCSV {
                     def rRecord = mRCsv[i]
                     def rRecObj = Record.getRecord(header, rRecord, mRCsv, i)
 
-                    def rightString = joinColumns.collect { String colName -> rRecObj.val(colName) }.join('-')
+                    def rightString = joinColumns.collect { String colName -> rRecObj.eval(colName) }.join('-')
 
                     if (!rightIdx[rightString]) {
                         rightIdx[rightString] = (List<Record>) newList()
@@ -310,7 +310,7 @@ class FuzzyCSV {
                 }
             }
 
-            def leftString = joinColumns.collect { String colName -> leftRecord.val(colName) }.join('-')
+            def leftString = joinColumns.collect { String colName -> leftRecord.eval(colName) }.join('-')
             return rightIdx[leftString]
 
         }

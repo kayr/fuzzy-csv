@@ -39,8 +39,8 @@ public class TestUtils {
         t.addColumn(
             recordFx("n",
               arg -> mapOf(
-                kv("c", arg.value("c")),
-                kv("d", arg.value("d"))
+                kv("c", arg.get("c")),
+                kv("d", arg.get("d"))
               )))
           .dropColum("c", "d")
           .unwind("n")
