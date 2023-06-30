@@ -18,39 +18,39 @@ class NavigatorTest {
 
         def navigator = Navigator.start().table(tbl(data))
 
-        assert navigator.down().to('3').value() == 8
+        assert navigator.down().to('3').get() == 8
 
         def t = shouldFail {
-            assert navigator.down().to('31').value() == 8
+            assert navigator.down().to('31').get() == 8
         }
 
         assert t.message == 'column[31] not found'
 
-        assert navigator.down().to('3').value() == 8
+        assert navigator.down().to('3').get() == 8
 
-        assert navigator.value() == '1'
-        assert navigator.right().right().right().value() == '4'
-        assert navigator.right().right().right().left().value() == '3'
-        assert navigator.right().right().right().down().value() == 9
-        assert navigator.right().right().right().down().up().value() == '4'
+        assert navigator.get() == '1'
+        assert navigator.right().right().right().get() == '4'
+        assert navigator.right().right().right().left().get() == '3'
+        assert navigator.right().right().right().down().get() == 9
+        assert navigator.right().right().right().down().up().get() == '4'
 
-        assert navigator.right().right().right().up().value() == 14 //rotation
+        assert navigator.right().right().right().up().get() == 14 //rotation
 
 
-        def collect = navigator.allIter().collect { it.value() }
+        def collect = navigator.allIter().collect { it.get() }
 
         assert collect == ['1', '2', '3', '4', '5', 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 
-        def coll2 = navigator.allBoundedIter(2, 1).collect { it.value() }
+        def coll2 = navigator.allBoundedIter(2, 1).collect { it.get() }
         assert coll2 == ['1', '2', '3', 6, 7, 8]
 
-        assert navigator.downIter().skip().collect { it.value() } == [6, 11]
-        assert navigator.downIter().collect { it.value() } == ['1', 6, 11]
-        assert navigator.downIter().collect { it.value() } == ['1', 6, 11]
-        assert navigator.rightIter().collect { it.value() } == ['1', '2', '3', '4', '5']
-        assert navigator.right().right().right().rightIter().collect { it.value() } == ['4', '5']
+        assert navigator.downIter().skip().collect { it.get() } == [6, 11]
+        assert navigator.downIter().collect { it.get() } == ['1', 6, 11]
+        assert navigator.downIter().collect { it.get() } == ['1', 6, 11]
+        assert navigator.rightIter().collect { it.get() } == ['1', '2', '3', '4', '5']
+        assert navigator.right().right().right().rightIter().collect { it.get() } == ['4', '5']
 
-        assert navigator.downIter().last().upIter().collect { it.value() } == [11, 6, '1']
+        assert navigator.downIter().last().upIter().collect { it.get() } == [11, 6, '1']
 
         def row = navigator.row(4)
         assert row.row == 4 && row.col == navigator.col
@@ -61,10 +61,10 @@ class NavigatorTest {
 
 
         def copy = tbl(data).copy()
-        assert navigator.value("Hhe", copy)
+        assert navigator.set("Hhe", copy)
         assert copy.get(navigator) == 'Hhe'
 
-        navigator.right().right().down().value(900, copy)
+        navigator.right().right().down().set(900, copy)
         assert copy.csv[1][2] == 900
 
 
@@ -77,16 +77,16 @@ class NavigatorTest {
 
         def corner = navigator.row(0).col(4)
 
-        assert corner.value() == '5'
-        assert corner.rightIter().collect { it.value() } == ['5']
-        assert corner.right().rightIter().collect { it.value() } == []
-        assert corner.rightIter().find({ it.value() == '5' } as Fx1).get().value() == '5'
+        assert corner.get() == '5'
+        assert corner.rightIter().collect { it.get() } == ['5']
+        assert corner.right().rightIter().collect { it.get() } == []
+        assert corner.rightIter().find({ it.get() == '5' } as Fx1).get().get() == '5'
 
 
-        assert corner.toTopLeft().value() == '1'
-        assert corner.toToRight().value() == '5'
-        assert corner.toBottomLeft().value() == 11
-        assert corner.toBottomRight().value() == 15
+        assert corner.toTopLeft().get() == '1'
+        assert corner.toToRight().get() == '5'
+        assert corner.toBottomLeft().get() == 11
+        assert corner.toBottomRight().get() == 15
 
     }
 
@@ -120,7 +120,7 @@ class NavigatorTest {
         def table = tbl(data)
         def navigator = new Navigator(0, 0, table)
 
-        navigator.down().addAbove().up().value("VVV")
+        navigator.down().addAbove().up().set("VVV")
 
         assert table.csv == [['1', '2', '3', '4', '5'],
                              ['VVV', null, null, null, null],
@@ -135,7 +135,7 @@ class NavigatorTest {
         def table = tbl(data)
         def navigator = new Navigator(0, 0, table)
 
-        navigator.down().addBelow().down().value("VVV")
+        navigator.down().addBelow().down().set("VVV")
 
         assert table.csv == [['1', '2', '3', '4', '5'],
                              [6, 7, 8, 9, 10],
@@ -181,7 +181,7 @@ class NavigatorTest {
 
         def n = navigator.right(table.header.size() - 1).deleteCol()
 
-        assert n.value() == '4'
+        assert n.get() == '4'
         assert n.table.csv == tbl(data).delete('5').csv
     }
 
@@ -193,7 +193,7 @@ class NavigatorTest {
 
         def n = navigator.down(table.csv.size() - 1).deleteRow()
 
-        assert n.value() == 6 // should be 6 coz 11 is deleted
+        assert n.get() == 6 // should be 6 coz 11 is deleted
         assert n.table.csv == tbl(data).delete { it.'1' == 11 }.csv
     }
 }

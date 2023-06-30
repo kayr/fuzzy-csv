@@ -134,7 +134,7 @@ class FuzzyCSVDbExporter {
 
         def columns = header.collect { name ->
             def firstValue = start.to(name).downIter().skip()
-                    .find { it.value() != null }?.value()
+                    .find { it.get() != null }?.get()
 
             if (exportParams.exportFlags.contains(DbExportFlags.USE_DECIMAL_FOR_INTS) && firstValue instanceof Number)
                 firstValue = firstValue as BigDecimal

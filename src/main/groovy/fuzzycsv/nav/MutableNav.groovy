@@ -13,7 +13,7 @@ class MutableNav {
     }
 
     def value() {
-        curr.value()
+        curr.get()
     }
 
     MutableNav up() {

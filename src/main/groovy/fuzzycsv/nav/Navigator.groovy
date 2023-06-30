@@ -128,27 +128,27 @@ class Navigator {
     }
 
     Navigator mark(FuzzyCSVTable t = table) {
-        value('[' + value(t) + ']', t)
+        set('[' + get(t) + ']', t)
         return this
     }
 
     Navigator mark(String i, FuzzyCSVTable t = table) {
-        value(i + value(t), t)
+        set(i + get(t), t)
         return this
     }
 
 
-    def value(FuzzyCSVTable t = table) {
+    def get(FuzzyCSVTable t = table) {
         return t.get(this)
     }
 
-    Navigator value(obj, FuzzyCSVTable t = table) {
+    Navigator set(obj, FuzzyCSVTable t = table) {
         t.set(col, row, obj)
         return this
     }
 
     Navigator clear(FuzzyCSVTable t = table) {
-        value(null, t)
+        set(null, t)
         return this
     }
 

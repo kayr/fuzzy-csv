@@ -484,7 +484,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testGroupBy() {
-        Map<Object, FuzzyCSVTable> result = inputCsv.groupBy(r -> r.value("matching"));
+        Map<Object, FuzzyCSVTable> result = inputCsv.groupBy(r -> r.get("matching"));
 
         Map<Object, FuzzyCSVTable> expected = mapOf(
           kv("Black", FuzzyCSVTable.fromRows(
@@ -530,8 +530,8 @@ class JFuzzyCSVTableTest {
     void testRow() {
         Record result = inputCsv.row(1);
 
-        Object color = result.value("color");
-        Object matching = result.value("matching");
+        Object color = result.get("color");
+        Object matching = result.get("matching");
 
         assertEquals("Red", color);
         assertEquals("Black", matching);
@@ -540,13 +540,13 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testGetCellValues() {
-        Object result = inputCsv.value(1, 0);
+        Object result = inputCsv.get(1, 0);
         assertEquals("Red", result);
     }
 
     @Test
     void testGetCellValuesWithColumnName() {
-        Object result = inputCsv.value(1, "color");
+        Object result = inputCsv.get(1, "color");
         assertEquals("Red", result);
     }
 
@@ -554,7 +554,7 @@ class JFuzzyCSVTableTest {
     @Test
     void testWithNavigator() {
         Navigator nav = Navigator.start().table(inputCsv.unwrap()).down();
-        Object result = inputCsv.value(nav);
+        Object result = inputCsv.get(nav);
         assertEquals("Red", result);
     }
 
@@ -1456,22 +1456,22 @@ class JFuzzyCSVTableTest {
         Iterator<Record> iterator = inputCsv.iterator();
 
         Record next0 = iterator.next();
-        assertEquals(next0.value("color"), "Red");
-        assertEquals(next0.value("matching"), "Black");
-        assertEquals(inputCsv.row(1).value("color"), next0.value("color"));
-        assertEquals(inputCsv.row(1).value("matching"), next0.value("matching"));
+        assertEquals(next0.get("color"), "Red");
+        assertEquals(next0.get("matching"), "Black");
+        assertEquals(inputCsv.row(1).get("color"), next0.get("color"));
+        assertEquals(inputCsv.row(1).get("matching"), next0.get("matching"));
 
         Record next1 = iterator.next();
-        assertEquals(next1.value("color"), "Purple");
-        assertEquals(next1.value("matching"), "Black");
-        assertEquals(inputCsv.row(2).value("color"), next1.value("color"));
-        assertEquals(inputCsv.row(2).value("matching"), next1.value("matching"));
+        assertEquals(next1.get("color"), "Purple");
+        assertEquals(next1.get("matching"), "Black");
+        assertEquals(inputCsv.row(2).get("color"), next1.get("color"));
+        assertEquals(inputCsv.row(2).get("matching"), next1.get("matching"));
 
         Record next2 = iterator.next();
-        assertEquals(next2.value("color"), "Green");
-        assertEquals(next2.value("matching"), "Beige");
-        assertEquals(inputCsv.row(3).value("color"), next2.value("color"));
-        assertEquals(inputCsv.row(3).value("matching"), next2.value("matching"));
+        assertEquals(next2.get("color"), "Green");
+        assertEquals(next2.get("matching"), "Beige");
+        assertEquals(inputCsv.row(3).get("color"), next2.get("color"));
+        assertEquals(inputCsv.row(3).get("matching"), next2.get("matching"));
 
 
     }

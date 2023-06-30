@@ -386,10 +386,10 @@ VALUES
                 .start().table(fromDb)
                 .allIter()
                 .each {
-                    def value = it.value()
+                    def value = it.get()
                     if (value instanceof Number) {
                         def stripped = value.toBigDecimal().stripTrailingZeros()
-                        it.value(stripped)
+                        it.set(stripped)
                     }
                 }
 

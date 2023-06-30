@@ -177,16 +177,16 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.row(idx);
     }
 
-    public <T> T value(int rowIdx, int colIdx) {
+    public <T> T get(int rowIdx, int colIdx) {
         return table.get(colIdx, rowIdx);
     }
 
-    public <T> T value(int rowIdx, String colName) {
+    public <T> T get(int rowIdx, String colName) {
         return table.get(colName, rowIdx);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T value(Navigator navigator) {
+    public <T> T get(Navigator navigator) {
         return (T) table.get(navigator);
     }
 

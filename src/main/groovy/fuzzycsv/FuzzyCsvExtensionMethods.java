@@ -32,17 +32,14 @@ public class FuzzyCsvExtensionMethods {
 
 
     public static Object getAt(Record self, int idx) {
-        System.out.println("getAt(Record self, int idx) " + idx);
         return self.get(idx);
     }
 
     public static Object getAt(Record self, CharSequence column) {
-        System.out.println("getAt(Record self, CharSequence column) " + column);
         return self.get(column.toString());
     }
 
     public static Object getAt(Record self, String column) {
-        System.out.println("getAt(Record self, String column) " + column);
         return self.get(column);
     }
 
