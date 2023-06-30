@@ -1,6 +1,5 @@
 package fuzzycsv;
 
-import lombok.var;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -66,7 +65,7 @@ class Record2Test {
         class ByIndex {
             @Test
             void whenColumnNotFound() {
-                var exception = assertThrows(IndexOutOfBoundsException.class, () -> record.right(2));
+                Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> record.right(2));
                 assertEquals("RIGHT: Column index out of bounds: Index 2 (size: 2)", exception.getMessage());
 
             }
@@ -159,7 +158,7 @@ class Record2Test {
 
             @Test
             void whenColumnNotFound() {
-                var exception = assertThrows(IndexOutOfBoundsException.class, () -> record.left(2));
+                Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> record.left(2));
                 assertEquals("LEFT: Column index out of bounds: Index 2 (size: 2)", exception.getMessage());
 
             }
@@ -254,7 +253,7 @@ class Record2Test {
 
             @Test
             void whenColumnNotFound() {
-                  var exception = assertThrows(IndexOutOfBoundsException.class, () -> record.get(2));
+                Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> record.get(2));
                 assertEquals("Column index out of bounds Or Null Records found: Index 2", exception.getMessage());
 
             }

@@ -777,22 +777,6 @@ class FuzzyCSV {
         return merged
     }
 
-    static List<List> appendToRight(List<? extends List> csv1, List<? extends List> csv2) {
-
-        def result = newList(csv1.size())
-
-        if (csv1 == null || csv1.size() == 0 || csv1[0].size() == 0) {
-            return csv2
-        }
-
-        if (csv2 == null || csv2.size() == 0 || csv2[0].size() == 0) {
-            return csv1
-        }
-
-        def toAppend = csv2?.size() <= 1 ? Collections.EMPTY_LIST : csv2[1..-1]
-        def merged = csv1 + toAppend
-        return merged
-    }
 
     /**
      * if u have a table like this
