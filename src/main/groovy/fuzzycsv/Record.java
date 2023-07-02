@@ -2,14 +2,15 @@ package fuzzycsv;
 
 import fuzzycsv.javaly.Dynamic;
 import fuzzycsv.javaly.Fx1;
+import groovy.lang.Closure;
 import lombok.AccessLevel;
 
 import java.util.*;
+import java.util.function.Function;
 
 import static fuzzycsv.FuzzyCSVUtils.safeGet;
 
 
-@lombok.AllArgsConstructor
 @lombok.NoArgsConstructor
 @lombok.Setter(AccessLevel.PACKAGE)
 @lombok.Getter(AccessLevel.PACKAGE)
@@ -343,24 +344,42 @@ public class Record {
 
 
     /**
-     * @deprecated use {@link #get(String)} instead
+     * Evsluate the column, this can either be a function or a column name
+     * <p>
+     * If the column is a {@link String} then it will be used to lookup the value in this record
+     * If the column is a {@link RecordFx} then it will be called with this record as the argument
+     * If the column is a {@link Fx1} then it will be called with this record as the argument
+     * If the column is a {@link Function} then it will be called with this record as the argument
+     * If the column is any other type then it will be converted to a string and used to lookup the value in this record
+     * </p>
+     *
+     * @param column the column to evaluate
      */
+    @SuppressWarnings("unchecked")
     public Object eval(Object column) {
+
+        if (column == null)
+            throw new IllegalArgumentException("Column cannot be null");
+
         if (column instanceof String) {
             return get((String) column);
         }
-
-
         if (column instanceof RecordFx) {
             return ((RecordFx) column).getValue(this);
         }
-
         if (column instanceof Fx1) {
             try {
                 return ((Fx1<Record, Object>) column).call(this);
             } catch (Exception e) {
                 throw FuzzyCsvException.wrap(e);
             }
+        }
+        if (column instanceof Function) {
+            return ((Function<Record, Object>) column).apply(this);
+        }
+
+        if (column instanceof Closure) {
+            return ((Closure<?>) column).call(this);
         }
 
         return get(column.toString());
