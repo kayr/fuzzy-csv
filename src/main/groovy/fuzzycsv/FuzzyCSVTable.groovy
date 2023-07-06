@@ -713,12 +713,43 @@ class FuzzyCSVTable implements Iterable<Record> {
         return to().maps().getResult()
     }
 
-    FuzzyCSVTable sort(Closure c) {
-        tbl(FuzzyCSV.sort(this.csv, c))
+    FuzzyCSVTable sortBy(Sort... c) {
+        def combined = c[0].toComparator()
+        for (int i = 1; i < c.length; i++) {
+            combined = combined.thenComparing(c[i].toComparator())
+        }
+
+        tbl(FuzzyCSV.sort(this.csv, combined))
     }
 
     FuzzyCSVTable sort(Object... c) {
-        tbl(FuzzyCSV.sort(this.csv, c))
+        List<Sort> sorts = []
+        for (sorter in c) {
+            switch (sorter) {
+                case Sort:
+                    sorts.add(sorter)
+                    break
+                case String:
+                    sorts.add(Sort.byColumn(sorter))
+                    break
+                case Closure:
+                    if (sorter.maximumNumberOfParameters == 1) {
+                        sorts.add(Sort.byFx { sorter.call(it) })
+                    } else if (sorter.maximumNumberOfParameters == 2) {
+                        sorts.add(Sort.byComparing { a, b -> sorter.call(a, b) })
+                    } else {
+                        throw new IllegalArgumentException("Closure must have 1 or 2 parameters")
+                    }
+                    break
+                case RecordFx:
+                    sorts.add(Sort.byFx { sorter.getValue(it) })
+                    break
+                default:
+                    throw new IllegalArgumentException("Unknown sort type: ${sorter.getClass()}")
+            }
+        }
+
+        return sortBy(*sorts)
     }
 
     FuzzyCSVTable reverse() {

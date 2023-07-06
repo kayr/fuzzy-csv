@@ -247,7 +247,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testSorting() {
-        def copy = tbl(csv2).sort { r -> r['sub_county'] }
+        def copy = tbl(csv2).sortBy('sub_county'.asc())
 
         assert [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
                 ['Bunyangabu', null, null, '1'],
@@ -259,7 +259,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testSorting2Params() {
-        def copy = tbl(csv2).sort { r, b -> r['sub_county'] <=> b['sub_county'] }
+        def copy = tbl(csv2).sortBy (Sort.byComparing{ r, b -> r['sub_county'] <=> b['sub_county'] })
 
         assert [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
                 ['Bunyangabu', null, null, '1'],
@@ -310,7 +310,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testReverse() {
-        def sortedCSV = tbl(csv2).sort { r, b -> r['sub_county'] <=> b['sub_county'] }
+        def sortedCSV = tbl(csv2).sortBy(Sort.byComparing { r, b -> r['sub_county'] <=> b['sub_county'] })
         def copy = sortedCSV.reverse()
 
 

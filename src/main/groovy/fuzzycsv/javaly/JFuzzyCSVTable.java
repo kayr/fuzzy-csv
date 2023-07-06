@@ -471,17 +471,10 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.toMapList();
     }
 
-    public JFuzzyCSVTable sort(Fx1<Record, Object> valueExtractor) {
-        return table.sort(FxUtils.toCls(valueExtractor)).javaApi();
+    public JFuzzyCSVTable sort(Sort... sortBy) {
+        return table.sortBy(sortBy).javaApi();
     }
 
-    public JFuzzyCSVTable sort(Fx2<Record, Record, Object> valueExtractor) {
-        return table.sort(FxUtils.toCls(valueExtractor)).javaApi();
-    }
-
-    public JFuzzyCSVTable sort(Object... c) {
-        return table.sort(c).javaApi();
-    }
 
     public JFuzzyCSVTable reverse() {
         return table.reverse().javaApi();

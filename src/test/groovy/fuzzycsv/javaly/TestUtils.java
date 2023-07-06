@@ -1,5 +1,6 @@
 package fuzzycsv.javaly;
 
+import fuzzycsv.Sort;
 import org.junit.jupiter.api.Test;
 
 import java.util.AbstractMap;
@@ -49,7 +50,7 @@ public class TestUtils {
               return mapOf(kv("n", n1.getKey()), kv("v", n1.getValue()));
           }).az("x"))
           .dropColum("n")
-          .sort("x_n")
+          .sort(Sort.byColumns("x_n"))
           .printTable();
 
     }

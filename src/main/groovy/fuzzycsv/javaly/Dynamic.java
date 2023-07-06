@@ -82,9 +82,10 @@ public class Dynamic {
         return Objects.equals(obj, dynamic.obj);
     }
 
-    @Override
-    public int hashCode() {
+    public int hashCde() {
         return Objects.hash(obj);
     }
+
+
 }
 

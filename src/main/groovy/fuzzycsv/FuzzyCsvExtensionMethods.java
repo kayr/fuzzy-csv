@@ -17,7 +17,7 @@ public class FuzzyCsvExtensionMethods {
         return self.row(index);
     }
 
-    public static FuzzyCSVTable getAt(FuzzyCSVTable self,IntRange range) {
+    public static FuzzyCSVTable getAt(FuzzyCSVTable self, IntRange range) {
         return self.doSlice(range);
     }
 
@@ -53,6 +53,13 @@ public class FuzzyCsvExtensionMethods {
         return self;
     }
 
+    public static Sort asc(String name) {
+        return Sort.byColumn(name);
+    }
+
+    public static Sort desc(String name) {
+        return Sort.byColumn(name).desc();
+    }
 
 
 }

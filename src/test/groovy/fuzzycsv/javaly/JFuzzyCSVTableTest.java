@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static fuzzycsv.FuzzyStaticApi.count;
+import static fuzzycsv.Sort.*;
 import static fuzzycsv.javaly.FxUtils.recordFx;
 import static fuzzycsv.javaly.TestUtils.kv;
 import static fuzzycsv.javaly.TestUtils.mapOf;
@@ -325,10 +326,8 @@ class JFuzzyCSVTableTest {
         );
 
         assertEquals(expected, result);
-        assertSame(result.getCsv(),inputCsv.getCsv());
+        assertSame(result.getCsv(), inputCsv.getCsv());
     }
-
-
 
 
     @Test
@@ -1162,35 +1161,35 @@ class JFuzzyCSVTableTest {
 
         @Test
         void sortWithColumnIndex() {
-            JFuzzyCSVTable result = data.sort(0, 1);
+            JFuzzyCSVTable result = data.sort(fuzzycsv.Sort.byColumns(0, 1));
             assertEquals(expected, result);
         }
 
         @Test
         void sortWithColumnName() {
-            JFuzzyCSVTable result = data.sort("color", "matching");
+            JFuzzyCSVTable result = data.sort(fuzzycsv.Sort.byColumns("color", "matching"));
             assertEquals(expected, result);
         }
 
         @Test
         void sortWithFx1() {
-            JFuzzyCSVTable result = data.sort(r -> r.d("color").str().concat(r.d("matching").str()));
+            JFuzzyCSVTable result = data.sort(byFx(r -> r.d("color").str().concat(r.d("matching").str())));
             assertEquals(expected, result);
         }
 
         @Test
         void sortWithFx2() {
-            JFuzzyCSVTable result = data.sort((r1, r2) -> {
+            JFuzzyCSVTable result = data.sort(byComparing((r1, r2) -> {
                 String s1 = r1.d("color").str().concat(r1.d("matching").str());
                 String s2 = r2.d("color").str().concat(r2.d("matching").str());
                 return s1.compareTo(s2);
-            });
+            }));
             assertEquals(expected, result);
         }
 
         @Test
         void sortMixFxAndColumn() {
-            JFuzzyCSVTable result = data.sort("color", recordFx(r -> r.d("matching").str()));
+            JFuzzyCSVTable result = data.sort(byColumn("color"), byFx(r -> r.d("matching").str()));
             assertEquals(expected, result);
         }
     }

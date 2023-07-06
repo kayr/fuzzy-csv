@@ -8,6 +8,7 @@ import fuzzycsv.rdbms.DDLUtils
 import groovy.json.JsonSlurper
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
+import org.codehaus.groovy.runtime.NumberAwareComparator
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -401,7 +402,7 @@ class FuzzyCSV {
 
                 if (doLeftJoin) {
                     recObj.rightRecord = Collections.EMPTY_LIST
-                    List<Object> mergedRecord = buildCSVRecord(selectColumns, recObj,ResolutionStrategy.LEFT_FIRST)
+                    List<Object> mergedRecord = buildCSVRecord(selectColumns, recObj, ResolutionStrategy.LEFT_FIRST)
                     finalCSV << mergedRecord
                 }
 
@@ -415,7 +416,7 @@ class FuzzyCSV {
 
                 recObj.rightRecord = rightRecord.finalRecord
 
-                List<Object> mergedRecord = buildCSVRecord(selectColumns, recObj,ResolutionStrategy.LEFT_FIRST)
+                List<Object> mergedRecord = buildCSVRecord(selectColumns, recObj, ResolutionStrategy.LEFT_FIRST)
                 finalCSV << mergedRecord
             }
 
@@ -435,7 +436,7 @@ class FuzzyCSV {
             recObj.leftRecord = Collections.emptyList()
             recObj.rightRecord = rightRecord
 
-            def newCombinedRecord = buildCSVRecord(selectColumns, recObj,ResolutionStrategy.RIGHT_FIRST)
+            def newCombinedRecord = buildCSVRecord(selectColumns, recObj, ResolutionStrategy.RIGHT_FIRST)
             finalCSV << newCombinedRecord
         }
 
@@ -443,13 +444,13 @@ class FuzzyCSV {
     }
 
     @CompileStatic
-    private static List<Object> buildCSVRecord(List columns, Record recObj,ResolutionStrategy resolutionStrategy ) {
+    private static List<Object> buildCSVRecord(List columns, Record recObj, ResolutionStrategy resolutionStrategy) {
         List mergedRecord = columns.collect { columnFx ->
-            if(columnFx == null) return null
+            if (columnFx == null) return null
             if (columnFx instanceof RecordFx)//todo add support for adding resolution strategy
                 ((RecordFx) columnFx).getValue(recObj)
             else
-                recObj.get(columnFx.toString(),resolutionStrategy)
+                recObj.get(columnFx.toString(), resolutionStrategy)
         }
         return mergedRecord
     }
@@ -468,7 +469,7 @@ class FuzzyCSV {
             if (it instanceof String) {
                 return it in joinColumns ?
                         fx { r ->
-                            r.get(it,ResolutionStrategy.LEFT_FIRST)
+                            r.get(it, ResolutionStrategy.LEFT_FIRST)
                         }.az(it) :
                         fx { r -> r.left(it) }.az(it)
             }
@@ -870,7 +871,7 @@ class FuzzyCSV {
         List<Map<String, ?>> result = new ArrayList(csvSize)
         for (int i = 0; i < csvSize; i++) {
             if (i == 0) continue
-            result.add(Record.getRecord(header, csv[i], csv,i).toMap())
+            result.add(Record.getRecord(header, csv[i], csv, i).toMap())
         }
         return result
     }
@@ -996,54 +997,17 @@ class FuzzyCSV {
     }
 
 
-    static List<List> sort(List<List> csv, Object... sortBy) {
+    static List<List> sort(List<List> csv, Comparator<Record> fx) {
         csv = copy(csv)
         def header = csv.remove(0)
-        List<? extends Object> orderClauses = sortBy.collect { s ->
-            Closure rt
-            switch (s) {
-                case Closure:
-                    rt = { List r -> (s as Closure).call(Record.getRecord(header, r, csv)) }
-                    break
-                case RecordFx:
-                    rt = { List r -> (s as RecordFx).getValue(Record.getRecord(header, r, csv)) }
-                    break
-                default:
-                    rt = { List r -> Record.getRecord(header, r, csv).getAt(s) }
+        csv.sort(new Comparator<List>() {
+            @Override
+            int compare(List o1, List o2) {
+                def r = Record.getRecord(header, o1, csv)
+                def l = Record.getRecord(header, o2, csv)
+                return fx.compare(r, l)
             }
-            return rt
-        }
-
-        def orderBy = new OrderBy(orderClauses)
-
-
-        csv.sort(orderBy)
-        csv.add(0, header)
-        return csv
-    }
-
-    static List<List> sort(List<List> csv, Closure fx) {
-        csv = copy(csv)
-        def header = csv.remove(0)
-        def parameters = fx.maximumNumberOfParameters
-        if (parameters == 1) {
-            use(FxExtensions) {
-                csv = csv.sort(false) { List a ->
-                    def r = Record.getRecord(header, a, csv)
-                    fx.call(r)
-                }
-
-            }
-        } else {
-            use(FxExtensions) {
-                csv = csv.sort(false) { List a, List b ->
-                    def r = Record.getRecord(header, a, csv)
-                    def l = Record.getRecord(header, b, csv)
-
-                    fx.call(r, l)
-                }
-            }
-        }
+        })
         csv.add(0, header)
         return csv
     }
