@@ -271,7 +271,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testSortingMultipleParamUsingOrderBy() {
-        def copy = tbl(csv2).sort('sub_county')
+        def copy = tbl(csv2).sortBy('sub_county'.asc())
 
         assert [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
                 ['Bunyangabu', null, null, '1'],
@@ -303,9 +303,9 @@ class FuzzyCSVTableTest {
                         ['sc2', 18.1, null, null]]
 
 
-        assert expected == tbl(lists).sort('sub_county', { it['ps_total_score'] }).csv
-        assert expected == tbl(lists).sort('sub_county', fx { it['ps_total_score'] }).csv
-        assert expected == tbl(lists).sort('sub_county', 'ps_total_score').csv
+        assert expected == tbl(lists).sortBy('sub_county'.asc(), Sort.byFx{ it['ps_total_score'] }).csv
+        assert expected == tbl(lists).sortBy('sub_county'.asc(), Sort.byFx { it['ps_total_score'] }).csv
+        assert expected == tbl(lists).sortBy('sub_county'.asc(), 'ps_total_score'.asc()).csv
     }
 
     @Test
@@ -867,7 +867,7 @@ p\tfema+le\t31'''
     void testFromJsonMap() {
         def t = '''{"name":"joe","lname":"lasty","data":[["name","number"],["john",1.1]]}'''
 
-        def c = FuzzyCSVTable.fromJsonText(t).sort('key')
+        def c = FuzzyCSVTable.fromJsonText(t).sortBy('key'.asc())
 
 
         Assert.assertEquals '''
@@ -997,7 +997,7 @@ p\tfema+le\t31'''
 
         def json = '{\n  "name": "kate",\n  "sho": "muj",\n  "list": [\n    "dsd",\n    "sdsd"\n  ],\n  "csv": [\n    [\n      "dsd",\n      "sdsd",\n      null\n    ],\n    [\n      "sdsd",\n      1\n    ],\n    "hanging cell",\n    [\n      "sd",\n      [\n        2,\n        3,\n        4,\n        {\n          "a": 3,\n          "b": 6\n        }\n      ]\n    ],\n    [\n      {\n        "a": 3,\n        "b": 6\n      },\n      "b",\n      "c"\n    ]\n  ],\n  "full name": {\n    "fname": "fu",\n    "lname": "last"\n  },\n  "data": [\n    {\n      "r1c1-col": "r1c1",\n      "r1c2-col": "r1c2"\n    },\n    {\n      "r2c1-col": "r2c1"\n    }\n  ]\n}'
 
-        def formatted = FuzzyCSVTable.fromJsonText(json).asListGrid().sort('key').toStringFormatted()
+        def formatted = FuzzyCSVTable.fromJsonText(json).asListGrid().sortBy('key'.asc()).toStringFormatted()
 
 
         Assert.assertEquals formatted.trim(), '''
@@ -1097,7 +1097,7 @@ p\tfema+le\t31'''
 ║ sho       │ muj                                     ║
 ╚═══════════╧═════════════════════════════════════════╝'''.trim()
 
-        def formatted2 = FuzzyCSVTable.fromJsonText(json).toGrid().sort('key').toStringFormatted()
+        def formatted2 = FuzzyCSVTable.fromJsonText(json).toGrid().sortBy('key'.asc()).toStringFormatted()
 
 
         Assert.assertEquals formatted2.trim(), '''

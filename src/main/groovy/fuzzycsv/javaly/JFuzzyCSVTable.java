@@ -27,11 +27,11 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    public JFuzzyCSVTable addRowsFromMaps(int idx, List<Map<?,?>> maps) {
+    public JFuzzyCSVTable addRowsFromMaps(int idx, List<Map<?, ?>> maps) {
         return table.addRowsFromMaps(idx, maps).javaApi();
     }
 
-    public JFuzzyCSVTable addRowFromMaps(List<Map<?,?>> maps) {
+    public JFuzzyCSVTable addRowFromMaps(List<Map<?, ?>> maps) {
         return table.addRowsFromMaps(maps).javaApi();
     }
 
@@ -39,7 +39,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.addRows(idx, rows).javaApi();
     }
 
-    public JFuzzyCSVTable addRows( List<?>... rows) {
+    public JFuzzyCSVTable addRows(List<?>... rows) {
         return table.addRows(rows).javaApi();
     }
 
@@ -86,11 +86,10 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
 
-    public JFuzzyCSVTable mutateColum(int colId, Fx1<Record,Object> recordFx) {
+    public JFuzzyCSVTable mutateColum(int colId, Fx1<Record, Object> recordFx) {
         return table.mutateColumn(colId, recordFx).javaApi();
 
     }
-
 
 
     public <T> List<T> toPojoList(Class<T> aClass) {
@@ -196,7 +195,7 @@ public class JFuzzyCSVTable implements Iterable<Record> {
     }
 
     public JFuzzyCSVTable slice(int from, int to) {
-        return table.slice(from,to).javaApi();
+        return table.slice(from, to).javaApi();
     }
 
     //region Inner Join
@@ -365,8 +364,8 @@ public class JFuzzyCSVTable implements Iterable<Record> {
 
     public DataActionStep modify(Fx1<Record, ?> valueSetter) {
         DataActionStep dataActionStep = new DataActionStep();
-        dataActionStep.action = valueSetter;
-        dataActionStep.fuzzyCSVTable = this;
+//        dataActionStep.action = valueSetter;
+//        dataActionStep.fuzzyCSVTable = unwrap();
         return dataActionStep;
 
     }
@@ -574,25 +573,6 @@ public class JFuzzyCSVTable implements Iterable<Record> {
         return table.dbUpdate(connection, params, identifiers).javaApi();
     }
 
-    public static class DataActionStep {
-
-        private static final Fx1<Record, Boolean> TRUE = r -> true;
-        private Fx1<Record, Boolean> filter = TRUE;
-        private Fx1<Record, ?> action;
-
-        private JFuzzyCSVTable fuzzyCSVTable;
-
-        public DataActionStep where(Fx1<Record, Boolean> filter) {
-            this.filter = filter;
-            return this;
-        }
-
-        public JFuzzyCSVTable update() {
-
-            return FuzzyCSVTable.tbl(FuzzyCSV.modify(fuzzyCSVTable.table.getCsv(), FxUtils.recordFx(action), FxUtils.recordFx(filter))).javaApi();
-        }
-
-    }
     //endregion
 
 }

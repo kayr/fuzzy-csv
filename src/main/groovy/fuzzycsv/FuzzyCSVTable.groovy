@@ -339,19 +339,21 @@ class FuzzyCSVTable implements Iterable<Record> {
         return tbl(FuzzyCSV.leftJoin(this.csv, csv2, joinColumns))
     }
 
-    FuzzyCSVTable rightJoin(FuzzyCSVTable tbl, String[] joinColumns) {
+    FuzzyCSVTable rightJoin(FuzzyCSVTable tbl, String... joinColumns) {
         return rightJoin(tbl.csv, joinColumns)
     }
 
-    FuzzyCSVTable rightJoin(List<? extends List> csv2, String[] joinColumns) {
+    FuzzyCSVTable rightJoin(List<? extends List> csv2, String... joinColumns) {
         return tbl(FuzzyCSV.rightJoin(this.csv, csv2, joinColumns))
     }
 
-    FuzzyCSVTable fullJoin(FuzzyCSVTable tbl, String[] joinColumns) {
+    FuzzyCSVTable fullJoin(FuzzyCSVTable tbl, String... joinColumns) {
         return fullJoin(tbl.csv, joinColumns)
     }
 
-    FuzzyCSVTable fullJoin(List<? extends List> csv2, String[] joinColumns) {
+    @Deprecated
+    //remove
+    FuzzyCSVTable fullJoin(List<? extends List> csv2, String... joinColumns) {
         return tbl(FuzzyCSV.fullJoin(this.csv, csv2, joinColumns))
     }
 
@@ -514,6 +516,14 @@ class FuzzyCSVTable implements Iterable<Record> {
         actionBuilder()
         assert update.action != null, "Cannot have a null action"
         return tbl(FuzzyCSV.modify(this.csv, fx(update.action), fx(update.filter ?: { true })))
+
+    }
+
+    DataActionStep update(Fx1<Record, ?> valueSetter) {
+        DataActionStep dataActionStep = new DataActionStep();
+        dataActionStep.action = valueSetter
+        dataActionStep.fuzzyCSVTable = this
+        return dataActionStep;
 
     }
 
@@ -720,36 +730,6 @@ class FuzzyCSVTable implements Iterable<Record> {
         }
 
         tbl(FuzzyCSV.sort(this.csv, combined))
-    }
-
-    FuzzyCSVTable sort(Object... c) {
-        List<Sort> sorts = []
-        for (sorter in c) {
-            switch (sorter) {
-                case Sort:
-                    sorts.add(sorter)
-                    break
-                case String:
-                    sorts.add(Sort.byColumn(sorter))
-                    break
-                case Closure:
-                    if (sorter.maximumNumberOfParameters == 1) {
-                        sorts.add(Sort.byFx { sorter.call(it) })
-                    } else if (sorter.maximumNumberOfParameters == 2) {
-                        sorts.add(Sort.byComparing { a, b -> sorter.call(a, b) })
-                    } else {
-                        throw new IllegalArgumentException("Closure must have 1 or 2 parameters")
-                    }
-                    break
-                case RecordFx:
-                    sorts.add(Sort.byFx { sorter.getValue(it) })
-                    break
-                default:
-                    throw new IllegalArgumentException("Unknown sort type: ${sorter.getClass()}")
-            }
-        }
-
-        return sortBy(*sorts)
     }
 
     FuzzyCSVTable reverse() {

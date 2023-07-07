@@ -54,7 +54,7 @@ public class FuzzyCsvExtensionMethods {
     }
 
     public static Sort asc(String name) {
-        return Sort.byColumn(name);
+        return Sort.byColumn(name).asc();
     }
 
     public static Sort desc(String name) {

@@ -532,9 +532,11 @@ class FuzzyCSV {
      */
     static mapColumns(List<? extends List> csv, RecordFx... fxs) {
         def newHeaders = csv[0].indices.toList()
+        def csvHeader = FastIndexOfList.wrap(csv[0])
 
         fxs.each { fx ->
-            def columnPosition = Fuzzy.findPosition(csv[0], fx.name)
+
+            def columnPosition = csvHeader.indexOf(fx.name)
 
             if (columnPosition < 0)
                 throw new IllegalArgumentException("Column[$fx.name] not found in csv")

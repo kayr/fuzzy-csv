@@ -3,6 +3,7 @@ package fuzzycsv;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static fuzzycsv.Sort.byColumn;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -165,7 +166,7 @@ class ConverterTest {
             String t = "{\"name\":\"joe\",\"lname\":\"lasty\",\"data\":[[\"name\",\"number\"],[\"john\",1.1]]}";
 
             String output = FuzzyCSVTable.fromJsonText(t)
-                              .sort("key")
+                              .sortBy(byColumn("key"))
                               .toGrid(GridOptions.LIST_AS_TABLE)
                               .to().pretty().getResult();
 
