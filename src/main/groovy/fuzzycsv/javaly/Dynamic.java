@@ -71,7 +71,7 @@ public class Dynamic {
 
     @Override
     public String toString() {
-        return obj + "";
+        return String.valueOf(obj);
     }
 
     @Override
