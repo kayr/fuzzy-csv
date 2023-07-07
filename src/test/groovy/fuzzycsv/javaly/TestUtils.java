@@ -1,5 +1,6 @@
 package fuzzycsv.javaly;
 
+import fuzzycsv.FuzzyCSVTable;
 import fuzzycsv.Sort;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +30,7 @@ public class TestUtils {
 
     @Test
     void fooBar() {
-        JFuzzyCSVTable t = JFuzzyCSVTable.fromRows(
+        FuzzyCSVTable t = FuzzyCSVTable.fromRows(
           Arrays.asList("a,b,c,d".split(",")),
           Arrays.asList("a,1,10,2".split(",")),
           Arrays.asList("b,3,11,4".split(",")),
@@ -43,14 +44,14 @@ public class TestUtils {
                 kv("c", arg.get("c")),
                 kv("d", arg.get("d"))
               )))
-          .dropColum("c", "d")
+          .deleteColumns("c", "d")
           .unwind("n")
           .spread(recordFx(r -> {
               Map.Entry<Object,Object> n1 = r.d("n").cast();
               return mapOf(kv("n", n1.getKey()), kv("v", n1.getValue()));
           }).az("x"))
-          .dropColum("n")
-          .sort(Sort.byColumns("x_n"))
+          .deleteColumns("n")
+          .sortBy(Sort.byColumns("x_n"))
           .printTable();
 
     }

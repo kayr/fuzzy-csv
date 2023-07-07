@@ -1,6 +1,8 @@
 package fuzzycsv
 
-
+import fuzzycsv.javaly.Fx1
+import fuzzycsv.javaly.Fx2
+import fuzzycsv.javaly.Fx3
 import groovy.transform.ToString
 import org.junit.Assert
 import org.junit.BeforeClass
@@ -211,7 +213,7 @@ class FuzzyCSVTableTest {
     @Test
     void testTransformCell() {
         def subCountiesAndIdx = []
-        def copy = tbl(csv2).copy().mapCells { v -> "$v".padRight(10, '-') }
+        def copy = tbl(csv2).copy().mapCells ({ v -> "$v".padRight(10, '-') } as Fx1)
         assert [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
                 ['Hakibale--', '18.1------', 'null------', 'null------'],
                 ['Kabonero--', '1---------', 'null------', 'null------'],
@@ -222,7 +224,7 @@ class FuzzyCSVTableTest {
 
     @Test
     void testTransformCellWithRecord() {
-        def copy = tbl(csv2).copy().mapCells { r, v -> "${r['sub_county']}-$v".toString() }
+        def copy = tbl(csv2).copy().mapCells( { r, v -> "${r['sub_county']}-$v".toString() } as Fx2)
         assert [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
                 ['Hakibale-Hakibale', 'Hakibale-Hakibale-18.1', 'Hakibale-Hakibale-null', 'Hakibale-Hakibale-null'],
                 ['Kabonero-Kabonero', 'Kabonero-Kabonero-1', 'Kabonero-Kabonero-null', 'Kabonero-Kabonero-null'],
@@ -233,9 +235,9 @@ class FuzzyCSVTableTest {
 
     @Test
     void testTransformCellWith3Params() {
-        def copy = tbl(csv2).copy().mapCells { r, v, i ->
+        def copy = tbl(csv2).copy().mapCells( { r, v, i ->
             if (i == 0) v else "${r['sub_county']}-$v".toString()
-        }
+        } as Fx3)
 
         assert [['sub_county', 'ps_total_score', 'pipes_total_score', 'tap_total_score'],
                 ['Hakibale', 'Hakibale-18.1', 'Hakibale-null', 'Hakibale-null'],
@@ -679,7 +681,7 @@ p\tfema+le\t31'''
     @Test
     void testAppendEmptyRecords() {
         def newData = tbl(csv2).copy()
-                .addEmptyRow(2)
+                .addEmptyRows(2)
 
         assert newData.size() == csv2.size() + 1
 
@@ -1151,7 +1153,7 @@ p\tfema+le\t31'''
 
 
         def text = FuzzyCSVTable.fromJsonText(json)
-                .mapCells { it instanceof BigDecimal ? it.stripTrailingZeros().toPlainString() : it }
+                .mapCells ({ it -> it instanceof BigDecimal ? it.stripTrailingZeros().toPlainString() : it } as Fx1)
                 .select('amount', 'chargeOwner', 'type', 'dsd')
         Assert.assertEquals '''
 ╔════════╤═════════════╤═══════════╤══════╗

@@ -235,7 +235,7 @@ class FuzzyCSV {
         return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), NULL_ON_FUNCTION, false, false, hpRightRecordFinder(joinColumns))
     }
 
-    static List<List> leftJoin(List<? extends List> csv1, List<? extends List> csv2, String[] joinColumns) {
+    static List<List> leftJoin(List<? extends List> csv1, List<? extends List> csv2, String... joinColumns) {
         return superJoin(csv1, csv2, selectAllHeaders(csv1, csv2, joinColumns), NULL_ON_FUNCTION, true, false, hpRightRecordFinder(joinColumns))
     }
 
@@ -325,7 +325,7 @@ class FuzzyCSV {
         Closure<List<Record>> c = { Record r, RecordFx mOnFunction, List<? extends List> mRCsv ->
 
             def rSize = mRCsv.size()
-            List<Record> finalValues = []
+            List<Record> finalValues = newList()
             for (int rIdx = 0; rIdx < rSize; rIdx++) {
 
                 List rightRecord = mRCsv[rIdx]
@@ -337,7 +337,7 @@ class FuzzyCSV {
                     finalValues << rec
                 }
             }
-            finalValues
+           return finalValues
         }
         return c
     }
@@ -348,7 +348,7 @@ class FuzzyCSV {
         Closure<List<Record>> c = { Record r, RecordFx mOnFunction, List<? extends List> mRCsv ->
             def idx = r.idx()
             def get = FuzzyCSVUtils.safeGet(mRCsv, idx)
-            List<Record> returnValues = []
+            List<Record> returnValues = newList()
 
             if (get != null)
                 returnValues.add(Record.getRecord(mRCsv[0], (List) get, mRCsv, idx))

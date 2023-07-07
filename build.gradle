@@ -51,20 +51,20 @@ dependencies {
 
     if (variant == '4') {
         println "setting groovy 4 dependencies"
-        api 'org.apache.groovy:groovy:4.0.2'
-        api 'org.apache.groovy:groovy-sql:4.0.2'
-        api 'org.apache.groovy:groovy-json:4.0.2'
-        testImplementation 'org.apache.groovy:groovy-test:4.0.2'
-        testImplementation 'org.apache.groovy:groovy-datetime:4.0.2'
-        testImplementation 'org.apache.groovy:groovy-dateutil:4.0.2'
+        api 'org.apache.groovy:groovy:4.0.13'
+        api 'org.apache.groovy:groovy-sql:4.0.13'
+        api 'org.apache.groovy:groovy-json:4.0.13'
+        testImplementation 'org.apache.groovy:groovy-test:4.0.13'
+        testImplementation 'org.apache.groovy:groovy-datetime:4.0.13'
+        testImplementation 'org.apache.groovy:groovy-dateutil:4.0.13'
     } else {
         println "setting groovy 2 dependencies"
-        api 'org.codehaus.groovy:groovy:2.5.19'
-        api 'org.codehaus.groovy:groovy-sql:2.5.19'
-        api 'org.codehaus.groovy:groovy-json:2.5.19'
-        testImplementation 'org.codehaus.groovy:groovy-test:2.5.19'
-        testImplementation 'org.codehaus.groovy:groovy-datetime:2.5.19'
-        testImplementation 'org.codehaus.groovy:groovy-dateutil:2.5.19'
+        api 'org.codehaus.groovy:groovy:2.5.22'
+        api 'org.codehaus.groovy:groovy-sql:2.5.22'
+        api 'org.codehaus.groovy:groovy-json:2.5.22'
+        testImplementation 'org.codehaus.groovy:groovy-test:2.5.22'
+        testImplementation 'org.codehaus.groovy:groovy-datetime:2.5.22'
+        testImplementation 'org.codehaus.groovy:groovy-dateutil:2.5.22'
 
     }
 

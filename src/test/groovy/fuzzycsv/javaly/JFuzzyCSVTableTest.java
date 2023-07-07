@@ -132,7 +132,7 @@ class JFuzzyCSVTableTest {
     @Test
     void addRecordMap() {
         //when
-        FuzzyCSVTable result = inputCsv.addRowFromMaps(
+        FuzzyCSVTable result = inputCsv.addRowsFromMaps(
           asList(mapOf(
             kv("color", "Yellow"),
             kv("matching", "Orange"))
@@ -178,7 +178,7 @@ class JFuzzyCSVTableTest {
     @Test
     void addEmptyRecord() {
         //when
-        FuzzyCSVTable result = inputCsv.addEmptyRecord();
+        FuzzyCSVTable result = inputCsv.addEmptyRows();
 
         FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
           asList("color", "matching"),
@@ -196,7 +196,7 @@ class JFuzzyCSVTableTest {
     @Test
     void addEmptyRecordWithCount() {
         //when
-        FuzzyCSVTable result = inputCsv.addEmptyRecord(3);
+        FuzzyCSVTable result = inputCsv.addEmptyRows(3);
 
         FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
           asList("color", "matching"),
@@ -313,7 +313,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testPutInColumn() {
-        FuzzyCSVTable result = inputCsv.mutateColum(0, r -> "Yellow")
+        FuzzyCSVTable result = inputCsv.mutateColumn(0, r -> "Yellow")
                                  .renameHeader("color", "New Name");
 
         FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
@@ -364,7 +364,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testTransformHeader() {
-        FuzzyCSVTable result = inputCsv.transformHeader(h -> h + "X");
+        FuzzyCSVTable result = inputCsv.renameHeader(h -> h + "X");
 
         FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
           asList("colorX", "matchingX"),
@@ -538,20 +538,20 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testGetCellValues() {
-        Object result = inputCsv.get(1, 0);
+        Object result = inputCsv.get(0, 1);
         assertEquals("Red", result);
     }
 
     @Test
     void testGetCellValuesWithColumnName() {
-        Object result = inputCsv.get(1, "color");
+        Object result = inputCsv.get( "color",1);
         assertEquals("Red", result);
     }
 
 
     @Test
     void testWithNavigator() {
-        Navigator nav = Navigator.start().table(inputCsv.unwrap()).down();
+        Navigator nav = Navigator.start().table(inputCsv).down();
         Object result = inputCsv.get(nav);
         assertEquals("Red", result);
     }
@@ -559,7 +559,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testFistCell() {
-        String result = inputCsv.firstCell();
+        Object result = inputCsv.firstCell();
         assertEquals("Red", result);
     }
 
@@ -599,8 +599,8 @@ class JFuzzyCSVTableTest {
         assertEquals(expected, inputCsv.join(inputCsv2, "color"));
         assertEquals(expected, inputCsv.join(inputCsv2, "color"));
         assertEquals(expected, inputCsv.join(inputCsv2.getCsv(), "color"));
-        assertEquals(expected, inputCsv.join(inputCsv2, (r1) -> r1.dr("color").eq(r1.dl("color"))).dropColum(2));
-        assertEquals(expected, inputCsv.join(inputCsv2, (r1) -> r1.dr("color").eq(r1.dl("color"))).dropColum(2));
+        assertEquals(expected, inputCsv.join(inputCsv2, (r1) -> r1.dr("color").eq(r1.dl("color"))).deleteColumns(2));
+        assertEquals(expected, inputCsv.join(inputCsv2, (r1) -> r1.dr("color").eq(r1.dl("color"))).deleteColumns(2));
 
     }
 
@@ -712,8 +712,7 @@ class JFuzzyCSVTableTest {
           asList("Blue", "Gray", "Orange", "Orange")
         );
 
-        assertEquals(expected, inputCsv.joinOnIdx(inputCsv2));
-        assertEquals(expected, inputCsv.joinOnIdx(inputCsv2.unwrap()));
+        assertEquals(expected, inputCsv.concatRows(inputCsv2, ConcatMethod.Row.COMMON));
     }
 
     @Test
@@ -727,8 +726,7 @@ class JFuzzyCSVTableTest {
           asList("Blue", "Gray", null, null)
         );
 
-        assertEquals(expected, inputCsv.leftJoinOnIdx(inputCsv2.slice(1, 2)));
-        assertEquals(expected, inputCsv.leftJoinOnIdx(inputCsv2.slice(1, 2)));
+        assertEquals(expected, inputCsv.concatRows(inputCsv2.slice(1, 2), ConcatMethod.Row.LEFT));
 
     }
 
@@ -744,8 +742,7 @@ class JFuzzyCSVTableTest {
           asList(null, null, "Yellow", "Jaune")
         );
 
-        assertEquals(expected, inputCsv.rightJoinOnIdx(inputCsv2));
-        assertEquals(expected, inputCsv.rightJoinOnIdx(inputCsv2.unwrap()));
+        assertEquals(expected, inputCsv.concatRows(inputCsv2, ConcatMethod.Row.RIGHT));
     }
 
     @Test
@@ -760,8 +757,7 @@ class JFuzzyCSVTableTest {
           asList(null, null, "Yellow", "Jaune")
         );
 
-        assertEquals(expected, inputCsv.fullJoinOnIdx(inputCsv2));
-        assertEquals(expected, inputCsv.fullJoinOnIdx(inputCsv2.unwrap()));
+        assertEquals(expected, inputCsv.concatRows(inputCsv2, ConcatMethod.Row.ALL));
     }
 
     @Test
@@ -776,8 +772,7 @@ class JFuzzyCSVTableTest {
           asList("Yellow", "Jaune", null, null)
         );
 
-        assertEquals(expected, inputCsv2.fullJoinOnIdx(inputCsv));
-        assertEquals(expected, inputCsv2.fullJoinOnIdx(inputCsv.unwrap()));
+        assertEquals(expected, inputCsv2.concatRows(inputCsv));
     }
 
     @Test
@@ -857,9 +852,7 @@ class JFuzzyCSVTableTest {
           asList("Yellow", null, "Jaune")
         );
 
-        assertEquals(expected, inputCsv.mergeByColumn(inputCsv2));
-        assertEquals(expected, inputCsv.mergeByColumn(inputCsv2.unwrap()));
-        assertEquals(expected, inputCsv.mergeByColumn(inputCsv2.getCsv()));
+        assertEquals(expected, inputCsv.concatColumns(inputCsv2));
 
 
     }
@@ -881,7 +874,6 @@ class JFuzzyCSVTableTest {
         );
 
         assertEquals(expected, inputCsv.union(inputCsv2));
-        assertEquals(expected, inputCsv.union(inputCsv2.unwrap()));
     }
 
     @Test
@@ -901,7 +893,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testDropColumns() {
-        FuzzyCSVTable actual = inputCsv.dropColum("color");
+        FuzzyCSVTable actual = inputCsv.deleteColumns("color");
 
         FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
           asList("matching"),
@@ -931,7 +923,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testTransformWithFunctions() {
-        FuzzyCSVTable actual = inputCsv.mapColumn(
+        FuzzyCSVTable actual = inputCsv.mapColumns(
           recordFx("color", r -> r.d("color").str().concat(" *")),
           recordFx("matching", r -> r.d("matching").str().concat(" *"))
         );
@@ -960,7 +952,7 @@ class JFuzzyCSVTableTest {
         List<String> newHeader = asList("color", "matching", "in-french");
         FuzzyCSVTable result = inputCsv.copy()
                                  .setHeader(newHeader)
-                                 .equalizeAllRowWidths();
+                                 .equalizeRowWidths();
         FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
           asList("color", "matching", "in-french"),
           asList("Red", "Black", null),
@@ -1005,7 +997,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testPutInCell() {
-        FuzzyCSVTable result = inputCsv.copy().putInCell("color", 0, "XXXX");
+        FuzzyCSVTable result = inputCsv.copy().set("color", 0, "XXXX");
 
         FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
           asList("XXXX", "matching"),
@@ -1020,7 +1012,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void putInCellWithColumnIndex() {
-        FuzzyCSVTable result = inputCsv.copy().putInCell(0, 0, "XXXX");
+        FuzzyCSVTable result = inputCsv.copy().set(0, 0, "XXXX");
 
         FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
           asList("XXXX", "matching"),
@@ -1035,7 +1027,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testInsertColumn() {
-        FuzzyCSVTable result = inputCsv.copy().insertColumn(asList("my-column", "value1", "value2", "value3", "value4"), 1);
+        FuzzyCSVTable result = inputCsv.copy().addColumn(1,asList("my-column", "value1", "value2", "value3", "value4"));
         FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
           asList("color", "my-column", "matching"),
           asList("Red", "value1", "Black"),
@@ -1049,7 +1041,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void testPutListInColumn() {
-        FuzzyCSVTable result = inputCsv.copy().mutateColum(asList("my-header", "value1", "value2", "value3", "value4"), 1);
+        FuzzyCSVTable result = inputCsv.copy().replaceColumn(1,asList("my-header", "value1", "value2", "value3", "value4"));
         FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
           asList("color", "my-header"),
           asList("Red", "value1"),
@@ -1073,7 +1065,7 @@ class JFuzzyCSVTableTest {
           asList("Blue", "Gray")
         );
 
-        FuzzyCSVTable result = data.copy().cleanUpRepeats();
+        FuzzyCSVTable result = data.copy().removeDuplicateCells();
 
         FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
           asList("color", "matching"),
@@ -1088,7 +1080,7 @@ class JFuzzyCSVTableTest {
 
     @Test
     void addRecordArr() {
-        FuzzyCSVTable result = inputCsv.copy().addRecordArr("Redxx", "Blackxx");
+        FuzzyCSVTable result = inputCsv.copy().addRow("Redxx", "Blackxx");
         FuzzyCSVTable expected = FuzzyCSVTable.fromRows(
           asList("color", "matching"),
           asList("Red", "Black"),
@@ -1158,25 +1150,25 @@ class JFuzzyCSVTableTest {
 
         @Test
         void sortWithColumnIndex() {
-            FuzzyCSVTable result = data.sort(fuzzycsv.Sort.byColumns(0, 1));
+            FuzzyCSVTable result = data.sortBy(fuzzycsv.Sort.byColumns(0, 1));
             assertEquals(expected, result);
         }
 
         @Test
         void sortWithColumnName() {
-            FuzzyCSVTable result = data.sort(fuzzycsv.Sort.byColumns("color", "matching"));
+            FuzzyCSVTable result = data.sortBy(fuzzycsv.Sort.byColumns("color", "matching"));
             assertEquals(expected, result);
         }
 
         @Test
         void sortWithFx1() {
-            FuzzyCSVTable result = data.sort(byFx(r -> r.d("color").str().concat(r.d("matching").str())));
+            FuzzyCSVTable result = data.sortBy(byFx(r -> r.d("color").str().concat(r.d("matching").str())));
             assertEquals(expected, result);
         }
 
         @Test
         void sortWithFx2() {
-            FuzzyCSVTable result = data.sort(byComparing((r1, r2) -> {
+            FuzzyCSVTable result = data.sortBy(byComparing((r1, r2) -> {
                 String s1 = r1.d("color").str().concat(r1.d("matching").str());
                 String s2 = r2.d("color").str().concat(r2.d("matching").str());
                 return s1.compareTo(s2);
@@ -1186,7 +1178,7 @@ class JFuzzyCSVTableTest {
 
         @Test
         void sortMixFxAndColumn() {
-            FuzzyCSVTable result = data.sort(byColumn("color"), byFx(r -> r.d("matching").str()));
+            FuzzyCSVTable result = data.sortBy(byColumn("color"), byFx(r -> r.d("matching").str()));
             assertEquals(expected, result);
         }
     }
@@ -1441,11 +1433,7 @@ class JFuzzyCSVTableTest {
         assertEquals(expected, result);
     }
 
-    @Test
-    void testUwrap() {
-        FuzzyCSVTable unwrapped = inputCsv;
-        assertEquals(inputCsv, unwrapped.javaApi());
-    }
+
 
     @Test
     void testIterator() {
@@ -1504,7 +1492,7 @@ class JFuzzyCSVTableTest {
 
             FuzzyCSVTable fromTable = FuzzyCSVTable.fromSqlQuery(gsql, "select * from test_table1")
 
-                                        .transformHeader(String::toLowerCase);
+                                        .renameHeader(String::toLowerCase);
 
             assertEquals(source, fromTable);
         }
@@ -1521,7 +1509,7 @@ class JFuzzyCSVTableTest {
 
                                         .addColumn("pk", arg -> null)//since we do not have Primary keys
                                         .moveColumn("pk", 0)
-                                        .transformHeader(String::toLowerCase);
+                                        .renameHeader(String::toLowerCase);
 
             assertEquals(insertResult, fromTable);
         }
@@ -1539,7 +1527,7 @@ class JFuzzyCSVTableTest {
 
             FuzzyCSVTable fromTable = FuzzyCSVTable.fromSqlQuery(gsql, "select * from \"test_table3\"")
 
-                                        .transformHeader(String::toLowerCase);
+                                        .renameHeader(String::toLowerCase);
 
             FuzzyCSVTable withManualPks = testTable.copy().addColumn("id", r -> r.idx()).moveColumn("id", 0);
 
@@ -1566,7 +1554,7 @@ class JFuzzyCSVTableTest {
 
             FuzzyCSVTable fromDb = FuzzyCSVTable.fromSqlQuery(gsql, "select * from \"test_table4\"")
 
-                                     .transformHeader(String::toLowerCase);
+                                     .renameHeader(String::toLowerCase);
 
             assertEquals(inserted, fromDb);
 
