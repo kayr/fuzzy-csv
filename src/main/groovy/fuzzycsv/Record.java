@@ -319,6 +319,41 @@ public class Record {
 
     }
 
+    /**
+     * @deprecated use {@link #get(String)}
+     */
+    @Deprecated
+    public Object value(String c) {
+        return value(c, true);
+    }
+
+    /**
+     * @deprecated use {@link #get(String)}
+     */
+    @Deprecated
+    public Object value(String c, boolean required) {
+        if (required) require(c);
+        return get(c);
+    }
+
+    /**
+     * @deprecated use {@link #require(String, Object)}
+     */
+    @Deprecated
+    public Object value(String c, boolean required, Object defaultValue) {
+        if (required) require(c, defaultValue);
+        Object o = get(c);
+        return o == null ? defaultValue : o;
+    }
+
+    /**
+     * @deprecated use {@link #require(String, Object)}
+     */
+    @Deprecated
+    public Map<String, Object> toMap(List<String> columns) {
+        return toMap(columns.toArray(new String[]{}));
+    }
+
     public Map<String, Object> toMap() {
         Map<String, Object> map = new LinkedHashMap<>();
         for (int i = 0; i < finalHeaders.size(); i++) {
@@ -453,6 +488,63 @@ public class Record {
 
     boolean isBottom() {
         return idx() == finalTable.size() - 1;
+    }
+
+    @Deprecated
+    public Object r(String column) {
+        return right(column);
+    }
+
+    @Deprecated
+    public Object l(String column) {
+        return left(column);
+    }
+
+
+    @Deprecated
+    public Object withSilentMode(Closure fx) {
+        boolean original = failIfColumNotFound;
+        try {
+            fx.setDelegate(this);
+            failIfColumNotFound = false;
+            return fx.call(this);
+        } catch (Exception e) {
+            throw FuzzyCsvException.wrap(e);
+        } finally {
+            failIfColumNotFound = original;
+        }
+    }
+
+    @Deprecated
+    public Object silentVal(String column) {
+        boolean original = failIfColumNotFound;
+        try {
+            failIfColumNotFound = false;
+            return get(column);
+        } finally {
+            failIfColumNotFound = original;
+        }
+    }
+
+
+    @Deprecated
+    public Object val(String column) {
+        return eval(column);
+    }
+
+
+    @Deprecated
+
+    public Record silentModeOff(){
+        failIfColumNotFound = true;
+        return this;
+    }
+
+    @Deprecated
+
+    public  Record silentModeDefault(){
+        failIfColumNotFound = true;
+        return this;
     }
 
 }

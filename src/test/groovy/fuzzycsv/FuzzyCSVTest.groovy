@@ -446,7 +446,10 @@ class FuzzyCSVTest {
     def getCSV(String path) {
 
 
+        println "path = ${path}"
+        println "Data.csvs = ${Data.csvs}"
         def text = Data.csvs[path.replace('/', '')]
+        println text
         return FuzzyCSV.toUnModifiableCSV(
                 FuzzyCSV.toListOfLists(
                         FuzzyCSVTable.parseCsv(text).csv))

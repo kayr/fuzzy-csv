@@ -1,5 +1,6 @@
 package fuzzycsv;
 
+import groovy.lang.Closure;
 import groovy.lang.IntRange;
 
 import java.util.List;

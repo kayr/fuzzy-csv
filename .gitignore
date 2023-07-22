@@ -16,3 +16,4 @@ src/test/resources/dsl
 out/
 .attach_*
 src/main/playground/
+/src/test/groovy/compat/fuzzycsv/

@@ -335,6 +335,7 @@ class ExporterTest {
 
         @Test
         void testUpdate() {
+            int previousActionCons = dataSource.getActiveConnections();
             dbExporter.withTable(table).export();
             FuzzyCSVTable fromDB = fetchData();
             assertEquals(table.size(), fromDB.size());
@@ -350,7 +351,7 @@ class ExporterTest {
 
             FuzzyCSVTable updatedFromDB = fetchData();
             assertEquals(updatedTable.getCsv(), updatedFromDB.getCsv());
-            assertEquals(0, dataSource.getActiveConnections());
+            assertEquals(0, dataSource.getActiveConnections()-previousActionCons);
         }
 
         private FuzzyCSVTable fetchData() {

@@ -1,7 +1,10 @@
 package fuzzycsv
 
 import com.opencsv.CSVParser
-import fuzzycsv.javaly.*
+import fuzzycsv.javaly.Fx1
+import fuzzycsv.javaly.Fx2
+import fuzzycsv.javaly.Fx3
+import fuzzycsv.javaly.FxUtils
 import fuzzycsv.nav.Navigator
 import fuzzycsv.rdbms.ExportParams
 import fuzzycsv.rdbms.FuzzyCSVDbExporter
@@ -89,35 +92,6 @@ class FuzzyCSVTable implements Iterable<Record> {
         return this
     }
 
-    /**
-     *
-     * @deprecated use {@link #moveColumn(java.lang.String, int)} instead
-     */
-    @Deprecated
-    FuzzyCSVTable moveCol(String col, int dest) {
-        return moveColumn(col, dest)
-
-    }
-
-    /**
-     *
-     * @deprecated use {@link #moveColumn(java.lang.String, java.lang.String)} instead
-     */
-    @Deprecated
-
-    FuzzyCSVTable moveCol(String col, String dest) {
-        return moveColumn(col, dest)
-    }
-
-
-    /**
-     *
-     * @deprecated use {@link #moveColumn(int, int)} instead
-     */
-    @Deprecated
-    FuzzyCSVTable moveCol(int col, int dest) {
-        return moveColumn(col, dest)
-    }
 
     FuzzyCSVTable moveColumn(String col, int dest) {
         def tHeader = header
@@ -1189,6 +1163,254 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     //endregion
+
+    //<editor-fold desc="Deprecated" defaultstate="collapsed">
+
+    /**
+     *
+     * @deprecated use {@link #moveColumn(java.lang.String, int)}
+     */
+    @Deprecated
+    FuzzyCSVTable moveCol(String col, int dest) {
+        return moveColumn(col, dest)
+
+    }
+
+    /**
+     *
+     * @deprecated use {@link #moveColumn(java.lang.String, java.lang.String)}
+     */
+    @Deprecated
+
+    FuzzyCSVTable moveCol(String col, String dest) {
+        return moveColumn(col, dest)
+    }
+
+
+    /**
+     *
+     * @deprecated use {@link #moveColumn(int, int)}
+     */
+    @Deprecated
+    FuzzyCSVTable moveCol(int col, int dest) {
+        return moveColumn(col, dest)
+    }
+
+    /**
+     * @deprecated use {@link #union(fuzzycsv.FuzzyCSVTable)}
+     */
+    @Deprecated
+    FuzzyCSVTable union(List<List> other) {
+        return union(tbl(other))
+    }
+
+
+    /**
+     * @deprecated use {@link #renameHeader(fuzzycsv.javaly.Fx1)}
+     */
+    @Deprecated
+    FuzzyCSVTable transformHeader(Fx1<String, String> fx) {
+        return renameHeader(fx)
+    }
+
+
+    /**
+     *
+     * @deprecated use {@link #equalizeRowWidths()}
+     */
+    @Deprecated
+    FuzzyCSVTable padAllRecords() {
+        return equalizeRowWidths()
+    }
+
+
+    /**
+     * @deprecated use {@link #mapCells(fuzzycsv.javaly.Fx1)} or {@link #mapCells(fuzzycsv.javaly.Fx2)} or {@link #mapCells(fuzzycsv.javaly.Fx3)}
+     */
+    @Deprecated
+    FuzzyCSVTable transform(Closure closure) {
+        return tbl(FuzzyCSV.mapCells(this.csv, closure))
+    }
+
+    /**
+     * @deprecated use {@link #sortBy(fuzzycsv.Sort [ ])}
+     */
+    @Deprecated
+    FuzzyCSVTable sort(Object... cols) {
+        def orderBy = []
+
+        for (Object col : cols) {
+            switch (col) {
+                case String:
+                    orderBy << Sort.byColumn(col)
+                    break
+                case Integer:
+                    orderBy << Sort.byColumn(col)
+                    break
+                case RecordFx:
+                    orderBy << Sort.byFx { r ->
+                        col.getValue(r)
+                    }
+                    break
+                case Closure:
+                    if(col.getMaximumNumberOfParameters() == 2)
+                        orderBy << Sort.byComparing { a, b -> col(a, b) }
+                    else
+                        orderBy << Sort.byFx { col.call(it) }
+                    break
+                default:
+                    throw new IllegalArgumentException("sort columns must be String or List<String>")
+            }
+        }
+        return sortBy(*orderBy)
+
+    }
+
+    /**
+     * @deprecated use  {@link #toGrid(fuzzycsv.GridOptions [ ])}
+     */
+    @Deprecated
+    FuzzyCSVTable gridify() {
+        return toGrid()
+    }
+
+    /**
+     * @deprecated use {@link #from()}
+     */
+    @Deprecated
+    static FuzzyCSVTable toCSVFromRecordList(Collection<Record> records) {
+        return fromRecordList(records)
+    }
+
+    /**
+     * @deprecated use {@link #mapColumn(java.lang.String, fuzzycsv.javaly.Fx1)}
+     */
+    @Deprecated
+    FuzzyCSVTable transform(String c, Closure r) {
+        return mapColumn(c, { r.call(it) })
+    }
+    /**
+     * @deprecated use {@link #mapColumn(java.lang.String, fuzzycsv.javaly.Fx1)}
+     */
+    @Deprecated
+    FuzzyCSVTable transform(String c, RecordFx r) {
+        return mapColumns(r.az(c))
+    }
+    /**
+     * @deprecated use {@link #mapColumn(java.lang.String, fuzzycsv.javaly.Fx1)}
+     */
+    @Deprecated
+    FuzzyCSVTable transform(RecordFx... r) {
+        return mapColumns(r)
+    }
+
+
+    /**
+     * @deprecated use {@link #toGrid(fuzzycsv.GridOptions [ ])}
+     */
+    @Deprecated
+    FuzzyCSVTable asSimpleGrid() {
+        return toGrid()
+    }
+
+
+    /**
+     * @deprecated use {@link #addRow(java.lang.Object [ ])}
+     */
+    @Deprecated
+    FuzzyCSVTable addRecordArr(Object... arr) {
+        return addRow(arr)
+    }
+
+    /**
+     * @deprecated use {@link #addRow(java.lang.Object [ ])}
+     */
+    @Deprecated
+    FuzzyCSVTable addRecord(List r) {
+        return addRow(*r)
+    }
+
+    /**
+     * @deprecated use {@link #addEmptyRows(int)}
+     */
+    @Deprecated
+    FuzzyCSVTable appendEmptyRecord(int n) {
+        return addEmptyRows(n)
+    }
+    /**
+     * @deprecated use {@link #addRowFromMap(java.util.Map)}
+     */
+    @Deprecated
+    FuzzyCSVTable addRecordMap(Map m) {
+        return addRowFromMap(m)
+    }
+
+    /**
+     * @deprecated use {@link #get(fuzzycsv.nav.Navigator)}
+     */
+    @Deprecated
+    def <T> T value(Navigator navigator) {
+        return get(navigator)
+    }
+
+
+    /**
+     * @deprecated use {@link FuzzyCSV#toListOfLists(java.util.Collection)}
+     */
+    @Deprecated
+    static FuzzyCSVTable toListOfLists(Collection<?> lists) {
+        return FuzzyCSV.toListOfLists(lists)
+    }
+
+    /**
+     * @deprecated use {@link #removeDuplicateCells(java.lang.String [ ])}
+     */
+    @Deprecated
+    FuzzyCSVTable cleanUpRepeats(String... columns) {
+        return removeDuplicateCells(columns)
+    }
+
+    /**
+     * @deprecated use {@link #fromResultSet(java.sql.ResultSet)}
+     * */
+    @Deprecated
+    static FuzzyCSVTable toCSV(ResultSet rs) {
+        return fromResultSet(rs)
+    }
+    /**
+     * @deprecated use {@link #sortBy(fuzzycsv.Sort [ ])}
+     * */
+    @Deprecated
+    FuzzyCSVTable sort(Closure rs) {
+        def parameters = rs.getMaximumNumberOfParameters();
+        if (parameters == 2)
+            return sortBy(Sort.byComparing { a, b -> rs(a, b) })
+        return sortBy(Sort.byFx { rs(it) })
+    }
+
+    /**
+     * @deprecated use {@link #addColumn(int, java.util.List)}
+     */
+    @Deprecated
+    FuzzyCSVTable insertColumn(List column, int index) {
+        return addColumn(index, column)
+    }
+
+    /**
+     * @deprecated use {@link #set(int, int, java.lang.Object)}
+     */
+    @Deprecated
+    FuzzyCSVTable putInCell(int col, int row, value) {
+        return set(col, row, value)
+    }    /**
+     * @deprecated use {@link #set(int, int, java.lang.Object)}
+     */
+    @Deprecated
+    FuzzyCSVTable putInCell(String col, int row, value) {
+        return set(col, row, value)
+    }
+
+    //</editor-fold>
 
 }
 

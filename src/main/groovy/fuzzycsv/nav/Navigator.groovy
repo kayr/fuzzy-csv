@@ -286,5 +286,27 @@ class Navigator {
         return table.row(row)
     }
 
+
+    //<editor-fold desc="Deprecated" defaultstate="collapsed">
+
+    /**
+     * @deprecated use {@link #get()} instead
+     */
+    @Deprecated
+    Object value() {
+        return get()
+    }
+
+
+    /**
+     * @deprecated use {@link #set(Object)} instead
+     */
+    @Deprecated
+    Navigator value(Object obj,FuzzyCSVTable t=this.table) {
+        set(obj,t)
+        return this
+    }
+    //</editor-fold>
+
 }
 
