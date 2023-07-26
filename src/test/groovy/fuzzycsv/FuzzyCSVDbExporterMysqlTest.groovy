@@ -14,7 +14,7 @@ import org.junit.Test
 import static fuzzycsv.FuzzyCSVTable.tbl
 import static fuzzycsv.FuzzyStaticApi.fx
 
-//@Ignore("not set up mysql on github actions")
+@Ignore("not set up mysql on github actions")
 class FuzzyCSVDbExporterMysqlTest {
 
 
