@@ -49,6 +49,18 @@ git checkout -b "release/$VERSION"
 # escape the dots in the version
 S_NEXT_VERSION=${INPUT_VERSION//./\\.}
 
+# check tag does not exist
+if [[ $(git tag -l "$VERSION") ]]; then
+    echo "Tag $VERSION already exists, aborting."
+    exit 1
+fi
+
+# check branch does not exist
+if [[ $(git branch -l "release/$VERSION") ]]; then
+    echo "Branch release/$VERSION already exists, aborting."
+    exit 1
+fi
+
 # Update all the versions in README.md and gradle.properties
 sed -i -e  "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy3'/implementation 'io.github.kayr:fuzzy-csv:$S_NEXT_VERSION-groovy3'/g" README.md
 sed -i -e  "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy4'/implementation 'io.github.kayr:fuzzy-csv:$S_NEXT_VERSION-groovy4'/g" README.md
