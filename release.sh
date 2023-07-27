@@ -3,20 +3,21 @@
 # fail if any commands fails
 set -ex
 
-# check the current branch is master
+echo "check the current branch is master"
 if [[ $(git rev-parse --abbrev-ref HEAD) != "master" ]]; then
     echo "Not on master branch, aborting."
     exit 1
 fi
 
-# check the current branch is clean
+echo "check the current branch is clean"
 if [[ $(git status --porcelain) ]]; then
     echo "There are uncommitted changes, aborting."
     exit 1
 fi
 
-# check the current branch is up-to-date
+echo 'check the current branch is up-to-date'
 git fetch
+
 
 if [[ $(git rev-parse HEAD) != $(git rev-parse '@{u}') ]]; then
     echo "Local branch is not up-to-date, aborting."
@@ -26,30 +27,27 @@ fi
 
 
 # get the current version
+echo "get the current version"
 OUTPUT=$(./gradlew -q printVersion)
-
-# the version will be the last string of the output of the command
 VERSION=$(echo $OUTPUT | awk '{print $NF}')
+echo "    -> Current version is $VERSION"
 
-# get the next version
-NEXT_VERSION=$(echo $VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+NEXT_VERSION=$(echo "$VERSION" | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+echo "    -> Next version is $NEXT_VERSION"
 
-# ask the user for the version
-#TEMP read -p "Current version is $VERSION, next version is $NEXT_VERSION, please enter the version you want to release: " VERSION
 
-# check the version is not empty
-if [[ -z "$VERSION" ]]; then
-    echo "Version cannot be empty, aborting."
-    exit 1
-fi
+# ask the user for the version but set the default to the next version
+read -p "Enter the version [$NEXT_VERSION]: " INPUT_VERSION ; INPUT_VERSION=${INPUT_VERSION:-$NEXT_VERSION}
 
-VERSION=$NEXT_VERSION
+
+
+INPUT_VERSION=$NEXT_VERSION
 
 # create a new branch for the release
-#TEMP git checkout -b "release/$VERSION"
+git checkout -b "release/$VERSION"
 
 # escape the dots in the version
-S_NEXT_VERSION=$(echo $NEXT_VERSION | sed 's/\./\\\./g')
+S_NEXT_VERSION=${INPUT_VERSION//./\\.}
 
 # Update all the versions in README.md and gradle.properties
 sed -i -e  "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy3'/implementation 'io.github.kayr:fuzzy-csv:$S_NEXT_VERSION-groovy3'/g" README.md
