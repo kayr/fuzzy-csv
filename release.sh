@@ -35,7 +35,6 @@ echo "    -> Proposed Next version is $NEXT_VERSION"
 # ask the user for the version but set the default to the next version
 read -p "Enter the version [$NEXT_VERSION]: " ACTUAL_NEXT_VERSION
 ACTUAL_NEXT_VERSION=${ACTUAL_NEXT_VERSION:-$NEXT_VERSION}
-ACTUAL_NEXT_VERSION=$NEXT_VERSION
 
 # check tag does not exist
 if [[ $(git tag -l "$ACTUAL_NEXT_VERSION") ]]; then
