@@ -52,7 +52,7 @@ VERSION=$NEXT_VERSION
 S_VERSION=$(echo $VERSION | sed 's/\./\\\./g')
 
 # Update the version in the README.md
-#sed -i '' -e  "s/implementation 'io.github.kayr:fuzzy-csv:.*'/implementation 'io.github.kayr:fuzzy-csv:S_VERSION'/g" README.md
+sed -i -e  "s/implementation 'io.github.kayr:fuzzy-csv:.*'/implementation 'io.github.kayr:fuzzy-csv:S_VERSION'/g" README.md
 
 # set the version in gradle.properties
 sed -i  -e "s/VERSION=.*/VERSION=$VERSION/g" gradle.properties
