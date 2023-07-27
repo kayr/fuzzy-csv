@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # fail if any commands fails
-set -ex
+set -e
 
 echo "check the current branch is master"
 if [[ $(git rev-parse --abbrev-ref HEAD) != "master" ]]; then
