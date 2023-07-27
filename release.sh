@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # fail if any commands fails
-set -e
+set -ex
 
 # check the current branch is master
 if [[ $(git rev-parse --abbrev-ref HEAD) != "master" ]]; then
@@ -10,18 +10,18 @@ if [[ $(git rev-parse --abbrev-ref HEAD) != "master" ]]; then
 fi
 
 # check the current branch is clean
-if [[ $(git status --porcelain) ]]; then
-    echo "There are uncommitted changes, aborting."
-    exit 1
-fi
+#if [[ $(git status --porcelain) ]]; then
+#    echo "There are uncommitted changes, aborting."
+#    exit 1
+#fi
 
 # check the current branch is up-to-date
 git fetch
 
-if [[ $(git rev-parse HEAD) != $(git rev-parse '@{u}') ]]; then
-    echo "Local branch is not up-to-date, aborting."
-    exit 1
-fi
+#if [[ $(git rev-parse HEAD) != $(git rev-parse '@{u}') ]]; then
+#    echo "Local branch is not up-to-date, aborting."
+#    exit 1
+#fi
 
 
 
@@ -35,7 +35,7 @@ VERSION=$(echo $OUTPUT | awk '{print $NF}')
 NEXT_VERSION=$(echo $VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
 
 # ask the user for the version
-read -p "Current version is $VERSION, next version is $NEXT_VERSION, please enter the version you want to release: " VERSION
+#TEMP read -p "Current version is $VERSION, next version is $NEXT_VERSION, please enter the version you want to release: " VERSION
 
 # check the version is not empty
 if [[ -z "$VERSION" ]]; then
@@ -43,14 +43,19 @@ if [[ -z "$VERSION" ]]; then
     exit 1
 fi
 
+VERSION=$NEXT_VERSION
+
 # create a new branch for the release
-git checkout -b "release/$VERSION"
+#TEMP git checkout -b "release/$VERSION"
+
+# escape the dots in the version
+S_VERSION=$(echo $VERSION | sed 's/\./\\\./g')
 
 # Update the version in the README.md
-sed -i '' -e "s/implementation 'com.github.ahmadaghazadeh:Multi-Select-Dialog:.*'/implementation 'com.github.ahmadaghazadeh:Multi-Select-Dialog:$VERSION'/g" README.md
+#sed -i '' -e  "s/implementation 'io.github.kayr:fuzzy-csv:.*'/implementation 'io.github.kayr:fuzzy-csv:S_VERSION'/g" README.md
 
 # set the version in gradle.properties
-sed -i '' -e "s/VERSION=.*/VERSION=$VERSION/g" gradle.properties
+sed -i  -e "s/VERSION=.*/VERSION=$VERSION/g" gradle.properties
 
 # commit the changes
 git commit -am "Release $VERSION"
