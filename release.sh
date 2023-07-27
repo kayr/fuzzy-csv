@@ -10,18 +10,18 @@ if [[ $(git rev-parse --abbrev-ref HEAD) != "master" ]]; then
 fi
 
 # check the current branch is clean
-#if [[ $(git status --porcelain) ]]; then
-#    echo "There are uncommitted changes, aborting."
-#    exit 1
-#fi
+if [[ $(git status --porcelain) ]]; then
+    echo "There are uncommitted changes, aborting."
+    exit 1
+fi
 
 # check the current branch is up-to-date
 git fetch
 
-#if [[ $(git rev-parse HEAD) != $(git rev-parse '@{u}') ]]; then
-#    echo "Local branch is not up-to-date, aborting."
-#    exit 1
-#fi
+if [[ $(git rev-parse HEAD) != $(git rev-parse '@{u}') ]]; then
+    echo "Local branch is not up-to-date, aborting."
+    exit 1
+fi
 
 
 
