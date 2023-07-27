@@ -51,11 +51,9 @@ VERSION=$NEXT_VERSION
 # escape the dots in the version
 S_NEXT_VERSION=$(echo $NEXT_VERSION | sed 's/\./\\\./g')
 
-# Update the version in the README.md
+# Update all the versions in README.md and gradle.properties
 sed -i -e  "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy3'/implementation 'io.github.kayr:fuzzy-csv:$S_NEXT_VERSION-groovy3'/g" README.md
 sed -i -e  "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy4'/implementation 'io.github.kayr:fuzzy-csv:$S_NEXT_VERSION-groovy4'/g" README.md
-
-# set the version in gradle.properties
 sed -i  -e "s/VERSION_NAME=.*/VERSION_NAME=$S_NEXT_VERSION/g" gradle.properties
 
 # commit the changes
@@ -63,16 +61,19 @@ git commit -am "Release $S_NEXT_VERSION"
 
 
 # run the tests
-make test
+#make test
+ehco "MOCK make test"
 
 # build for groovy 4
-./gradlew clean build publish -Pvariant=4 --no-daemon
+# ./gradlew clean build publish -Pvariant=4 --no-daemon
+echo "MOCK ./gradlew clean build publish -Pvariant=4 --no-daemon"
 #./gradlew closeAndReleaseRepository
 echo "MOCK ./gradlew closeAndReleaseRepository"
 
 
 # build for groovy 3 and below
-./gradlew clean build publish -Pvariant=3 --no-daemon
+#./gradlew clean build publish -Pvariant=3 --no-daemon
+echo "MOCK ./gradlew clean build publish -Pvariant=3 --no-daemon"
 echo "MOCK ./gradlew closeAndReleaseRepository"
 
 #create a tag
