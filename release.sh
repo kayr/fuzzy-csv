@@ -50,14 +50,14 @@ git checkout -b "release/$VERSION"
 S_NEXT_VERSION=${INPUT_VERSION//./\\.}
 
 # check tag does not exist
-if [[ $(git tag -l "$VERSION") ]]; then
-    echo "Tag $VERSION already exists, aborting."
+if [[ $(git tag -l "$INPUT_VERSION") ]]; then
+    echo "Tag $INPUT_VERSION already exists, aborting."
     exit 1
 fi
 
 # check branch does not exist
-if [[ $(git branch -l "release/$VERSION") ]]; then
-    echo "Branch release/$VERSION already exists, aborting."
+if [[ $(git branch -l "release/$INPUT_VERSION") ]]; then
+    echo "Branch release/$INPUT_VERSION already exists, aborting."
     exit 1
 fi
 
