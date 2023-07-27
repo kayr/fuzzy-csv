@@ -26,7 +26,7 @@ fi
 # get the current version
 echo "get the current version"
 OUTPUT=$(./gradlew -q printVersion)
-VERSION=$(echo $OUTPUT | awk '{print $NF}')
+VERSION=$(echo "$OUTPUT" | awk '{print $NF}')
 echo "    -> Current version is $VERSION"
 
 NEXT_VERSION=$(echo "$VERSION" | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
