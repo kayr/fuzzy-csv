@@ -38,16 +38,7 @@ echo "    -> Next version is $NEXT_VERSION"
 
 # ask the user for the version but set the default to the next version
 read -p "Enter the version [$NEXT_VERSION]: " INPUT_VERSION ; INPUT_VERSION=${INPUT_VERSION:-$NEXT_VERSION}
-
-
-
 INPUT_VERSION=$NEXT_VERSION
-
-# create a new branch for the release
-git checkout -b "release/$VERSION"
-
-# escape the dots in the version
-S_NEXT_VERSION=${INPUT_VERSION//./\\.}
 
 # check tag does not exist
 if [[ $(git tag -l "$INPUT_VERSION") ]]; then
@@ -60,6 +51,14 @@ if [[ $(git branch -l "release/$INPUT_VERSION") ]]; then
     echo "Branch release/$INPUT_VERSION already exists, aborting."
     exit 1
 fi
+
+
+# create a new branch for the release
+git checkout -b "release/$INPUT_VERSION"
+
+# escape the dots in the version
+S_NEXT_VERSION=${INPUT_VERSION//./\\.}
+
 
 # Update all the versions in README.md and gradle.properties
 sed -i -e  "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy3'/implementation 'io.github.kayr:fuzzy-csv:$S_NEXT_VERSION-groovy3'/g" README.md
@@ -87,7 +86,7 @@ echo "MOCK ./gradlew clean build publish -Pvariant=3 --no-daemon"
 echo "MOCK ./gradlew closeAndReleaseRepository"
 
 #create a tag
-git tag -a "$VERSION" -m "Release $VERSION"
+git tag -a "$INPUT_VERSION" -m "Release $VERSION"
 
 # push the changes
 #git push originin "release/$VERSION"
