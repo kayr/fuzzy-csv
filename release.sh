@@ -62,7 +62,7 @@ git commit -am "Release $S_NEXT_VERSION"
 
 # run the tests
 #make test
-ehco "MOCK make test"
+echo "MOCK make test"
 
 # build for groovy 4
 # ./gradlew clean build publish -Pvariant=4 --no-daemon
