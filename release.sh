@@ -18,10 +18,10 @@ fi
 # check the current branch is up-to-date
 git fetch
 
-#if [[ $(git rev-parse HEAD) != $(git rev-parse '@{u}') ]]; then
-#    echo "Local branch is not up-to-date, aborting."
-#    exit 1
-#fi
+if [[ $(git rev-parse HEAD) != $(git rev-parse '@{u}') ]]; then
+    echo "Local branch is not up-to-date, aborting."
+    exit 1
+fi
 
 
 
