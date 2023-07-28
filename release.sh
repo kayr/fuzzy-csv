@@ -9,7 +9,7 @@ function ol() {
 
     # Print the input argument
     echo -ne "$1\r"
-    sleep 0.3
+    sleep 0.5
 }
 
 
