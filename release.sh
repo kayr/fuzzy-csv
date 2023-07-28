@@ -17,7 +17,6 @@ fi
 
 echo 'check the current branch is up-to-date'
 git fetch
-
 if [[ $(git rev-parse HEAD) != $(git rev-parse '@{u}') ]]; then
   echo "Local branch is not up-to-date, aborting."
   exit 1
@@ -26,7 +25,7 @@ fi
 # get the current version
 echo "get the current version"
 OUTPUT=$(./gradlew -q printVersion)
-VERSION=$(echo "$OUTPUT" |tr '\n' ' '| awk '{print $NF}')
+VERSION=$(echo "$OUTPUT" | tr '\n' ' ' | awk '{print $NF}')
 echo "    -> Current version is $VERSION"
 
 NEXT_VERSION=$(echo "$VERSION" | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
@@ -36,31 +35,32 @@ echo "    -> Proposed Next version is $NEXT_VERSION"
 read -p "Enter the version [$NEXT_VERSION]: " ACTUAL_NEXT_VERSION
 ACTUAL_NEXT_VERSION=${ACTUAL_NEXT_VERSION:-$NEXT_VERSION}
 
-# check tag does not exist
+echo "check tag [$ACTUAL_NEXT_VERSION] does not exist"
 if [[ $(git tag -l "$ACTUAL_NEXT_VERSION") ]]; then
   echo "Tag $ACTUAL_NEXT_VERSION already exists, aborting."
   exit 1
 fi
 
-# check branch does not exist
+echo "check branch [release/$ACTUAL_NEXT_VERSION] does not exist"
 if [[ $(git branch -l "release/$ACTUAL_NEXT_VERSION") ]]; then
   echo "Branch release/$ACTUAL_NEXT_VERSION already exists, aborting."
   exit 1
 fi
 
-# create a new branch for the release
+echo "create a new branch for the release release/$ACTUAL_NEXT_VERSION"
 git checkout -b "release/$ACTUAL_NEXT_VERSION"
 
 # escape the dots in the version
-S_NEXT_VERSION=${ACTUAL_NEXT_VERSION//./\\.}
 
 # Update all the versions in README.md and gradle.properties
-sed -i -e "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy3'/implementation 'io.github.kayr:fuzzy-csv:$S_NEXT_VERSION-groovy3'/g" README.md
-sed -i -e "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy4'/implementation 'io.github.kayr:fuzzy-csv:$S_NEXT_VERSION-groovy4'/g" README.md
-sed -i -e "s/VERSION_NAME=.*/VERSION_NAME=$S_NEXT_VERSION/g" gradle.properties
+ESCAPED_NEXT_VERSION=${ACTUAL_NEXT_VERSION//./\\.}
+echo "Updating README.md and gradle.properties to [$ACTUAL_NEXT_VERSION]~[$ESCAPED_NEXT_VERSION]"
+sed -i -e "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy3'/implementation 'io.github.kayr:fuzzy-csv:$ESCAPED_NEXT_VERSION-groovy3'/g" README.md
+sed -i -e "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy4'/implementation 'io.github.kayr:fuzzy-csv:$ESCAPED_NEXT_VERSION-groovy4'/g" README.md
+sed -i -e "s/VERSION_NAME=.*/VERSION_NAME=$ESCAPED_NEXT_VERSION/g" gradle.properties
 
 # commit the changes
-git commit -am "Release $S_NEXT_VERSION"
+git commit -am "Release $ACTUAL_NEXT_VERSION"
 
 # run the tests
 #make test
