@@ -53,8 +53,7 @@ git checkout -b "release/$ACTUAL_NEXT_VERSION"
 # escape the dots in the version
 
 # Update all the versions in README.md and gradle.properties
-ESCAPED_NEXT_VERSION=${ACTUAL_NEXT_VERSION//./\\.}
-echo "Updating README.md and gradle.properties to [$ACTUAL_NEXT_VERSION]~[$ESCAPED_NEXT_VERSION]"
+echo "Updating README.md and gradle.properties to [$ACTUAL_NEXT_VERSION]"
 sed -i -e "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy3'/implementation 'io.github.kayr:fuzzy-csv:$ACTUAL_NEXT_VERSION-groovy3'/g" README.md
 sed -i -e "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy4'/implementation 'io.github.kayr:fuzzy-csv:$ACTUAL_NEXT_VERSION-groovy4'/g" README.md
 sed -i -e "s/VERSION_NAME=.*/VERSION_NAME=$ACTUAL_NEXT_VERSION/g" gradle.properties
