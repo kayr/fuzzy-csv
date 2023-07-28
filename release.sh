@@ -47,7 +47,7 @@ if [[ $(git branch -l "release/$ACTUAL_NEXT_VERSION") ]]; then
   exit 1
 fi
 
-echo "create a new branch for the release release/$ACTUAL_NEXT_VERSION"
+echo "create branch [release/$ACTUAL_NEXT_VERSION]"
 git checkout -b "release/$ACTUAL_NEXT_VERSION"
 
 # escape the dots in the version
@@ -55,9 +55,9 @@ git checkout -b "release/$ACTUAL_NEXT_VERSION"
 # Update all the versions in README.md and gradle.properties
 ESCAPED_NEXT_VERSION=${ACTUAL_NEXT_VERSION//./\\.}
 echo "Updating README.md and gradle.properties to [$ACTUAL_NEXT_VERSION]~[$ESCAPED_NEXT_VERSION]"
-sed -i -e "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy3'/implementation 'io.github.kayr:fuzzy-csv:$ESCAPED_NEXT_VERSION-groovy3'/g" README.md
-sed -i -e "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy4'/implementation 'io.github.kayr:fuzzy-csv:$ESCAPED_NEXT_VERSION-groovy4'/g" README.md
-sed -i -e "s/VERSION_NAME=.*/VERSION_NAME=$ESCAPED_NEXT_VERSION/g" gradle.properties
+sed -i -e "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy3'/implementation 'io.github.kayr:fuzzy-csv:$ACTUAL_NEXT_VERSION-groovy3'/g" README.md
+sed -i -e "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy4'/implementation 'io.github.kayr:fuzzy-csv:$ACTUAL_NEXT_VERSION-groovy4'/g" README.md
+sed -i -e "s/VERSION_NAME=.*/VERSION_NAME=$ACTUAL_NEXT_VERSION/g" gradle.properties
 
 # commit the changes
 git commit -am "Release $ACTUAL_NEXT_VERSION"
