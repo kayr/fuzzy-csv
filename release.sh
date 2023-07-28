@@ -3,13 +3,22 @@
 # fail if any commands fails
 set -e
 
-echo "check the current branch is master"
+function ol() {
+    # Clear the current line
+    echo -ne "\r\033[K"
+
+    # Print the input argument
+    echo -ne "$1\r"
+}
+
+
+ol "check the current branch is master"
 if [[ $(git rev-parse --abbrev-ref HEAD) != "master" ]]; then
   echo "Not on master branch, aborting."
   exit 1
 fi
 
-echo "check the current branch is clean"
+ol "check the current branch is clean"
 if [[ $(git status --porcelain) ]]; then
   echo "There are uncommitted changes, aborting."
   exit 1
@@ -50,19 +59,16 @@ fi
 echo "create branch [release/$ACTUAL_NEXT_VERSION]"
 git checkout -b "release/$ACTUAL_NEXT_VERSION"
 
-# escape the dots in the version
 
-# Update all the versions in README.md and gradle.properties
 echo "Updating README.md and gradle.properties to [$ACTUAL_NEXT_VERSION]"
 sed -i -e "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy3'/implementation 'io.github.kayr:fuzzy-csv:$ACTUAL_NEXT_VERSION-groovy3'/g" README.md
 sed -i -e "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy4'/implementation 'io.github.kayr:fuzzy-csv:$ACTUAL_NEXT_VERSION-groovy4'/g" README.md
 sed -i -e "s/VERSION_NAME=.*/VERSION_NAME=$ACTUAL_NEXT_VERSION/g" gradle.properties
 
-# commit the changes
+echo "Committing the changes"
 git commit -am "Release $ACTUAL_NEXT_VERSION"
 
-# run the tests
-#make test
+echo "Run tests"
 echo "MOCK make test"
 
 # build for groovy 4
