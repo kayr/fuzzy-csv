@@ -9,6 +9,7 @@ function ol() {
 
     # Print the input argument
     echo -ne "$1\r"
+    sleep 0.3
 }
 
 
@@ -24,7 +25,7 @@ if [[ $(git status --porcelain) ]]; then
   exit 1
 fi
 
-echo 'check the current branch is up-to-date'
+ol 'check the current branch is up-to-date'
 git fetch
 if [[ $(git rev-parse HEAD) != $(git rev-parse '@{u}') ]]; then
   echo "Local branch is not up-to-date, aborting."
@@ -32,7 +33,7 @@ if [[ $(git rev-parse HEAD) != $(git rev-parse '@{u}') ]]; then
 fi
 
 # get the current version
-echo "get the current version"
+ol "get the current version"
 OUTPUT=$(./gradlew -q printVersion)
 VERSION=$(echo "$OUTPUT" | tr '\n' ' ' | awk '{print $NF}')
 echo "    -> Current version is $VERSION"
@@ -44,19 +45,19 @@ echo "    -> Proposed Next version is $NEXT_VERSION"
 read -p "Enter the version [$NEXT_VERSION]: " ACTUAL_NEXT_VERSION
 ACTUAL_NEXT_VERSION=${ACTUAL_NEXT_VERSION:-$NEXT_VERSION}
 
-echo "check tag [$ACTUAL_NEXT_VERSION] does not exist"
+ol "check tag [$ACTUAL_NEXT_VERSION] does not exist"
 if [[ $(git tag -l "$ACTUAL_NEXT_VERSION") ]]; then
   echo "Tag $ACTUAL_NEXT_VERSION already exists, aborting."
   exit 1
 fi
 
-echo "check branch [release/$ACTUAL_NEXT_VERSION] does not exist"
+ol "check branch [release/$ACTUAL_NEXT_VERSION] does not exist"
 if [[ $(git branch -l "release/$ACTUAL_NEXT_VERSION") ]]; then
   echo "Branch release/$ACTUAL_NEXT_VERSION already exists, aborting."
   exit 1
 fi
 
-echo "create branch [release/$ACTUAL_NEXT_VERSION]"
+ol "create branch [release/$ACTUAL_NEXT_VERSION]"
 git checkout -b "release/$ACTUAL_NEXT_VERSION"
 
 
