@@ -127,3 +127,11 @@ release {
     failOnCommitNeeded = false
     versionProperties = ['VERSION_NAME']
 }
+
+
+// print version task
+tasks.register('printVersion') {
+    doLast {
+        println findProperty('BASE_VERSION')
+    }
+}
