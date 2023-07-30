@@ -15,7 +15,7 @@ function ol() {
 assert_false() {
   local expression=$1
   local message=$2
-  if [[ $(eval expresion) ]]; then
+  if [[ $(eval "$expression") ]]; then
     echo "Assertion failed: (>$expression) - $message"
     exit 1
   fi
