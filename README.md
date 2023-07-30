@@ -7,11 +7,11 @@ There are two jars available one compatible with groovy3  and lower and another 
 
 If using groovy3 and lower then use:
 ```
-implementation io.github.kayr:fuzzy-csv:<version>-groovy3
+implementation 'io.github.kayr:fuzzy-csv:1.8.1-groovy3'
 ```
 If using groovy 4 then use
 ```
-implementation io.github.kayr:fuzzy-csv:<version>-groovy4
+implementation 'io.github.kayr:fuzzy-csv:1.8.1-groovy4'
 ```
 
 

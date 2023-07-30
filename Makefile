@@ -15,3 +15,18 @@ test-g3:
 
 build:
 	./gradlew build
+
+publish-groovy3:
+	./gradlew build publish -Pvariant=3 --no-daemon
+
+publish-groovy4:
+	./gradlew build publish -Pvariant=4 --no-daemon
+
+close-release:
+	./gradlew closeAndReleaseRepository
+
+r:
+	git add .
+	git commit -m "update"
+	git push
+	bash release.sh
