@@ -110,6 +110,8 @@ assert_branch_is_up_to_date
 ol "check the current branch is $MAIN_BRANCH"
 assert_eq "$CURRENT_BRANCH" "$MAIN_BRANCH" "Not on branch $MAIN_BRANCH, aborting."
 
+
+
 NEW_VERSION=$(prompt_for_version "$RELEASE_VERSION_INCREMENTED")
 assert_not_empty "$NEW_VERSION" "Version cannot be empty"
 
