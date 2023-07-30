@@ -93,27 +93,61 @@ CURRENT_BRANCH=$(get_current_branch)
 RELEASE_VERSION=$(get_current_project_version)
 RELEASE_VERSION_INCREMENTED=$(increment_version "$RELEASE_VERSION")
 
-ol "check the current branch is clean" && assert_clean_branch
-ol "check the current branch is up-to-date" && assert_branch_is_up_to_date
-ol "check the current branch is $MAIN_BRANCH" && assert_eq "$CURRENT_BRANCH" "$MAIN_BRANCH" "Not on branch $MAIN_BRANCH, aborting."
+ol "check the current branch is clean"
+assert_clean_branch
+
+ol "check the current branch is up-to-date"
+assert_branch_is_up_to_date
+
+ol "check the current branch is $MAIN_BRANCH"
+assert_eq "$CURRENT_BRANCH" "$MAIN_BRANCH" "Not on branch $MAIN_BRANCH, aborting."
+
 NEW_VERSION=$(prompt_for_version "$RELEASE_VERSION_INCREMENTED")
-ol "check tag [$NEW_VERSION] does not exist" && assert_tag_not_exists "$NEW_VERSION"
-ol "check branch [release/$NEW_VERSION] does not exist" && assert_branch_not_exist "release/$NEW_VERSION"
-echo "  -> Creating branch release/$NEW_VERSION" && git checkout -b "release/$NEW_VERSION"
-echo "  -> Updating README.md and gradle.properties to [$NEW_VERSION]" && update_version_in_properties_and_readme
-echo "  -> Committing changes" && git commit -am "Release $NEW_VERSION"
-echo "  -> Pushing branch release/$NEW_VERSION" && git push --set-upstream origin "release/$NEW_VERSION"
-echo "  -> Run Tests"        # && make test
-echo "  -> Publish groovy 3" # && make publish-groovy3
+ol "check tag [$NEW_VERSION] and branch  [release/$NEW_VERSION] does not exist"
+assert_tag_not_exists "$NEW_VERSION"
+assert_branch_not_exist "release/$NEW_VERSION"
+
+echo "  -> Creating branch release/$NEW_VERSION"
+git checkout -b "release/$NEW_VERSION"
+
+echo "  -> Updating README.md and gradle.properties to [$NEW_VERSION]"
+update_version_in_properties_and_readme
+
+echo "  -> Committing changes"
+git commit -am "Release $NEW_VERSION"
+
+echo "  -> Pushing branch release/$NEW_VERSION"
+git push --set-upstream origin "release/$NEW_VERSION"
+
+echo "  -> Run Tests"
+# && make test
+
+echo "  -> Publish groovy 3"
+#  make publish-groovy3
+
 confirm "Do you want to close the release for groovy-3?"
-echo "  -> Closing release for groovy-3" # && make close-release
-echo "  -> Publish groovy 4"             # && make publish-groovy4
+echo "  -> Closing release for groovy-3"
+# make close-release
+
+echo "  -> Publish groovy 4"
+# make publish-groovy4
+
 confirm "Do you want to close the release for groovy-4?"
-echo "  -> Closing release for groovy-4" # && make close-release
-echo "  -> Creating tag $NEW_VERSION" && git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
-echo "  -> Pushing tag $NEW_VERSION" && git push origin "$NEW_VERSION"
-echo "  -> Switching to branch $MAIN_BRANCH" && git checkout "$MAIN_BRANCH"
-echo "  -> Merging branch release/$NEW_VERSION into $MAIN_BRANCH" && git merge "release/$NEW_VERSION"
-echo "  -> Pushing branch $MAIN_BRANCH" && git push
 
+echo "  -> Closing release for groovy-4"
+# make close-release
 
+echo "  -> Creating tag $NEW_VERSION"
+git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
+
+echo "  -> Pushing tag $NEW_VERSION"
+git push origin "$NEW_VERSION"
+
+echo "  -> Switching to branch $MAIN_BRANCH"
+git checkout "$MAIN_BRANCH"
+
+echo "  -> Merging branch release/$NEW_VERSION into $MAIN_BRANCH"
+git merge "release/$NEW_VERSION"
+
+echo "  -> Pushing branch $MAIN_BRANCH"
+git push
