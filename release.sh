@@ -28,6 +28,14 @@ assert_eq() {
   fi
 }
 
+assert_not_empty() {
+  # check if the first argument is empty after trimming
+  if [[ -z "${1//[[:space:]]/}" ]]; then
+    echo "$2"
+    exit 1
+  fi
+}
+
 get_current_branch() { git rev-parse --abbrev-ref HEAD; }
 
 assert_on_branch() {
@@ -103,6 +111,8 @@ ol "check the current branch is $MAIN_BRANCH"
 assert_eq "$CURRENT_BRANCH" "$MAIN_BRANCH" "Not on branch $MAIN_BRANCH, aborting."
 
 NEW_VERSION=$(prompt_for_version "$RELEASE_VERSION_INCREMENTED")
+assert_not_empty "$NEW_VERSION" "Version cannot be empty"
+
 ol "check tag [$NEW_VERSION] and branch  [release/$NEW_VERSION] does not exist"
 assert_tag_not_exists "$NEW_VERSION"
 assert_branch_not_exist "release/$NEW_VERSION"

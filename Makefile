@@ -24,3 +24,9 @@ publish-groovy4:
 
 close-release:
 	./gradlew closeAndReleaseRepository
+
+r:
+	git add .
+	git commit -m "update"
+	git push
+	bash release.sh
