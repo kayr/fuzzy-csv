@@ -90,10 +90,10 @@ assert_branch_is_up_to_date() {
 }
 
 update_version_in_properties_and_readme() {
-  echo "Updating README.md and gradle.properties to [$ACTUAL_NEXT_VERSION]"
-  sed -i -e "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy3'/implementation 'io.github.kayr:fuzzy-csv:$ACTUAL_NEXT_VERSION-groovy3'/g" README.md
-  sed -i -e "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy4'/implementation 'io.github.kayr:fuzzy-csv:$ACTUAL_NEXT_VERSION-groovy4'/g" README.md
-  sed -i -e "s/VERSION_NAME=.*/VERSION_NAME=$ACTUAL_NEXT_VERSION/g" gradle.properties
+  echo "Updating README.md and gradle.properties to [$1]"
+  sed -i -e "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy3'/implementation 'io.github.kayr:fuzzy-csv:$1-groovy3'/g" README.md
+  sed -i -e "s/implementation 'io\.github\.kayr:fuzzy-csv:.*-groovy4'/implementation 'io.github.kayr:fuzzy-csv:$1-groovy4'/g" README.md
+  sed -i -e "s/VERSION_NAME=.*/VERSION_NAME=$1/g" gradle.properties
 }
 
 MAIN_BRANCH="master"
@@ -125,7 +125,7 @@ echo "  -> Creating branch release/$NEW_VERSION"
 git checkout -b "release/$NEW_VERSION"
 
 echo "  -> Updating README.md and gradle.properties to [$NEW_VERSION]"
-update_version_in_properties_and_readme
+update_version_in_properties_and_readme "$NEW_VERSION"
 
 echo "  -> Committing changes"
 git commit -am "Release $NEW_VERSION"
