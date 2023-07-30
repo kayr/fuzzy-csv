@@ -19,6 +19,7 @@ apply plugin: 'com.vanniktech.maven.publish'
 
 def variant = findProperty('variant') ?: '4'
 
+ext.BASE_VERSION = findProperty("version")
 version = variant == '4' ? "${findProperty('version')}-groovy4" : "${findProperty('version')}-groovy3"
 //set the groovy version on the release version
 VERSION_NAME = version
@@ -125,4 +126,12 @@ test {
 release {
     failOnCommitNeeded = false
     versionProperties = ['VERSION_NAME']
+}
+
+
+// print version task
+tasks.register('printVersion') {
+    doLast {
+        println findProperty('BASE_VERSION')
+    }
 }
