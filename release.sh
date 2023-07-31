@@ -102,9 +102,6 @@ echo "check the current branch is $MAIN_BRANCH"
 assert_eq "$CURRENT_BRANCH" "$MAIN_BRANCH" "Not on branch $MAIN_BRANCH, aborting."
 
 
-echo "  -> Current version is $RELEASE_VERSION new version will be $RELEASE_VERSION_INCREMENTED"
-sleep 5
-
 NEW_VERSION=$(prompt_for_version "$RELEASE_VERSION_INCREMENTED")
 assert_not_empty "$NEW_VERSION" "Version cannot be empty"
 
