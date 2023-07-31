@@ -101,7 +101,6 @@ assert_branch_is_up_to_date
 echo "check the current branch is $MAIN_BRANCH"
 assert_eq "$CURRENT_BRANCH" "$MAIN_BRANCH" "Not on branch $MAIN_BRANCH, aborting."
 
-
 NEW_VERSION=$(prompt_for_version "$RELEASE_VERSION_INCREMENTED")
 assert_not_empty "$NEW_VERSION" "Version cannot be empty"
 
@@ -122,22 +121,22 @@ echo "  -> Pushing branch release/$NEW_VERSION"
 git push --set-upstream origin "release/$NEW_VERSION"
 
 echo "  -> Run Tests"
-# && make test
+make test
 
 echo "  -> Publish groovy 3"
-#  make publish-groovy3
+make publish-groovy3
 
 confirm "Do you want to close the release for groovy-3?"
 echo "  -> Closing release for groovy-3"
-# make close-release
+make close-release
 
 echo "  -> Publish groovy 4"
-# make publish-groovy4
+make publish-groovy4
 
 confirm "Do you want to close the release for groovy-4?"
 
 echo "  -> Closing release for groovy-4"
-# make close-release
+make close-release
 
 echo "  -> Creating tag $NEW_VERSION"
 git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
