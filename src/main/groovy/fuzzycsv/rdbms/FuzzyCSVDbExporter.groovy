@@ -90,7 +90,7 @@ class FuzzyCSVDbExporter {
 
 
     boolean createTableIfNotExists(FuzzyCSVTable table) {
-        def exists = DDLUtils.tableExists(connection, table.tableName)
+        def exists = DDLUtils.tableExists(connection, table.name())
         if (!exists) {
             createTable(table)
             return true

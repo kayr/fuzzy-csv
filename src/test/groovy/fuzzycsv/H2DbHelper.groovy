@@ -55,10 +55,11 @@ class H2DbHelper {
     static void dropAllTables(Connection connection,String catalog=null) {
         Sql gsql = new Sql(connection)
         DDLUtils.allTables(connection, catalog)
-                .filter { it.TABLE_TYPE == 'TABLE' }
+        .printTable()
+                .filter { it.TABLE_TYPE == 'TABLE' || (it.TABLE_TYPE == 'BASE TABLE' && it.TABLE_SCHEM == 'PUBLIC') }
                 .each {
                     println("Dropping******** $it.TABLE_NAME")
-                    gsql.execute("drop table if exists $it.TABLE_NAME" as String)
+                    gsql.execute("drop table if exists \"$it.TABLE_NAME\"" as String)
                 }
 
     }

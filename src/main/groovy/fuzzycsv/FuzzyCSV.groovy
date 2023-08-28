@@ -8,7 +8,6 @@ import fuzzycsv.rdbms.DDLUtils
 import groovy.json.JsonSlurper
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
-import org.codehaus.groovy.runtime.NumberAwareComparator
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

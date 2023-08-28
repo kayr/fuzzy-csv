@@ -8,6 +8,8 @@ import groovy.sql.Sql
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+import java.sql.JDBCType
+
 class DbColumnSync {
 
     private static Logger log = LoggerFactory.getLogger(DbColumnSync)
@@ -58,7 +60,13 @@ class DbColumnSync {
                 break
             case 'VARCHAR':
                 newCol = adjustForVarChar(r)
+                break
+            default:
+                if (r.DATA_TYPE == JDBCType.VARCHAR.vendorTypeNumber)
+                    newCol = adjustForVarChar(r)
+
         }
+
 
         if (newCol) modifyColumn(newCol)
     }

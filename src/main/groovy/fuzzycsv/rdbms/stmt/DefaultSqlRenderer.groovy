@@ -21,6 +21,7 @@ class DefaultSqlRenderer implements SqlRenderer {
     @Override
     String addColumn(String tableName, FuzzyCSVDbExporter.Column column) {
         "ALTER TABLE ${quoteName(tableName)} ADD ${toDataString(column)}"
+
     }
 
     @Override

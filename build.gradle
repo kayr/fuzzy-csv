@@ -71,10 +71,16 @@ dependencies {
 
 
     //direct dependencies
-    implementation group: 'io.github.kayr', name: 'phrase-matcher', version: '0.1.7'
-    implementation group: 'com.opencsv', name: 'opencsv', version: '3.8'
+    implementation (group: 'io.github.kayr', name: 'phrase-matcher', version: '0.1.7'){
+        exclude group: 'log4j'
+    }
+    implementation(group: 'com.opencsv', name: 'opencsv', version: '3.8'){
+        exclude group: 'commons-beanutils'
+    }
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     implementation 'com.jakewharton.fliptables:fliptables:1.1.0'
+    //add slf4j api dependency
+    implementation 'org.slf4j:slf4j-api:2.0.7'
 
     //optional dependencies
     compileOnly 'org.apache.poi:poi-ooxml:3.16', {
@@ -85,14 +91,16 @@ dependencies {
     }
 
 
+
     //test dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
-    testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
+    testImplementation 'com.h2database:h2:2.2.220'
     testImplementation group: 'org.bitbucket.mstrobel', name: 'procyon-reflection', version: '0.5.32'
-    testImplementation 'log4j:log4j:1.2.17'
+    //add slf4j for tests
+    testImplementation 'org.slf4j:slf4j-simple:1.7.36'
     testImplementation 'org.slf4j:slf4j-log4j12:1.7.36'
-    testImplementation 'mysql:mysql-connector-java:8.0.29'
+    testImplementation 'mysql:mysql-connector-java:8.0.33'
     testImplementation 'org.mockito:mockito-core:5.2.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.28'
