@@ -74,6 +74,9 @@ dependencies {
     implementation (group: 'io.github.kayr', name: 'phrase-matcher', version: '0.1.7'){
         exclude group: 'log4j'
     }
+    //second string needs log4j
+    runtimeOnly 'org.slf4j:slf4j-log4j12:1.7.36'
+
     implementation(group: 'com.opencsv', name: 'opencsv', version: '3.8'){
         exclude group: 'commons-beanutils'
     }
@@ -91,7 +94,6 @@ dependencies {
     }
 
 
-
     //test dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
@@ -99,7 +101,6 @@ dependencies {
     testImplementation group: 'org.bitbucket.mstrobel', name: 'procyon-reflection', version: '0.5.32'
     //add slf4j for tests
     testImplementation 'org.slf4j:slf4j-simple:1.7.36'
-    testImplementation 'org.slf4j:slf4j-log4j12:1.7.36'
     testImplementation 'mysql:mysql-connector-java:8.0.33'
     testImplementation 'org.mockito:mockito-core:5.2.0'
 
