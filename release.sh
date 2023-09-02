@@ -125,18 +125,11 @@ make test
 
 echo "  -> Publish groovy 3"
 make publish-groovy3
-
-confirm "Do you want to close the release for groovy-3?"
-echo "  -> Closing release for groovy-3"
-make close-release
+echo " #######  Successfully published groovy 3 artifacts #########"
 
 echo "  -> Publish groovy 4"
 make publish-groovy4
-
-confirm "Do you want to close the release for groovy-4?"
-
-echo "  -> Closing release for groovy-4"
-make close-release
+echo " #######  Successfully published groovy 4 artifacts #########"
 
 echo "  -> Creating tag $NEW_VERSION"
 git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"

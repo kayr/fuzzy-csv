@@ -23,4 +23,5 @@ publish-groovy4:
 	./gradlew build publish -Pvariant=4 --no-daemon
 
 close-release:
-	./gradlew closeAndReleaseRepository
+	#./gradlew closeAndReleaseRepository
+	echo "Close and release repository manually"
