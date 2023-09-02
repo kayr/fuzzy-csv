@@ -86,10 +86,10 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:2.0.7'
 
     //optional dependencies
-    compileOnly 'org.apache.poi:poi-ooxml:3.16', {
+    compileOnly 'org.apache.poi:poi-ooxml:4.1.1', {
         exclude group: 'stax', module: 'stax-api'
     }
-    compileOnly 'org.apache.poi:ooxml-schemas:1.3', {
+    compileOnly 'org.apache.poi:ooxml-schemas:1.4', {
         exclude group: 'stax', module: 'stax-api'
     }
 
@@ -114,10 +114,10 @@ dependencies {
 
 
     //need poi for tests
-    testImplementation 'org.apache.poi:poi-ooxml:3.16', {
+    testImplementation 'org.apache.poi:poi-ooxml:4.1.1', {
         exclude group: 'stax', module: 'stax-api'
     }
-    testImplementation 'org.apache.poi:ooxml-schemas:1.3', {
+    testImplementation 'org.apache.poi:ooxml-schemas:1.4', {
         exclude group: 'stax', module: 'stax-api'
     }
 }

@@ -70,7 +70,7 @@ class CSVToExcel {
         try {
 
             if (dataValue == null) {
-                cell.setCellType(Cell.CELL_TYPE_BLANK)
+                cell.setBlank();
                 return
             }
 
@@ -99,7 +99,7 @@ class CSVToExcel {
 
         } catch (Exception ex) {
             log.error("Could not set cell data [$ex.message]")
-            cell.setCellType(Cell.CELL_TYPE_ERROR)
+            cell.setCellErrorValue(FormulaError.NA.getCode());
         }
     }
 
