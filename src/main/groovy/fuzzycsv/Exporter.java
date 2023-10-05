@@ -283,12 +283,12 @@ public class Exporter {
        private boolean quoteAll = true;
 
         public SimpleCsvWriter writeRow(List<?> row) {
-            writeRow(toStringArray(row));
+            writeRow(FuzzyCSVUtils.listToStrArray(row));
             return this;
         }
 
         public SimpleCsvWriter writeRow(Object... row) {
-            writeRow(toStringArray(row));
+            writeRow(FuzzyCSVUtils.objArrayToSrArray(row));
             return this;
         }
 
@@ -301,32 +301,6 @@ public class Exporter {
                 writeRow(row);
             }
             return this;
-        }
-
-        //todo move to arrayutils?
-        public String[] toStringArray(List<?> items) {
-            int size = items.size();
-            String[] array = new String[size];
-            for (int i = 0; i < size; i++) {
-                Object item = items.get(i);
-                if (item == null) continue;
-                array[i] = item.toString();
-            }
-
-            return array;
-        }
-
-        //todo move to arrayutils?
-        public String[] toStringArray(Object[] items) {
-            int size = items.length;
-            String[] array = new String[size];
-            for (int i = 0; i < size; i++) {
-                Object item = items[i];
-                if (item == null) continue;
-                array[i] = item.toString();
-            }
-
-            return array;
         }
 
 

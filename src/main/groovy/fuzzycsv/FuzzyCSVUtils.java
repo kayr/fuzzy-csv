@@ -1,15 +1,12 @@
 package fuzzycsv;
 
 import groovy.lang.Closure;
-import groovy.lang.GString;
 import groovy.time.TimeCategory;
 import groovy.time.TimeDuration;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
@@ -65,14 +62,15 @@ public class FuzzyCSVUtils {
     }
 
     private static Number toNumber(Object obj, boolean strict, Class<? extends Number> preferredType) {
-        if (obj == null) return preferredType.equals(Integer.class) || preferredType.equals(BigInteger.class) ? BigInteger.ZERO: BigDecimal.ZERO;
+        if (obj == null)
+            return preferredType.equals(Integer.class) || preferredType.equals(BigInteger.class) ? BigInteger.ZERO : BigDecimal.ZERO;
 
         if (obj instanceof Aggregator) obj = ((Aggregator) obj).getValue();
 
         if (obj instanceof Number) return (Number) obj;
 
-        if (obj instanceof Boolean )
-            return obj == Boolean.TRUE ? BigInteger.ONE: BigInteger.ZERO;
+        if (obj instanceof Boolean)
+            return obj == Boolean.TRUE ? BigInteger.ONE : BigInteger.ZERO;
 
         String strValue = obj.toString();
 
@@ -138,7 +136,6 @@ public class FuzzyCSVUtils {
     }
 
 
-
     public static void closeQuietly(AutoCloseable c) {
         if (c != null) {
             try {
@@ -156,5 +153,30 @@ public class FuzzyCSVUtils {
     }
 
     private static Logger log = LoggerFactory.getLogger(FuzzyCSVUtils.class);
+
+    public static String[] listToStrArray(List<?> items) {
+        int size = items.size();
+        String[] array = new String[size];
+        for (int i = 0; i < size; i++) {
+            Object item = items.get(i);
+            if (item == null) continue;
+            array[i] = item.toString();
+        }
+
+        return array;
+    }
+
+
+    public static String[] objArrayToSrArray(Object[] items) {
+        int size = items.length;
+        String[] array = new String[size];
+        for (int i = 0; i < size; i++) {
+            Object item = items[i];
+            if (item == null) continue;
+            array[i] = item.toString();
+        }
+
+        return array;
+    }
 }
 
