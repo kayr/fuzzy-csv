@@ -137,16 +137,6 @@ public class Exporter {
             return SimpleCsvWriter.create(openCsvWriter,quoteAll);
         }
 
-
-//        private CsvWriter.CsvWriterBuilder createWriter() {
-//            LineDelimiter lineDelimiter = LineDelimiter.of(lineSeparator);
-//            return CsvWriter.builder()
-//                     .lineDelimiter(lineDelimiter)
-//                     .quoteCharacter(quote.charAt(0))
-//                     .quoteStrategy(quoteAll ? QuoteStrategy.ALWAYS : QuoteStrategy.REQUIRED)
-//                     .fieldSeparator(delimiter.charAt(0));
-//        }
-
         private ICSVWriter createOpenCsvWriter(Writer writer) {
             return new CSVWriterBuilder(writer)
                                  .withSeparator(delimiter.charAt(0))
@@ -278,9 +268,8 @@ public class Exporter {
 
     @AllArgsConstructor(staticName = "create")
     public static class SimpleCsvWriter {
-//       private CsvWriter writer;
        private ICSVWriter csvWriter;
-       private boolean quoteAll = true;
+       private boolean quoteAll ;
 
         public SimpleCsvWriter writeRow(List<?> row) {
             writeRow(FuzzyCSVUtils.listToStrArray(row));

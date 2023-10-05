@@ -100,41 +100,6 @@ public class FuzzyCSVUtils {
         return FuzzyCSVUtils.toNumber(obj, true, Integer.class);
     }
 
-    public static <T> T time(String name, Closure<T> worker) {
-        String padding = repeat("    ", IndentHelper.get());
-        IndentHelper.increment();
-        System.out.println(padding + " ### Task: {" + name + "}...");
-        long start = System.currentTimeMillis();
-        try {
-            T rt = worker.call();
-            long stop = System.currentTimeMillis();
-
-            final TimeDuration time = TimeCategory.minus(new Date(stop), new Date(start));
-            System.out.println(padding + " -----> Completed in {" + name + "} in " + String.valueOf(time).toString());
-
-            return ((T) (rt));
-        } finally {
-            IndentHelper.decrement();
-        }
-
-
-    }
-
-    private static String repeat(String self, Number factor) {
-        int size = factor.intValue();
-        if (size == 0) return "";
-        else if (size < 0) {
-            throw new IllegalArgumentException("multiply() should be called with a number of 0 or greater not: " + size);
-        }
-
-        StringBuilder answer = new StringBuilder(self);
-        for (int i = 1; i < size; i++) {
-            answer.append(self);
-        }
-
-        return answer.toString();
-    }
-
 
     public static void closeQuietly(AutoCloseable c) {
         if (c != null) {
