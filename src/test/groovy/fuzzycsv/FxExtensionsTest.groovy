@@ -135,17 +135,17 @@ class FxExtensionsTest {
 
             //test the data types
             assert (2.0 * null) instanceof BigDecimal
-            assert (2 * null) instanceof Integer
+            assert (2 * null) instanceof BigInteger
             assert (null * 2.0) instanceof BigDecimal
             assert (null * 2) instanceof BigInteger
 
             assert (2.0 + null) instanceof BigDecimal
-            assert (2 + null) instanceof Integer
+            assert (2 + null) instanceof BigInteger
             assert (null + 2.0) instanceof BigDecimal
             assert (null + 2) instanceof BigInteger
 
             assert (2.0 - null) instanceof BigDecimal
-            assert (2 - null) instanceof Integer
+            assert (2 - null) instanceof BigInteger
             assert (null - 2.0) instanceof BigDecimal
             assert (null - 2) instanceof BigInteger
 
