@@ -10,7 +10,6 @@ import fuzzycsv.rdbms.stmt.SqlRenderer
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import groovy.transform.ToString
-import org.apache.commons.lang3.tuple.Pair
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -170,10 +169,10 @@ class FuzzyCSVDbExporter {
         def inserts = FuzzyCsvDbInserter.generateInserts(sqlRenderer, pageSize, table, table.tableName)
 
         def rt = []
-        for (Pair<String, List<Object>> q in inserts) {
+        for (Map.Entry<String, List<Object>> q in inserts) {
             doWithRestructure(table) {
                 logQuery(q)
-                def insert = sql().executeInsert(q.left, q.right)
+                def insert = sql().executeInsert(q.key, q.value)
                 rt.addAll(insert)
             }
         }
@@ -182,8 +181,8 @@ class FuzzyCSVDbExporter {
         return rt
     }
 
-    private static logQuery(Pair<String, List<Object>> queryAndParams) {
-        log.trace("executing [$queryAndParams.left] params $queryAndParams.right")
+    private static logQuery(Map.Entry<String, List<Object>> queryAndParams) {
+        log.trace("executing [$queryAndParams.key] params $queryAndParams.value")
     }
 
     @CompileStatic
@@ -193,7 +192,7 @@ class FuzzyCSVDbExporter {
         for (q in queries) {
             doWithRestructure(table) {
                 logQuery(q)
-                sql().executeUpdate(q.left, q.right)
+                sql().executeUpdate(q.key, q.value)
             }
         }
     }

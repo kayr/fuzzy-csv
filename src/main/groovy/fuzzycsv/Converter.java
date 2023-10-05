@@ -66,7 +66,7 @@ public class Converter {
     }
 
     public static class Csv {
-        private Exporter.Csv exporter = new Exporter.Csv();
+        private Exporter.Csv exporter = Exporter.Csv.create();
 
         private Csv() {
         }
@@ -111,7 +111,7 @@ public class Converter {
     }
 
     public static class Json {
-        private Exporter.Json exporter = new Exporter.Json();
+        private Exporter.Json exporter = Exporter.Json.create();
 
         private Json() {
         }
@@ -155,6 +155,7 @@ public class Converter {
         }
 
         public String getResult() {
+            //todo use some kind of array utils
             String[] header = DefaultGroovyMethods.asType(table.getHeader(), String[].class);
             String[][] data = toStrArray(table);
             return FlipTable.of(header, data);
@@ -166,7 +167,7 @@ public class Converter {
 
         private static String[][] toStrArray(FuzzyCSVTable theTable) {
             int columns = theTable.getHeader().size();
-            Integer rows = theTable.size();
+            int rows = theTable.size();
             String[][] tableArray = new String[rows][];
             for (int r = 0; r < rows; r++) {
                 String[] newRow = new String[columns];

@@ -77,9 +77,17 @@ dependencies {
     //second string needs log4j
     runtimeOnly 'org.slf4j:slf4j-log4j12:1.7.36'
 
-    implementation(group: 'com.opencsv', name: 'opencsv', version: '3.8'){
+
+
+    implementation ('com.opencsv:opencsv:5.8'){
         exclude group: 'commons-beanutils'
+//        exclude group: 'org.apache.commons', module: 'commons-lang3'
+        exclude group: 'org.apache.commons', module: 'commons-text'
+        exclude group: 'org.apache.commons', module: 'commons-collections4'
     }
+
+
+
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     implementation 'com.jakewharton.fliptables:fliptables:1.1.0'
     //add slf4j api dependency

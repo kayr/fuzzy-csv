@@ -125,7 +125,7 @@ class FuzzyCSVDbExporterTest {
         def insert = FuzzyCsvDbInserter.generateInsert(DumbH2Renderer.getInstance(), tbl, 'mytable')
 
         //check the sql insert
-        assert insert.left == '''INSERT INTO "mytable"
+        assert insert.key == '''INSERT INTO "mytable"
  ("string_col", "dec_col", "int_col", "bool_col") 
 VALUES
 (?, ?, ?, ?),
@@ -133,9 +133,9 @@ VALUES
 (?, ?, ?, ?)'''
 
         //check the params
-        assert insert.right == ['Hakibale', 18.1, null, null, 'Hakibale', 19, null, null, 'Kisomoro', null, 1, true]
+        assert insert.value == ['Hakibale', 18.1, null, null, 'Hakibale', 19, null, null, 'Kisomoro', null, 1, true]
 
-        sql.executeUpdate(insert.left, insert.right)
+        sql.executeUpdate(insert.key, insert.value)
 
 
         //check the actual data in the DB

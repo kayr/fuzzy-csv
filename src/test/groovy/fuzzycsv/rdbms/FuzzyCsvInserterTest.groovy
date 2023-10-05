@@ -2,7 +2,6 @@ package fuzzycsv.rdbms
 
 import fuzzycsv.FuzzyCSVTable
 import fuzzycsv.rdbms.stmt.DefaultSqlRenderer
-import org.apache.commons.lang3.tuple.Pair
 import org.codehaus.groovy.runtime.DefaultGroovyMethods
 import org.junit.Assert
 import org.junit.Test
@@ -17,7 +16,7 @@ class FuzzyCsvInserterTest {
                 .addRow(1.2, "2.2", "P.2")
                 .addRow(1.3, "2.3", "P.3")
 
-        Pair<String, List<Object>> result = FuzzyCsvDbInserter.generateInsert(DefaultSqlRenderer.getInstance(),table, "my_table")
+        def result = FuzzyCsvDbInserter.generateInsert(DefaultSqlRenderer.getInstance(),table, "my_table")
 
         Assert.assertEquals("INSERT INTO `my_table`\n" +
                 " (`h1`, `h2`, `h3`) \n" +
@@ -26,7 +25,7 @@ class FuzzyCsvInserterTest {
                 "(?, ?, ?),\n" +
                 "(?, ?, ?)", result.getKey())
 
-        Assert.assertEquals("[1, '2', 'P', 1.2, '2.2', 'P.2', 1.3, '2.3', 'P.3']", DefaultGroovyMethods.inspect(result.getRight()))
+        Assert.assertEquals("[1, '2', 'P', 1.2, '2.2', 'P.2', 1.3, '2.3', 'P.3']", DefaultGroovyMethods.inspect(result.getValue()))
 
     }
 
@@ -38,7 +37,7 @@ class FuzzyCsvInserterTest {
                 .addRow(1.2, "2.2", "P.2")
                 .addRow(1.3, "2.3", "P.3")
 
-        List<Pair<String, List<Object>>> pairs = FuzzyCsvDbInserter.generateUpdate(DefaultSqlRenderer.instance,table, "my_table", "h1")
+        def pairs = FuzzyCsvDbInserter.generateUpdate(DefaultSqlRenderer.instance,table, "my_table", "h1")
 
 
         pairs.each { p ->
@@ -46,14 +45,14 @@ class FuzzyCsvInserterTest {
                     "SET\n" +
                     "  `h2` =  ?,\n" +
                     "  `h3` =  ?\n" +
-                    " WHERE `h1` = ?", p.getLeft())
+                    " WHERE `h1` = ?", p.getKey())
         }
 
 
         int i = 0
-        Assert.assertEquals("['2', 'P', 1]", DefaultGroovyMethods.inspect(pairs.get(i++).getRight()))
-        Assert.assertEquals("['2.2', 'P.2', 1.2]", DefaultGroovyMethods.inspect(pairs.get(i++).getRight()))
-        Assert.assertEquals("['2.3', 'P.3', 1.3]", DefaultGroovyMethods.inspect(pairs.get(i).getRight()))
+        Assert.assertEquals("['2', 'P', 1]", DefaultGroovyMethods.inspect(pairs.get(i++).getValue()))
+        Assert.assertEquals("['2.2', 'P.2', 1.2]", DefaultGroovyMethods.inspect(pairs.get(i++).getValue()))
+        Assert.assertEquals("['2.3', 'P.3', 1.3]", DefaultGroovyMethods.inspect(pairs.get(i).getValue()))
 
     }
 
@@ -65,21 +64,21 @@ class FuzzyCsvInserterTest {
                 .addRow(1.2, "2.2", "P.2")
                 .addRow(1.3, "2.3", "P.3")
 
-        List<Pair<String, List<Object>>> pairs = FuzzyCsvDbInserter.generateUpdate(DefaultSqlRenderer.instance,table, "my_table", "h1", "h3")
+       def pairs = FuzzyCsvDbInserter.generateUpdate(DefaultSqlRenderer.instance,table, "my_table", "h1", "h3")
 
 
         pairs.each { p ->
             Assert.assertEquals("UPDATE `my_table`\n" +
                     "SET\n" +
                     "  `h2` =  ?\n" +
-                    " WHERE `h1` = ? AND `h3` = ?", p.getLeft())
+                    " WHERE `h1` = ? AND `h3` = ?", p.getKey())
         }
 
 
         int i = 0
-        Assert.assertEquals("['2', 1, 'P']", DefaultGroovyMethods.inspect(pairs.get(i++).getRight()))
-        Assert.assertEquals("['2.2', 1.2, 'P.2']", DefaultGroovyMethods.inspect(pairs.get(i++).getRight()))
-        Assert.assertEquals("['2.3', 1.3, 'P.3']", DefaultGroovyMethods.inspect(pairs.get(i++).getRight()))
+        Assert.assertEquals("['2', 1, 'P']", DefaultGroovyMethods.inspect(pairs.get(i++).getValue()))
+        Assert.assertEquals("['2.2', 1.2, 'P.2']", DefaultGroovyMethods.inspect(pairs.get(i++).getValue()))
+        Assert.assertEquals("['2.3', 1.3, 'P.3']", DefaultGroovyMethods.inspect(pairs.get(i++).getValue()))
 
     }
 }

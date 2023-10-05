@@ -49,7 +49,7 @@ class ExporterTest {
         JdbcConnectionPool dataSource = H2DbHelper.getDataSource();
         try (Sql sql = new Sql(dataSource)) {
             Exporter.create(table).toDb()
-              .withDatasource(dataSource)
+              .withDataSource(dataSource)
               .withExportParams(ExportParams.of(CREATE, INSERT))
               .export();
 
@@ -258,7 +258,7 @@ class ExporterTest {
         public void setUp() {
             dataSource = H2DbHelper.getDataSource();
             dbExporter = Exporter.Database.create()
-                           .withDatasource(dataSource);
+                           .withDataSource(dataSource);
 
             System.out.println("Active connections: " + dataSource.getActiveConnections());
         }
@@ -272,20 +272,20 @@ class ExporterTest {
         @Test
         void testWeCannotSetBothDatasourceAndConnection() throws SQLException {
             try (Connection connection = dataSource.getConnection()) {
-                Exporter.Database withDatasource = exportWithNoDatasource().withDatasource(dataSource);
-                IllegalStateException exception = assertThrows(IllegalStateException.class, () -> withDatasource.withConnection(connection));
+                Exporter.Database withDatasource = exportWithNoDatasource().withDataSource(dataSource);
+                IllegalStateException exception = assertThrows(IllegalStateException.class, () -> withDatasource.withConnection(connection).export());
                 assertEquals("dataSource and connection cannot both be set", exception.getMessage());
             }
 
             try (Connection connection = dataSource.getConnection()) {
-                Exporter.Database exporterWithConnection = dbExporter.withDatasource(null).withConnection(connection);
-                IllegalStateException exception = assertThrows(IllegalStateException.class, () -> exporterWithConnection.withDatasource(dataSource));
+                Exporter.Database exporterWithConnection = dbExporter.withDataSource(null).withConnection(connection);
+                IllegalStateException exception = assertThrows(IllegalStateException.class, () -> exporterWithConnection.withDataSource(dataSource).export());
                 assertEquals("dataSource and connection cannot both be set", exception.getMessage());
             }
         }
 
         private Exporter.Database exportWithNoDatasource() {
-            return dbExporter.withDatasource(null);
+            return dbExporter.withDataSource(null);
         }
 
         @Test

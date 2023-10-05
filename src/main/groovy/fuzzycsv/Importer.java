@@ -1,6 +1,12 @@
 package fuzzycsv;
 
+//import com.opencsv.CSVReader;
+//import de.siegmar.fastcsv.reader.CommentStrategy;
+
+import com.opencsv.CSVParser;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.exceptions.CsvValidationException;
 import groovy.json.JsonSlurper;
 import lombok.AccessLevel;
 
@@ -15,10 +21,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static fuzzycsv.FuzzyCSVUtils.closeQuietly;
@@ -116,13 +119,58 @@ public class Importer {
         }
 
         public FuzzyCSVTable parse(Reader reader) {
-            try (CSVReader rd = new CSVReader(reader, delimiter, quote, escape)) {
-                List<String[]> strings = rd.readAll();
-                return FuzzyCSVTable.tbl(FuzzyCSV.toListOfLists(strings));
-            } catch (IOException e) {
+
+            CSVParser parser = new com.opencsv.CSVParserBuilder()
+                                 .withSeparator(delimiter)
+                                 .withQuoteChar(quote)
+                                 .withEscapeChar(escape)
+                                 .build();
+
+            CSVReader builder = new CSVReaderBuilder(reader)
+                                  .withCSVParser(parser)
+                                  .build();
+
+
+            FuzzyCSVTable tbl = FuzzyCSVTable.tbl();
+
+            try (CSVReader rd = builder) {
+                String[] header = rd.readNext();
+                if (header != null) {
+                    tbl = tbl.setHeader(Arrays.asList(header));
+                }
+                Object[] nextRow = rd.readNext();
+                while (nextRow != null) {
+                    tbl = tbl.addRow(nextRow);
+                    nextRow = rd.readNext();
+                }
+
+            } catch (IOException | CsvValidationException e) {
                 throw new FuzzyCsvException("Failed parsing CSV From Reader", e);
             }
+            return tbl;
         }
+
+//        public FuzzyCSVTable parse(Reader reader) {
+//            CsvReader csvReader = CsvReader.builder()
+//                                .fieldSeparator(delimiter)
+//                                .quoteCharacter(quote)
+//                                .skipEmptyRows(false)
+//                                .errorOnDifferentFieldCount(false)
+//                                .build(reader);
+//            FuzzyCSVTable tbl = FuzzyCSVTable.tbl();
+//            boolean first = true;
+//            for (CsvRow row : csvReader) {
+//                if (first) {
+//                    tbl.setHeader(row.getFields());
+//                    first = false;
+//                }else {
+//                    tbl = tbl.addRows(row.getFields());
+//                }
+//            }
+//
+//            return tbl;
+//
+//        }
     }
 
     @lombok.NoArgsConstructor(access = AccessLevel.PRIVATE)

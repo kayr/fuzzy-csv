@@ -1,9 +1,6 @@
 package fuzzycsv
 
 import com.github.kayr.phrasematcher.PhraseMatcher
-import com.opencsv.CSVParser
-import com.opencsv.CSVReader
-import com.opencsv.CSVWriter
 import fuzzycsv.rdbms.DDLUtils
 import groovy.json.JsonSlurper
 import groovy.sql.Sql
@@ -36,23 +33,6 @@ class FuzzyCSV {
         }
     }
 
-
-    @CompileStatic
-    static List<String[]> parseCsv(String csv,
-                                   char separator = CSVParser.DEFAULT_SEPARATOR,
-                                   char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
-                                   char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
-        return parseCsv(new StringReader(csv), separator, quoteChar, escapeChar)
-    }
-
-    @CompileStatic
-    static List<String[]> parseCsv(Reader reader,
-                                   char separator = CSVParser.DEFAULT_SEPARATOR,
-                                   char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
-                                   char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
-        def rd = new CSVReader(reader, separator, quoteChar, escapeChar)
-        return rd.readAll()
-    }
 
     static List getValuesForColumn(List<? extends List> csvList, int colIdx) {
         csvList.collect { it[colIdx] }
@@ -166,8 +146,10 @@ class FuzzyCSV {
 
     @CompileStatic
     static int writeCsv(ResultSet resultSet, Writer stream, boolean includeNames = true, boolean trim = false) {
-        def writer = new CSVWriter(stream)
-        return writer.writeAll(resultSet, includeNames, trim)
+        Exporter.toWriterFromDb()
+                .withIncludeHeader(includeNames)
+                .withResultSet(resultSet)
+                .write(stream)
     }
 
     @SuppressWarnings("GroovyVariableNotAssigned")
@@ -180,6 +162,7 @@ class FuzzyCSV {
         return csv
     }
 
+    //delete method
     @CompileStatic
     static List<String> getColumns(ResultSetMetaData metadata) throws SQLException {
         int columnCount = metadata.getColumnCount()
@@ -336,7 +319,7 @@ class FuzzyCSV {
                     finalValues << rec
                 }
             }
-           return finalValues
+            return finalValues
         }
         return c
     }

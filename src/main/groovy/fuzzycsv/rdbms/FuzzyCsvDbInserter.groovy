@@ -4,7 +4,6 @@ import fuzzycsv.FuzzyCSVTable
 import fuzzycsv.Record
 import fuzzycsv.rdbms.stmt.SqlRenderer
 import groovy.transform.CompileStatic
-import org.apache.commons.lang3.tuple.Pair
 
 import java.util.concurrent.Callable
 import java.util.stream.StreamSupport
@@ -25,7 +24,7 @@ class FuzzyCsvDbInserter {
     }
 
 
-    static Pair<String, List<Object>> generateUpdate(SqlRenderer sqlRenderer,
+    static Map.Entry<String, List<Object>> generateUpdate(SqlRenderer sqlRenderer,
                                                      Record r,
                                                      String tableName,
                                                      String... identifiers) {
@@ -55,12 +54,12 @@ class FuzzyCsvDbInserter {
         }
         String filterClause = " WHERE " + result.toString()
 
-        return Pair.of(updateStart + fieldUpdates + filterClause, valueParams)
+        return new AbstractMap.SimpleImmutableEntry<String, List<Object>>(updateStart + fieldUpdates + filterClause, valueParams)
 
 
     }
 
-    static List<Pair<String, List<Object>>> generateUpdate(SqlRenderer sqlRenderer,
+    static List<Map.Entry<String, List<Object>>> generateUpdate(SqlRenderer sqlRenderer,
                                                            FuzzyCSVTable table,
                                                            String tableName,
                                                            String... identifiers) {
@@ -68,7 +67,7 @@ class FuzzyCsvDbInserter {
                 .collect { Record r -> generateUpdate(sqlRenderer, r, tableName, identifiers) }
     }
 
-    static Pair<String, List<Object>> generateInsert(SqlRenderer sqlRenderer, FuzzyCSVTable table, String tableName) {
+    static Map.Entry<String, List<Object>> generateInsert(SqlRenderer sqlRenderer, FuzzyCSVTable table, String tableName) {
         String insertInto = "INSERT INTO " + sqlRenderer.quoteName(tableName)
 
         String insertHeader = table.getHeader().collect { sqlRenderer.quoteName(it) }.join(", ")
@@ -87,11 +86,11 @@ class FuzzyCsvDbInserter {
         }
 
 
-        return Pair.of(valuePhrase + values.join(",\n"), params)
+        return new AbstractMap.SimpleImmutableEntry(valuePhrase + values.join(",\n"), params)
     }
 
 
-    static List<Pair<String, List<Object>>> generateInserts(SqlRenderer sqlRenderer, int pageSize, FuzzyCSVTable table, String tableName) {
+    static List<Map.Entry<String, List<Object>>> generateInserts(SqlRenderer sqlRenderer, int pageSize, FuzzyCSVTable table, String tableName) {
 
         def tables = paginate(table, pageSize)
 

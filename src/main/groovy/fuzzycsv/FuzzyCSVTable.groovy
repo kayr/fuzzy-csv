@@ -1035,9 +1035,9 @@ class FuzzyCSVTable implements Iterable<Record> {
     //region Static initializers
 
     static FuzzyCSVTable parseCsv(String csvString,
-                                  char separator = CSVParser.DEFAULT_SEPARATOR,
-                                  char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
-                                  char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
+                                  char separator = ',',
+                                  char quoteChar = '"',
+                                  char escapeChar = '\\') {
         from().csv().withDelimiter(separator)
                 .withQuote(quoteChar)
                 .withEscape(escapeChar)
@@ -1045,9 +1045,9 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     static FuzzyCSVTable parseCsv(Reader reader,
-                                  char separator = CSVParser.DEFAULT_SEPARATOR,
-                                  char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
-                                  char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
+                                  char separator = ',',
+                                  char quoteChar = '"',
+                                  char escapeChar= '\\') {
         from().csv().withDelimiter(separator)
                 .withQuote(quoteChar)
                 .withEscape(escapeChar)
@@ -1112,9 +1112,9 @@ class FuzzyCSVTable implements Iterable<Record> {
     }
 
     static FuzzyCSVTable fromCsvString(String csvString,
-                                       char separator = CSVParser.DEFAULT_SEPARATOR,
-                                       char quoteChar = CSVParser.DEFAULT_QUOTE_CHARACTER,
-                                       char escapeChar = CSVParser.DEFAULT_ESCAPE_CHARACTER) {
+                                       char separator = ',',
+                                       char quoteChar = '"',
+                                       char escapeChar= '\\') {
         return parseCsv(csvString, separator, quoteChar, escapeChar)
     }
 
