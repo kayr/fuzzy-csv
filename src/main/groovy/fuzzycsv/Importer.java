@@ -1,7 +1,5 @@
 package fuzzycsv;
 
-//import com.opencsv.CSVReader;
-//import de.siegmar.fastcsv.reader.CommentStrategy;
 
 import com.opencsv.CSVParser;
 import com.opencsv.CSVReader;

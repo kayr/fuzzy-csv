@@ -1,15 +1,17 @@
 package fuzzycsv;
 
-import groovy.lang.Closure;
-import groovy.time.TimeCategory;
-import groovy.time.TimeDuration;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.Reader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("rawtypes")
 public class FuzzyCSVUtils {
@@ -142,6 +144,21 @@ public class FuzzyCSVUtils {
         }
 
         return array;
+    }
+
+    public static String toString(Reader reader) {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(reader);
+        char[] charBuffer = new char[8192];
+        int bytesRead;
+        try {
+            while ((bytesRead = br.read(charBuffer)) != -1) {
+                sb.append(charBuffer, 0, bytesRead);
+            }
+        } catch (Exception e) {
+            throw FuzzyCsvException.wrap(e);
+        }
+        return sb.toString();
     }
 }
 

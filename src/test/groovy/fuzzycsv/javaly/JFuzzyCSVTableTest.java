@@ -1479,7 +1479,6 @@ class JFuzzyCSVTableTest {
 
             for (Record it : data) {
                 Dynamic tableName = it.d("TABLE_NAME");
-                System.out.println("Dropping******** " + tableName);
                 gsql.execute("drop table \"" + tableName + "\"");
             }
 
