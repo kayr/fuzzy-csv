@@ -1,4 +1,4 @@
-@Grab(group = 'io.github.kayr', module = 'fuzzy-csv', version = '1.7.1')
+@Grab(group = 'io.github.kayr', module = 'fuzzy-csv', version = '1.9.1-groovy4')
 import fuzzycsv.FuzzyCSVTable
 import groovy.io.FileType
 

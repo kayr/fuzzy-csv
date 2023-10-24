@@ -1,4 +1,4 @@
-@Grab('io.github.kayr:fuzzy-csv:1.7.2')
+@Grab('io.github.kayr:fuzzy-csv:1.9.1-groovy4')
 import static fuzzycsv.FuzzyStaticApi.*
 
 /*
@@ -17,6 +17,6 @@ def csv2 = [
         ['peter', '21', 'swimming']
 ]
 //tag::code[]
-tbl(csv1).fullJoin(csv2) { it.left('name') == it.right('name') }
+tbl(csv1).fullJoin(tbl(csv2)) { it.left('name') == it.right('name') }
         .printTable()
 //end::code[]

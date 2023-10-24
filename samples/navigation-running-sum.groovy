@@ -1,5 +1,5 @@
 //tag::code[]
-@Grab('io.github.kayr:fuzzy-csv:1.7.2')
+@Grab('io.github.kayr:fuzzy-csv:1.9.1-groovy4')
 import static fuzzycsv.FuzzyStaticApi.*
 
 def csv = [["name", "age"],
